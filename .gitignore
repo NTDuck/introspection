@@ -1,3 +1,5 @@
+# DISCLAIMER: the inclusion of commonly-ignored files (e.g., .dll, .a, .la) de-necessitate IDE-specific configurations at the cost of more gibberish.
+
 # Prerequisites
 *.d
 
@@ -22,8 +24,8 @@
 
 # Compiled Static libraries
 *.lai
-*.la
-*.a
+# *.la
+# *.a
 *.lib
 
 # Executables
