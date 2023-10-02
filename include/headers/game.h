@@ -1,30 +1,57 @@
 #pragma once
 
 #include <iostream>
+
 #include "../sdl2/SDL.h"
 #include "../sdl2/SDL_image.h"
 
 
-enum GameState {PLAY, EXIT};
+// multiple flags combinable via bitwise OR
+struct Flags {
+    Uint32 init = SDL_INIT_EVERYTHING;
+    Uint32 window = SDL_WINDOW_SHOWN;
+    Uint32 renderer = 0;   // try SDL_RENDERER_PRESENTVSYNC
+};
+
+struct Dimensions {
+    // denotes central not upper-left
+    int _x = SDL_WINDOWPOS_CENTERED;
+    int _y = SDL_WINDOWPOS_CENTERED;
+    unsigned short int _w, _h;
+};
+
+struct Mouse {
+    Uint32 state;
+    int _x, _y;
+};
+
+enum State {PLAYING, PAUSED, CUTSCENE, EXIT};
 
 
 class Game {
     public:
-        // constructor & destructor
         Game();
         ~Game();
         void run();
 
     private:
-        void init(const char* title, int _x, int _y, int w, int h, Uint32 flags);
+        void init();
         void gameLoop();
         void handleEvents();
+        void handleWindowEvent(SDL_Event* event);
+        void handleMouseEvent(SDL_Event* event);
+        void handleKeyBoardEvent(SDL_Event* event);
 
-        SDL_Window* window;
-        SDL_Renderer* renderer;
+        SDL_Window* window = nullptr;
+        Uint32 windowID;
+        SDL_Renderer* renderer = nullptr;
 
-        int screenWidth;
-        int screenHeight;
+        Flags flags;
+        Dimensions dimensions;
+        Mouse mouse;
+        State gamestate = State::PLAYING;
 
-        GameState gamestate;
+
+        const char* title;
+        unsigned short int frameRate = 120;   // per second; mutability intended
 };
