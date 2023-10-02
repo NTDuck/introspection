@@ -1,20 +1,16 @@
 #include <iostream>
-#include "../include/headers/game.h"
+
+#include <game.h>
+#include <managers/window.h>
 
 
 Game::Game() {
     flags.init = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-    flags.window = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-
-    dimensions._w = 1280;
-    dimensions._h = 720;
-
-    title = "8964";
     frameRate = 120;
 };
 
 Game::~Game() {
-    if (window != nullptr) SDL_DestroyWindow(window);   // deallocate memory
+    windowManager.~WindowManager();
     SDL_Quit();   // quit SDL subsystems
 };
 
@@ -25,9 +21,8 @@ void Game::run() {
 
 void Game::init() {
     SDL_Init(flags.init);
-    window = SDL_CreateWindow(title, dimensions._x, dimensions._y, dimensions._w, dimensions._h, flags.window);
-    windowID = SDL_GetWindowID(window);
-    renderer = SDL_CreateRenderer(window, -1, flags.renderer);
+    windowManager.init();
+    renderer = SDL_CreateRenderer(windowManager.window, -1, flags.renderer);
 }
 
 void Game::gameLoop() {
@@ -51,7 +46,7 @@ void Game::handleEvents() {
             break;
         
         case SDL_WINDOWEVENT:
-            handleWindowEvent(event);
+            windowManager.handleWindowEvent(event);
         // also called when mouse focus regained/lost
         case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
             handleMouseEvent(event);
@@ -60,35 +55,6 @@ void Game::handleEvents() {
     }
 
     delete event;
-}
-
-void Game::handleWindowEvent(SDL_Event* event) {
-    if (event -> window.windowID != windowID) return;
-    switch (event -> window.event) {
-        case SDL_WINDOWEVENT_MOVED:
-            return;
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
-            std::cout << "window-size-changed" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_MINIMIZED:
-            std::cout << "window-minimized" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_MAXIMIZED:
-            std::cout << "window-maximized" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_ENTER:
-            std::cout << "window-focus-mouse-gained" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_LEAVE:
-            std::cout << "window-focus-mouse-lost" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_FOCUS_GAINED:
-            std::cout << "window-focus-keyboard-gained" << std::endl;
-            return;
-        case SDL_WINDOWEVENT_FOCUS_LOST:
-            std::cout << "window-focus-keyboard-lost" << std::endl;
-            return;
-    }
 }
 
 void Game::handleKeyBoardEvent(SDL_Event* event) {

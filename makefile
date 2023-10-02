@@ -1,13 +1,13 @@
 # compiler & flags
 cxx = g++
-cxxflags = -Wall -I"/include/sdl2" -I"/include/headers"
+cxxflags = -Wall -I"include/sdl2" -I"include/headers"
 
 # libs
 libpath = -L"lib"
 libs = -l"mingw32" -l"SDL2main" -l"SDL2" -l"SDL2_image"
 
 # src & output
-src = src/*.cpp
+src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
 output = build/8964.exe
 
 all: $(output)
