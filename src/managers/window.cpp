@@ -22,14 +22,14 @@ void WindowManager::init() {
     windowID = SDL_GetWindowID(window);
 
     setWindowSurface();
-    std::cout << SDL_BlitSurface(background.surface, NULL, windowSurface, NULL) << std::endl;   // if -1 something is definitely wrong
+    SDL_BlitSurface(background.surface, NULL, windowSurface, NULL);
     SDL_UpdateWindowSurface(window);   // called twice unfortunately
 }
 
 // must be called after window is resized 
 void WindowManager::setWindowSurface() {
     windowSurface = SDL_GetWindowSurface(window);
-    // SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface -> format, 0x69, 0x69, 0x69));   // fill the surface with something, unnecessary anyway
+    SDL_FillRect(windowSurface, NULL, SDL_MapRGB(windowSurface -> format, 0x69, 0x69, 0x69));   // fill the surface with something, unnecessary anyway
     SDL_UpdateWindowSurface(window);
 }
 

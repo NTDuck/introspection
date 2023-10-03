@@ -10,5 +10,5 @@ class ArbitraryBackgroundImage {
         ~ArbitraryBackgroundImage();
 
         SDL_Surface* surface;
-        const char* path = "assets/images/banner/cirnoday.bmp";   // get this right
+        const char* path = "zassets/images/banner/cirnoday.bmp";   // get this right
 };

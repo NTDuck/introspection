@@ -1,5 +1,5 @@
 @echo off
-mingw32-make -f makefile
+mingw32-make -f MakeFile.windows
 
 if errorlevel 1 (
     echo "error: compilation terminated."
