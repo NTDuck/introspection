@@ -1,30 +1,22 @@
 #pragma once
 
+#include <string>
+
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <managers/window.h>
+#include <handlers/window.h>
+#include <handlers/background.h>
 
-
-// multiple flags combinable via bitwise OR
-struct Flags {
-    Uint32 init = SDL_INIT_EVERYTHING;
-    Uint32 renderer = 0;   // try SDL_RENDERER_PRESENTVSYNC
-};
-
-struct Mouse {
-    Uint32 state;
-    int _x, _y;
-};
-
-enum State {PLAYING, PAUSED, CUTSCENE, EXIT};
+#include <auxiliaries/defs.h>
+#include <auxiliaries/structs.h>
 
 
 class Game {
     public:
-        Game();
+        Game(Flags flags, Dimensions dimensions, unsigned short int frameRate, std::string title);
         ~Game();
-        void run();
+        void start();
 
     private:
         void init();
@@ -34,13 +26,14 @@ class Game {
         void handleMouseEvent(SDL_Event* event);
         void handleKeyBoardEvent(SDL_Event* event);
 
-        WindowManager windowManager = WindowManager();
+        WindowHandler windowHandler;
+        BackgroundHandler& backgroundHandler;
 
-        SDL_Renderer* renderer = nullptr;
-
-        Flags flags;
+        const Flags flags;
+        Dimensions dimensions;
         Mouse mouse;
-        State gamestate = State::PLAYING;
+        GameState gameState;
 
-        unsigned short int frameRate = 60;   // per second; mutability intended
+        unsigned short int frameRate;   // per second; mutability intended
+        std::string title;
 };
