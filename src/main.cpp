@@ -11,8 +11,9 @@ int main(int argc, char* args[]) {
     Flags flags;
     flags.init = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
     flags.window = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-    flags.renderer = 0;
+    flags.renderer = SDL_RENDERER_ACCELERATED;
     flags.image = IMG_INIT_PNG;
+    flags.hints[SDL_HINT_RENDER_SCALE_QUALITY] = "1";
 
     Dimensions dimensions;
     dimensions._x = SDL_WINDOWPOS_UNDEFINED;

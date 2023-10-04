@@ -12,11 +12,8 @@ class BackgroundHandler {
         BackgroundHandler(Dimensions dimensions);
         ~BackgroundHandler();
 
-        void changeBackground(SDL_Surface* windowSurface, BackgroundType type, SDL_PixelFormat* fmt);
-
-        SDL_Surface* background;
+        void changeBackground(SDL_Renderer* renderer, BackgroundType type);
+        
+        SDL_Texture* background;   // https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
         unsigned char position;
-
-    private:
-        SDL_Rect stretchRect;
 };

@@ -17,15 +17,13 @@ class WindowHandler {
         ~WindowHandler();
 
         void init();
-        void handleWindowEvent(const SDL_Event* event);
+        void handleWindowEvent(const SDL_Event* event, SDL_Renderer* renderer);
 
-        void setWindowSurface();
+        void setWindowSurface(SDL_Renderer* renderer);
 
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;
         Uint32 windowID;
-
-        SDL_Renderer* renderer = nullptr;
 
         BackgroundHandler backgroundHandler;
 

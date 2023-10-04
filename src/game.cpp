@@ -17,6 +17,7 @@ Game::Game(Flags flags, Dimensions dimensions, unsigned short int frameRate, std
 
 // quit SDL subsystems
 Game::~Game() {
+    if (renderer != nullptr) SDL_DestroyRenderer(renderer);
     IMG_Quit();
     SDL_Quit();
 };
@@ -26,11 +27,18 @@ void Game::start() {
     gameLoop();
 }
 
+// order matters! look carefully.
 void Game::init() {
     if (SDL_Init(flags.init) < 0) std::cout << "SDL initialization failed: " << SDL_GetError() << std::endl;
+    for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
     if (!(IMG_Init(flags.image) & flags.image)) std::cout << "SDL_image initialization failed: " << IMG_GetError() << std::endl;   // https://lazyfoo.net/tutorials/SDL/06_extension_libraries_and_loading_other_image_formats/index2.php
 
     windowHandler.init();
+
+    renderer = SDL_CreateRenderer(windowHandler.window, -1, flags.renderer);
+    SDL_SetRenderDrawColor(renderer, 0x69, 0x69, 0x69, SDL_ALPHA_OPAQUE);   // throw some arbitrary color hexvalue
+
+    windowHandler.setWindowSurface(renderer);
 }
 
 void Game::gameLoop() {
@@ -40,6 +48,11 @@ void Game::gameLoop() {
         if (SDL_GetTicks64() - last_ticks < 1000 / frameRate) continue;
         last_ticks = SDL_GetTicks64();
         handleEvents();
+
+        // must be called every loop
+        SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, backgroundHandler.background, NULL, NULL);
+        SDL_RenderPresent(renderer);
     }
 }
 
@@ -54,7 +67,7 @@ void Game::handleEvents() {
             break;
         
         case SDL_WINDOWEVENT:
-            windowHandler.handleWindowEvent(event);
+            windowHandler.handleWindowEvent(event, renderer);
             break;
         // also called when mouse focus regained/lost
         case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
@@ -68,7 +81,7 @@ void Game::handleEvents() {
     delete event;
 }
 
-void Game::handleKeyBoardEvent(SDL_Event* event) {
+void Game::handleKeyBoardEvent(const SDL_Event* event) {
     // apparently scancode denotes physical location, keycode denotes actual meaning (different if remapped)
     switch (event -> type) {
         case SDL_KEYDOWN:
@@ -80,7 +93,6 @@ void Game::handleKeyBoardEvent(SDL_Event* event) {
                     break;
                 case SDLK_q:   // move westwards
                     backgroundHandler.position -= (backgroundHandler.position > 0 ? 1 : 0);
-                    SDL_UpdateWindowSurface(windowHandler.window);
                     break;
                 case SDLK_e:
                     backgroundHandler.position += (backgroundHandler.position < 2 ? 1 : 0);
@@ -89,14 +101,13 @@ void Game::handleKeyBoardEvent(SDL_Event* event) {
                     return;
             }
 
-            backgroundHandler.changeBackground(windowHandler.windowSurface, static_cast<BackgroundType>(backgroundHandler.position), windowHandler.windowSurface -> format);
-            SDL_UpdateWindowSurface(windowHandler.window);
+            backgroundHandler.changeBackground(renderer, static_cast<BackgroundType>(backgroundHandler.position));
 
             break;
     }
 }
 
-void Game::handleMouseEvent(SDL_Event* event) {
+void Game::handleMouseEvent(const SDL_Event* event) {
     switch (event -> type) {
         case SDL_MOUSEBUTTONDOWN:
             mouse.state = SDL_GetMouseState(&mouse._x, &mouse._y);

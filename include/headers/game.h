@@ -23,8 +23,11 @@ class Game {
         void gameLoop();
 
         void handleEvents();
-        void handleMouseEvent(SDL_Event* event);
-        void handleKeyBoardEvent(SDL_Event* event);
+        void handleMouseEvent(const SDL_Event* event);
+        void handleKeyBoardEvent(const SDL_Event* event);
+
+        // for some reasons, attempts to bind renderer elsewhere yields weird error messages - therefore related functions will now have to take up an additional parameter
+        SDL_Renderer* renderer = nullptr;
 
         WindowHandler windowHandler;
         BackgroundHandler& backgroundHandler;

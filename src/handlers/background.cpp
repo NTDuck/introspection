@@ -5,23 +5,17 @@
 
 #include <auxiliaries/defs.h>
 #include <auxiliaries/structs.h>
-#include <utils/sdl2.h>
 
 
 BackgroundHandler::BackgroundHandler(Dimensions dimensions) {
-    stretchRect.x = 0;
-    stretchRect.y = 0;
-    stretchRect.w = dimensions._w;
-    stretchRect.h = dimensions._h;
-
     position = static_cast<unsigned char>(BackgroundType::curr);
 }
 
 BackgroundHandler::~BackgroundHandler() {
-    if (background != nullptr) SDL_FreeSurface(background);
+    if (background != nullptr) SDL_DestroyTexture(background);
 }
 
-void BackgroundHandler::changeBackground(SDL_Surface* windowSurface, BackgroundType type, SDL_PixelFormat* fmt) {
+void BackgroundHandler::changeBackground(SDL_Renderer* renderer, BackgroundType type) {
     std::string path;
 
     switch (type) {
@@ -33,7 +27,7 @@ void BackgroundHandler::changeBackground(SDL_Surface* windowSurface, BackgroundT
             path = "assets/images/backgrounds/konata.png"; break;
     }
 
-    SDL_Surface* background = utils::optimize(path, fmt);
-    SDL_BlitScaled(background, NULL, windowSurface, &stretchRect);
-    delete background;
+    // background = IMG_LoadTexture(renderer, path.c_str());
+    background = IMG_LoadTexture(renderer, path.c_str());
+    // delete background;
 }

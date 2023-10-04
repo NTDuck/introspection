@@ -11,32 +11,29 @@ WindowHandler::WindowHandler(Flags flags, Dimensions dimensions, std::string tit
 
 // deallocate memory
 WindowHandler::~WindowHandler() {
-    if (window != nullptr) SDL_DestroyWindow(window);
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
+    if (window != nullptr) SDL_DestroyWindow(window);
 }
 
 // called in Game::init()
 void WindowHandler::init() {
     window = SDL_CreateWindow(title.c_str(), dimensions._x, dimensions._y, dimensions._w, dimensions._h, flags.window);
     windowID = SDL_GetWindowID(window);
-    renderer = SDL_CreateRenderer(this -> window, -1, flags.renderer);
-    setWindowSurface();
 }
 
 // must be called after window is resized 
-void WindowHandler::setWindowSurface() {
+void WindowHandler::setWindowSurface(SDL_Renderer* renderer) {
     windowSurface = SDL_GetWindowSurface(window);
-    backgroundHandler.changeBackground(windowSurface, static_cast<BackgroundType>(backgroundHandler.position), windowSurface -> format);
-    SDL_UpdateWindowSurface(window);
+    backgroundHandler.changeBackground(renderer, static_cast<BackgroundType>(backgroundHandler.position));
 }
 
-void WindowHandler::handleWindowEvent(const SDL_Event* event) {
+void WindowHandler::handleWindowEvent(const SDL_Event* event, SDL_Renderer* renderer) {
     if (event -> window.windowID != windowID) return;
     switch (event -> window.event) {
         case SDL_WINDOWEVENT_MOVED:
             return;
         case SDL_WINDOWEVENT_SIZE_CHANGED:
-            setWindowSurface();
+            setWindowSurface(renderer);
             std::cout << "window-size-changed" << std::endl;
             return;
         case SDL_WINDOWEVENT_MINIMIZED:

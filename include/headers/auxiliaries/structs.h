@@ -1,5 +1,8 @@
 #pragma once
 
+#include <unordered_map>
+#include <string>
+
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -10,6 +13,7 @@ struct Flags {
     Uint32 window;
     Uint32 renderer;   // try SDL_RENDERER_PRESENTVSYNC
     int image;
+    std::unordered_map<std::string, std::string> hints;
 };
 
 struct Dimensions {
