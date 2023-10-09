@@ -1,12 +1,14 @@
 #pragma once
 
-#include <iostream>
-#include <string>
+#include <vector>
 
 #include <SDL.h>
+#include <SDL_image.h>
+
+#include <auxiliaries/structs.h>
 
 
 namespace utils {
-    SDL_Surface* optimize(const std::string path, const SDL_PixelFormat* fmt);
-    SDL_Texture* loadTexture(const std::string path, SDL_Renderer* renderer);
+    std::vector<SDL_Rect> createRects(TextureWrapperInitData data);
+    bool isPermanent(SpriteState state);
 }

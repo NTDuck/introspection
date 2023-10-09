@@ -1,13 +1,19 @@
 #pragma once
 
-#include <unordered_map>
 #include <string>
+#include <vector>
+#include <map>
+#include <unordered_map>
 
 #include <SDL.h>
-#include <SDL_image.h>
+
+#include <auxiliaries/defs.h>
 
 
-// multiple flags combinable via bitwise OR
+/**
+ * @brief Represents SDL flags and other configurations used in subsystem initialization.
+ * @note Multiple flags are combinable via bitwise OR `|`.
+*/
 struct Flags {
     Uint32 init;
     Uint32 window;
@@ -16,16 +22,69 @@ struct Flags {
     std::unordered_map<std::string, std::string> hints;
 };
 
-struct Dimensions {
-    // denotes central not upper-left
+/**
+ * @brief Represents a pair of integers.
+*/
+struct Dat2u {
     int _x;
     int _y;
-    unsigned short int _w;
-    unsigned short int _h;
 };
 
+/**
+ * @brief Represents a pair of non-negative integers.
+*/
+struct Dat2hu {
+    unsigned short int _x;
+    unsigned short int _y;
+};
+
+/**
+ * @brief Represents the mouse's state and position.
+ * @see Game::handleMouseEvent()
+*/
 struct Mouse {
     Uint32 state;
-    int _x;
-    int _y;
+    Dat2u pos;
+};
+
+/**
+ * @brief Encapsulates data required for `TextureWrapper` initialization.
+ * 
+ * @param state the affiliated `SpriteState` used to determine rendered sprites.
+ * @param path a path from the filesystem to load the spreadsheet from.
+ * @param sheetSize the size, in pixels, of the spritesheet.
+ * @param sheetDivs the number of frames on the sprite sheet.
+ * @param spriteStart the index of the starting sprite.
+ * @param spriteCounts the number of sprites to rotate.
+ * 
+ * @see TextureWrapper::spriteMapping
+ * @see utils::createFrameRects()
+*/
+struct TextureWrapperInitData {
+    SpriteState state;
+    SDL_Texture* texture;
+    Dat2u sheetSize;
+    Dat2hu sheetDivs;
+    Dat2hu spriteStart;
+    unsigned char spriteCounts;
+
+    bool operator<(const TextureWrapperInitData& other) const {
+        // Define a comparison logic for TextureWrapperInitData
+        // You can use any criteria for comparison that makes sense for your application.
+        // For example, comparing based on 'state' or 'texture' member variables.
+        // Here, we'll compare based on 'state'.
+        return state < other.state;
+    }
+
+};
+
+/**
+ * @brief Encapsulates data required for `TextureWrapper.spriteMapping`.
+ * 
+ * @param texture usually the entire spritesheet.
+ * @param rects represents the compartmentalized portion of the spritesheet used for rendering.
+*/
+struct TextureWrapperMappingData {
+    SDL_Texture* texture;
+    std::vector<SDL_Rect> rects;
 };
