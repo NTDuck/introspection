@@ -5,7 +5,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <characters/player.h>
+#include <interface.h>
 
 #include <auxiliaries/defs.h>
 #include <auxiliaries/structs.h>
@@ -16,7 +16,7 @@
 */
 class Game {
     public:
-        Game(Flags flags, Dat2u pos, Dat2hu size, unsigned short int frameRate, std::string title);
+        Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title);
         ~Game();
 
         void start();
@@ -25,6 +25,7 @@ class Game {
         void init();
         void gameLoop();
 
+        void blit();
         void render();
 
         void handleEvents();
@@ -32,31 +33,27 @@ class Game {
         void handleMouseEvent(const SDL_Event* event);
         void handleKeyBoardEvent(const SDL_Event* event);
 
-        void changeWindowSurface();
-        void changeBackground();
-
+        // SDL2-native assets
         /**
-         * @note For unknown reasons (or lack of brain), attempting to bind the renderer elsewhere yields weird error messages. Therefore, related functions and objects will now have access the renderer as a parameter.
+         * @note For unknown reasons (or lack of brain), attempting to bind the renderer elsewhere yields weird error messages. Therefore, related functions and objects will now access the renderer as a parameter.
          * @see https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
         */
         SDL_Renderer* renderer = nullptr;
 
-        // SDL assets
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;
-
         Uint32 windowID;
 
-        SDL_Texture* backgroundTexture;
-        Player player;
+        /**
+         * Member instances.
+        */
+        Interface interface;
 
-        // misc
+        // Initialization parameters
         const Flags flags;
-        Dat2u pos;
-        Dat2hu size;
-        Mouse mouse;
-        GameState state = GameState::MENU;
+        SDL_Rect dims;
+        const int frameRate;
+        const std::string title;
 
-        unsigned short int frameRate;
-        std::string title;
+        GameState state;
 };
