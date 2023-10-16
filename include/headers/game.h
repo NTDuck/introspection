@@ -42,6 +42,7 @@ class Game {
 
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;
+        SDL_Point windowSize;
         Uint32 windowID;
 
         /**

@@ -52,9 +52,6 @@ void Game::init() {
 
     // Initialize member instances.
     interface.init(renderer);
-
-    // Call this once.
-    blit();
 }
 
 /**
@@ -62,6 +59,9 @@ void Game::init() {
  * @todo Manually cap frame rate (VSync disabled)
 */
 void Game::gameLoop() {
+    // Call this once.
+    blit();
+
     while (state != GameState::EXIT) {
         handleEvents();
         render();
@@ -75,7 +75,9 @@ void Game::gameLoop() {
 */
 void Game::blit() {
     windowSurface = SDL_GetWindowSurface(window);
-    interface.loadLevel();
+    SDL_GetWindowSize(window, &windowSize.x, &windowSize.y);
+    interface.blit(renderer, windowSize);
+    SDL_UpdateWindowSurface(window);
 }
 
 /**

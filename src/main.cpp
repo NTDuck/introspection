@@ -10,8 +10,8 @@ int main(int argc, char* args[]) {
     // configurations, will later be moved elsewhere
     Flags flags;
     flags.init = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-    flags.window = SDL_WINDOW_SHOWN;
-    flags.renderer = SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE;
+    flags.window = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
+    flags.renderer = SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC;
     flags.image = IMG_INIT_PNG;
     flags.hints[SDL_HINT_RENDER_SCALE_QUALITY] = "1";
 

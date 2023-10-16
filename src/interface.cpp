@@ -15,7 +15,7 @@
 Interface::Interface(Level level) : level(level) {}
 
 Interface::~Interface() {
-    if (renderer != nullptr) SDL_DestroyRenderer(renderer);
+    if (texture != nullptr) SDL_DestroyTexture(texture);
     for (auto& pair : spriteSheets) {
         if (pair.second != nullptr) SDL_DestroyTexture(pair.second);
     }
@@ -29,50 +29,6 @@ void Interface::init(SDL_Renderer* renderer) {
 
     setupTileMapping();
     setupLevelMapping();
-    setupTiles();
-}
-
-/**
- * @brief Render `levelTexture` to the window.
- * @note This method should be called rarely rather than in every loop.
- * @note Overlapping is allowed.
-*/
-void Interface::render(SDL_Renderer* renderer) {
-    // Simulate a background with "transparent" texture - crossboard with 2 colors.
-    const int BACKGROUND_RECT_SIZE = std::gcd(WINDOW_SIZE_X, WINDOW_SIZE_Y);
-    const int BACKGROUND_RECT_COUNT_X = WINDOW_SIZE_X / BACKGROUND_RECT_SIZE;
-    const int BACKGROUND_RECT_COUNT_Y = WINDOW_SIZE_Y / BACKGROUND_RECT_SIZE;
-
-    std::vector<SDL_Rect> lighterRects;
-    std::vector<SDL_Rect> darkerRects;
-
-    for (int y = 0; y < BACKGROUND_RECT_COUNT_Y; ++y) {
-        for (int x = 0; x < BACKGROUND_RECT_COUNT_X; ++x) {
-            SDL_Rect backgroundRect;
-            backgroundRect.x = BACKGROUND_RECT_SIZE * x;
-            backgroundRect.y = BACKGROUND_RECT_SIZE * y;
-            backgroundRect.w = BACKGROUND_RECT_SIZE;
-            backgroundRect.h = BACKGROUND_RECT_SIZE;
-            if ((x + y) & 1) darkerRects.emplace_back(backgroundRect); else lighterRects.emplace_back(backgroundRect);
-        }
-    }
-    
-    SDL_SetRenderDrawColor(renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
-    for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(renderer, &lighterRect);
-
-    SDL_SetRenderDrawColor(renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
-    for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(renderer, &darkerRect);
-
-    // Render all tiles.
-    for (auto& row : tileMap) {
-        for (auto& tile : row) {
-            int size = tile.textures.size();
-            if (size < 1) continue;
-            for (int i = 0; i < size; ++i) {
-                SDL_RenderCopyEx(renderer, tile.textures.at(i), &tile.srcRects.at(i), &tile.destRect, tile.angle, nullptr, tile.flip);
-            }
-        }
-    }
 }
 
 /**
@@ -223,10 +179,11 @@ void Interface::setupLevelMapping() {
 /**
  * @brief Populate all tiles with non-level-specific attributes that will remain constant throughout the game.
 */
-void Interface::setupTiles() {
+void Interface::setupTiles(const SDL_Point WINDOW_SIZE) {
+    const int TILE_DEST_SIZE = std::min(WINDOW_SIZE.x / TILEMAP_SIZE_X, WINDOW_SIZE.y / TILEMAP_SIZE_Y);
     const SDL_Point OFFSET = {
-        (WINDOW_SIZE_X - TILEMAP_SIZE_X * TILE_DEST_SIZE) / 2,
-        (WINDOW_SIZE_Y - TILEMAP_SIZE_Y * TILE_DEST_SIZE) / 2,
+        (WINDOW_SIZE.x - TILEMAP_SIZE_X * TILE_DEST_SIZE) / 2,
+        (WINDOW_SIZE.y - TILEMAP_SIZE_Y * TILE_DEST_SIZE) / 2,
     };
 
     for (int y = 0; y < TILEMAP_SIZE_Y; ++y) {
@@ -239,6 +196,82 @@ void Interface::setupTiles() {
             tile.destRect.h = TILE_DEST_SIZE;
         }
     }
+}
+
+/**
+ * @brief Prepare/re-prepare `texture` for rendering.
+*/
+void Interface::blit(SDL_Renderer* renderer, const SDL_Point WINDOW_SIZE) {
+    texture = SDL_CreateTexture(renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, WINDOW_SIZE.x, WINDOW_SIZE.y);
+    SDL_SetRenderTarget(renderer, texture);
+
+    setupTiles(WINDOW_SIZE);
+    loadLevel();
+
+    renderBackground(renderer, WINDOW_SIZE);
+    renderTiles(renderer);
+
+    SDL_SetRenderTarget(renderer, nullptr);
+}
+
+/**
+ * @brief Render `levelTexture` to the window.
+ * @note This method should be called rarely rather than in every loop.
+ * @note Overlapping is allowed.
+*/
+void Interface::render(SDL_Renderer* renderer) {
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+}
+
+/**
+ * @brief Simulate a "transparent"-textured background- a darkend chessboard.
+*/
+void Interface::renderBackground(SDL_Renderer* renderer, const SDL_Point WINDOW_SIZE) {
+    // Simulate a background with "transparent" texture - crossboard with 2 colors.
+    const int BACKGROUND_RECT_SIZE = std::gcd(WINDOW_SIZE.x, WINDOW_SIZE.y);
+    const int BACKGROUND_RECT_COUNT_X = WINDOW_SIZE.x / BACKGROUND_RECT_SIZE;
+    const int BACKGROUND_RECT_COUNT_Y = WINDOW_SIZE.y / BACKGROUND_RECT_SIZE;
+
+    std::vector<SDL_Rect> lighterRects;
+    std::vector<SDL_Rect> darkerRects;
+
+    for (int y = 0; y < BACKGROUND_RECT_COUNT_Y; ++y) {
+        for (int x = 0; x < BACKGROUND_RECT_COUNT_X; ++x) {
+            SDL_Rect backgroundRect;
+            backgroundRect.x = BACKGROUND_RECT_SIZE * x;
+            backgroundRect.y = BACKGROUND_RECT_SIZE * y;
+            backgroundRect.w = BACKGROUND_RECT_SIZE;
+            backgroundRect.h = BACKGROUND_RECT_SIZE;
+            if ((x + y) & 1) darkerRects.emplace_back(backgroundRect); else lighterRects.emplace_back(backgroundRect);
+        }
+    }
+    
+    SDL_SetRenderDrawColor(renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
+    for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(renderer, &lighterRect);
+
+    SDL_SetRenderDrawColor(renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
+    for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(renderer, &darkerRect);
+}
+
+/**
+ * @brief Render all tiles based on data specified in `tileMap`.
+*/
+void Interface::renderTiles(SDL_Renderer* renderer) {
+    for (auto& row : tileMap) {
+        for (auto& tile : row) {
+            int size = tile.textures.size();
+            if (size < 1) continue;
+            for (int i = 0; i < size; ++i) SDL_RenderCopyEx(renderer, tile.textures.at(i), &tile.srcRects.at(i), &tile.destRect, tile.angle, nullptr, tile.flip);
+        }
+    }
+}
+
+/**
+ * @brief Force load level after changes.
+*/
+void Interface::changeLevel(Level _level) {
+    level = _level;
+    loadLevel();
 }
 
 /**

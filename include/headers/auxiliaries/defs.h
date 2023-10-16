@@ -51,16 +51,11 @@ enum class TileType {
     STAIRS_A_NORTHWEST, STAIRS_A_NORTHEAST, STAIRS_A_WEST, STAIRS_A_EAST, STAIRS_A_SOUTHWEST, STAIRS_A_SOUTHEAST,
 };
 
-// Represents dimensions of the window, which are constants. Resizability, as of this commit, is not available.
-const int WINDOW_SIZE_X = 1280; const int WINDOW_SIZE_Y = 720;
-
 // Represents the number of tiles per dimension.
 const int TILEMAP_SIZE_X = 38; const int TILEMAP_SIZE_Y = 20;
 
 // The original size of each sprite on spritesheets.
 const int TILE_SRC_SIZE = 32;
-// The desired size to render on the window.
-const int TILE_DEST_SIZE = 32;
 
 // The base folder containing all spritesheets.
 const std::string base = "assets/graphics/sprites/";
