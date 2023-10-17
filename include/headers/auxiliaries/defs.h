@@ -3,6 +3,8 @@
 #include <array>
 #include <unordered_map>
 
+#include <nlohmann/json.hpp>
+
 #include <auxiliaries/structs.h>
 
 
@@ -71,6 +73,7 @@ const std::unordered_map<TileSet, std::string> TILESET_PATHS = {
     {TileSet::WALL, base + "environments/wall.png"},
 };
 
+using json = nlohmann::json;
 using TileMap = std::array<std::array<TileData, TILEMAP_SIZE_X>, TILEMAP_SIZE_Y>;
 using TileMapped = std::pair<SDL_Texture*, SDL_Point>;
 using TileMapping = std::unordered_map<TileType, TileMapped>;

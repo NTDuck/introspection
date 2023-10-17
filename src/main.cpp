@@ -1,3 +1,4 @@
+#include <fstream>
 #include <string>
 
 #include <SDL.h>
@@ -6,21 +7,41 @@
 #include <auxiliaries/defs.h>
 
 
+void parseConfigData(const std::string path, Flags& flags, SDL_Rect& dims, int& frameRate) {
+    std::ifstream configFile;
+    json configData;
+    
+    configFile.open(path);
+    if (!configFile.is_open()) return;
+    configFile >> configData;
+    configFile.close();
+
+    flags = {
+        configData["flags"]["init"],
+        configData["flags"]["window"],
+        configData["flags"]["renderer"],
+        configData["flags"]["image"],
+        configData["flags"]["hints"],
+    };
+    dims = {
+        configData["dims"]["x"],
+        configData["dims"]["y"],
+        configData["dims"]["w"],
+        configData["dims"]["h"],
+    };
+    frameRate = configData["frameRate"];
+
+    // std::ofstream configFile(path);
+    // if (!configFile.is_open()) return 1;
+
+    // configFile << configData.dump(2);
+    // configFile.close();
+}
+
 int main(int argc, char* args[]) {
-    // configurations, will later be moved elsewhere
-    Flags flags;
-    flags.init = SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS;
-    flags.window = SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE;
-    flags.renderer = SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC;
-    flags.image = IMG_INIT_PNG;
-    flags.hints[SDL_HINT_RENDER_SCALE_QUALITY] = "1";
+    Flags flags; SDL_Rect dims; int frameRate; std::string title = "8964";
+    parseConfigData("config.json", flags, dims, frameRate);
 
-    SDL_Rect dims {SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720};
-
-    const unsigned short int frameRate = 120;
-    const std::string title = "8964";
-
-    // actual instantiation
     Game game(flags, dims, frameRate, title);
     game.start();
 

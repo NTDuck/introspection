@@ -1,6 +1,6 @@
 # compiler & flags
 cxx = g++
-cxxflags = -Wall -I"include/sdl2" -I"include/headers"
+cxxflags = -Wall -I"include" -I"include/sdl2" -I"include/headers"
 
 # libs
 libpath = -L"lib"

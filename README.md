@@ -47,9 +47,11 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 **Language**: C++ 17
 
-**Libraries:** SDL2 ([_2.28.3_](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3)), SDL2_image ([_2.6.3_](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3))
+**Libraries:** 
+- SDL2 [2.28.3](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3), SDL2_image [2.6.3](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3)
+- JSON for Modern C++ [3.11.2](https://github.com/nlohmann/json/releases/tag/v3.11.2)
 
-**Compiler:** MinGW GCC (_6.3.0_)
+**Compiler:** MinGW GCC [13.2.0](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0)
 
 **Version control:** Git (_2.40.0.windows.1_)
 
