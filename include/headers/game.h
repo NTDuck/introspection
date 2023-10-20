@@ -6,9 +6,7 @@
 #include <SDL_image.h>
 
 #include <interface.h>
-
-#include <auxiliaries/defs.h>
-#include <auxiliaries/structs.h>
+#include <auxiliaries/globals.h>
 
 
 /**
@@ -42,7 +40,6 @@ class Game {
 
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;
-        SDL_Point windowSize;
         Uint32 windowID;
 
         /**

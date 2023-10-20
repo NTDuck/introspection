@@ -47,9 +47,12 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 **Language**: C++ 17
 
-**Libraries:** 
+**Dependencies:** 
 - SDL2 [2.28.3](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3), SDL2_image [2.6.3](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3)
 - JSON for Modern C++ [3.11.2](https://github.com/nlohmann/json/releases/tag/v3.11.2)
+
+**Third-party tools:**
+- Tiled [1.10.2](https://www.mapeditor.org/) for level generation
 
 **Compiler:** MinGW GCC [13.2.0](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0)
 

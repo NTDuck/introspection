@@ -6,19 +6,18 @@
 
 #include <game.h>
 
-#include <auxiliaries/defs.h>
-#include <auxiliaries/structs.h>
+#include <auxiliaries/globals.h>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::CHAPEL_OF_ANTICIPATION), flags(flags), dims(dims), frameRate(frameRate), title(title) {
-    state = GameState::MENU;
-}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::CHAPEL_OF_ANTICIPATION), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
     if (window != nullptr) SDL_DestroyWindow(window);
     if (renderer != nullptr) SDL_DestroyRenderer(renderer);
+
+    globals::cleanup();
 
     // quit SDL subsystems
     IMG_Quit();
@@ -48,9 +47,11 @@ void Game::init() {
     windowID = SDL_GetWindowID(window);
 
     renderer = SDL_CreateRenderer(window, -1, flags.renderer);
-    // SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE);   // throw some arbitrary color hexvalue
+
+    state = GameState::MENU;
 
     // Initialize member instances.
+    globals::init(renderer);
     interface.init(renderer);
 }
 
@@ -75,8 +76,8 @@ void Game::gameLoop() {
 */
 void Game::blit() {
     windowSurface = SDL_GetWindowSurface(window);
-    SDL_GetWindowSize(window, &windowSize.x, &windowSize.y);
-    interface.blit(renderer, windowSize);
+    SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
+    interface.blit(renderer);
     SDL_UpdateWindowSurface(window);
 }
 
