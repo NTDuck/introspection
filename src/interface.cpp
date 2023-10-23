@@ -5,10 +5,10 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <interface.h>
+#include <interface.hpp>
 
-#include <auxiliaries/globals.h>
-#include <auxiliaries/utils.h>
+#include <auxiliaries/globals.hpp>
+#include <auxiliaries/utils.hpp>
 
 
 Interface::Interface(Level level) : level(level) {}
@@ -20,7 +20,7 @@ Interface::~Interface() {
 /**
  * @brief Initialize the interface.
 */
-void Interface::init(SDL_Renderer* renderer) {
+void Interface::init() {
     setupLevelMapping();
 }
 
@@ -30,38 +30,39 @@ void Interface::init(SDL_Renderer* renderer) {
  * @note Remember to bind `this` else the following exception occurs: `the enclosing-function 'this' cannot be referenced in a lambda body unless it is in the capture listC/C++(1738)`.
 */
 void Interface::setupLevelMapping() {
+    const std::string base = "assets/.tiled/";
     levelMapping = {
-        {Level::CHAPEL_OF_ANTICIPATION, "assets/.tiled/level0.json"},
+        {Level::EQUILIBRIUM, base + "level_Equilibrium.json"},
     };
 }
 
 /**
  * @brief Prepare/re-prepare `texture` for rendering.
 */
-void Interface::blit(SDL_Renderer* renderer) {
-    texture = SDL_CreateTexture(renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
-    SDL_SetRenderTarget(renderer, texture);
+void Interface::blit() {
+    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
+    SDL_SetRenderTarget(globals::renderer, texture);
 
     loadLevel();
 
-    renderBackground(renderer);
-    renderLevel(renderer);
+    renderBackground();
+    renderLevel();
 
-    SDL_SetRenderTarget(renderer, nullptr);
+    SDL_SetRenderTarget(globals::renderer, nullptr);
 }
 
 /**
  * @brief Render `levelTexture` to the window.
  * @note Overlapping is allowed.
 */
-void Interface::render(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+void Interface::render() {
+    SDL_RenderCopy(globals::renderer, texture, nullptr, nullptr);
 }
 
 /**
  * @brief Simulate an arbitrary chessboard-resembling background. Still better than nothing.
 */
-void Interface::renderBackground(SDL_Renderer* renderer) {
+void Interface::renderBackground() {
     const int BACKGROUND_RECT_SIZE = std::gcd(globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
     const int BACKGROUND_RECT_COUNT_X = globals::WINDOW_SIZE.x / BACKGROUND_RECT_SIZE;
     const int BACKGROUND_RECT_COUNT_Y = globals::WINDOW_SIZE.y / BACKGROUND_RECT_SIZE;
@@ -80,17 +81,17 @@ void Interface::renderBackground(SDL_Renderer* renderer) {
         }
     }
     
-    SDL_SetRenderDrawColor(renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
-    for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(renderer, &lighterRect);
+    SDL_SetRenderDrawColor(globals::renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
+    for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(globals::renderer, &lighterRect);
 
-    SDL_SetRenderDrawColor(renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
-    for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(renderer, &darkerRect);
+    SDL_SetRenderDrawColor(globals::renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
+    for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(globals::renderer, &darkerRect);
 }
 
 /**
  * @brief Render the environments of a level.
 */
-void Interface::renderLevel(SDL_Renderer* renderer) {
+void Interface::renderLevel() {
     TileRenderDataCollection tileRenderDataCollection(globals::TILE_DEST_COUNT.y, std::vector<TileRenderData>(globals::TILE_DEST_COUNT.x));
 
     // Populate render data 
@@ -109,21 +110,20 @@ void Interface::renderLevel(SDL_Renderer* renderer) {
                 TilesetData tilesetData;
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                for (const auto& pair : globals::TILESET_MAPPING) {
-                    if (pair.second.firstGID <= gid && gid < pair.second.firstGID + pair.second.TILE_SRC_COUNT.x * pair.second.TILE_SRC_COUNT.y) {
-                        tilesetData = pair.second;
+                for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) {
+                    if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.TILE_SRC_COUNT.x * TILESET_DATA.TILE_SRC_COUNT.y) {
+                        tilesetData = TILESET_DATA;
                         break;
                     }
                 }
 
                 data.textures.emplace_back(tilesetData.texture);
-
-                SDL_Rect srcRect;
-                srcRect.x = ((gid - tilesetData.firstGID) % tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.x;
-                srcRect.y = ((gid - tilesetData.firstGID) / tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.y;
-                srcRect.w = tilesetData.TILE_SRC_SIZE.x;
-                srcRect.h = tilesetData.TILE_SRC_SIZE.y;
-                data.srcRects.emplace_back(srcRect);
+                data.srcRects.push_back({
+                    ((gid - tilesetData.firstGID) % tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.x,
+                    ((gid - tilesetData.firstGID) / tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.y,
+                    tilesetData.TILE_SRC_SIZE.x,
+                    tilesetData.TILE_SRC_SIZE.y,
+                });
             }
         }
     }
@@ -133,7 +133,7 @@ void Interface::renderLevel(SDL_Renderer* renderer) {
         for (const auto& tileRenderData : tileRenderDataVector) {
             int size = tileRenderData.textures.size();
             for (int i = 0; i < size; ++i) {
-                SDL_RenderCopy(renderer, tileRenderData.textures[i], &tileRenderData.srcRects[i], &tileRenderData.destRect);
+                SDL_RenderCopy(globals::renderer, tileRenderData.textures[i], &tileRenderData.srcRects[i], &tileRenderData.destRect);
             }
         }
     }
@@ -149,18 +149,17 @@ void Interface::changeLevel(Level _level) {
 
 /**
  * @brief Create the environments of a level.
- * @note Recommended order: ground -> walls/structs -> props (-> entities)
- * @note Should be called during initialization or whenever `level` changes.
+ * @note Should be called once during initialization or whenever `level` changes.
 */
 void Interface::loadLevel() {
     json levelData;
     utils::readJSON(levelMapping.find(level) -> second, levelData);
 
-    // several attrs will be assumed: orthogonal orientation, right-down renderorder
+    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder
 
     for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
 
-    // update global variables
+    // Update global variables.
     globals::TILE_DEST_COUNT = {levelData["width"], levelData["height"]};
     globals::TILE_DEST_SIZE = {globals::WINDOW_SIZE.x / globals::TILE_DEST_COUNT.x, globals::WINDOW_SIZE.y / globals::TILE_DEST_COUNT.y};
     globals::OFFSET = {
@@ -171,7 +170,7 @@ void Interface::loadLevel() {
     tileCollection.resize(globals::TILE_DEST_COUNT.y);
     for (auto& tileRow : tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
 
-    // emplace gids into Tiles
+    // Emplace gids into `tileCollection`. Executed per layer.
     for (const auto& layer : levelData["layers"]) {
         json data = layer["data"];
         for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
@@ -180,4 +179,7 @@ void Interface::loadLevel() {
             }
         }
     }
+
+    // Reset `globals::TILESET_COLLECTION`
+    utils::parseTilesetData(globals::renderer, globals::TILESET_COLLECTION, levelData);
 }

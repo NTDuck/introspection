@@ -33,6 +33,7 @@
 *.out
 *.app
 
-# Non-JSON Tiled files
+# All Tiled files excluding JSON and TSX
 /**/.tiled/*
 !/**/.tiled/*.json
+!/**/.tiled/*.tsx

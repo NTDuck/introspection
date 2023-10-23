@@ -48,13 +48,14 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 **Language**: C++ 17
 
 **Dependencies:** 
-- SDL2 [2.28.3](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3), SDL2_image [2.6.3](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3)
-- JSON for Modern C++ [3.11.2](https://github.com/nlohmann/json/releases/tag/v3.11.2)
+- [SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3) 2.28.3, [SDL2_image](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3) 2.6.3
+- [JSON for Modern C++](https://github.com/nlohmann/json/releases/tag/v3.11.2) 3.11.2
+- [pugixml](https://github.com/zeux/pugixml/releases/tag/v1.14) 1.14
 
 **Third-party tools:**
-- Tiled [1.10.2](https://www.mapeditor.org/) for level generation
+- [Tiled](https://www.mapeditor.org/) 1.10.2 for level generation
 
-**Compiler:** MinGW GCC [13.2.0](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0)
+**Compiler:** [MinGW GCC](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0) 13.2.0
 
 **Version control:** Git (_2.40.0.windows.1_)
 
@@ -64,7 +65,7 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
-- [Pixel Art Top Down - Basic](https://cainos.itch.io/pixel-art-top-down-basic)
+- [Pixel Art Top Down - Basic](https://cainos.itch.io/pixel-art-top-down-basic) and [Pixel Art Icon Pack - RPG](https://cainos.itch.io/pixel-art-icon-pack-rpg)
 - We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Omori](https://www.omori-game.com/), [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), and [Undertale](https://store.steampowered.com/app/391540/Undertale/).
 
 

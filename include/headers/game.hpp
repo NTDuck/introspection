@@ -5,8 +5,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <interface.h>
-#include <auxiliaries/globals.h>
+#include <interface.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 /**
@@ -32,11 +32,6 @@ class Game {
         void handleKeyBoardEvent(const SDL_Event* event);
 
         // SDL2-native assets
-        /**
-         * @note For unknown reasons (or lack of brain), attempting to bind the renderer elsewhere yields weird error messages. Therefore, related functions and objects will now access the renderer as a parameter.
-         * @see https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
-        */
-        SDL_Renderer* renderer = nullptr;
 
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;

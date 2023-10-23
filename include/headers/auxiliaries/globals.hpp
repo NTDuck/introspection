@@ -26,14 +26,18 @@ enum class GameState {
  * @brief Represents all levels. Should also cover sub-levels.
 */
 enum class Level {
-    CHAPEL_OF_ANTICIPATION,
+    EQUILIBRIUM = -1,
+    VALLEY_OF_DESPAIR,
+    SLOPE_OF_ENLIGHTENMENT,
+    PLATEAU_OF_SUSTAINABILITY,
 };
 
 /**
  * @brief Represents all tilesets/spritesheets.
+ * @note Should strictly follow the order included in level.
 */
 enum class TileSet {
-    FLOOR_GRASS, WALL, STRUCT,
+    FLOOR_GRASS, PROPS, SHADOW, WALL, FLOOR_STONE, STRUCT, PLANT, PLANT_SHADOW,
 };
 
 
@@ -109,13 +113,42 @@ using TileRenderDataCollection = std::vector<std::vector<TileRenderData>>;
 
 /**
  * @brief Maps a `TileSet` enumeration with the associated data required for rendering.
- * @note Initialization should be made once in `globals::init()`, should be treated as a constant henceforth.
- * @see <src/auxiliaries/globals.cpp> globals::init() (namespace method)
+ * @note Updates once per `<src/interface.cpp> Interface.loadLevel()` call, should be treated as a constant otherwise.
+ * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
 */
-using TilesetDataMapping = std::unordered_map<TileSet, TilesetData>;
+using TilesetDataCollection = std::vector<TilesetData>;
 
 
+/**
+ * @brief Provide required configuration, used once in `Game` initialization. Should not be used or modified elsewhere.
+*/
+namespace config {
+    const Flags flags = {
+        SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
+        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
+        SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
+        IMG_INIT_PNG,
+        {
+            {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
+        }
+    };
+    const SDL_Rect dims = {
+        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+        1280, 720,
+    };
+    const int frameRate = 120;
+};
+
+
+/**
+ * @brief The global namespace. Member variables accessible to all classes.
+*/
 namespace globals {
+    /**
+     * @note The game intends to run on ONE window therefore denecessitates multiple `SDL_Renderer`. This global instance is intended to be accessible by all classes. 
+     * @see https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
+    */
+    extern SDL_Renderer* renderer;
     /**
      * @brief The size of the in-game window.
      * @note Its value is assigned after game initialization, then updated whenever the window is resized.
@@ -142,8 +175,7 @@ namespace globals {
      * @brief An unordered map that maps `TileSet` with the associated data. Required for many texture-related operations.
      * @note Its value is assigned during initialization and should be treated as a constant henceforth.
     */
-    extern TilesetDataMapping TILESET_MAPPING;
+    extern TilesetDataCollection TILESET_COLLECTION;
 
-    void init(SDL_Renderer* renderer);
-    void cleanup();
+    void dealloc();
 }

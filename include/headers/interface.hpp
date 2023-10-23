@@ -7,8 +7,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <auxiliaries/globals.h>
-#include <auxiliaries/utils.h>
+#include <auxiliaries/globals.hpp>
+#include <auxiliaries/utils.hpp>
 
 
 class Interface {
@@ -16,18 +16,18 @@ class Interface {
         Interface(Level level);
         ~Interface();
         
-        void init(SDL_Renderer* renderer);
+        void init();
 
-        void blit(SDL_Renderer* renderer);
-        void render(SDL_Renderer* renderer);
+        void blit();
+        void render();
 
         void changeLevel(Level level);
 
     private:
         void setupLevelMapping();
 
-        void renderBackground(SDL_Renderer* renderer);
-        void renderLevel(SDL_Renderer* renderer);
+        void renderBackground();
+        void renderLevel();
 
         void loadLevel();
 

@@ -1,15 +1,10 @@
 #include <iostream>
-#include <numeric>
-#include <array>
 #include <fstream>
-#include <vector>
-#include <random>
 
-#include <SDL.h>
-#include <SDL_image.h>
+#include <pugixml/pugixml.hpp>
 
-#include <auxiliaries/globals.h>
-#include <auxiliaries/utils.h>
+#include <auxiliaries/globals.hpp>
+#include <auxiliaries/utils.hpp>
 
 
 namespace utils {
@@ -26,31 +21,43 @@ namespace utils {
     }
 
     /**
-     * @brief Parse configuration data from the dedicated JSON file.
+     * @brief Parse tileset-related data from a XML file. Tailored for XML-like formats, including Tiled's TSX.
     */
-    void parseConfigData(const std::string path, Flags& flags, SDL_Rect& dims, int& frameRate) {
-        json configData;
-        utils::readJSON(path, configData);
+    void parseTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData) {
+        tilesetDataCollection.clear();
 
-        flags = {
-            configData["flags"]["init"],
-            configData["flags"]["window"],
-            configData["flags"]["renderer"],
-            configData["flags"]["image"],
-            configData["flags"]["hints"],
-        };
-        dims = {
-            configData["dims"]["x"],
-            configData["dims"]["y"],
-            configData["dims"]["w"],
-            configData["dims"]["h"],
-        };
-        frameRate = configData["frameRate"];
+        for (const auto& data : jsonData["tilesets"]) {
+            const int first_gid = data["firstgid"];
+            const std::string xmlPath = data["source"];
 
-        // std::ofstream configFile(path);
-        // if (!configFile.is_open()) return 1;
+            pugi::xml_document document;
+            pugi::xml_parse_result result = document.load_file(("assets/.tiled/" + xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+            if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
-        // configFile << configData.dump(2);
-        // configFile.close();
+            // Parse nodes
+            pugi::xml_node tilesetNode = document.child("tileset");
+            pugi::xml_node imageNode = tilesetNode.child("image");
+
+            SDL_Point tileSrcCount = {
+                tilesetNode.attribute("columns").as_int(),
+                tilesetNode.attribute("tilecount").as_int() / tilesetNode.attribute("columns").as_int(),
+            };
+            SDL_Point tileSrcSize = {
+                // image.attribute("width").as_int() / tileSrcCount.x,
+                // image.attribute("height").as_int() / tileSrcCount.y,
+                tilesetNode.attribute("tilewidth").as_int(),
+                tilesetNode.attribute("tileheight").as_int(),
+            };
+
+            // Construct proper path from provided path
+            std::string tilePath = imageNode.attribute("source").value();
+            tilePath = "assets" + tilePath.substr(2);
+
+            // Load texture
+            SDL_Texture* texture = IMG_LoadTexture(renderer, tilePath.c_str());
+
+            // Register to collection
+            tilesetDataCollection.push_back({texture, tilePath, first_gid, tileSrcCount, tileSrcSize});
+        }
     }
 }

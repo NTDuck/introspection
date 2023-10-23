@@ -4,22 +4,21 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <game.h>
+#include <game.hpp>
 
-#include <auxiliaries/globals.h>
+#include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::CHAPEL_OF_ANTICIPATION), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::EQUILIBRIUM), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
     if (window != nullptr) SDL_DestroyWindow(window);
-    if (renderer != nullptr) SDL_DestroyRenderer(renderer);
 
-    globals::cleanup();
+    globals::dealloc();
 
-    // quit SDL subsystems
+    // Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
 }
@@ -46,13 +45,11 @@ void Game::init() {
     window = SDL_CreateWindow(title.c_str(), dims.x, dims.y, dims.w, dims.h, flags.window);
     windowID = SDL_GetWindowID(window);
 
-    renderer = SDL_CreateRenderer(window, -1, flags.renderer);
+    globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
 
     state = GameState::MENU;
 
-    // Initialize member instances.
-    globals::init(renderer);
-    interface.init(renderer);
+    interface.init();
 }
 
 /**
@@ -77,7 +74,7 @@ void Game::gameLoop() {
 void Game::blit() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
-    interface.blit(renderer);
+    interface.blit();
     SDL_UpdateWindowSurface(window);
 }
 
@@ -92,9 +89,9 @@ void Game::blit() {
  * @note Any `render()` methods should be placed here.
 */
 void Game::render() {
-    SDL_RenderClear(renderer);
-    if (state == GameState::INGAME_PLAYING) interface.render(renderer);
-    SDL_RenderPresent(renderer);
+    SDL_RenderClear(globals::renderer);
+    if (state == GameState::INGAME_PLAYING) interface.render();
+    SDL_RenderPresent(globals::renderer);
 }
 
 /**
