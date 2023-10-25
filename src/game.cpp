@@ -9,7 +9,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::EQUILIBRIUM), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::EQUILIBRIUM), player({19, 14}), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {
@@ -50,6 +50,7 @@ void Game::init() {
     state = GameState::MENU;
 
     interface.init();
+    player.init();
 }
 
 /**
@@ -61,20 +62,25 @@ void Game::gameLoop() {
     blit();
 
     while (state != GameState::EXIT) {
+        player.move();
+        
         handleEvents();
         render();
     }
 }
 
 /**
- * @brief Handles the rendering of static graphics or those that rarely update.
+ * @brief Handles the rendering of static graphics or those that rarely update. Also handle the updating of global variables.
  * @note Should also be called when an `SDL_WINDOWEVENT_SIZE_CHANGED` event occurs.
  * @see Game::handleWindowEvent()
 */
 void Game::blit() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
+
     interface.blit();
+    player.blit();
+
     SDL_UpdateWindowSurface(window);
 }
 
@@ -90,7 +96,12 @@ void Game::blit() {
 */
 void Game::render() {
     SDL_RenderClear(globals::renderer);
-    if (state == GameState::INGAME_PLAYING) interface.render();
+
+    if (state == GameState::INGAME_PLAYING) {
+        interface.render();
+        player.render();
+    }
+
     SDL_RenderPresent(globals::renderer);
 }
 
@@ -108,15 +119,15 @@ void Game::handleEvents() {
             break;
         
         case SDL_WINDOWEVENT:
-            handleWindowEvent(event);
+            handleWindowEvent(*event);
             break;
         // track mouse motion & buttons only
         // also invoked when mouse focus regained/lost
         case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
-            handleMouseEvent(event);
+            handleMouseEvent(*event);
             break;
         case SDL_KEYDOWN: case SDL_KEYUP:
-            handleKeyBoardEvent(event);
+            handleKeyBoardEvent(*event);
             break;
     }
 
@@ -126,9 +137,9 @@ void Game::handleEvents() {
 /**
  * @brief Handle a windows event.
 */
-void Game::handleWindowEvent(const SDL_Event* event) {
-    if (event -> window.windowID != windowID) return;
-    switch (event -> window.event) {
+void Game::handleWindowEvent(const SDL_Event& event) {
+    if (event.window.windowID != windowID) return;
+    switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
             blit();
             break;
@@ -141,10 +152,14 @@ void Game::handleWindowEvent(const SDL_Event* event) {
  * @brief Handle a keyboard event.
  * @note Scancode denotes physical location and keycode denotes actual meaning (different if remapped)
 */
-void Game::handleKeyBoardEvent(const SDL_Event* event) {
+void Game::handleKeyBoardEvent(const SDL_Event& event) {
     switch (state) {
         case GameState::INGAME_PLAYING:
-            if (event -> key.keysym.sym == SDLK_ESCAPE) state = GameState::EXIT;
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                state = GameState::EXIT;
+                break;
+            }
+            player.handleKeyboardEvent(event, interface.tileCollection);
 
         default: break;
     }
@@ -153,10 +168,10 @@ void Game::handleKeyBoardEvent(const SDL_Event* event) {
 /**
  * @brief Handle a mouse event.
 */
-void Game::handleMouseEvent(const SDL_Event* event) {
+void Game::handleMouseEvent(const SDL_Event& event) {
     switch (state) {
         case GameState::MENU:
-            if (event -> type != SDL_MOUSEBUTTONDOWN) break;
+            if (event.type != SDL_MOUSEBUTTONDOWN) break;
             state = GameState::INGAME_PLAYING;
             blit();
             break;

@@ -23,11 +23,13 @@ namespace utils {
     /**
      * @brief Parse tileset-related data from a XML file. Tailored for XML-like formats, including Tiled's TSX.
     */
-    void parseTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData) {
+    void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData) {
         tilesetDataCollection.clear();
 
         for (const auto& data : jsonData["tilesets"]) {
-            const int first_gid = data["firstgid"];
+            TilesetData tilesetData;
+
+            tilesetData.firstGID = data["firstgid"];
             const std::string xmlPath = data["source"];
 
             pugi::xml_document document;
@@ -36,28 +38,34 @@ namespace utils {
 
             // Parse nodes
             pugi::xml_node tilesetNode = document.child("tileset");
+            pugi::xml_node propertiesNode = tilesetNode.child("properties");
             pugi::xml_node imageNode = tilesetNode.child("image");
 
-            SDL_Point tileSrcCount = {
+            tilesetData.TILE_SRC_COUNT = {
                 tilesetNode.attribute("columns").as_int(),
                 tilesetNode.attribute("tilecount").as_int() / tilesetNode.attribute("columns").as_int(),
             };
-            SDL_Point tileSrcSize = {
+            tilesetData.TILE_SRC_SIZE = {
                 // image.attribute("width").as_int() / tileSrcCount.x,
                 // image.attribute("height").as_int() / tileSrcCount.y,
                 tilesetNode.attribute("tilewidth").as_int(),
                 tilesetNode.attribute("tileheight").as_int(),
             };
-
-            // Construct proper path from provided path
-            std::string tilePath = imageNode.attribute("source").value();
-            tilePath = "assets" + tilePath.substr(2);
+            
+            // Custom properties
+            for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) tilesetData.properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
 
             // Load texture
-            SDL_Texture* texture = IMG_LoadTexture(renderer, tilePath.c_str());
+            std::string path = imageNode.attribute("source").value();
+            tilesetData.texture = IMG_LoadTexture(renderer, ("assets" + path.substr(2)).c_str());
 
             // Register to collection
-            tilesetDataCollection.push_back({texture, tilePath, first_gid, tileSrcCount, tileSrcSize});
+            tilesetDataCollection.emplace_back(tilesetData);
         }
+    }
+
+    TilesetData getTilesetData(int gid) {
+        for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.TILE_SRC_COUNT.x * TILESET_DATA.TILE_SRC_COUNT.y) return TILESET_DATA;
+        return {nullptr,  0, {0, 0}, {0, 0}, {}};   // Throw some trash value if not found
     }
 }

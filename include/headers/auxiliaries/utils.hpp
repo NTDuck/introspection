@@ -11,6 +11,6 @@
 
 namespace utils {
     void readJSON(const std::string path, json& data);
-    void parseConfigData(const std::string path, Flags& flags, SDL_Rect& dims, int& frameRate);
-    void parseTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
+    void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
+    TilesetData getTilesetData(int gid);
 }

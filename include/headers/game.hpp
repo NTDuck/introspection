@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 
 #include <interface.hpp>
+#include <entities/player.hpp>
 #include <auxiliaries/globals.hpp>
 
 
@@ -27,9 +28,9 @@ class Game {
         void render();
 
         void handleEvents();
-        void handleWindowEvent(const SDL_Event* event);
-        void handleMouseEvent(const SDL_Event* event);
-        void handleKeyBoardEvent(const SDL_Event* event);
+        void handleWindowEvent(const SDL_Event& event);
+        void handleMouseEvent(const SDL_Event& event);
+        void handleKeyBoardEvent(const SDL_Event& event);
 
         // SDL2-native assets
 
@@ -41,6 +42,7 @@ class Game {
          * Member instances.
         */
         Interface interface;
+        Player player;
 
         // Initialization parameters
         const Flags flags;

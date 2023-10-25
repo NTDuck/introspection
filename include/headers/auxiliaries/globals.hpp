@@ -64,17 +64,21 @@ struct Flags {
  * @brief Represents data about the tilesets required for rendering.
  * 
  * @param texture The loaded `SDL_Texture`. Usually the tileset itself.
- * @param path The path to the tileset, preferably relative. @todo Should switch to `std::filesystem::path` for, hopefully, cross-platform compatibility.
  * @param firstGID The GID corresponding to the first tile in the set. Regulated by the level JSON, should not be manually set or modified otherwise.
  * @param TILE_SRC_COUNT The number of tiles per dimension in the tileset.
  * @param TILE_SRC_SIZE The maximum dimension of tiles in the tileset.
+ * 
+ * @param properties A mapping that stores custom tileset properties.
+ * @param properties["entityWalkable"] Used for entities' move validation. A value of `0` denotes the base type required to be considered walkable, `1` denotes irrelevance, `2` denotes an obstructing type i.e. not walkable.
 */
 struct TilesetData {
     SDL_Texture* texture;
-    std::string path;
     int firstGID;
     SDL_Point TILE_SRC_COUNT;
     SDL_Point TILE_SRC_SIZE;
+
+    // Custom properties
+    std::unordered_map<std::string, std::string> properties;
 };
 
 /**

@@ -1,122 +1,101 @@
-// #include <iostream>
-// #include <set>
+#include <iostream>
 
-// #include <SDL.h>
-// #include <SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
-// #include <meta/texture.h>
+#include <meta.hpp>
 
-// #include <auxiliaries/defs.h>
-// #include <auxiliaries/structs.h>
-// #include <utils/sdl2.h>
+#include <auxiliaries/globals.hpp>
+#include <auxiliaries/utils.hpp>
 
 
-// TextureWrapper::TextureWrapper() {}
+TextureWrapper::TextureWrapper(SDL_Point destCoords) : destCoords(destCoords) {
+    velocity = {0, 0};
+}
 
-// TextureWrapper::~TextureWrapper() {
-//     dealloc();
-// }
+TextureWrapper::~TextureWrapper() {
+    if (texture != nullptr) SDL_DestroyTexture(texture);
+}
 
-// /**
-//  * @brief Prepare the spritesheet(s) for rendering.
-// */
-// void TextureWrapper::loadSpriteSheet(std::set<TextureWrapperInitData> sheetData) {
-//     for (const auto& data: sheetData) {
-//         TextureWrapperMappingData entry;
-//         entry.texture = data.texture;
-//         entry.rects = utils::createRects(data);
-        
-//         spriteMapping[data.state] = entry;
-//     }       
-// }
+/**
+ * @brief Load the texture.
+*/
+void TextureWrapper::init(const std::string path) {
+    texture = IMG_LoadTexture(globals::renderer, path.c_str());
+}
 
-// /**
-//  * @brief Deallocate the texture.
-//  * @note Called in deconstructor and on spritesheet load.
-// */
-// void TextureWrapper::dealloc() {
-//     for (const auto& pair : spriteMapping) SDL_DestroyTexture(pair.second.texture);
-//     spriteMapping.clear();
-// }
+/**
+ * @brief Update attrbutes based on global variables.
+*/
+void TextureWrapper::blit() {
+    // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
+    destRect = {
+        destCoords.x * globals::TILE_DEST_SIZE.x, destCoords.y * globals::TILE_DEST_SIZE.y,
+        32, 32,
+    };
+}
 
-// /**
-//  * @brief Controls logic behind animation speed (i.e. how fast sprites update).
-//  * @warning This method is called every loop; calculating vector size might affect performance. Consider binding the vector size to a non-constant variable, if necessary.
-// */
-// void TextureWrapper::nextSprite() {
-//     if (srcRectIndex >= static_cast<unsigned char>(spriteMapping.find(state) -> second.rects.size()) * textureUpdateRate) {
-//         srcRectIndex = 0;
-//         if (!utils::isPermanent(state)) {
-//             restoreState();
-//         }
-//     } srcRectIndex++;
-// }
+/**
+ * @brief Render the current sprite.
+ * @todo Needs further optimization.
+ * @note Derived classes must properly set `destRect` and `srcRectsIndex` before calling this method, either during instantiation or via `init()` method.
+ * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
+*/
+void TextureWrapper::render() {
+    SDL_RenderCopyEx(globals::renderer, texture, &srcRect, &destRect, angle, center, flip);
+}
 
-// /**
-//  * @brief Store the current "permanent" `SpriteState` when a "temporary" `SpriteState` occurs.
-// */
-// void TextureWrapper::storeState(SpriteState tempState) {
-//     statePrev = state;
-//     state = tempState;
-// }
+/**
+ * @brief Set color modulation on texture. Follows standard RGB color model.
+*/
+void TextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
+    SDL_SetTextureColorMod(texture, r, g, b);
+}
 
-// /**
-//  * @brief Restore a "permanent" `SpriteState` after a "temporary" `SpriteState` has finished.
-// */
-// void TextureWrapper::restoreState() {
-//     state = statePrev;
-//     statePrev = SpriteState::IDLE;
-// }
+/**
+ * @brief Enable blending on texture. Required for alpha modulation.
+ * @param blendMode the blending mode. Defaults to `SDL_BLENDMODE_BLEND`.
+ * @see https://wiki.libsdl.org/SDL2/SDL_BlendMode
+*/
+void TextureWrapper::setBlending(SDL_BlendMode blendMode) {
+    SDL_SetTextureBlendMode(texture, blendMode);
+}
 
-// /**
-//  * @brief Change the current state only if having higher "priority".
-//  * @see <auxiliaries/defs.h> SpriteState (enum)
-// */
-// void TextureWrapper::setPriorityState(SpriteState newState) {
-//     if (state < newState) state = newState;
-// }
+/**
+ * @brief Set alpha modulation on texture.
+ * @param alpha the alpha value. `0` represents full transparency, `255` represents full opacity.
+*/
+void TextureWrapper::setAlpha(Uint8 alpha) {
+    SDL_SetTextureAlphaMod(texture, alpha);
+}
 
-// /**
-//  * @brief Render the current sprite.
-//  * @todo Needs further optimization.
-//  * @note Derived classes must properly set `destRect` and `srcRectsIndex` before calling this method, either during instantiation or via `init()` method.
-//  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
-// */
-// void TextureWrapper::render(SDL_Renderer* renderer) {
-//     SDL_RenderCopyEx(renderer, spriteMapping.find(state) -> second.texture, &spriteMapping.find(state) -> second.rects[srcRectIndex / textureUpdateRate], &destRect, angle, center, flip);
-//     nextSprite();
-// }
+/**
+ * @brief A shorthand for setting both color modulation and alpha modulation on texture.
+ * @param col represents a standard RGBA value.
+*/
+void TextureWrapper::setRGBA(SDL_Color color) {
+    setRGB(color.r, color.g, color.b);
+    setBlending();
+    setAlpha(color.a);
+}
 
-// /**
-//  * @brief Set color modulation on texture. Follows standard RGB color model.
-// */
-// void TextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
-//     SDL_SetTextureColorMod(spriteMapping.find(state) -> second.texture, r, g, b);
-// }
+/**
+ * @brief Handle only the implementation of moving the texture from one `Tile` to the next.
+ * @note Validation is not handled and should be implemented elsewhere, perferably by derived classes.
+*/
+void TextureWrapper::move() {
+    if (!velocity.x && !velocity.y) return;
 
-// /**
-//  * @brief Enable blending on texture. Required for alpha modulation.
-//  * @param blendMode the blending mode. Defaults to `SDL_BLENDMODE_BLEND`.
-//  * @see https://wiki.libsdl.org/SDL2/SDL_BlendMode
-// */
-// void TextureWrapper::setBlending(SDL_BlendMode blendMode) {
-//     SDL_SetTextureBlendMode(spriteMapping.find(state) -> second.texture, blendMode);
-// }
+    destRect.x += velocity.x * VELOCITY.x;
+    destRect.y += velocity.y * VELOCITY.y;
 
-// /**
-//  * @brief Set alpha modulation on texture.
-//  * @param alpha the alpha value. `0` represents full transparency, `255` represents full opacity.
-// */
-// void TextureWrapper::setAlpha(Uint8 alpha) {
-//     SDL_SetTextureAlphaMod(spriteMapping.find(state) -> second.texture, alpha);
-// }
+    // Terminate movement when reached new `Tile`
+    if ((destRect.x % globals::TILE_DEST_SIZE.x) || (destRect.y % globals::TILE_DEST_SIZE.y)) return;
 
-// /**
-//  * @brief A shorthand for setting both color modulation and alpha modulation on texture.
-//  * @param col represents a standard RGBA value.
-// */
-// void TextureWrapper::setRGBA(SDL_Color col) {
-//     setRGB(col.r, col.g, col.b);
-//     setBlending();
-//     setAlpha(col.a);
-// }
+    // Update tileset-relative coordinates
+    destCoords.x += velocity.x;
+    destCoords.y += velocity.y;
+
+    // Reset velocity
+    velocity = {0, 0};
+}

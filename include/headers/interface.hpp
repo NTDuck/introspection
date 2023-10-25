@@ -23,6 +23,8 @@ class Interface {
 
         void changeLevel(Level level);
 
+        TileCollection tileCollection;
+        
     private:
         void setupLevelMapping();
 
@@ -36,6 +38,5 @@ class Interface {
         // Containing all level-loading methods.
         std::unordered_map<Level, std::string> levelMapping;
         // Simulate all tiles presented on the window. Usable as a mapping.
-        TileCollection tileCollection;
         SDL_Texture* texture = nullptr;
 };

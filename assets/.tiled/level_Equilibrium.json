@@ -280,9 +280,31 @@
          "width":38,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":29,
+         "name":"player",
+         "objects":[
+                {
+                 "height":32,
+                 "id":5,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":608,
+                 "y":448
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextlayerid":29,
- "nextobjectid":1,
+ "nextlayerid":30,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

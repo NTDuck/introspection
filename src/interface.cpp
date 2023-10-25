@@ -110,12 +110,7 @@ void Interface::renderLevel() {
                 TilesetData tilesetData;
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) {
-                    if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.TILE_SRC_COUNT.x * TILESET_DATA.TILE_SRC_COUNT.y) {
-                        tilesetData = TILESET_DATA;
-                        break;
-                    }
-                }
+                tilesetData = utils::getTilesetData(gid);
 
                 data.textures.emplace_back(tilesetData.texture);
                 data.srcRects.push_back({
@@ -172,6 +167,7 @@ void Interface::loadLevel() {
 
     // Emplace gids into `tileCollection`. Executed per layer.
     for (const auto& layer : levelData["layers"]) {
+        if (layer["type"] != "tilelayer") continue;
         json data = layer["data"];
         for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
             for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) {
@@ -181,5 +177,5 @@ void Interface::loadLevel() {
     }
 
     // Reset `globals::TILESET_COLLECTION`
-    utils::parseTilesetData(globals::renderer, globals::TILESET_COLLECTION, levelData);
+    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, levelData);
 }
