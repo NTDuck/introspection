@@ -17,5 +17,5 @@ class Player : public TextureWrapper {
         void handleKeyboardEvent(const SDL_Event& event, TileCollection& tileCollection);
 
     private:
-        bool validateMove(SDL_Point nextDestCoords, const TileCollection& tileCollection);
+        bool validateMove(SDL_Point& nextDestCoords, const TileCollection& tileCollection);
 };

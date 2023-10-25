@@ -15,6 +15,9 @@ TextureWrapper::TextureWrapper(SDL_Point destCoords) : destCoords(destCoords) {
 
 TextureWrapper::~TextureWrapper() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
+    delete nextDestCoords;
+    delete nextDestRect;
+    delete center;
 }
 
 /**
@@ -29,10 +32,7 @@ void TextureWrapper::init(const std::string path) {
 */
 void TextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
-    destRect = {
-        destCoords.x * globals::TILE_DEST_SIZE.x, destCoords.y * globals::TILE_DEST_SIZE.y,
-        32, 32,
-    };
+    destRect = getDestRectFromCoords(destCoords);
 }
 
 /**
@@ -81,20 +81,36 @@ void TextureWrapper::setRGBA(SDL_Color color) {
 
 /**
  * @brief Handle only the implementation of moving the texture from one `Tile` to the next.
- * @note Validation is not handled and should be implemented elsewhere, perferably by derived classes.
+ * @note Requires `nextDestCoords` and `nextDestRect` configured by derived classes. Validation is not handled and should be implemented by derived classes.
 */
 void TextureWrapper::move() {
-    if (!velocity.x && !velocity.y) return;
+    if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
     destRect.x += velocity.x * VELOCITY.x;
     destRect.y += velocity.y * VELOCITY.y;
 
-    // Terminate movement when reached new `Tile`
-    if ((destRect.x % globals::TILE_DEST_SIZE.x) || (destRect.y % globals::TILE_DEST_SIZE.y)) return;
+    // Continue movement until new `Tile` has been reached.
+    if ((nextDestRect -> x - destRect.x) * velocity.x > 0 || (nextDestRect -> y - destRect.y) * velocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
-    // Update tileset-relative coordinates
-    destCoords.x += velocity.x;
-    destCoords.y += velocity.y;
+    // Terminate movement when reached new `Tile`
+    destCoords = *nextDestCoords;
+    destRect = *nextDestRect;
+    moveCleanup();
+}
+
+/**
+ * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
+*/
+SDL_Rect TextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
+    return SDL_Rect {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
+};
+
+/**
+ * @brief Clean up resources.
+*/
+void TextureWrapper::moveCleanup() {
+    nextDestCoords = nullptr;
+    nextDestRect = nullptr;
 
     // Reset velocity
     velocity = {0, 0};

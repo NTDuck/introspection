@@ -33,7 +33,6 @@ class Game {
         void handleKeyBoardEvent(const SDL_Event& event);
 
         // SDL2-native assets
-
         SDL_Window* window = nullptr;
         SDL_Surface* windowSurface = nullptr;
         Uint32 windowID;
