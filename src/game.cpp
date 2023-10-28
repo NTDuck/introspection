@@ -1,15 +1,16 @@
-#include <iostream>
 #include <string>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include <game.hpp>
+#include <interface.hpp>
+#include <entities/player.hpp>
 
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(Level::EQUILIBRIUM), player({19, 14}), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(LevelState::EQUILIBRIUM), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {
@@ -159,7 +160,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
                 state = GameState::EXIT;
                 break;
             }
-            player.handleKeyboardEvent(event, interface.tileCollection);
+            player.handleKeyboardEvent(event);
 
         default: break;
     }

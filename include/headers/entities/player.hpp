@@ -1,6 +1,8 @@
 #pragma once
 
+#include <SDL.h>
 #include <meta.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 /**
@@ -9,13 +11,9 @@
 */
 class Player : public TextureWrapper {
     public:
-        Player(SDL_Point destCoords);
+        Player();
         ~Player();
 
         void init();
-
-        void handleKeyboardEvent(const SDL_Event& event, TileCollection& tileCollection);
-
-    private:
-        bool validateMove(SDL_Point& nextDestCoords, const TileCollection& tileCollection);
+        void handleKeyboardEvent(const SDL_Event& event);
 };

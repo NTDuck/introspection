@@ -1,6 +1,7 @@
-#include <iostream>
 #include <fstream>
+#include <string>
 
+#include <SDL.h>
 #include <pugixml/pugixml.hpp>
 
 #include <auxiliaries/globals.hpp>
@@ -21,7 +22,39 @@ namespace utils {
     }
 
     /**
-     * @brief Parse tileset-related data from a XML file. Tailored for XML-like formats, including Tiled's TSX.
+     * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
+    */
+    void loadLevelData(Level& levelData, json& data) {
+        for (auto& tileRow : levelData.tileCollection) for (auto& tile : tileRow) tile.clear();
+
+        // Update global variables
+        globals::TILE_DEST_COUNT = {data["width"], data["height"]};
+        globals::TILE_DEST_SIZE = {globals::WINDOW_SIZE.x / globals::TILE_DEST_COUNT.x, globals::WINDOW_SIZE.y / globals::TILE_DEST_COUNT.y};
+        globals::OFFSET = {
+            (globals::WINDOW_SIZE.x - globals::TILE_DEST_COUNT.x * globals::TILE_DEST_SIZE.x) / 2,
+            (globals::WINDOW_SIZE.y - globals::TILE_DEST_COUNT.y * globals::TILE_DEST_SIZE.y) / 2,
+        };
+
+        levelData.tileCollection.resize(globals::TILE_DEST_COUNT.y);
+        for (auto& tileRow : levelData.tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
+
+        // Emplace gids into `tileCollection`. Executed per layer.
+        for (const auto& layer : data["layers"]) {
+            // Prevent registering non-tilelayers e.g. object layers
+            if (layer["type"] != "tilelayer") continue;
+
+            // Load GIDs
+            json data = layer["data"];
+            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
+                for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) {
+                    levelData.tileCollection[y][x].emplace_back(data[y * globals::TILE_DEST_COUNT.x + x]);
+                }
+            }
+        }
+    }
+
+    /**
+     * @brief Parse tileset-related data from a XML file. Also compatible with XML-like formats, including Tiled's TSX.
     */
     void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData) {
         tilesetDataCollection.clear();

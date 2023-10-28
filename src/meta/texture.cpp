@@ -1,17 +1,16 @@
-#include <iostream>
+#include <sstream>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
 #include <meta.hpp>
+#include <pugixml/pugixml.hpp>
 
 #include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
 
 
-TextureWrapper::TextureWrapper(SDL_Point destCoords) : destCoords(destCoords) {
-    velocity = {0, 0};
-}
+TextureWrapper::TextureWrapper() {}
 
 TextureWrapper::~TextureWrapper() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
@@ -21,17 +20,49 @@ TextureWrapper::~TextureWrapper() {
 }
 
 /**
- * @brief Load the texture.
+ * @brief Load the texture from a XML file.
+ * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
+ * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
-void TextureWrapper::init(const std::string path) {
-    texture = IMG_LoadTexture(globals::renderer, path.c_str());
+void TextureWrapper::init(const std::string xmlPath) {
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
+    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+
+    // Parse nodes
+    pugi::xml_node tilesetNode = document.child("tileset");
+    pugi::xml_node propertiesNode = tilesetNode.child("properties");
+    pugi::xml_node imageNode = tilesetNode.child("image");
+
+    // `srcRect` dimensions (constant)
+    srcRect.w = tilesetNode.attribute("tilewidth").as_int();
+    srcRect.h = tilesetNode.attribute("tileheight").as_int();
+
+    // `srcRect` coordinates (update every loop)
+    for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
+        if (propertyNode.attribute("name").as_string() == std::string("state-idle")) {
+            std::string raw = propertyNode.attribute("value").as_string();
+            std::istringstream iss(raw);
+            iss >> srcRect.x >> srcRect.y;
+        }
+    }
+
+    // Load texture
+    std::string path = imageNode.attribute("source").value();
+    texture = IMG_LoadTexture(globals::renderer, ("assets" + path.substr(2)).c_str());
+
+    VELOCITY = config::VELOCITY_PLAYER;
+    velocity = {0, 0};
+
+    onMoveEnd();
 }
 
 /**
- * @brief Update attrbutes based on global variables.
+ * @brief Update certain attrbutes when global variables change e.g. window resize, new level.
 */
 void TextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
+    destCoords = globals::LEVEL.playerDestCoords;
     destRect = getDestRectFromCoords(destCoords);
 }
 
@@ -95,7 +126,7 @@ void TextureWrapper::move() {
     // Terminate movement when reached new `Tile`
     destCoords = *nextDestCoords;
     destRect = *nextDestRect;
-    moveCleanup();
+    onMoveEnd();
 }
 
 /**
@@ -108,7 +139,7 @@ SDL_Rect TextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
 /**
  * @brief Clean up resources.
 */
-void TextureWrapper::moveCleanup() {
+void TextureWrapper::onMoveEnd() {
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
 

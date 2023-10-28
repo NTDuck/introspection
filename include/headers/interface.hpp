@@ -1,11 +1,8 @@
 #pragma once
 
-#include <array>
-#include <functional>
 #include <unordered_map>
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
@@ -13,7 +10,7 @@
 
 class Interface {
     public:
-        Interface(Level level);
+        Interface(LevelState level);
         ~Interface();
         
         void init();
@@ -21,10 +18,8 @@ class Interface {
         void blit();
         void render();
 
-        void changeLevel(Level level);
+        void changeLevel(LevelState level);
 
-        TileCollection tileCollection;
-        
     private:
         void setupLevelMapping();
 
@@ -33,10 +28,10 @@ class Interface {
 
         void loadLevel();
 
-        Level level;
+        LevelState level;
 
         // Containing all level-loading methods.
-        std::unordered_map<Level, std::string> levelMapping;
+        std::unordered_map<LevelState, std::string> levelMapping;
         // Simulate all tiles presented on the window. Usable as a mapping.
         SDL_Texture* texture = nullptr;
 };

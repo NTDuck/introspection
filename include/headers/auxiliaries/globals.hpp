@@ -1,6 +1,5 @@
 #pragma once
 
-#include <array>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -25,7 +24,7 @@ enum class GameState {
 /**
  * @brief Represents all levels. Should also cover sub-levels.
 */
-enum class Level {
+enum class LevelState {
     EQUILIBRIUM = -1,
     VALLEY_OF_DESPAIR,
     SLOPE_OF_ENLIGHTENMENT,
@@ -69,7 +68,7 @@ struct Flags {
  * @param TILE_SRC_SIZE The maximum dimension of tiles in the tileset.
  * 
  * @param properties A mapping that stores custom tileset properties.
- * @param properties["entityWalkable"] Used for entities' move validation. A value of `0` denotes the base type required to be considered walkable, `1` denotes irrelevance, `2` denotes an obstructing type i.e. not walkable.
+ * @param properties["norender"] This tileset will not be rendered.
 */
 struct TilesetData {
     SDL_Texture* texture;
@@ -105,7 +104,7 @@ using json = nlohmann::json;
 using Tile = std::vector<int>;
 
 /**
- * @brief A 2D iterable of `Tile`. Represents/simulates a level/sub-level. Should be treated as an `std::array`.
+ * @brief A 2D iterable of `Tile`. Should be treated as an `std::array`.
  * @todo Separate into layers for dynamic alterations mid-program.
 */
 using TileCollection = std::vector<std::vector<Tile>>;
@@ -124,7 +123,16 @@ using TilesetDataCollection = std::vector<TilesetData>;
 
 
 /**
- * @brief Provide required configuration, used once in `Game` initialization. Should not be used or modified elsewhere.
+ * @brief Represents/simulates a level/sub-level.
+*/
+struct Level {
+    TileCollection tileCollection;
+    SDL_Point playerDestCoords;
+};
+
+
+/**
+ * @brief Provide required configuration, used once in `Game` initialization and may extend to other retrieval operations. Should not be modified elsewhere.
 */
 namespace config {
     const Flags flags = {
@@ -141,6 +149,8 @@ namespace config {
         1280, 720,
     };
     const int frameRate = 120;
+    
+    const SDL_Point VELOCITY_PLAYER = {1, 1};
 };
 
 
@@ -180,6 +190,11 @@ namespace globals {
      * @note Its value is assigned during initialization and should be treated as a constant henceforth.
     */
     extern TilesetDataCollection TILESET_COLLECTION;
+
+    /**
+     * @brief Represents the current level/sub-level. Accessible to all classes, 
+    */
+    extern Level LEVEL;
 
     void dealloc();
 }

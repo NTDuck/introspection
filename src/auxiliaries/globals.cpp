@@ -1,9 +1,4 @@
-#include <fstream>
-
 #include <SDL.h>
-#include <SDL_image.h>
-#include <pugixml/pugixml.hpp>
-
 #include <auxiliaries/globals.hpp>
 
 
@@ -24,4 +19,5 @@ namespace globals {
     SDL_Point TILE_DEST_COUNT;
     SDL_Point OFFSET;
     TilesetDataCollection TILESET_COLLECTION;
+    Level LEVEL;
 }

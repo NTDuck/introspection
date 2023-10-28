@@ -1,8 +1,3 @@
-#include <fstream>
-#include <string>
-
-#include <SDL.h>
-
 #include <game.hpp>
 #include <auxiliaries/globals.hpp>
 

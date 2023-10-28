@@ -1,9 +1,8 @@
 #pragma once
 
+#include <string>
 #include <vector>
-
 #include <SDL.h>
-#include <auxiliaries/globals.hpp>
 
 
 /**
@@ -11,10 +10,10 @@
 */
 class TextureWrapper {
     public:
-        TextureWrapper(SDL_Point destCoords);
+        TextureWrapper();
         ~TextureWrapper();
 
-        void init(const std::string path);
+        void init(const std::string xmlPath);
         void blit();
         void render();
 
@@ -27,7 +26,7 @@ class TextureWrapper {
 
     protected:
         SDL_Rect getDestRectFromCoords (const SDL_Point coords);
-        void moveCleanup();
+        void onMoveEnd();
 
         SDL_Texture* texture = nullptr;   // expects a single tileset
         SDL_Point destCoords;
@@ -36,7 +35,7 @@ class TextureWrapper {
         SDL_Rect* nextDestRect = nullptr;
         SDL_Rect srcRect;
         SDL_Point velocity;   // between -1 and 1
-        const SDL_Point VELOCITY = {1, 1};
+        SDL_Point VELOCITY;
 
         double angle = 0;
         SDL_Point* center = nullptr;

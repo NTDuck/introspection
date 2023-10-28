@@ -1,17 +1,14 @@
 #include <iostream>
-#include <array>
 #include <vector>
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include <interface.hpp>
-
 #include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
 
 
-Interface::Interface(Level level) : level(level) {}
+Interface::Interface(LevelState level) : level(level) {}
 
 Interface::~Interface() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
@@ -32,7 +29,7 @@ void Interface::init() {
 void Interface::setupLevelMapping() {
     const std::string base = "assets/.tiled/";
     levelMapping = {
-        {Level::EQUILIBRIUM, base + "level_Equilibrium.json"},
+        {LevelState::EQUILIBRIUM, base + "level_Equilibrium.json"},
     };
 }
 
@@ -104,7 +101,7 @@ void Interface::renderLevel() {
             data.destRect.w = globals::TILE_DEST_SIZE.x;
             data.destRect.h = globals::TILE_DEST_SIZE.y;
 
-            for (const auto& gid : tileCollection[y][x]) {
+            for (const auto& gid : globals::LEVEL.tileCollection[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
                 TilesetData tilesetData;
@@ -112,7 +109,7 @@ void Interface::renderLevel() {
                 // Identify the tileset to which the tile, per layer, belongs to.
                 tilesetData = utils::getTilesetData(gid);
 
-                data.textures.emplace_back(tilesetData.texture);
+                data.textures.emplace_back(tilesetData.properties["norender"] == "true" ? nullptr : tilesetData.texture);
                 data.srcRects.push_back({
                     ((gid - tilesetData.firstGID) % tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.x,
                     ((gid - tilesetData.firstGID) / tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.y,
@@ -128,6 +125,7 @@ void Interface::renderLevel() {
         for (const auto& tileRenderData : tileRenderDataVector) {
             int size = tileRenderData.textures.size();
             for (int i = 0; i < size; ++i) {
+                if (tileRenderData.textures[i] == nullptr) continue;
                 SDL_RenderCopy(globals::renderer, tileRenderData.textures[i], &tileRenderData.srcRects[i], &tileRenderData.destRect);
             }
         }
@@ -137,7 +135,7 @@ void Interface::renderLevel() {
 /**
  * @brief Force load level after changes.
 */
-void Interface::changeLevel(Level _level) {
+void Interface::changeLevel(LevelState _level) {
     level = _level;
     loadLevel();
 }
@@ -147,35 +145,22 @@ void Interface::changeLevel(Level _level) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void Interface::loadLevel() {
-    json levelData;
-    utils::readJSON(levelMapping.find(level) -> second, levelData);
+    json data;
+    utils::readJSON(levelMapping.find(level) -> second, data);
 
-    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder
+    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
+    utils::loadLevelData(globals::LEVEL, data);
 
-    for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
+    // Reset `globals::TILESET_COLLECTION`
+    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
 
-    // Update global variables.
-    globals::TILE_DEST_COUNT = {levelData["width"], levelData["height"]};
-    globals::TILE_DEST_SIZE = {globals::WINDOW_SIZE.x / globals::TILE_DEST_COUNT.x, globals::WINDOW_SIZE.y / globals::TILE_DEST_COUNT.y};
-    globals::OFFSET = {
-        (globals::WINDOW_SIZE.x - globals::TILE_DEST_COUNT.x * globals::TILE_DEST_SIZE.x) / 2,
-        (globals::WINDOW_SIZE.y - globals::TILE_DEST_COUNT.y * globals::TILE_DEST_SIZE.y) / 2,
-    };
-
-    tileCollection.resize(globals::TILE_DEST_COUNT.y);
-    for (auto& tileRow : tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
-
-    // Emplace gids into `tileCollection`. Executed per layer.
-    for (const auto& layer : levelData["layers"]) {
-        if (layer["type"] != "tilelayer") continue;
-        json data = layer["data"];
-        for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
-            for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) {
-                tileCollection[y][x].emplace_back(data[y * globals::TILE_DEST_COUNT.x + x]);
+    // Reset `player`'s `destCoords`
+    for (const auto& layer : data["layers"]) {
+        if (layer["type"] != "objectgroup") continue;
+        for (const auto& object : layer["objects"]) {
+            if (object["name"] == "player") {
+                globals::LEVEL.playerDestCoords = {int(object["x"]) / int(object["width"]), int(object["y"]) / int(object["height"])};
             }
         }
     }
-
-    // Reset `globals::TILESET_COLLECTION`
-    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, levelData);
 }
