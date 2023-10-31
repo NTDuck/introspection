@@ -1,5 +1,3 @@
-#include <sstream>
-
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -20,9 +18,8 @@ TextureWrapper::~TextureWrapper() {
 }
 
 /**
- * @brief Load the texture from a XML file.
+ * @brief Initialize the texture from a XML file.
  * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
- * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
 void TextureWrapper::init(const std::string xmlPath) {
     pugi::xml_document document;
@@ -38,14 +35,8 @@ void TextureWrapper::init(const std::string xmlPath) {
     srcRect.w = tilesetNode.attribute("tilewidth").as_int();
     srcRect.h = tilesetNode.attribute("tileheight").as_int();
 
-    // `srcRect` coordinates (update every loop)
-    for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
-        if (propertyNode.attribute("name").as_string() == std::string("state-idle")) {
-            std::string raw = propertyNode.attribute("value").as_string();
-            std::istringstream iss(raw);
-            iss >> srcRect.x >> srcRect.y;
-        }
-    }
+    // Custom properties, likely `srcRect`
+    for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
 
     // Load texture
     std::string path = imageNode.attribute("source").value();
@@ -64,11 +55,11 @@ void TextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
     destCoords = globals::LEVEL.playerDestCoords;
     destRect = getDestRectFromCoords(destCoords);
+    onMoveEnd();
 }
 
 /**
  * @brief Render the current sprite.
- * @todo Needs further optimization.
  * @note Derived classes must properly set `destRect` and `srcRectsIndex` before calling this method, either during instantiation or via `init()` method.
  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
 */
@@ -77,14 +68,14 @@ void TextureWrapper::render() {
 }
 
 /**
- * @brief Set color modulation on texture. Follows standard RGB color model.
+ * @brief Set color modulation on `texture`. Follows standard RGB color model.
 */
 void TextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
     SDL_SetTextureColorMod(texture, r, g, b);
 }
 
 /**
- * @brief Enable blending on texture. Required for alpha modulation.
+ * @brief Enable blending on `texture`. Required for alpha modulation.
  * @param blendMode the blending mode. Defaults to `SDL_BLENDMODE_BLEND`.
  * @see https://wiki.libsdl.org/SDL2/SDL_BlendMode
 */
@@ -93,7 +84,7 @@ void TextureWrapper::setBlending(SDL_BlendMode blendMode) {
 }
 
 /**
- * @brief Set alpha modulation on texture.
+ * @brief Set alpha modulation on `texture`.
  * @param alpha the alpha value. `0` represents full transparency, `255` represents full opacity.
 */
 void TextureWrapper::setAlpha(Uint8 alpha) {
@@ -101,7 +92,7 @@ void TextureWrapper::setAlpha(Uint8 alpha) {
 }
 
 /**
- * @brief A shorthand for setting both color modulation and alpha modulation on texture.
+ * @brief A shorthand for setting both color modulation and alpha modulation on `texture`.
  * @param col represents a standard RGBA value.
 */
 void TextureWrapper::setRGBA(SDL_Color color) {
@@ -137,7 +128,7 @@ SDL_Rect TextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
 };
 
 /**
- * @brief Clean up resources.
+ * @brief Clean up resources after entity finished moving.
 */
 void TextureWrapper::onMoveEnd() {
     nextDestCoords = nullptr;

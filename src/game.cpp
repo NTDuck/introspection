@@ -171,7 +171,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
 */
 void Game::handleMouseEvent(const SDL_Event& event) {
     switch (state) {
-        case GameState::MENU:
+        case GameState::MENU: case GameState::INGAME_PLAYING:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
             state = GameState::INGAME_PLAYING;
             blit();

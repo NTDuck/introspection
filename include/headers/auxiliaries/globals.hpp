@@ -151,6 +151,8 @@ namespace config {
     const int frameRate = 120;
     
     const SDL_Point VELOCITY_PLAYER = {1, 1};
+    const int ANIMATION_PLAYER_UPDATE_RATE = 64;
+    const std::string ANIMATION_PLAYER = "animation-blink";
 };
 
 

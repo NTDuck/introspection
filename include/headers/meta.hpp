@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <SDL.h>
 
 
@@ -22,11 +23,11 @@ class TextureWrapper {
         void setAlpha(Uint8 alpha);
         void setRGBA(SDL_Color col);
 
-        void move();
+        virtual void move();
 
     protected:
         SDL_Rect getDestRectFromCoords (const SDL_Point coords);
-        void onMoveEnd();
+        virtual void onMoveEnd();
 
         SDL_Texture* texture = nullptr;   // expects a single tileset
         SDL_Point destCoords;
@@ -40,4 +41,6 @@ class TextureWrapper {
         double angle = 0;
         SDL_Point* center = nullptr;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
+
+        std::unordered_map<std::string, std::string> properties;
 };
