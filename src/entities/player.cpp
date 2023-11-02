@@ -23,18 +23,28 @@ bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoor
     if (nextDestCoords.x < 0 || nextDestCoords.y < 0 || nextDestCoords.x >= globals::TILE_DEST_COUNT.x || nextDestCoords.y >= globals::TILE_DEST_COUNT.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
-    auto findCollisionLevelGID = [&](const SDL_Point coords) {
-        for (const auto& gid : tileCollection[coords.y][coords.x]) if (gid && utils::getTilesetData(gid).properties["collision"] == "true") return gid;
+    static int collisionTransitionLevel = 0;
+
+    auto findCollisionLevelGID = [&](const SDL_Point& coords) {
+        for (const auto& gid : tileCollection[coords.y][coords.x]) {
+            if (!gid && utils::getTilesetData(gid).properties["collision"] != "true") continue;
+            if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(utils::getTilesetData(gid).properties.find("collision-transition") -> second) + utils::getTilesetData(gid).firstGID;
+            return gid;
+        }
         return 0;
     };
 
-    // Check whether the next tile is considered "walkable"
     int currCollisionLevel = findCollisionLevelGID(currDestCoords);
     int nextCollisionLevel = findCollisionLevelGID(nextDestCoords);
 
-    if (!nextCollisionLevel || currCollisionLevel < nextCollisionLevel) return false;
-
-    return true;
+    /**
+     * @details The move is validated only if `nextCollisionLevel` exists, and one of the following scenarios occurs:
+     * 1. `currCollisionLevel` is equal to `collisionTransitionLevel`
+     * 2. `nextCollisionLevel` is equal to `collisionTransitionLevel`
+     * 3. `currCollisionLevel` is equal to `nextCollisionLevel`
+    */
+    if (!nextCollisionLevel) return false;
+    return (currCollisionLevel == collisionTransitionLevel || nextCollisionLevel == collisionTransitionLevel || currCollisionLevel == nextCollisionLevel);
 }
 
 /**
@@ -42,8 +52,7 @@ bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoor
  * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
 void Player::init() {
-    const std::string xmlPath = "assets/.tiled/hooded-full.tsx";
-    TextureWrapper::init(xmlPath);
+    TextureWrapper::init(config::FPATH_TILESET_PLAYER);
 
     for (const auto& pair : properties) {
         std::istringstream iss(pair.second);
@@ -54,7 +63,7 @@ void Player::init() {
 
     // This is really ugly and needs immediate correction
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
+    pugi::xml_parse_result result = document.load_file(config::FPATH_TILESET_PLAYER.c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
     srcRectCount.x = document.child("tileset").attribute("columns").as_int();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -69,6 +70,8 @@ struct Flags {
  * 
  * @param properties A mapping that stores custom tileset properties.
  * @param properties["norender"] This tileset will not be rendered.
+ * @param properties["collision"] This tileset controls collision between entities.
+ * @param properties["collision-transition"] Represents the raw GID used to determine a "transition" GID.
 */
 struct TilesetData {
     SDL_Texture* texture;
@@ -149,6 +152,16 @@ namespace config {
         1280, 720,
     };
     const int frameRate = 120;
+
+    /**
+     * @brief Simulate the tileset's black.
+     * @note Alpha modulation is not set.
+    */
+    const SDL_Color BACKGROUND_COLOR = {0x14, 0x14, 0x12};
+
+    const std::string DIR_ASSETS = "assets/";
+    const std::string DIR_TILESETS = DIR_ASSETS + ".tiled/";
+    const std::string FPATH_TILESET_PLAYER = DIR_TILESETS + ".tsx/hp-player.tsx";
     
     const SDL_Point VELOCITY_PLAYER = {1, 1};
     const int ANIMATION_PLAYER_UPDATE_RATE = 64;

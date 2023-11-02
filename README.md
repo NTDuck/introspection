@@ -62,11 +62,12 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 ## Acknowledgements
 
-- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
-- [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
+- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist) under presumably [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
+- [Enemy Galore](https://admurin.itch.io/enemy-galore-1) under presumably [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with additional restrictions regarding NFTs
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
-- [Pixel Art Top Down - Basic](https://cainos.itch.io/pixel-art-top-down-basic) and [Pixel Art Icon Pack - RPG](https://cainos.itch.io/pixel-art-icon-pack-rpg)
-- We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Omori](https://www.omori-game.com/), [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), and [Undertale](https://store.steampowered.com/app/391540/Undertale/).
+- [Pixel Art Top Down - Basic](https://cainos.itch.io/pixel-art-top-down-basic) and [Pixel Art Icon Pack - RPG](https://cainos.itch.io/pixel-art-icon-pack-rpg) under presumably [The MIT License](https://opensource.org/license/mit/)
+- [Pixel Crawler - Dungeon](https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack) under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
+- We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/)
 
 
 ## License

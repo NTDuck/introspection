@@ -22,6 +22,18 @@ namespace utils {
     }
 
     /**
+     * @brief Remove leading dots (`.`) and slashes (`/``\`) in a path-like `std::string`.
+    */
+    void cleanRelativePath(std::string& path) {
+        size_t found = path.find("../");
+
+        while (found != std::string::npos) {
+            path = path.substr(found + 3);
+            found = path.find("../");
+        }
+    }
+
+    /**
      * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
     */
     void loadLevelData(Level& levelData, json& data) {
@@ -66,7 +78,7 @@ namespace utils {
             const std::string xmlPath = data["source"];
 
             pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file(("assets/.tiled/" + xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+            pugi::xml_parse_result result = document.load_file((config::DIR_TILESETS + xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
             if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
             // Parse nodes
@@ -90,7 +102,8 @@ namespace utils {
 
             // Load texture
             std::string path = imageNode.attribute("source").value();
-            tilesetData.texture = IMG_LoadTexture(renderer, ("assets" + path.substr(2)).c_str());
+            utils::cleanRelativePath(path);
+            tilesetData.texture = IMG_LoadTexture(renderer, (config::DIR_ASSETS + path).c_str());
 
             // Register to collection
             tilesetDataCollection.emplace_back(tilesetData);

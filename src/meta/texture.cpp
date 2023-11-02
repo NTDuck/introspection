@@ -40,7 +40,8 @@ void TextureWrapper::init(const std::string xmlPath) {
 
     // Load texture
     std::string path = imageNode.attribute("source").value();
-    texture = IMG_LoadTexture(globals::renderer, ("assets" + path.substr(2)).c_str());
+    utils::cleanRelativePath(path);
+    texture = IMG_LoadTexture(globals::renderer, (config::DIR_ASSETS + path).c_str());
 
     VELOCITY = config::VELOCITY_PLAYER;
     velocity = {0, 0};

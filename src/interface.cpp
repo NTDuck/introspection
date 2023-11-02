@@ -1,4 +1,3 @@
-#include <iostream>
 #include <vector>
 
 #include <SDL.h>
@@ -27,9 +26,8 @@ void Interface::init() {
  * @note Remember to bind `this` else the following exception occurs: `the enclosing-function 'this' cannot be referenced in a lambda body unless it is in the capture listC/C++(1738)`.
 */
 void Interface::setupLevelMapping() {
-    const std::string base = "assets/.tiled/";
     levelMapping = {
-        {LevelState::EQUILIBRIUM, base + "level_Equilibrium.json"},
+        {LevelState::EQUILIBRIUM, config::DIR_TILESETS + "level-equilibrium.json"},
     };
 }
 
@@ -57,32 +55,35 @@ void Interface::render() {
 }
 
 /**
- * @brief Simulate an arbitrary chessboard-resembling background. Still better than nothing.
+ * @brief Fill the window with the tileset's black to achieve a seamless feel.
 */
 void Interface::renderBackground() {
-    const int BACKGROUND_RECT_SIZE = std::gcd(globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
-    const int BACKGROUND_RECT_COUNT_X = globals::WINDOW_SIZE.x / BACKGROUND_RECT_SIZE;
-    const int BACKGROUND_RECT_COUNT_Y = globals::WINDOW_SIZE.y / BACKGROUND_RECT_SIZE;
+    // const int BACKGROUND_RECT_SIZE = std::gcd(globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
+    // const int BACKGROUND_RECT_COUNT_X = globals::WINDOW_SIZE.x / BACKGROUND_RECT_SIZE;
+    // const int BACKGROUND_RECT_COUNT_Y = globals::WINDOW_SIZE.y / BACKGROUND_RECT_SIZE;
 
-    std::vector<SDL_Rect> lighterRects;
-    std::vector<SDL_Rect> darkerRects;
+    // std::vector<SDL_Rect> lighterRects;
+    // std::vector<SDL_Rect> darkerRects;
 
-    for (int y = 0; y < BACKGROUND_RECT_COUNT_Y; ++y) {
-        for (int x = 0; x < BACKGROUND_RECT_COUNT_X; ++x) {
-            SDL_Rect backgroundRect;
-            backgroundRect.x = BACKGROUND_RECT_SIZE * x;
-            backgroundRect.y = BACKGROUND_RECT_SIZE * y;
-            backgroundRect.w = BACKGROUND_RECT_SIZE;
-            backgroundRect.h = BACKGROUND_RECT_SIZE;
-            if ((x + y) & 1) darkerRects.emplace_back(backgroundRect); else lighterRects.emplace_back(backgroundRect);
-        }
-    }
+    // for (int y = 0; y < BACKGROUND_RECT_COUNT_Y; ++y) {
+    //     for (int x = 0; x < BACKGROUND_RECT_COUNT_X; ++x) {
+    //         SDL_Rect backgroundRect;
+    //         backgroundRect.x = BACKGROUND_RECT_SIZE * x;
+    //         backgroundRect.y = BACKGROUND_RECT_SIZE * y;
+    //         backgroundRect.w = BACKGROUND_RECT_SIZE;
+    //         backgroundRect.h = BACKGROUND_RECT_SIZE;
+    //         if ((x + y) & 1) darkerRects.emplace_back(backgroundRect); else lighterRects.emplace_back(backgroundRect);
+    //     }
+    // }
     
-    SDL_SetRenderDrawColor(globals::renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
-    for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(globals::renderer, &lighterRect);
+    // SDL_SetRenderDrawColor(globals::renderer, 0x1a, 0x11, 0x10, SDL_ALPHA_OPAQUE);
+    // for (const auto& lighterRect : lighterRects) SDL_RenderFillRect(globals::renderer, &lighterRect);
 
-    SDL_SetRenderDrawColor(globals::renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
-    for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(globals::renderer, &darkerRect);
+    // SDL_SetRenderDrawColor(globals::renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
+    // for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(globals::renderer, &darkerRect);
+
+    SDL_SetRenderDrawColor(globals::renderer, config::BACKGROUND_COLOR.r, config::BACKGROUND_COLOR.g, config::BACKGROUND_COLOR.b, config::BACKGROUND_COLOR.a);
+    SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
 /**
