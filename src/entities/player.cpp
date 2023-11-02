@@ -99,6 +99,19 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
 }
 
 /**
+ * @brief Render the current sprite.
+ * @note Override base method to enlarge player without affecting `srcCoords`, which is used in many operations.
+*/
+void Player::render() {
+    SDL_Rect* _destRect = new SDL_Rect(destRect);
+    _destRect -> x -= globals::TILE_DEST_SIZE.x * 0.5;
+    _destRect -> y -= globals::TILE_DEST_SIZE.y * 1.5;
+    _destRect -> w *= 2;
+    _destRect -> h *= 2;
+    SDL_RenderCopyEx(globals::renderer, texture, &srcRect, _destRect, angle, center, flip);
+}
+
+/**
  * @brief Switch from one sprite to the next.
  * @see <src/interface.cpp> Interface.renderLevel() (classmethod)
 */

@@ -16,7 +16,7 @@ class TextureWrapper {
 
         void init(const std::string xmlPath);
         void blit();
-        void render();
+        virtual void render();
 
         void setRGB(Uint8 r, Uint8 g, Uint8 b);
         void setBlending(SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND);

@@ -21,6 +21,7 @@ class Player : public TextureWrapper {
         void init();
         void handleKeyboardEvent(const SDL_Event& event);
 
+        void render() override;
         void move() override;
 
     private:
