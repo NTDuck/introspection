@@ -1,14 +1,99 @@
+#include <iostream>
 #include <fstream>
+#include <sstream>
+#include <vector>
 #include <string>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
+#include <zlib/zlib.h>
 
 #include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
 
 
 namespace utils {
+    /**
+     * @brief Decrypt a base64-encrypted string.
+    */
+    std::string base64Decode(const std::string s) {
+        const std::string b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";   // Characters used in base64 encoding alphabet
+
+        // Map each base64 character to its corresponding index
+        std::vector<int> reverseMapping(256, -1);
+        for (int i = 0; i < 64; ++i) reverseMapping[b64chars[i]] = i;
+
+        std::string output;
+        int bits = 0;
+        int bitCount = 0;
+        int value = 0;
+
+        // Process each character in `s`
+        for (const auto& c : s) {
+            if (reverseMapping[c] == -1) continue;   // Skip non-base64 characters
+
+            value = (value << 6) | reverseMapping[c];   // Retrieve the base64 character's index (representing a 6-bit value) from `reverseMapping`, then "appended" to `value` (shifting existing bits left by 6 and add the newfound 6-bit value)
+            bitCount += 6;
+            bits <<= 6;   // Accomodate new bits
+
+            while (bitCount >= 8) {   // Enough bits to form a byte
+                output += char((value >> (bitCount - 8)) & 0xFF);   // Extract the most significant byte i.e. 8 bits from `value`, then append to `output`
+                bitCount -= 8;
+            }
+        }
+
+        return output;
+    }
+
+    /**
+     * @brief Decompress a zlib-compressed `std::string`.
+     * @note Conversion to `std::string` can be done as follows:
+     * @note `std::vector<char> vec = utils::zlibDecompress(compressed);`
+     * @note `std::string decompressed(vec.data(), vec.size());`
+    */
+    template <typename T>
+    std::vector<T> zlibDecompress(const std::string s) {
+        std::vector<T> decompressed;   // Avoid guessing decompressed data size
+        unsigned char buffer[sizeof(T)];   // Temporarily hold decompressed data in bytes
+
+        // Initialize zlib stream
+        z_stream stream;
+        // Default memory allocation/deallocation
+        stream.zalloc = Z_NULL;
+        stream.zfree = Z_NULL;
+        stream.opaque = Z_NULL;
+        // Input data is not yet available
+        stream.avail_in = 0;
+        stream.next_in = Z_NULL;
+
+        // "Clears" `stream` by setting all bytes to `0`
+        std::memset(&stream, 0, sizeof(stream));
+        
+        // Initialize zlib for inflation i.e. decompression
+        int ret = inflateInit(&stream);
+        if (ret != Z_OK) return {};
+
+        stream.avail_in = s.size();
+        stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(s.c_str()));   // Point to input memory location, also convert `const char*` to `Bytef*` to match zlib data type
+
+        do {
+            stream.avail_out = sizeof(buffer);
+            stream.next_out = buffer;
+            ret = inflate(&stream, Z_NO_FLUSH);   // Perform decompression
+
+            if (ret != Z_OK && ret != Z_STREAM_END) {
+                inflateEnd(&stream);
+                return {};   // throw/std::cerr/log
+            }
+
+            decompressed.push_back(*reinterpret_cast<T*>(buffer));   // Cast the buffer to desired data type `T`
+        } while (ret != Z_STREAM_END);
+
+        // Cleanup
+        inflateEnd(&stream);
+        return decompressed;
+    }
+
     /**
      * @brief Read a JSON file.
     */
@@ -35,6 +120,7 @@ namespace utils {
 
     /**
      * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
+     * @note Only `csv` and `zlib-compressed base64` are supported.
     */
     void loadLevelData(Level& levelData, json& data) {
         for (auto& tileRow : levelData.tileCollection) for (auto& tile : tileRow) tile.clear();
@@ -56,12 +142,21 @@ namespace utils {
             if (layer["type"] != "tilelayer") continue;
 
             // Load GIDs
-            json data = layer["data"];
-            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
-                for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) {
-                    levelData.tileCollection[y][x].emplace_back(data[y * globals::TILE_DEST_COUNT.x + x]);
-                }
-            }
+            json rawData = layer["data"];
+            std::vector<int> data;
+            auto encoding = layer.find("encoding");
+            auto compression = layer.find("compression");
+
+            if ((encoding == layer.end() || encoding.value() == "csv") && compression == layer.end()) {   // csv
+                for (const auto& GID : rawData) data.emplace_back(GID);
+            } else if (encoding != layer.end() && encoding.value() == "base64") {
+                std::string decoded = utils::base64Decode(rawData);
+                if (compression.value() == "zlib") {   // zlib-compressed base64
+                    data = utils::zlibDecompress<int>(decoded);
+                } else return;
+            } else return;
+
+            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) levelData.tileCollection[y][x].emplace_back(data[y * globals::TILE_DEST_COUNT.x + x]);
         }
     }
 
@@ -110,6 +205,9 @@ namespace utils {
         }
     }
 
+    /**
+     * @brief Retrieve the `TilesetData` associated with a `GID`.
+    */
     TilesetData getTilesetData(int gid) {
         for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.TILE_SRC_COUNT.x * TILESET_DATA.TILE_SRC_COUNT.y) return TILESET_DATA;
         return {nullptr,  0, {0, 0}, {0, 0}, {}};   // Throw some trash value if not found

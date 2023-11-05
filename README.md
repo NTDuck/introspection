@@ -10,18 +10,18 @@ a RPG made without a game engine.
 
 ## Features
 
-#### Menu:
+#### System:
 - UI not available
-- _temporary_: enter game with `SPACE`, exit game with `ESC` (or of course, force `ALT` + `F4`)
+- `RCLICK` / `LCLICK` to enter the game or reset player position
 
 #### Player:
-(_pending_)
+- Move with `W` `A` `S` `D`
 
 #### Enemies:
 (_pending_)
 
 #### Map:
-- Chapel of Anticipation
+- Solitary Confinement (yeah)
 
 
 ## Installation
@@ -51,6 +51,7 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [SDL2](https://github.com/libsdl-org/SDL/releases/tag/release-2.28.3) 2.28.3, [SDL2_image](https://github.com/libsdl-org/SDL_image/releases/tag/release-2.6.3) 2.6.3
 - [JSON for Modern C++](https://github.com/nlohmann/json/releases/tag/v3.11.2) 3.11.2
 - [pugixml](https://github.com/zeux/pugixml/releases/tag/v1.14) 1.14
+- [zlib](https://www.zlib.net/) 1.3 (with Microsoft Github's precompiled [zlib.dll](https://github.com/microsoft/malmo/files/5758471/zlib.zip))
 
 **Third-party tools:**
 - [Tiled](https://www.mapeditor.org/) 1.10.2 for level generation
@@ -62,12 +63,13 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 ## Acknowledgements
 
-- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist) under presumably [CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/)
-- [Enemy Galore](https://admurin.itch.io/enemy-galore-1) under presumably [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) with additional restrictions regarding NFTs
+> We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
+- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
+- [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
-- [Pixel Art Top Down - Basic](https://cainos.itch.io/pixel-art-top-down-basic) and [Pixel Art Icon Pack - RPG](https://cainos.itch.io/pixel-art-icon-pack-rpg) under presumably [The MIT License](https://opensource.org/license/mit/)
-- [Pixel Crawler - Dungeon](https://anokolisa.itch.io/dungeon-crawler-pixel-art-asset-pack) under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)
-- We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/)
+- [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
+
+> We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).
 
 
 ## License

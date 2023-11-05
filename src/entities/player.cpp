@@ -17,18 +17,21 @@ Player::~Player() {
 /**
  * @brief Check whether moving the player from one `Tile` to the next is valid.
  * @warning The `entityWalkable` blindly determines walkability of all gids in a tileset. This method, therefore, is only a temporary, incomplete approach, and should be thoroughly re-assessed in future commits.
+ * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
 */
 bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoords, const TileCollection& tileCollection) {
     // Check whether new tile exceeds the map limit
     if (nextDestCoords.x < 0 || nextDestCoords.y < 0 || nextDestCoords.x >= globals::TILE_DEST_COUNT.x || nextDestCoords.y >= globals::TILE_DEST_COUNT.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
-    static int collisionTransitionLevel = 0;
+    // static int collisionTransitionLevel = 0;
 
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
+        static TilesetData* tilesetData = nullptr;
         for (const auto& gid : tileCollection[coords.y][coords.x]) {
-            if (!gid && utils::getTilesetData(gid).properties["collision"] != "true") continue;
-            if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(utils::getTilesetData(gid).properties.find("collision-transition") -> second) + utils::getTilesetData(gid).firstGID;
+            tilesetData = new TilesetData(utils::getTilesetData(gid));
+            if (!gid && tilesetData -> properties["collision"] != "true") continue;
+            // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;
             return gid;
         }
         return 0;
@@ -44,7 +47,8 @@ bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoor
      * 3. `currCollisionLevel` is equal to `nextCollisionLevel`
     */
     if (!nextCollisionLevel) return false;
-    return (currCollisionLevel == collisionTransitionLevel || nextCollisionLevel == collisionTransitionLevel || currCollisionLevel == nextCollisionLevel);
+    // return (currCollisionLevel == collisionTransitionLevel || nextCollisionLevel == collisionTransitionLevel || currCollisionLevel == nextCollisionLevel);
+    return currCollisionLevel == nextCollisionLevel;
 }
 
 /**
