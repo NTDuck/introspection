@@ -33,7 +33,9 @@
 *.out
 *.app
 
-# All Tiled files excluding JSON and TSX
+# All Tiled assets excluding certain formats
 /**/.tiled/*
-!/**/.tiled/*.json
-!/**/.tiled/*.tsx
+!/**/.tiled/**/*.tsx
+!/**/.tiled/**/*.tmx
+!/**/.tiled/**/*.xml
+!/**/.tiled/**/*.json

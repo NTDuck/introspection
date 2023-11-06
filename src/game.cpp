@@ -1,3 +1,4 @@
+#include <iostream>
 #include <string>
 
 #include <SDL.h>
@@ -10,7 +11,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(LevelState::EQUILIBRIUM), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface("level-equilibrium"), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {

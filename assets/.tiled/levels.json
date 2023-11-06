@@ -1,0 +1,8 @@
+{
+  "levels": [
+    {
+      "name": "level-equilibrium",
+      "source": ".tmx/level-equilibrium.json"
+    }
+  ]
+}

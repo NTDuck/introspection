@@ -1,4 +1,5 @@
-{ "compressionlevel":-1,
+{ "backgroundcolor":"#141412",
+ "compressionlevel":-1,
  "height":20,
  "infinite":false,
  "layers":[
@@ -18,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztzsEJACAQxMCs\/TerNmAD51MEzUD+AUk6pwdG0czlsQbZ5Jdfz35J+sICrwwHCg==",
+         "data":"eJzt0MERABAMRNGNvtEAekUDUgAXl2TYP7NnLwB2UxQgbZbF1lX0\/XqYF1dz6vL6X55cN3U1j82m9S0BkMPooutZF2PsixYuxhoI",
          "encoding":"base64",
          "height":20,
          "id":20,
@@ -32,7 +33,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFo2DwgS4mBoYleHA\/08C4axHQ3qt48PIBctcuoL0L2YHuA+I9TAi8EMrfP0DuWkzA3mWj7kIBo+4iDYy6izTwGmjvGzz43QC5axSMglFAfQAAqK0jcQ==",
+         "data":"eJxjYGBgyGZjYJiDB+cB8UCAZqC9W\/DgtgFy12wC9s4bdRcKIMddXUwMDEvw4H6mgXHXIqC9V\/Hg5QPkrl1AexeyA90HxHuYEHghlL+fCu56DLT3CRQjA5jYMyzuWkzA3mVUcBc5YNRdpIFRd5EGBqu7XgPtfYMHvxsgd42CUTAKqA8AWpc6xQ==",
          "encoding":"base64",
          "height":20,
          "id":21,
@@ -131,23 +132,23 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":".tsx\/collision.tsx"
+         "source":"..\/.tsx\/collision.tsx"
         }, 
         {
          "firstgid":17,
-         "source":".tsx\/mi-rb-floors.tsx"
+         "source":"..\/.tsx\/mi-rb-floors.tsx"
         }, 
         {
          "firstgid":617,
-         "source":".tsx\/mi-rb-walls-3d.tsx"
+         "source":"..\/.tsx\/mi-rb-walls-3d.tsx"
         }, 
         {
          "firstgid":1937,
-         "source":".tsx\/mi-jail.tsx"
+         "source":"..\/.tsx\/mi-jail.tsx"
         }, 
         {
          "firstgid":2657,
-         "source":".tsx\/mi-bedroom.tsx"
+         "source":"..\/.tsx\/mi-bedroom.tsx"
         }],
  "tilewidth":32,
  "type":"map",

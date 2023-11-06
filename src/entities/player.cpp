@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <sstream>
 
 #include <SDL.h>
@@ -16,7 +17,6 @@ Player::~Player() {
 
 /**
  * @brief Check whether moving the player from one `Tile` to the next is valid.
- * @warning The `entityWalkable` blindly determines walkability of all gids in a tileset. This method, therefore, is only a temporary, incomplete approach, and should be thoroughly re-assessed in future commits.
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
 */
 bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoords, const TileCollection& tileCollection) {
@@ -56,7 +56,8 @@ bool validateMove(const SDL_Point& currDestCoords, const SDL_Point& nextDestCoor
  * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
 void Player::init() {
-    TextureWrapper::init(config::FPATH_TILESET_PLAYER);
+    if (!std::filesystem::exists(config::PLAYER_TILESET_PATH)) return;
+    TextureWrapper::init(config::PLAYER_TILESET_PATH.string());
 
     for (const auto& pair : properties) {
         std::istringstream iss(pair.second);
@@ -67,7 +68,7 @@ void Player::init() {
 
     // This is really ugly and needs immediate correction
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(config::FPATH_TILESET_PLAYER.c_str());   // All tilesets should be located in "assets/.tiled/"
+    pugi::xml_parse_result result = document.load_file(config::PLAYER_TILESET_PATH.c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
     srcRectCount.x = document.child("tileset").attribute("columns").as_int();
@@ -99,7 +100,7 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     nextDestRect = new SDL_Rect(getDestRectFromCoords(*nextDestCoords));
 
     // Check if the next `Tile` is valid
-    if (validateMove(destCoords, *nextDestCoords, globals::LEVEL.tileCollection)) onMoveStart(); else onMoveEnd();
+    if (validateMove(destCoords, *nextDestCoords, globals::currentLevel.tileCollection)) onMoveStart(); else onMoveEnd();
 }
 
 /**

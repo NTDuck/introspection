@@ -23,25 +23,6 @@ enum class GameState {
 };
 
 /**
- * @brief Represents all levels. Should also cover sub-levels.
-*/
-enum class LevelState {
-    EQUILIBRIUM = -1,
-    VALLEY_OF_DESPAIR,
-    SLOPE_OF_ENLIGHTENMENT,
-    PLATEAU_OF_SUSTAINABILITY,
-};
-
-/**
- * @brief Represents all tilesets/spritesheets.
- * @note Should strictly follow the order included in level.
-*/
-enum class TileSet {
-    FLOOR_GRASS, PROPS, SHADOW, WALL, FLOOR_STONE, STRUCT, PLANT, PLANT_SHADOW,
-};
-
-
-/**
  * @brief Represents SDL flags and other configurations used in the initialization of SDL subsystems.
  * 
  * @param init any of the following: `SDL_INIT_TIMER` (timer subsystem), `SDL_INIT_AUDIO` (audio subsystem), `SDL_INIT_VIDEO` (video subsystem - automatically initializes the events subsystem), `SDL_INIT_JOYSTICK` (joystick subsystem - automatically initializes the events subsystem), `SDL_INIT_HAPTIC` (haptic i.e. force feedback subsystem), `SDL_INIT_GAMECONTROLLER` (controller subsystem - automatically initializes the joystick subsystem), `SDL_INIT_EVENTS` (events subsystem), `SDL_INIT_EVERYTHING` (all of the above subsystems), `SDL_INIT_NOPARACHUTE` (compatibility - will be ignored), or multiple OR'd together. Determines which SDL subsystem(s) to initialize. Used in `SDL_Init()`.  @see https://wiki.libsdl.org/SDL2/SDL_Init
@@ -71,7 +52,6 @@ struct Flags {
  * @param properties A mapping that stores custom tileset properties.
  * @param properties["norender"] This tileset will not be rendered.
  * @param properties["collision"] This tileset controls collision between entities.
- * @param properties["collision-transition"] Represents the raw GID used to determine a "transition" GID.
 */
 struct TilesetData {
     SDL_Texture* texture;
@@ -99,6 +79,13 @@ struct TileRenderData {
 
 
 using json = nlohmann::json;
+
+/**
+ * @brief Maps a level's name with its corresponding relative file path. Initialized only once in interface initialization and should henceforth be treated as a constant.
+ * @note For optimized memory usage, this approach does not encapsulate `Level` (struct), instead `globals::currentLevel` is loaded via `Interface.loadLevel()` based on file path.
+ * @note Switch to a different data structure should more complexity be involved.
+*/
+using LevelMapping = std::unordered_map<std::string, std::string>;
 
 /**
  * @brief The base unit used for rendering. Contains only non-negative integers known as GIDs (Global Tile IDs) in Tiled terminology.
@@ -131,6 +118,8 @@ using TilesetDataCollection = std::vector<TilesetData>;
 struct Level {
     TileCollection tileCollection;
     SDL_Point playerDestCoords;
+    // std::unordered_map<std::string, std::string> properties;
+    SDL_Color backgroundColor;
 };
 
 
@@ -152,16 +141,12 @@ namespace config {
         1280, 720,
     };
     const int frameRate = 120;
+    const SDL_Color DEFAULT_BACKGROUND_COLOR = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
 
-    /**
-     * @brief Simulate the tileset's black.
-     * @note Alpha modulation is not set.
-    */
-    const SDL_Color BACKGROUND_COLOR = {0x14, 0x14, 0x12};
-
-    const std::string DIR_ASSETS = "assets/";
-    const std::string DIR_TILESETS = DIR_ASSETS + ".tiled/";
-    const std::string FPATH_TILESET_PLAYER = DIR_TILESETS + ".tsx/hp-player.tsx";
+    const std::filesystem::path ASSETS_PATH = "assets";
+    const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
+    const std::filesystem::path PLAYER_TILESET_PATH = TILED_ASSETS_PATH / ".tsx" / "hp-player.tsx";
+    const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
     
     const SDL_Point VELOCITY_PLAYER = {1, 1};
     const int ANIMATION_PLAYER_UPDATE_RATE = 64;
@@ -207,9 +192,9 @@ namespace globals {
     extern TilesetDataCollection TILESET_COLLECTION;
 
     /**
-     * @brief Represents the current level/sub-level. Accessible to all classes, 
+     * @brief Represents the current level/sub-level. Accessible to all classes.
     */
-    extern Level LEVEL;
+    extern Level currentLevel;
 
     void dealloc();
 }

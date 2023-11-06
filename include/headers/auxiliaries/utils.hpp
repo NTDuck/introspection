@@ -16,8 +16,10 @@ namespace utils {
 
     void readJSON(const std::string path, json& data);
     void cleanRelativePath(std::string& path);
+    SDL_Color SDL_ColorFromHexString(const std::string& hexString);
 
-    void loadLevelData(Level& levelData, json& data);
+    void loadLevelsData(const std::string xmlpath, LevelMapping& mapping);
+    void loadLevelData(Level& levelData, const json& data);
     void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
 
     TilesetData getTilesetData(int gid);

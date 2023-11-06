@@ -41,7 +41,7 @@ void TextureWrapper::init(const std::string xmlPath) {
     // Load texture
     std::string path = imageNode.attribute("source").value();
     utils::cleanRelativePath(path);
-    texture = IMG_LoadTexture(globals::renderer, (config::DIR_ASSETS + path).c_str());
+    texture = IMG_LoadTexture(globals::renderer, (config::ASSETS_PATH / path).string().c_str());
 
     VELOCITY = config::VELOCITY_PLAYER;
     velocity = {0, 0};
@@ -54,7 +54,7 @@ void TextureWrapper::init(const std::string xmlPath) {
 */
 void TextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
-    destCoords = globals::LEVEL.playerDestCoords;
+    destCoords = globals::currentLevel.playerDestCoords;
     destRect = getDestRectFromCoords(destCoords);
     onMoveEnd();
 }

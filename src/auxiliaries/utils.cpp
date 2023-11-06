@@ -1,8 +1,8 @@
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
+#include <unordered_map>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
@@ -119,67 +119,129 @@ namespace utils {
     }
 
     /**
+     * @brief Converts a `std::string` representing a hex color value to `SDL_Color`.
+    */
+    SDL_Color SDL_ColorFromHexString(const std::string& hexString) {
+        // Convert hexadecimal string to unsigned integer
+        uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);
+
+        // Isolate each component (8 bits) then mask out redundancies (via bitwise AND, to ensure valid range 0 - 255)
+        uint8_t alpha = (ARGB >> 24) & 0xff;
+        uint8_t red = (ARGB >> 16) & 0xff;
+        uint8_t green = (ARGB >> 8) & 0xff;
+        uint8_t blue = ARGB & 0xff;
+
+        return SDL_Color({red, green, blue, alpha});
+    }
+
+    /**
+     * @brief Register level initialization data to a `LevelMapping`.
+    */
+    void loadLevelsData(const std::string jsonPath, LevelMapping& mapping) {
+        json data;
+        utils::readJSON(config::LEVELS_PATH.string(), data);
+
+        auto levels = data.find("levels");
+        if (levels == data.end() || !levels.value().is_array()) return;
+
+        // int count = 0;
+
+        for (const auto& level : levels.value()) {
+            if (!level.is_object()) continue;
+            auto name = level.find("name");
+            auto source = level.find("source");
+            if (name == level.end() || source == level.end() || !name.value().is_string() || !source.value().is_string()) continue;
+            mapping[name.value()] = source.value();
+        }
+    }
+
+    /**
      * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
      * @note Only `csv` and `zlib-compressed base64` are supported.
     */
-    void loadLevelData(Level& levelData, json& data) {
-        for (auto& tileRow : levelData.tileCollection) for (auto& tile : tileRow) tile.clear();
+    void loadLevelData(Level& currentLevel, const json& data) {
+        for (auto& tileRow : currentLevel.tileCollection) for (auto& tile : tileRow) tile.clear();
 
         // Update global variables
-        globals::TILE_DEST_COUNT = {data["width"], data["height"]};
+        auto tileDestCountWidth = data.find("width");
+        auto tileDestCountHeight = data.find("height");
+        if (tileDestCountWidth == data.end() || tileDestCountHeight == data.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
+
+        globals::TILE_DEST_COUNT = {tileDestCountWidth.value(), tileDestCountHeight.value()};
         globals::TILE_DEST_SIZE = {globals::WINDOW_SIZE.x / globals::TILE_DEST_COUNT.x, globals::WINDOW_SIZE.y / globals::TILE_DEST_COUNT.y};
         globals::OFFSET = {
             (globals::WINDOW_SIZE.x - globals::TILE_DEST_COUNT.x * globals::TILE_DEST_SIZE.x) / 2,
             (globals::WINDOW_SIZE.y - globals::TILE_DEST_COUNT.y * globals::TILE_DEST_SIZE.y) / 2,
         };
 
-        levelData.tileCollection.resize(globals::TILE_DEST_COUNT.y);
-        for (auto& tileRow : levelData.tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
+        auto backgroundColor = data.find("backgroundcolor");
+        if (backgroundColor != data.end() && !backgroundColor.value().is_string()) return;
+        currentLevel.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : config::DEFAULT_BACKGROUND_COLOR);
 
         // Emplace gids into `tileCollection`. Executed per layer.
-        for (const auto& layer : data["layers"]) {
+        currentLevel.tileCollection.resize(globals::TILE_DEST_COUNT.y);
+        for (auto& tileRow : currentLevel.tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
+
+        auto layers = data.find("layers");
+        if (layers == data.end() || !layers.value().is_array()) return;
+
+        for (const auto& layer : layers.value()) {
             // Prevent registering non-tilelayers e.g. object layers
-            if (layer["type"] != "tilelayer") continue;
+            auto type = layer.find("type");
+            if (type == layer.end() || !type.value().is_string() || type.value() != "tilelayer") continue;
 
             // Load GIDs
-            json rawData = layer["data"];
-            std::vector<int> data;
+            auto layerData = layer.find("data");
+            if (layerData == layer.end() || !(layerData.value().is_string() || layerData.value().is_array())) continue;
+
+            std::vector<int> GIDsCollection;
             auto encoding = layer.find("encoding");
             auto compression = layer.find("compression");
 
             if ((encoding == layer.end() || encoding.value() == "csv") && compression == layer.end()) {   // csv
-                for (const auto& GID : rawData) data.emplace_back(GID);
+                for (const auto& GID : layerData.value()) GIDsCollection.emplace_back(GID);
             } else if (encoding != layer.end() && encoding.value() == "base64") {
-                std::string decoded = utils::base64Decode(rawData);
+                std::string decoded = utils::base64Decode(layerData.value());
                 if (compression.value() == "zlib") {   // zlib-compressed base64
-                    data = utils::zlibDecompress<int>(decoded);
+                    GIDsCollection = utils::zlibDecompress<int>(decoded);
                 } else return;
             } else return;
 
-            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) levelData.tileCollection[y][x].emplace_back(data[y * globals::TILE_DEST_COUNT.x + x]);
+            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::TILE_DEST_COUNT.x + x]);
         }
     }
 
     /**
      * @brief Parse tileset-related data from a XML file. Also compatible with XML-like formats, including Tiled's TSX.
     */
-    void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData) {
+    void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& data) {
         tilesetDataCollection.clear();
 
-        for (const auto& data : jsonData["tilesets"]) {
+        auto tilesets = data.find("tilesets");
+        if (tilesets == data.end() || !tilesets.value().is_array()) return;
+
+        for (const auto& tileset : tilesets.value()) {
             TilesetData tilesetData;
 
-            tilesetData.firstGID = data["firstgid"];
-            const std::string xmlPath = data["source"];
+            auto firstGID = tileset.find("firstgid");
+            if (firstGID == tileset.end() || !firstGID.value().is_number_integer()) continue;
+            tilesetData.firstGID = firstGID.value();
+
+            auto _xmlPath = tileset.find("source");
+            if (_xmlPath == tileset.end() || !_xmlPath.value().is_string()) continue;
+            std::string xmlPath = _xmlPath.value();
+            utils::cleanRelativePath(xmlPath);
 
             pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file((config::DIR_TILESETS + xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+            pugi::xml_parse_result result = document.load_file((config::TILED_ASSETS_PATH / xmlPath).string().c_str());   // All tilesets should be located in "assets/.tiled/"
             if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
             // Parse nodes
             pugi::xml_node tilesetNode = document.child("tileset");
             pugi::xml_node propertiesNode = tilesetNode.child("properties");
             pugi::xml_node imageNode = tilesetNode.child("image");
+
+            if (tilesetNode.empty() || imageNode.empty()) continue;
 
             tilesetData.TILE_SRC_COUNT = {
                 tilesetNode.attribute("columns").as_int(),
@@ -198,7 +260,7 @@ namespace utils {
             // Load texture
             std::string path = imageNode.attribute("source").value();
             utils::cleanRelativePath(path);
-            tilesetData.texture = IMG_LoadTexture(renderer, (config::DIR_ASSETS + path).c_str());
+            tilesetData.texture = IMG_LoadTexture(renderer, (config::ASSETS_PATH / path).string().c_str());
 
             // Register to collection
             tilesetDataCollection.emplace_back(tilesetData);

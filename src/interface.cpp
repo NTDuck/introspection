@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <vector>
 
 #include <SDL.h>
@@ -7,7 +8,7 @@
 #include <auxiliaries/utils.hpp>
 
 
-Interface::Interface(LevelState level) : level(level) {}
+Interface::Interface(std::string levelName) : levelName(levelName) {}
 
 Interface::~Interface() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
@@ -17,18 +18,8 @@ Interface::~Interface() {
  * @brief Initialize the interface.
 */
 void Interface::init() {
-    setupLevelMapping();
-}
-
-
-/**
- * @brief Populate the `std::unordered_map` used for level-loading by assigning labmda functions associated with respective methods.
- * @note Remember to bind `this` else the following exception occurs: `the enclosing-function 'this' cannot be referenced in a lambda body unless it is in the capture listC/C++(1738)`.
-*/
-void Interface::setupLevelMapping() {
-    levelMapping = {
-        {LevelState::EQUILIBRIUM, config::DIR_TILESETS + "level-equilibrium.json"},
-    };
+    if (!std::filesystem::exists(config::LEVELS_PATH)) return;
+    utils::loadLevelsData(config::LEVELS_PATH.string(), levelMapping);
 }
 
 /**
@@ -82,7 +73,7 @@ void Interface::renderBackground() {
     // SDL_SetRenderDrawColor(globals::renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
     // for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(globals::renderer, &darkerRect);
 
-    SDL_SetRenderDrawColor(globals::renderer, config::BACKGROUND_COLOR.r, config::BACKGROUND_COLOR.g, config::BACKGROUND_COLOR.b, config::BACKGROUND_COLOR.a);
+    SDL_SetRenderDrawColor(globals::renderer, globals::currentLevel.backgroundColor.r, globals::currentLevel.backgroundColor.g, globals::currentLevel.backgroundColor.b, globals::currentLevel.backgroundColor.a);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
@@ -102,7 +93,7 @@ void Interface::renderLevel() {
             data.destRect.w = globals::TILE_DEST_SIZE.x;
             data.destRect.h = globals::TILE_DEST_SIZE.y;
 
-            for (const auto& gid : globals::LEVEL.tileCollection[y][x]) {
+            for (const auto& gid : globals::currentLevel.tileCollection[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
                 TilesetData tilesetData;
@@ -136,8 +127,8 @@ void Interface::renderLevel() {
 /**
  * @brief Force load level after changes.
 */
-void Interface::changeLevel(LevelState _level) {
-    level = _level;
+void Interface::changeLevel(std::string _levelName) {
+    levelName = _levelName;
     loadLevel();
 }
 
@@ -146,21 +137,40 @@ void Interface::changeLevel(LevelState _level) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void Interface::loadLevel() {
+    std::filesystem::path LEVEL_PATH = config::TILED_ASSETS_PATH / levelMapping[levelName];
+    if (!std::filesystem::exists(LEVEL_PATH)) return;
     json data;
-    utils::readJSON(levelMapping.find(level) -> second, data);
+    utils::readJSON(LEVEL_PATH.string(), data);
 
     // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
-    utils::loadLevelData(globals::LEVEL, data);
+    utils::loadLevelData(globals::currentLevel, data);
 
     // Reset `globals::TILESET_COLLECTION`
     utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
 
-    // Reset `player`'s `destCoords`
-    for (const auto& layer : data["layers"]) {
-        if (layer["type"] != "objectgroup") continue;
-        for (const auto& object : layer["objects"]) {
-            if (object["name"] == "player") {
-                globals::LEVEL.playerDestCoords = {int(object["x"]) / int(object["width"]), int(object["y"]) / int(object["height"])};
+    // Reset `player`'s `destCoords`. Cannot be perform elsewhere due to circular dependencies.
+    auto layers = data.find("layers");
+    if (layers == data.end() || !layers.value().is_array()) return;
+
+    for (const auto& layer : layers.value()) {
+        auto type = layer.find("type");
+        auto objects = layer.find("objects");
+        if (type == layer.end() || !type.value().is_string() || type.value() != "objectgroup") continue;
+        if (objects == layer.end() || !objects.value().is_array()) continue;
+
+        for (const auto& object : objects.value()) {
+            auto name = object.find("name");
+            if (name == object.end() || !name.value().is_string()) continue;
+
+            if (name.value() == "player") {
+                auto playerDestCoordsX = object.find("x");
+                auto playerDestCoordsY = object.find("y");
+                auto playerDestSizeWidth = object.find("width");
+                auto playerDestSizeHeight = object.find("height");
+
+                if (playerDestCoordsX == object.end() || playerDestCoordsY == object.end() || playerDestSizeWidth == object.end() || playerDestSizeHeight == object.end() || !playerDestCoordsX.value().is_number_integer() || !playerDestCoordsY.value().is_number_integer() || !playerDestSizeWidth.value().is_number_integer() || !playerDestSizeHeight.value().is_number_integer()) continue;
+
+                globals::currentLevel.playerDestCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
             }
         }
     }

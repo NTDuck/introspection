@@ -10,7 +10,7 @@
 
 class Interface {
     public:
-        Interface(LevelState level);
+        Interface(std::string levelName);
         ~Interface();
         
         void init();
@@ -18,20 +18,25 @@ class Interface {
         void blit();
         void render();
 
-        void changeLevel(LevelState level);
+        void changeLevel(std::string levelName);
 
     private:
-        void setupLevelMapping();
-
         void renderBackground();
         void renderLevel();
 
         void loadLevel();
 
-        LevelState level;
+        std::string levelName;
 
-        // Containing all level-loading methods.
-        std::unordered_map<LevelState, std::string> levelMapping;
-        // Simulate all tiles presented on the window. Usable as a mapping.
+        /**
+         * @brief Maps a level's name with its corresponding relative file path.
+         * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
+        */
+        LevelMapping levelMapping;
+
+        /**
+         * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
+         * @note Needs optimization to perfect relative positions of props to entities.
+        */
         SDL_Texture* texture = nullptr;
 };
