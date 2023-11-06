@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -14,11 +15,11 @@ namespace utils {
     template <typename T>
     std::vector<T> zlibDecompress(const std::string s);
 
-    void readJSON(const std::string path, json& data);
-    void cleanRelativePath(std::string& path);
+    void readJSON(const std::filesystem::path path, json& data);
+    void cleanRelativePath(std::filesystem::path& path);
     SDL_Color SDL_ColorFromHexString(const std::string& hexString);
 
-    void loadLevelsData(const std::string xmlpath, LevelMapping& mapping);
+    void loadLevelsData(LevelMapping& mapping);
     void loadLevelData(Level& levelData, const json& data);
     void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
 

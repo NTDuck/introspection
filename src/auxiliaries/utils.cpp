@@ -97,7 +97,7 @@ namespace utils {
     /**
      * @brief Read a JSON file.
     */
-    void readJSON(const std::string path, json& data) {
+    void readJSON(const std::filesystem::path path, json& data) {
         std::ifstream file;
         file.open(path);
         if (!file.is_open()) return;
@@ -107,15 +107,19 @@ namespace utils {
     }
 
     /**
-     * @brief Remove leading dots (`.`) and slashes (`/``\`) in a path-like `std::string`.
+     * @brief Remove leading dots (`.`) and slashes (`/``\`) in a `std::filesystem::path`.
+     * @note Fall back to string manipulation for `std::filesystem` methods (`canonical()`, `lexically_normal()`, etc.) fails inexplicably.
     */
-    void cleanRelativePath(std::string& path) {
-        size_t found = path.find("../");
+    void cleanRelativePath(std::filesystem::path& path) {
+        std::string s = path.string();
 
+        size_t found = s.find("../");
         while (found != std::string::npos) {
-            path = path.substr(found + 3);
-            found = path.find("../");
+            s = s.substr(found + 3);
+            found = s.find("../");
         }
+
+        path = s;
     }
 
     /**
@@ -137,7 +141,7 @@ namespace utils {
     /**
      * @brief Register level initialization data to a `LevelMapping`.
     */
-    void loadLevelsData(const std::string jsonPath, LevelMapping& mapping) {
+    void loadLevelsData(LevelMapping& mapping) {
         json data;
         utils::readJSON(config::LEVELS_PATH.string(), data);
 
@@ -229,7 +233,7 @@ namespace utils {
 
             auto _xmlPath = tileset.find("source");
             if (_xmlPath == tileset.end() || !_xmlPath.value().is_string()) continue;
-            std::string xmlPath = _xmlPath.value();
+            std::filesystem::path xmlPath(_xmlPath.value());
             utils::cleanRelativePath(xmlPath);
 
             pugi::xml_document document;
@@ -258,7 +262,7 @@ namespace utils {
             for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) tilesetData.properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
 
             // Load texture
-            std::string path = imageNode.attribute("source").value();
+            std::filesystem::path path(imageNode.attribute("source").value());
             utils::cleanRelativePath(path);
             tilesetData.texture = IMG_LoadTexture(renderer, (config::ASSETS_PATH / path).string().c_str());
 

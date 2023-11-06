@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -14,7 +15,7 @@ class TextureWrapper {
         TextureWrapper();
         ~TextureWrapper();
 
-        void init(const std::string xmlPath);
+        void init(const std::filesystem::path xmlPath);
         void blit();
         virtual void render();
 

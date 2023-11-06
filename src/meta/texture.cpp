@@ -1,3 +1,4 @@
+#include <filesystem>
 #include <SDL.h>
 #include <SDL_image.h>
 
@@ -21,7 +22,7 @@ TextureWrapper::~TextureWrapper() {
  * @brief Initialize the texture from a XML file.
  * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
 */
-void TextureWrapper::init(const std::string xmlPath) {
+void TextureWrapper::init(const std::filesystem::path xmlPath) {
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
@@ -39,7 +40,7 @@ void TextureWrapper::init(const std::string xmlPath) {
     for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
 
     // Load texture
-    std::string path = imageNode.attribute("source").value();
+    std::filesystem::path path (imageNode.attribute("source").value());
     utils::cleanRelativePath(path);
     texture = IMG_LoadTexture(globals::renderer, (config::ASSETS_PATH / path).string().c_str());
 

@@ -19,7 +19,7 @@ Interface::~Interface() {
 */
 void Interface::init() {
     if (!std::filesystem::exists(config::LEVELS_PATH)) return;
-    utils::loadLevelsData(config::LEVELS_PATH.string(), levelMapping);
+    utils::loadLevelsData(levelMapping);
 }
 
 /**
