@@ -6,9 +6,10 @@ a RPG made without a game engine.
 
 ## Screenshots
 ![](preview.png)
-<video controls width="1280" height="720">
-  <source src="demo.mp4" type="video/mp4">
-</video>
+
+
+https://github.com/NTDuck/8964/assets/105532764/425c797a-7332-4926-91f9-5c2d7478b300
+
 
 
 ## Features
