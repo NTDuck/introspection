@@ -64,8 +64,7 @@ void Game::gameLoop() {
     blit();
 
     while (state != GameState::EXIT) {
-        player.move();
-        
+        if (state == GameState::INGAME_PLAYING) handleMotion();
         handleEvents();
         render();
     }
@@ -105,6 +104,14 @@ void Game::render() {
     }
 
     SDL_RenderPresent(globals::renderer);
+}
+
+/**
+ * @brief Handle all entities movement & animation update.
+*/
+void Game::handleMotion() {
+    player.move();
+    player.updateAnimation();
 }
 
 /**

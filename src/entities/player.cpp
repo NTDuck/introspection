@@ -9,18 +9,19 @@
 Player::Player() {}
 
 Player::~Player() {
-    NonStaticTextureWrapper::~NonStaticTextureWrapper();
+    AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper();
 }
 
 /**
  * @see https://stackoverflow.com/questions/4146499/why-does-a-virtual-function-get-hidden
 */
 void Player::init() {
-    NonStaticTextureWrapper::initAbstract(config::PLAYER_TILESET_PATH);   // static_cast<NonStaticTextureWrapper*>(this) -> _init(config::PLAYER_TILESET_PATH);
+    AnimatedDynamicTextureWrapper::init_(config::PLAYER_TILESET_PATH);   // static_cast<NonStaticTextureWrapper*>(this) -> _init(config::PLAYER_TILESET_PATH);
 }
 
 /**
  * @brief Handle player movement based on keyboard input.
+ * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(const SDL_Event& event) {
     // Only move if the player is not already moving
@@ -39,8 +40,7 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     nextDestCoords = new SDL_Point({destCoords.x + velocity.x, destCoords.y + velocity.y});
     nextDestRect = new SDL_Rect(BaseTextureWrapper::getDestRectFromCoords(*nextDestCoords));
 
-    // Check if the next `Tile` is valid
-    if (validateMove()) NonStaticTextureWrapper::onMoveStart(); else NonStaticTextureWrapper::onMoveEnd();
+    if (validateMove()) AnimatedDynamicTextureWrapper::onMoveStart(); else AnimatedDynamicTextureWrapper::onMoveEnd();
 }
 
 /**

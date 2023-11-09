@@ -25,6 +25,7 @@ class Game {
 
         void blit();
         void render();
+        void handleMotion();
 
         void handleEvents();
         void handleWindowEvent(const SDL_Event& event);

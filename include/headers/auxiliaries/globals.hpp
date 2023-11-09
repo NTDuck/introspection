@@ -142,7 +142,7 @@ namespace config {
     };
     const int frameRate = 120;
     const SDL_Color DEFAULT_BACKGROUND_COLOR = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
-    const std::string DEFAULT_LEVEL = "level-valley-of-despair";
+    const std::string DEFAULT_LEVEL = "level-equilibrium";
 
     const std::filesystem::path ASSETS_PATH = "assets";
     const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";

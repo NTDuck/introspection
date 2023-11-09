@@ -13,8 +13,6 @@ BaseTextureWrapper::BaseTextureWrapper() {}
 
 BaseTextureWrapper::~BaseTextureWrapper() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
-    delete nextDestCoords;
-    delete nextDestRect;
     delete center;
 }
 
@@ -22,7 +20,9 @@ BaseTextureWrapper::~BaseTextureWrapper() {
  * @brief Initialize the texture from a XML file.
  * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
 */
-void BaseTextureWrapper::initAbstract(const std::filesystem::path xmlPath) {
+void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
+    if (!std::filesystem::exists(xmlPath)) return;
+
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
@@ -43,11 +43,6 @@ void BaseTextureWrapper::initAbstract(const std::filesystem::path xmlPath) {
     std::filesystem::path path (imageNode.attribute("source").value());
     utils::cleanRelativePath(path);
     texture = IMG_LoadTexture(globals::renderer, (config::ASSETS_PATH / path).string().c_str());
-
-    VELOCITY = config::VELOCITY_PLAYER;
-    velocity = {0, 0};
-
-    onMoveEnd();
 }
 
 /**
@@ -57,7 +52,6 @@ void BaseTextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
     destCoords = globals::currentLevel.playerDestCoords;
     destRect = getDestRectFromCoords(destCoords);
-    onMoveEnd();
 }
 
 /**
@@ -104,47 +98,8 @@ void BaseTextureWrapper::setRGBA(SDL_Color color) {
 }
 
 /**
- * @brief Handle only the implementation of moving the texture from one `Tile` to the next.
- * @note Requires `nextDestCoords` and `nextDestRect` configured by derived classes. Validation is not handled and should be implemented by derived classes.
-*/
-void BaseTextureWrapper::move() {
-    if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
-
-    destRect.x += velocity.x * VELOCITY.x;
-    destRect.y += velocity.y * VELOCITY.y;
-
-    // Continue movement until new `Tile` has been reached.
-    if ((nextDestRect -> x - destRect.x) * velocity.x > 0 || (nextDestRect -> y - destRect.y) * velocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
-
-    // Terminate movement when reached new `Tile`
-    destCoords = *nextDestCoords;
-    destRect = *nextDestRect;
-    onMoveEnd();
-}
-
-/**
- * @brief Check whether moving the texture from one tile to another is valid.
- * @note Only check whether next tile exceeds map limit. Further validation should be separately implemented by derived classes.
-*/
-bool BaseTextureWrapper::validateMove() {
-    if (nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::TILE_DEST_COUNT.x || nextDestCoords -> y >= globals::TILE_DEST_COUNT.y) return false;
-    return true;
-}
-
-/**
  * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
 */
 SDL_Rect BaseTextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
     return SDL_Rect {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
 };
-
-/**
- * @brief Clean up resources after entity finished moving.
-*/
-void BaseTextureWrapper::onMoveEnd() {
-    nextDestCoords = nullptr;
-    nextDestRect = nullptr;
-
-    // Reset velocity
-    velocity = {0, 0};
-}

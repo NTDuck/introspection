@@ -13,7 +13,7 @@
 /**
  * @brief Represents the player.
 */
-class Player : public NonStaticTextureWrapper {
+class Player : public AnimatedDynamicTextureWrapper {
     public:
         Player();
         ~Player();

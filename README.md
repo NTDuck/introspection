@@ -4,8 +4,11 @@
 a RPG made without a game engine.
 
 
-## Screenshot
+## Screenshots
 ![](preview.png)
+<video controls width="1280" height="720">
+  <source src="demo.mp4" type="video/mp4">
+</video>
 
 
 ## Features
