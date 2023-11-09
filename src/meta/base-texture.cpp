@@ -9,9 +9,9 @@
 #include <auxiliaries/utils.hpp>
 
 
-TextureWrapper::TextureWrapper() {}
+BaseTextureWrapper::BaseTextureWrapper() {}
 
-TextureWrapper::~TextureWrapper() {
+BaseTextureWrapper::~BaseTextureWrapper() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
     delete nextDestCoords;
     delete nextDestRect;
@@ -22,7 +22,7 @@ TextureWrapper::~TextureWrapper() {
  * @brief Initialize the texture from a XML file.
  * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
 */
-void TextureWrapper::init(const std::filesystem::path xmlPath) {
+void BaseTextureWrapper::initAbstract(const std::filesystem::path xmlPath) {
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
@@ -53,7 +53,7 @@ void TextureWrapper::init(const std::filesystem::path xmlPath) {
 /**
  * @brief Update certain attrbutes when global variables change e.g. window resize, new level.
 */
-void TextureWrapper::blit() {
+void BaseTextureWrapper::blit() {
     // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
     destCoords = globals::currentLevel.playerDestCoords;
     destRect = getDestRectFromCoords(destCoords);
@@ -65,14 +65,14 @@ void TextureWrapper::blit() {
  * @note Derived classes must properly set `destRect` and `srcRectsIndex` before calling this method, either during instantiation or via `init()` method.
  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
 */
-void TextureWrapper::render() {
+void BaseTextureWrapper::render() {
     SDL_RenderCopyEx(globals::renderer, texture, &srcRect, &destRect, angle, center, flip);
 }
 
 /**
  * @brief Set color modulation on `texture`. Follows standard RGB color model.
 */
-void TextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
+void BaseTextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
     SDL_SetTextureColorMod(texture, r, g, b);
 }
 
@@ -81,7 +81,7 @@ void TextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
  * @param blendMode the blending mode. Defaults to `SDL_BLENDMODE_BLEND`.
  * @see https://wiki.libsdl.org/SDL2/SDL_BlendMode
 */
-void TextureWrapper::setBlending(SDL_BlendMode blendMode) {
+void BaseTextureWrapper::setBlending(SDL_BlendMode blendMode) {
     SDL_SetTextureBlendMode(texture, blendMode);
 }
 
@@ -89,7 +89,7 @@ void TextureWrapper::setBlending(SDL_BlendMode blendMode) {
  * @brief Set alpha modulation on `texture`.
  * @param alpha the alpha value. `0` represents full transparency, `255` represents full opacity.
 */
-void TextureWrapper::setAlpha(Uint8 alpha) {
+void BaseTextureWrapper::setAlpha(Uint8 alpha) {
     SDL_SetTextureAlphaMod(texture, alpha);
 }
 
@@ -97,7 +97,7 @@ void TextureWrapper::setAlpha(Uint8 alpha) {
  * @brief A shorthand for setting both color modulation and alpha modulation on `texture`.
  * @param col represents a standard RGBA value.
 */
-void TextureWrapper::setRGBA(SDL_Color color) {
+void BaseTextureWrapper::setRGBA(SDL_Color color) {
     setRGB(color.r, color.g, color.b);
     setBlending();
     setAlpha(color.a);
@@ -107,7 +107,7 @@ void TextureWrapper::setRGBA(SDL_Color color) {
  * @brief Handle only the implementation of moving the texture from one `Tile` to the next.
  * @note Requires `nextDestCoords` and `nextDestRect` configured by derived classes. Validation is not handled and should be implemented by derived classes.
 */
-void TextureWrapper::move() {
+void BaseTextureWrapper::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
     destRect.x += velocity.x * VELOCITY.x;
@@ -123,16 +123,25 @@ void TextureWrapper::move() {
 }
 
 /**
+ * @brief Check whether moving the texture from one tile to another is valid.
+ * @note Only check whether next tile exceeds map limit. Further validation should be separately implemented by derived classes.
+*/
+bool BaseTextureWrapper::validateMove() {
+    if (nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::TILE_DEST_COUNT.x || nextDestCoords -> y >= globals::TILE_DEST_COUNT.y) return false;
+    return true;
+}
+
+/**
  * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
 */
-SDL_Rect TextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
+SDL_Rect BaseTextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
     return SDL_Rect {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
 };
 
 /**
  * @brief Clean up resources after entity finished moving.
 */
-void TextureWrapper::onMoveEnd() {
+void BaseTextureWrapper::onMoveEnd() {
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
 

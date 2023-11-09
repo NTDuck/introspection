@@ -3,6 +3,10 @@
     {
       "name": "level-equilibrium",
       "source": ".tmx/level-equilibrium.json"
+    },
+    {
+      "name": "level-valley-of-despair",
+      "source": ".tmx/level-valley-of-despair.json"
     }
   ]
 }

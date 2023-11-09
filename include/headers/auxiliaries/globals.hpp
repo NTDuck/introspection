@@ -142,6 +142,7 @@ namespace config {
     };
     const int frameRate = 120;
     const SDL_Color DEFAULT_BACKGROUND_COLOR = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
+    const std::string DEFAULT_LEVEL = "level-valley-of-despair";
 
     const std::filesystem::path ASSETS_PATH = "assets";
     const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
@@ -149,7 +150,7 @@ namespace config {
     const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
     
     const SDL_Point VELOCITY_PLAYER = {1, 1};
-    const int ANIMATION_PLAYER_UPDATE_RATE = 64;
+    const int ANIMATION_UPDATE_RATE_NONSTATIC_TEXTURE = 64;
     const std::string ANIMATION_PLAYER = "animation-blink";
 };
 

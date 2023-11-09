@@ -5,7 +5,7 @@
 #include <SDL.h>
 
 #include <interface.hpp>
-#include <entities/player.hpp>
+#include <entities.hpp>
 #include <auxiliaries/globals.hpp>
 
 

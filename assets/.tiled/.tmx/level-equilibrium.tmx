@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#141412" nextlayerid="27" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="27" nextobjectid="9">
  <editorsettings>
   <export target="level-equilibrium.json" format="json"/>
  </editorsettings>
@@ -8,6 +8,8 @@
  <tileset firstgid="617" source="../.tsx/mi-rb-walls-3d.tsx"/>
  <tileset firstgid="1937" source="../.tsx/mi-jail.tsx"/>
  <tileset firstgid="2657" source="../.tsx/mi-bedroom.tsx"/>
+ <tileset firstgid="4369" source="../.tsx/mi-music-and-sport.tsx"/>
+ <tileset firstgid="5137" source="../.tsx/mi-clothing-store.tsx"/>
  <layer id="26" name="static-collision" width="38" height="20">
   <data encoding="base64" compression="zlib">
    eJztzrEJADAQw0D//kunSBPUB3+hA4NLJZL037QDYLDgt7CLjS1bu152SdJ1ALWwAB4=
@@ -15,7 +17,7 @@
  </layer>
  <layer id="20" name="floors" width="38" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt0MERABAMRNGNvtEAekUDUgAXl2TYP7NnLwB2UxQgbZbF1lX0/XqYF1dz6vL6X55cN3U1j82m9S0BkMPooutZF2PsixYuxhoI
+   eJzt0NENABAMhOGrvbEAdsUCDKAvEmkT9yf37CuA3RQFSIdlsXWV/X5V5sXVnLq8/pcn1019m8dh0/qWAIgyuuh65QrWLsbYFy0zMhoJ
   </data>
  </layer>
  <layer id="21" name="walls" width="38" height="20">
@@ -25,6 +27,12 @@
  </layer>
  <objectgroup id="15" name="entities">
   <object id="5" name="player" x="640" y="256" width="32" height="32"/>
+  <object id="7" name="teleporter" x="672" y="384" width="32" height="32">
+   <properties>
+    <property name="dest-coords" value="32 6"/>
+    <property name="dest-level" value="level-valley-of-despair"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer id="25" name="props-i" width="38" height="20">
   <data encoding="base64" compression="zlib">
@@ -38,12 +46,12 @@
  </layer>
  <layer id="23" name="props-1" width="38" height="20">
   <data encoding="base64" compression="zlib">
-   eJzt0qsRgDAURNEnI9J/J3wa4NMAAZMSkHgugsFhs2LPzPorNsJMX5ciejawMbWu+Uy0zGxhq1DXRkthOzuEuh5VrOd1inbZvyvzd1Zy6xIzMx03S4oOTQ==
+   eJzt0isOgDAURNGRFfVdN4vh4wkfTygYloDEM0kdAtsRc5LJs1c8wExfG4CO67kh1K4pxgRMbJm5hVtFujZ27WzJ3MGdIl1NKvcS6fm6Rbvs3xP571yOtUvMzHS85yIQuQ==
   </data>
  </layer>
  <layer id="24" name="props-2" width="38" height="20">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUkAOOsGOKOXHQ3x3o4ArQXeV8A+0K7KAd6q6FwHB6hiX8RsEoGAWjYBSMglFAOQAAfz8EoQ==
+   eJxjYBgFo2AUUAs4cQy0CxgYLAQZGMr5BtoVmMAD6K52qLsWAsPpGfvAugcGIgQH2gWjYBSMglEwCkYBdQEAdWwEBg==
   </data>
  </layer>
 </map>

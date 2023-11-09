@@ -1,5 +1,4 @@
-{ "backgroundcolor":"#141412",
- "compressionlevel":-1,
+{ "compressionlevel":-1,
  "height":20,
  "infinite":false,
  "layers":[
@@ -19,7 +18,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt0MERABAMRNGNvtEAekUDUgAXl2TYP7NnLwB2UxQgbZbF1lX0\/XqYF1dz6vL6X55cN3U1j82m9S0BkMPooutZF2PsixYuxhoI",
+         "data":"eJzt0NENABAMhOGrvbEAdsUCDKAvEmkT9yf37CuA3RQFSIdlsXWV\/X5V5sXVnLq8\/pcn1019m8dh0\/qWAIgyuuh65QrWLsbYFy0zMhoJ",
          "encoding":"base64",
          "height":20,
          "id":20,
@@ -60,6 +59,28 @@
                  "width":32,
                  "x":640,
                  "y":256
+                }, 
+                {
+                 "height":32,
+                 "id":7,
+                 "name":"teleporter",
+                 "properties":[
+                        {
+                         "name":"dest-coords",
+                         "type":"string",
+                         "value":"32 6"
+                        }, 
+                        {
+                         "name":"dest-level",
+                         "type":"string",
+                         "value":"level-valley-of-despair"
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":672,
+                 "y":384
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -97,7 +118,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt0qsRgDAURNEnI9J\/J3wa4NMAAZMSkHgugsFhs2LPzPorNsJMX5ciejawMbWu+Uy0zGxhq1DXRkthOzuEuh5VrOd1inbZvyvzd1Zy6xIzMx03S4oOTQ==",
+         "data":"eJzt0isOgDAURNGRFfVdN4vh4wkfTygYloDEM0kdAtsRc5LJs1c8wExfG4CO67kh1K4pxgRMbJm5hVtFujZ27WzJ3MGdIl1NKvcS6fm6Rbvs3xP571yOtUvMzHS85yIQuQ==",
          "encoding":"base64",
          "height":20,
          "id":23,
@@ -111,7 +132,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFo2AUkAOOsGOKOXHQ3x3o4ArQXeV8A+0K7KAd6q6FwHB6hiX8RsEoGAWjYBSMglFAOQAAfz8EoQ==",
+         "data":"eJxjYBgFo2AUUAs4cQy0CxgYLAQZGMr5BtoVmMAD6K52qLsWAsPpGfvAugcGIgQH2gWjYBSMglEwCkYBdQEAdWwEBg==",
          "encoding":"base64",
          "height":20,
          "id":24,
@@ -124,7 +145,7 @@
          "y":0
         }],
  "nextlayerid":27,
- "nextobjectid":6,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -149,6 +170,14 @@
         {
          "firstgid":2657,
          "source":"..\/.tsx\/mi-bedroom.tsx"
+        }, 
+        {
+         "firstgid":4369,
+         "source":"..\/.tsx\/mi-music-and-sport.tsx"
+        }, 
+        {
+         "firstgid":5137,
+         "source":"..\/.tsx\/mi-clothing-store.tsx"
         }],
  "tilewidth":32,
  "type":"map",
