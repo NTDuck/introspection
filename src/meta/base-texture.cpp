@@ -1,12 +1,12 @@
 #include <filesystem>
+
 #include <SDL.h>
 #include <SDL_image.h>
-
-#include <meta.hpp>
 #include <pugixml/pugixml.hpp>
 
-#include <auxiliaries/globals.hpp>
+#include <meta.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 BaseTextureWrapper::BaseTextureWrapper() {}
@@ -57,7 +57,7 @@ void BaseTextureWrapper::onWindowChange() {
  * @note Does nothing by default, implementation will be handled by derived classes.
  * @note Behold, polyphormism!
 */
-void BaseTextureWrapper::onLevelChange(const globals::levelData::Texture& texture) {
+void BaseTextureWrapper::onLevelChange(const globals::leveldata::TextureData& texture) {
     destCoords = texture.destCoords;
 }
 

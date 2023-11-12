@@ -7,8 +7,8 @@
 
 #include <interface.hpp>
 #include <entities.hpp>
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 /**
@@ -46,7 +46,7 @@ class Game {
         */
         Interface interface;
         Player player;
-        std::unordered_map<SDL_Point, Teleporter, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator> teleporters;
+        Teleporter::Teleporters teleporters;
 
         // Initialization parameters
         const Flags flags;

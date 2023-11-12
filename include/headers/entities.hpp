@@ -7,6 +7,7 @@
 #include <SDL.h>
 
 #include <meta.hpp>
+#include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
 
@@ -21,7 +22,7 @@ class Player : public AnimatedDynamicTextureWrapper {
         void init();
         void render() override;
         
-        void onLevelChange(const globals::levelData::Texture& player) override;
+        void onLevelChange(const globals::leveldata::TextureData& player) override;
         void handleKeyboardEvent(const SDL_Event& event);
 };
 
@@ -31,8 +32,11 @@ class Teleporter : public BaseTextureWrapper {
         Teleporter();
         ~Teleporter();
 
-        void onLevelChange(const globals::levelData::Texture& teleporter) override;
-        void teleport(std::function<void(std::string)>& loadLevelFunc);
+        using Teleporters = std::unordered_map<SDL_Point, Teleporter, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator>;
+
+        void onLevelChange(const globals::leveldata::TextureData& teleporter) override;
+        static void onLevelChange_(Teleporters& teleporters, const globals::leveldata::TeleportersData& teleportersData);
+        static void onWindowChange_(Teleporters& teleporters);
 
         SDL_Point targetDestCoords;
         std::string targetLevel;

@@ -1,8 +1,8 @@
 #include <filesystem>
 #include <sstream>
 
-#include <meta.hpp>
 #include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries/utils.hpp>
 
 
@@ -43,8 +43,8 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     if (validateMove()) AnimatedDynamicTextureWrapper::onMoveStart(); else AnimatedDynamicTextureWrapper::onMoveEnd();
 }
 
-void Player::onLevelChange(const globals::levelData::Texture& player) {
-    auto data = dynamic_cast<const globals::levelData::Player*>(&player);
+void Player::onLevelChange(const globals::leveldata::TextureData& player) {
+    auto data = dynamic_cast<const globals::leveldata::PlayerData*>(&player);
     AnimatedDynamicTextureWrapper::onLevelChange(*data);
 }
 

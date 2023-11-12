@@ -13,11 +13,10 @@ namespace utils {
     /**
      * @brief Define/re-define hash function objects for needy classes.
      * @note Required for `std::unordered_set` and `std::unordered_map`.
-     * @bug `std::bad_alloc` temporarily patched with `noexcept`.
     */
     namespace hashers {
         struct SDL_Point_Hasher {
-            std::size_t operator()(const SDL_Point& obj) const noexcept {
+            std::size_t operator()(const SDL_Point& obj) const {
                 return std::hash<int>()(obj.x) ^ (std::hash<int>()(obj.y) << 1);
             }
         };
@@ -50,7 +49,7 @@ namespace utils {
     SDL_Color SDL_ColorFromHexString(const std::string& hexString);
 
     void loadLevelsData(LevelMapping& mapping);
-    void loadLevelData(globals::levelData::Level& levelData, const json& data);
+    void loadLevelData(globals::leveldata::LevelData& levelData, const json& data);
     void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
 
     TilesetData getTilesetData(int gid);

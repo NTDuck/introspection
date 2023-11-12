@@ -21,7 +21,7 @@ class BaseTextureWrapper {
         virtual void render();
 
         virtual void onWindowChange();
-        virtual void onLevelChange(const globals::levelData::Texture& texture);
+        virtual void onLevelChange(const globals::leveldata::TextureData& texture);
 
         void setRGB(Uint8 r, Uint8 g, Uint8 b);
         void setBlending(SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND);
@@ -97,7 +97,7 @@ class AnimatedDynamicTextureWrapper : public AnimatedTextureWrapper {
         ~AnimatedDynamicTextureWrapper();
 
         void init_(const std::filesystem::path xmlPath) override;
-        void onLevelChange(const globals::levelData::Texture& texture) override;
+        void onLevelChange(const globals::leveldata::TextureData& texture) override;
 
         virtual void move();
         virtual bool validateMove();
@@ -111,12 +111,4 @@ class AnimatedDynamicTextureWrapper : public AnimatedTextureWrapper {
     protected:
         SDL_Point velocity;   // between -1 and 1
         SDL_Point VELOCITY;
-};
-
-
-/**
- * @brief An abstract class representing a texture that updates its animation and is NOT able to change its position.
-*/
-class AnimatedStaticTextureWrapper : public AnimatedTextureWrapper {
-    // poof
 };

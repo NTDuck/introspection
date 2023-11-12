@@ -5,8 +5,8 @@
 #include <pugixml/pugixml.hpp>
 
 #include <meta.hpp>
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 AnimatedDynamicTextureWrapper::AnimatedDynamicTextureWrapper() {}
 
@@ -25,7 +25,7 @@ void AnimatedDynamicTextureWrapper::init_(std::filesystem::path xmlPath) {
     VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
 }
 
-void AnimatedDynamicTextureWrapper::onLevelChange(const globals::levelData::Texture& texture) {
+void AnimatedDynamicTextureWrapper::onLevelChange(const globals::leveldata::TextureData& texture) {
     BaseTextureWrapper::onLevelChange(texture);
     onMoveEnd();
 }
@@ -62,7 +62,7 @@ bool AnimatedDynamicTextureWrapper::validateMove() {
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
         static TilesetData* tilesetData = nullptr;
-        for (const auto& gid : globals::currentLevel.tileCollection[coords.y][coords.x]) {
+        for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
             tilesetData = new TilesetData(utils::getTilesetData(gid));
             if (!gid && tilesetData -> properties["collision"] != "true") continue;
             // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;

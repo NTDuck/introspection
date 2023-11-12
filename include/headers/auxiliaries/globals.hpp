@@ -3,7 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <set>
+#include <unordered_set>
 #include <unordered_map>
 
 #include <SDL.h>
@@ -151,39 +151,59 @@ namespace globals {
     /**
      * @brief Provide required data for level-loading.
     */
-    namespace levelData {
-        struct Texture {
+    namespace leveldata {
+        struct TextureData {
             // Virtual destructor, required for polymorphism
-            virtual ~Texture() = default;
+            virtual ~TextureData() = default;
 
-            // Equality comparison, required for `std::map` and `std::set`
-            bool operator<(const Texture& other) const {
-                return (this -> destCoords.y == other.destCoords.y ? this -> destCoords.x < other.destCoords.x : this -> destCoords.y < other.destCoords.y);
-            }
+            /**
+             * @note Should be placed elsewhere.
+            */
+            struct TextureData_Hasher {
+                std::size_t operator()(const TextureData& obj) const {
+                    return std::hash<int>()(obj.destCoords.x) ^ (std::hash<int>()(obj.destCoords.y) << 1);
+                }
+            };
 
-            bool operator==(const Texture& other) {
-                return (this -> destCoords.x == other.destCoords.x && this -> destCoords.y == other.destCoords.y);
-            }
+            /**
+             * @note Should be placed elsewhere.
+            */
+            struct TextureData_Equality_Operator {
+                bool operator()(const TextureData& first, const TextureData& second) const {
+                    return first.destCoords.x == second.destCoords.x && first.destCoords.y == second.destCoords.y;
+                }
+            };
+
+            /**
+             * @note Should be placed elsewhere.
+            */
+            struct TextureData_Less_Than_Operator {
+                bool operator()(const TextureData& first, const TextureData& second) const {
+                    return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x);
+                }
+            };
             
             // Attributes
             SDL_Point destCoords;
         };
 
-        struct Player : public Texture {};
+        struct PlayerData : public TextureData {};
 
-        struct Teleporter : public Texture {
+        struct TeleporterData : public TextureData {
             SDL_Point targetDestCoords;
             std::string targetLevel;
         };
 
+        using TeleportersData = std::unordered_set<globals::leveldata::TeleporterData, globals::leveldata::TeleporterData::TextureData_Hasher, globals::leveldata::TeleporterData::TextureData_Equality_Operator>;
+
         /**
          * @brief Represents/simulates a level/sub-level.
         */
-        struct Level {
+        struct LevelData {
             TileCollection tileCollection;
             SDL_Color backgroundColor;
-            globals::levelData::Player player;
-            std::set<globals::levelData::Teleporter> teleporters;
+            globals::leveldata::PlayerData playerLevelData;
+            TeleportersData teleportersLevelData;
         };
     };
 
@@ -223,7 +243,7 @@ namespace globals {
     /**
      * @brief Represents the current level/sub-level. Accessible to all classes.
     */
-    extern globals::levelData::Level currentLevel;
+    extern globals::leveldata::LevelData currentLevelData;
 
     void dealloc();
 }

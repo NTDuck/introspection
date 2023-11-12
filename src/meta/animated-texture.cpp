@@ -5,8 +5,8 @@
 #include <pugixml/pugixml.hpp>
 
 #include <meta.hpp>
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 AnimatedTextureWrapper::AnimatedTextureWrapper() {}

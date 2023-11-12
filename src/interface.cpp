@@ -4,8 +4,8 @@
 #include <SDL.h>
 
 #include <interface.hpp>
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 Interface::Interface(std::string levelName) : levelName(levelName) {}
@@ -76,7 +76,7 @@ void Interface::loadLevel() {
     utils::readJSON(LEVEL_PATH.string(), data);
 
     // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
-    utils::loadLevelData(globals::currentLevel, data);
+    utils::loadLevelData(globals::currentLevelData, data);
 
     // Reset `globals::TILESET_COLLECTION`
     utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
@@ -110,7 +110,7 @@ void Interface::renderBackgroundToTexture() {
     // SDL_SetRenderDrawColor(globals::renderer, 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE);
     // for (const auto& darkerRect : darkerRects) SDL_RenderFillRect(globals::renderer, &darkerRect);
 
-    SDL_SetRenderDrawColor(globals::renderer, globals::currentLevel.backgroundColor.r, globals::currentLevel.backgroundColor.g, globals::currentLevel.backgroundColor.b, globals::currentLevel.backgroundColor.a);
+    SDL_SetRenderDrawColor(globals::renderer, globals::currentLevelData.backgroundColor.r, globals::currentLevelData.backgroundColor.g, globals::currentLevelData.backgroundColor.b, globals::currentLevelData.backgroundColor.a);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
@@ -130,7 +130,7 @@ void Interface::renderLevelTilesToTexture() {
             data.destRect.w = globals::TILE_DEST_SIZE.x;
             data.destRect.h = globals::TILE_DEST_SIZE.y;
 
-            for (const auto& gid : globals::currentLevel.tileCollection[y][x]) {
+            for (const auto& gid : globals::currentLevelData.tileCollection[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
                 TilesetData tilesetData;

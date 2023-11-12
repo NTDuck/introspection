@@ -8,8 +8,8 @@
 #include <pugixml/pugixml.hpp>
 #include <zlib/zlib.h>
 
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 namespace utils {
@@ -164,10 +164,10 @@ namespace utils {
      * @note This handles A LOT.
      * @note Only `csv` and `zlib-compressed base64` are supported.
     */
-    void loadLevelData(globals::levelData::Level& currentLevel, const json& data) {
+    void loadLevelData(globals::leveldata::LevelData& currentLevel, const json& data) {
         // Clear current level data
         for (auto& tileRow : currentLevel.tileCollection) for (auto& tile : tileRow) tile.clear();
-        currentLevel.teleporters.clear();
+        currentLevel.teleportersLevelData.clear();
 
         // Update global variables
         auto tileDestCountWidth = data.find("width");
@@ -234,7 +234,7 @@ namespace utils {
 
                         if (playerDestCoordsX == object.end() || playerDestCoordsY == object.end() || playerDestSizeWidth == object.end() || playerDestSizeHeight == object.end() || !playerDestCoordsX.value().is_number_integer() || !playerDestCoordsY.value().is_number_integer() || !playerDestSizeWidth.value().is_number_integer() || !playerDestSizeHeight.value().is_number_integer()) continue;
 
-                        globals::currentLevel.player.destCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
+                        globals::currentLevelData.playerLevelData.destCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
 
                     } else if (name.value() == "teleporter") {
                         auto teleporterDestCoordsX = object.find("x");
@@ -244,7 +244,7 @@ namespace utils {
 
                         if (teleporterDestCoordsX == object.end() || teleporterDestCoordsY == object.end() || teleporterDestSizeWidth == object.end() || teleporterDestSizeHeight == object.end() || !teleporterDestCoordsX.value().is_number_integer() || !teleporterDestCoordsY.value().is_number_integer() || !teleporterDestSizeWidth.value().is_number_integer() || !teleporterDestSizeHeight.value().is_number_integer()) continue;
 
-                        globals::levelData::Teleporter teleporter;
+                        globals::leveldata::TeleporterData teleporter;
 
                         teleporter.destCoords = {int(teleporterDestCoordsX.value()) / int(teleporterDestSizeWidth.value()), int(teleporterDestCoordsY.value()) / int(teleporterDestSizeHeight.value())};
 
@@ -266,7 +266,7 @@ namespace utils {
                             }
                         }
 
-                        currentLevel.teleporters.insert(teleporter);
+                        currentLevel.teleportersLevelData.insert(teleporter);
                     }
                 }
             }

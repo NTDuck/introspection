@@ -4,8 +4,8 @@
 
 #include <SDL.h>
 
-#include <auxiliaries/globals.hpp>
 #include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 class Interface {

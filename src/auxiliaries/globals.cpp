@@ -19,5 +19,5 @@ namespace globals {
     SDL_Point TILE_DEST_COUNT;
     SDL_Point OFFSET;
     TilesetDataCollection TILESET_COLLECTION;
-    globals::levelData::Level currentLevel;
+    globals::leveldata::LevelData currentLevelData;
 }

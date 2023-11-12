@@ -4,9 +4,9 @@
 #include <SDL_image.h>
 
 #include <game.hpp>
+#include <interaction.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
-
 #include <auxiliaries/globals.hpp>
 
 
@@ -100,13 +100,8 @@ void Game::handleMotion() {
     if (player.nextDestCoords != nullptr) {
         auto result = teleporters.find(*player.nextDestCoords);
         if (result != teleporters.end() && player.isNextTileReached) {
-            auto targetTeleporter = result -> second;
-
-            // Temporary implementation
-            interface.changeLevel(targetTeleporter.targetLevel);
-            globals::currentLevel.player.destCoords = targetTeleporter.targetDestCoords;
-            onLevelChange();
-            onWindowChange();
+            interaction::collision::PlayerCollideTeleporter(interface, result -> second, globals::currentLevelData);
+            onLevelChange(); onWindowChange();
         }
     }
     
@@ -122,12 +117,8 @@ void Game::onLevelChange() {
     interface.onLevelChange();
 
     // Make changes to dependencies based on populated `globals::levelData` members
-    player.onLevelChange(globals::currentLevel.player);
-    for (const auto& teleporterData : globals::currentLevel.teleporters) {
-        Teleporter teleporter;
-        teleporter.onLevelChange(teleporterData);
-        teleporters.insert(std::make_pair(teleporter.destCoords_getter(), teleporter));
-    }
+    player.onLevelChange(globals::currentLevelData.playerLevelData);
+    Teleporter::onLevelChange_(teleporters, globals::currentLevelData.teleportersLevelData);
 }
 
 /**
@@ -137,18 +128,10 @@ void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
 
-    // dependencies that rely on certain dimension-related global variables
+    // Dependencies that rely on certain dimension-related global variables
     interface.onWindowChange();
     player.onWindowChange();
-    // for (auto& teleporter : teleporters) teleporter.onWindowChange();
-
-    // magic
-    for (auto it = teleporters.begin(); it != teleporters.end(); ++it) {
-        auto tmp = *it;
-        teleporters.erase(it);
-        tmp.second.onWindowChange();
-        teleporters.insert(std::move(tmp));
-    }
+    Teleporter::onWindowChange_(teleporters);
 
     SDL_UpdateWindowSurface(window);
 }
@@ -218,8 +201,7 @@ void Game::handleMouseEvent(const SDL_Event& event) {
         case GameState::MENU: case GameState::INGAME_PLAYING:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
             state = GameState::INGAME_PLAYING;
-            onLevelChange();
-            onWindowChange();
+            onLevelChange(); onWindowChange();
             break;
 
         default: break;
