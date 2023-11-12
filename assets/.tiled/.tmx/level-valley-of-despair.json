@@ -66,12 +66,12 @@
                  "name":"teleporter",
                  "properties":[
                         {
-                         "name":"dest-coords",
+                         "name":"target-dest-coords",
                          "type":"string",
                          "value":"21 12"
                         }, 
                         {
-                         "name":"dest-level",
+                         "name":"target-level",
                          "type":"string",
                          "value":"level-equilibrium"
                         }],

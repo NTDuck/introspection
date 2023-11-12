@@ -16,7 +16,7 @@ Player::~Player() {
  * @see https://stackoverflow.com/questions/4146499/why-does-a-virtual-function-get-hidden
 */
 void Player::init() {
-    AnimatedDynamicTextureWrapper::init_(config::PLAYER_TILESET_PATH);   // static_cast<NonStaticTextureWrapper*>(this) -> _init(config::PLAYER_TILESET_PATH);
+    AnimatedDynamicTextureWrapper::init_(globals::config::PLAYER_TILESET_PATH);   // static_cast<NonStaticTextureWrapper*>(this) -> _init(config::PLAYER_TILESET_PATH);
 }
 
 /**
@@ -41,6 +41,11 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     nextDestRect = new SDL_Rect(BaseTextureWrapper::getDestRectFromCoords(*nextDestCoords));
 
     if (validateMove()) AnimatedDynamicTextureWrapper::onMoveStart(); else AnimatedDynamicTextureWrapper::onMoveEnd();
+}
+
+void Player::onLevelChange(const globals::levelData::Texture& player) {
+    auto data = dynamic_cast<const globals::levelData::Player*>(&player);
+    AnimatedDynamicTextureWrapper::onLevelChange(*data);
 }
 
 /**

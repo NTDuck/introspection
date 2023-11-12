@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <SDL.h>
 
+#include <auxiliaries/globals.hpp>
+
 
 /**
  * @brief An abstract class representing a texture. Supports basic operations.
@@ -16,17 +18,23 @@ class BaseTextureWrapper {
         ~BaseTextureWrapper();
 
         virtual void init_(const std::filesystem::path xmlPath);
-        virtual void blit();
         virtual void render();
+
+        virtual void onWindowChange();
+        virtual void onLevelChange(const globals::levelData::Texture& texture);
 
         void setRGB(Uint8 r, Uint8 g, Uint8 b);
         void setBlending(SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND);
         void setAlpha(Uint8 alpha);
         void setRGBA(SDL_Color col);
 
-    protected:
-        SDL_Rect getDestRectFromCoords (const SDL_Point coords);
+        bool operator<(const BaseTextureWrapper& other) const;
+        bool operator==(const BaseTextureWrapper& other) const;
 
+        SDL_Point destCoords_getter() const;
+        SDL_Rect getDestRectFromCoords(const SDL_Point coords);
+
+    protected:
         SDL_Texture* texture = nullptr;   // expects a single tileset
         SDL_Point destCoords;
         SDL_Rect destRect;
@@ -52,6 +60,11 @@ class AnimatedTextureWrapper : public BaseTextureWrapper {
 
         void updateAnimation();
         void resetAnimation(const std::string nextAnimationState);
+
+        /**
+         * @note Allow public access to encapsulated internal state.
+        */
+        bool isNextTileReached = false;
 
     protected:
         /**
@@ -84,7 +97,7 @@ class AnimatedDynamicTextureWrapper : public AnimatedTextureWrapper {
         ~AnimatedDynamicTextureWrapper();
 
         void init_(const std::filesystem::path xmlPath) override;
-        void blit() override;
+        void onLevelChange(const globals::levelData::Texture& texture) override;
 
         virtual void move();
         virtual bool validateMove();
@@ -105,5 +118,5 @@ class AnimatedDynamicTextureWrapper : public AnimatedTextureWrapper {
  * @brief An abstract class representing a texture that updates its animation and is NOT able to change its position.
 */
 class AnimatedStaticTextureWrapper : public AnimatedTextureWrapper {
-    // bruf
+    // poof
 };

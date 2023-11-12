@@ -12,7 +12,7 @@
  <tileset firstgid="5137" source="../.tsx/mi-clothing-store.tsx"/>
  <layer id="26" name="static-collision" width="38" height="20">
   <data encoding="base64" compression="zlib">
-   eJztzrEJADAQw0D//kunSBPUB3+hA4NLJZL037QDYLDgt7CLjS1bu152SdJ1ALWwAB4=
+   eJxjYBgFo2AUjIKRBxihmAGNZsSunG6AEQ8eSDBY3YUMRt01CkbBKBgFEAAAp2AAHA==
   </data>
  </layer>
  <layer id="20" name="floors" width="38" height="20">
@@ -29,8 +29,8 @@
   <object id="5" name="player" x="640" y="256" width="32" height="32"/>
   <object id="7" name="teleporter" x="672" y="384" width="32" height="32">
    <properties>
-    <property name="dest-coords" value="32 6"/>
-    <property name="dest-level" value="level-valley-of-despair"/>
+    <property name="target-dest-coords" value="32 6"/>
+    <property name="target-level" value="level-valley-of-despair"/>
    </properties>
   </object>
  </objectgroup>

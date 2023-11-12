@@ -72,6 +72,8 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
+>
+- [Omori Font](https://dafontonline.com/omori-font/)
 
 > We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).
 

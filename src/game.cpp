@@ -1,4 +1,3 @@
-#include <iostream>
 #include <string>
 
 #include <SDL.h>
@@ -11,7 +10,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game()
 {
@@ -61,28 +60,14 @@ void Game::init() {
 */
 void Game::gameLoop() {
     // Call this once.
-    blit();
+    onLevelChange();
+    onWindowChange();
 
     while (state != GameState::EXIT) {
         if (state == GameState::INGAME_PLAYING) handleMotion();
         handleEvents();
         render();
     }
-}
-
-/**
- * @brief Handles the rendering of static graphics or those that rarely update. Also handle the updating of global variables.
- * @note Should also be called when an `SDL_WINDOWEVENT_SIZE_CHANGED` event occurs.
- * @see Game::handleWindowEvent()
-*/
-void Game::blit() {
-    windowSurface = SDL_GetWindowSurface(window);
-    SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
-
-    interface.blit();
-    player.blit();
-
-    SDL_UpdateWindowSurface(window);
 }
 
 /**
@@ -110,8 +95,62 @@ void Game::render() {
  * @brief Handle all entities movement & animation update.
 */
 void Game::handleMotion() {
+    // Check if player has walked into teleporter
+    // Hey, it's this part that needs correction!
+    if (player.nextDestCoords != nullptr) {
+        auto result = teleporters.find(*player.nextDestCoords);
+        if (result != teleporters.end() && player.isNextTileReached) {
+            auto targetTeleporter = result -> second;
+
+            // Temporary implementation
+            interface.changeLevel(targetTeleporter.targetLevel);
+            globals::currentLevel.player.destCoords = targetTeleporter.targetDestCoords;
+            onLevelChange();
+            onWindowChange();
+        }
+    }
+    
     player.move();
     player.updateAnimation();
+}
+
+/**
+ * @brief Called when switching to a new level.
+*/
+void Game::onLevelChange() {
+    // Populate `globals::levelData` members
+    interface.onLevelChange();
+
+    // Make changes to dependencies based on populated `globals::levelData` members
+    player.onLevelChange(globals::currentLevel.player);
+    for (const auto& teleporterData : globals::currentLevel.teleporters) {
+        Teleporter teleporter;
+        teleporter.onLevelChange(teleporterData);
+        teleporters.insert(std::make_pair(teleporter.destCoords_getter(), teleporter));
+    }
+}
+
+/**
+ * @brief Called should `window` change e.g. is resized.
+*/
+void Game::onWindowChange() {
+    windowSurface = SDL_GetWindowSurface(window);
+    SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
+
+    // dependencies that rely on certain dimension-related global variables
+    interface.onWindowChange();
+    player.onWindowChange();
+    // for (auto& teleporter : teleporters) teleporter.onWindowChange();
+
+    // magic
+    for (auto it = teleporters.begin(); it != teleporters.end(); ++it) {
+        auto tmp = *it;
+        teleporters.erase(it);
+        tmp.second.onWindowChange();
+        teleporters.insert(std::move(tmp));
+    }
+
+    SDL_UpdateWindowSurface(window);
 }
 
 /**
@@ -149,10 +188,7 @@ void Game::handleEvents() {
 void Game::handleWindowEvent(const SDL_Event& event) {
     if (event.window.windowID != windowID) return;
     switch (event.window.event) {
-        case SDL_WINDOWEVENT_SIZE_CHANGED:
-            blit();
-            break;
-            
+        case SDL_WINDOWEVENT_SIZE_CHANGED: onWindowChange(); break;
         default: break;
     }
 }
@@ -182,7 +218,8 @@ void Game::handleMouseEvent(const SDL_Event& event) {
         case GameState::MENU: case GameState::INGAME_PLAYING:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
             state = GameState::INGAME_PLAYING;
-            blit();
+            onLevelChange();
+            onWindowChange();
             break;
 
         default: break;

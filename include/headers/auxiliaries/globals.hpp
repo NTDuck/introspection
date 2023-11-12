@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <set>
 #include <unordered_map>
 
 #include <SDL.h>
@@ -113,52 +114,79 @@ using TilesetDataCollection = std::vector<TilesetData>;
 
 
 /**
- * @brief Represents/simulates a level/sub-level.
-*/
-struct Level {
-    TileCollection tileCollection;
-    SDL_Point playerDestCoords;
-    // std::unordered_map<std::string, std::string> properties;
-    SDL_Color backgroundColor;
-};
-
-
-/**
- * @brief Provide required configuration, used once in `Game` initialization and may extend to other retrieval operations. Should not be modified elsewhere.
-*/
-namespace config {
-    const Flags flags = {
-        SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
-        SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
-        SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
-        IMG_INIT_PNG,
-        {
-            {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
-        }
-    };
-    const SDL_Rect dims = {
-        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-        1280, 720,
-    };
-    const int frameRate = 120;
-    const SDL_Color DEFAULT_BACKGROUND_COLOR = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
-    const std::string DEFAULT_LEVEL = "level-equilibrium";
-
-    const std::filesystem::path ASSETS_PATH = "assets";
-    const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
-    const std::filesystem::path PLAYER_TILESET_PATH = TILED_ASSETS_PATH / ".tsx" / "hp-player.tsx";
-    const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
-    
-    const SDL_Point VELOCITY_PLAYER = {1, 1};
-    const int ANIMATION_UPDATE_RATE_NONSTATIC_TEXTURE = 64;
-    const std::string ANIMATION_PLAYER = "animation-blink";
-};
-
-
-/**
  * @brief The global namespace. Member variables accessible to all classes.
 */
 namespace globals {
+    /**
+     * @brief Provide required configuration, used once in `Game` initialization and may extend to other retrieval operations. Should not be modified elsewhere.
+    */
+    namespace config {
+        const Flags flags = {
+            SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
+            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
+            SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
+            IMG_INIT_PNG,
+            {
+                {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
+            }
+        };
+        const SDL_Rect dims = {
+            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+            1280, 720,
+        };
+        const int frameRate = 120;
+        const SDL_Color DEFAULT_BACKGROUND_COLOR = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
+        const std::string DEFAULT_LEVEL = "level-equilibrium";
+
+        const std::filesystem::path ASSETS_PATH = "assets";
+        const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
+        const std::filesystem::path PLAYER_TILESET_PATH = TILED_ASSETS_PATH / ".tsx" / "hp-player.tsx";
+        const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
+        
+        const SDL_Point ANIMATED_DYNAMIC_TEXTURE_VELOCITY = {1, 1};
+        const int ANIMATED_TEXTURE_ANIMATION_UPDATE_RATE = 64;
+        const std::string PLAYER_ANIMATION_DEFAULT = "animation-blink";
+    };
+
+    /**
+     * @brief Provide required data for level-loading.
+    */
+    namespace levelData {
+        struct Texture {
+            // Virtual destructor, required for polymorphism
+            virtual ~Texture() = default;
+
+            // Equality comparison, required for `std::map` and `std::set`
+            bool operator<(const Texture& other) const {
+                return (this -> destCoords.y == other.destCoords.y ? this -> destCoords.x < other.destCoords.x : this -> destCoords.y < other.destCoords.y);
+            }
+
+            bool operator==(const Texture& other) {
+                return (this -> destCoords.x == other.destCoords.x && this -> destCoords.y == other.destCoords.y);
+            }
+            
+            // Attributes
+            SDL_Point destCoords;
+        };
+
+        struct Player : public Texture {};
+
+        struct Teleporter : public Texture {
+            SDL_Point targetDestCoords;
+            std::string targetLevel;
+        };
+
+        /**
+         * @brief Represents/simulates a level/sub-level.
+        */
+        struct Level {
+            TileCollection tileCollection;
+            SDL_Color backgroundColor;
+            globals::levelData::Player player;
+            std::set<globals::levelData::Teleporter> teleporters;
+        };
+    };
+
     /**
      * @note The game intends to run on ONE window therefore denecessitates multiple `SDL_Renderer`. This global instance is intended to be accessible by all classes. 
      * @see https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
@@ -195,7 +223,7 @@ namespace globals {
     /**
      * @brief Represents the current level/sub-level. Accessible to all classes.
     */
-    extern Level currentLevel;
+    extern globals::levelData::Level currentLevel;
 
     void dealloc();
 }

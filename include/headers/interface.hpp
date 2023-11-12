@@ -14,17 +14,16 @@ class Interface {
         ~Interface();
         
         void init();
-
-        void blit();
         void render();
 
         void changeLevel(std::string levelName);
+        void onLevelChange();
+        void onWindowChange();
 
     private:
-        void renderBackground();
-        void renderLevel();
-
         void loadLevel();
+        void renderBackgroundToTexture();
+        void renderLevelTilesToTexture();
 
         std::string levelName;
 

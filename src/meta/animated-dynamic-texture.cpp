@@ -11,9 +11,9 @@
 AnimatedDynamicTextureWrapper::AnimatedDynamicTextureWrapper() {}
 
 AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper() {
-    AnimatedTextureWrapper::~AnimatedTextureWrapper();
     delete nextDestCoords;
     delete nextDestRect;
+    AnimatedTextureWrapper::~AnimatedTextureWrapper();
 }
 
 /**
@@ -22,13 +22,11 @@ AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper() {
 */
 void AnimatedDynamicTextureWrapper::init_(std::filesystem::path xmlPath) {
     AnimatedTextureWrapper::init_(xmlPath);
-    VELOCITY = config::VELOCITY_PLAYER;
-    velocity = {0, 0};
-    onMoveEnd();
+    VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
 }
 
-void AnimatedDynamicTextureWrapper::blit() {
-    BaseTextureWrapper::blit();
+void AnimatedDynamicTextureWrapper::onLevelChange(const globals::levelData::Texture& texture) {
+    BaseTextureWrapper::onLevelChange(texture);
     onMoveEnd();
 }
 
@@ -38,6 +36,8 @@ void AnimatedDynamicTextureWrapper::blit() {
 void AnimatedDynamicTextureWrapper::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
+    isNextTileReached = false;
+
     destRect.x += velocity.x * VELOCITY.x;
     destRect.y += velocity.y * VELOCITY.y;
 
@@ -45,6 +45,8 @@ void AnimatedDynamicTextureWrapper::move() {
     if ((nextDestRect -> x - destRect.x) * velocity.x > 0 || (nextDestRect -> y - destRect.y) * velocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
     // Terminate movement when reached new `Tile`
+    isNextTileReached = true;
+
     destCoords = *nextDestCoords;
     destRect = *nextDestRect;
     onMoveEnd();
@@ -83,10 +85,16 @@ bool AnimatedDynamicTextureWrapper::validateMove() {
     return currCollisionLevel == nextCollisionLevel;
 }
 
+/**
+ * @note DO NOT assume this function's purpose based on its name.
+*/
 void AnimatedDynamicTextureWrapper::onMoveStart() {
     AnimatedTextureWrapper::resetAnimation("animation-walk");
 }
 
+/**
+ * @note DO NOT assume this function's purpose based on its name.
+*/
 void AnimatedDynamicTextureWrapper::onMoveEnd() {
     nextDestCoords = nullptr;
     nextDestRect = nullptr;

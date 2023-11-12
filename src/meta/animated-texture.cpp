@@ -34,7 +34,7 @@ void AnimatedTextureWrapper::init_(const std::filesystem::path xmlPath) {
     srcRectCount.y = document.child("tileset").attribute("tilecount").as_int() / srcRectCount.x;
 
     currAnimationState = "animation-walk";
-    animationUpdateRate = config::ANIMATION_UPDATE_RATE_NONSTATIC_TEXTURE;
+    animationUpdateRate = globals::config::ANIMATED_TEXTURE_ANIMATION_UPDATE_RATE;
     currAnimationGID = rotatingGIDs[currAnimationState].first;
 }
 

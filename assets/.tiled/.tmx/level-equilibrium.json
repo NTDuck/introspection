@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztzrEJADAQw0D\/\/kunSBPUB3+hA4NLJZL037QDYLDgt7CLjS1bu152SdJ1ALWwAB4=",
+         "data":"eJxjYBgFo2AUjIKRBxihmAGNZsSunG6AEQ8eSDBY3YUMRt01CkbBKBgFEAAAp2AAHA==",
          "encoding":"base64",
          "height":20,
          "id":26,
@@ -66,12 +66,12 @@
                  "name":"teleporter",
                  "properties":[
                         {
-                         "name":"dest-coords",
+                         "name":"target-dest-coords",
                          "type":"string",
                          "value":"32 6"
                         }, 
                         {
-                         "name":"dest-level",
+                         "name":"target-level",
                          "type":"string",
                          "value":"level-valley-of-despair"
                         }],

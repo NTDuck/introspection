@@ -42,16 +42,23 @@ void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
     // Load texture
     std::filesystem::path path (imageNode.attribute("source").value());
     utils::cleanRelativePath(path);
-    texture = IMG_LoadTexture(globals::renderer, (config::ASSETS_PATH / path).string().c_str());
+    texture = IMG_LoadTexture(globals::renderer, (globals::config::ASSETS_PATH / path).string().c_str());
 }
 
 /**
- * @brief Update certain attrbutes when global variables change e.g. window resize, new level.
+ * @brief Update attributes that depend on window.
 */
-void BaseTextureWrapper::blit() {
-    // Requires `globals.TILE_DEST_SIZE` initialized in `Interface.loadLevel()`, exposed in `Interface.blit()`
-    destCoords = globals::currentLevel.playerDestCoords;
+void BaseTextureWrapper::onWindowChange() {
     destRect = getDestRectFromCoords(destCoords);
+}
+
+/**
+ * @brief Update attributes that change when level changes.
+ * @note Does nothing by default, implementation will be handled by derived classes.
+ * @note Behold, polyphormism!
+*/
+void BaseTextureWrapper::onLevelChange(const globals::levelData::Texture& texture) {
+    destCoords = texture.destCoords;
 }
 
 /**
@@ -100,6 +107,21 @@ void BaseTextureWrapper::setRGBA(SDL_Color color) {
 /**
  * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
 */
-SDL_Rect BaseTextureWrapper::getDestRectFromCoords (const SDL_Point coords) {
-    return SDL_Rect {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
+SDL_Rect BaseTextureWrapper::getDestRectFromCoords(const SDL_Point coords) {
+    return {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
 };
+
+/**
+ * @brief Allow read-only access at public scope to protected attribute `destCoords`.
+*/
+SDL_Point BaseTextureWrapper::destCoords_getter() const {
+    return destCoords;
+}
+
+bool BaseTextureWrapper::operator<(const BaseTextureWrapper& other) const {
+    return (this -> destCoords.y == other.destCoords.y ? this -> destCoords.x < other.destCoords.x : this -> destCoords.y < other.destCoords.y);
+}
+
+bool BaseTextureWrapper::operator==(const BaseTextureWrapper& other) const {
+    return (this -> destCoords.x == other.destCoords.x && this -> destCoords.y == other.destCoords.y);
+}

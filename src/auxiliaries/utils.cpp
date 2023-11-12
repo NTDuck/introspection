@@ -107,7 +107,7 @@ namespace utils {
     }
 
     /**
-     * @brief Remove leading dots (`.`) and slashes (`/``\`) in a `std::filesystem::path`.
+     * @brief Remove leading dots (`.`) and slashes (`/` `\`) in a `std::filesystem::path`.
      * @note Fall back to string manipulation for `std::filesystem` methods (`canonical()`, `lexically_normal()`, etc.) fails inexplicably.
     */
     void cleanRelativePath(std::filesystem::path& path) {
@@ -143,7 +143,7 @@ namespace utils {
     */
     void loadLevelsData(LevelMapping& mapping) {
         json data;
-        utils::readJSON(config::LEVELS_PATH.string(), data);
+        utils::readJSON(globals::config::LEVELS_PATH.string(), data);
 
         auto levels = data.find("levels");
         if (levels == data.end() || !levels.value().is_array()) return;
@@ -161,10 +161,13 @@ namespace utils {
 
     /**
      * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
+     * @note This handles A LOT.
      * @note Only `csv` and `zlib-compressed base64` are supported.
     */
-    void loadLevelData(Level& currentLevel, const json& data) {
+    void loadLevelData(globals::levelData::Level& currentLevel, const json& data) {
+        // Clear current level data
         for (auto& tileRow : currentLevel.tileCollection) for (auto& tile : tileRow) tile.clear();
+        currentLevel.teleporters.clear();
 
         // Update global variables
         auto tileDestCountWidth = data.find("width");
@@ -180,7 +183,7 @@ namespace utils {
 
         auto backgroundColor = data.find("backgroundcolor");
         if (backgroundColor != data.end() && !backgroundColor.value().is_string()) return;
-        currentLevel.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : config::DEFAULT_BACKGROUND_COLOR);
+        currentLevel.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::DEFAULT_BACKGROUND_COLOR);
 
         // Emplace gids into `tileCollection`. Executed per layer.
         currentLevel.tileCollection.resize(globals::TILE_DEST_COUNT.y);
@@ -192,26 +195,81 @@ namespace utils {
         for (const auto& layer : layers.value()) {
             // Prevent registering non-tilelayers e.g. object layers
             auto type = layer.find("type");
-            if (type == layer.end() || !type.value().is_string() || type.value() != "tilelayer") continue;
+            if (type == layer.end() || !type.value().is_string()) continue;
 
-            // Load GIDs
-            auto layerData = layer.find("data");
-            if (layerData == layer.end() || !(layerData.value().is_string() || layerData.value().is_array())) continue;
+            // Could use `std::unordered_map` for cleaner implementation
+            if (type.value() == "tilelayer") {
+                // Load GIDs
+                auto layerData = layer.find("data");
+                if (layerData == layer.end() || !(layerData.value().is_string() || layerData.value().is_array())) continue;
 
-            std::vector<int> GIDsCollection;
-            auto encoding = layer.find("encoding");
-            auto compression = layer.find("compression");
+                std::vector<int> GIDsCollection;
+                auto encoding = layer.find("encoding");
+                auto compression = layer.find("compression");
 
-            if ((encoding == layer.end() || encoding.value() == "csv") && compression == layer.end()) {   // csv
-                for (const auto& GID : layerData.value()) GIDsCollection.emplace_back(GID);
-            } else if (encoding != layer.end() && encoding.value() == "base64") {
-                std::string decoded = utils::base64Decode(layerData.value());
-                if (compression.value() == "zlib") {   // zlib-compressed base64
-                    GIDsCollection = utils::zlibDecompress<int>(decoded);
+                if ((encoding == layer.end() || encoding.value() == "csv") && compression == layer.end()) {   // csv
+                    for (const auto& GID : layerData.value()) GIDsCollection.emplace_back(GID);
+                } else if (encoding != layer.end() && encoding.value() == "base64") {
+                    std::string decoded = utils::base64Decode(layerData.value());
+                    if (compression.value() == "zlib") {   // zlib-compressed base64
+                        GIDsCollection = utils::zlibDecompress<int>(decoded);
+                    } else return;
                 } else return;
-            } else return;
 
-            for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::TILE_DEST_COUNT.x + x]);
+                for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::TILE_DEST_COUNT.x + x]);
+
+            } else if (type.value() == "objectgroup") {
+                auto objects = layer.find("objects");
+                if (objects == layer.end() || !objects.value().is_array()) continue;
+                
+                for (const auto& object : objects.value()) {
+                    auto name = object.find("name");
+                    if (name == object.end() || !name.value().is_string()) continue;
+
+                    if (name.value() == "player") {
+                        auto playerDestCoordsX = object.find("x");
+                        auto playerDestCoordsY = object.find("y");
+                        auto playerDestSizeWidth = object.find("width");
+                        auto playerDestSizeHeight = object.find("height");
+
+                        if (playerDestCoordsX == object.end() || playerDestCoordsY == object.end() || playerDestSizeWidth == object.end() || playerDestSizeHeight == object.end() || !playerDestCoordsX.value().is_number_integer() || !playerDestCoordsY.value().is_number_integer() || !playerDestSizeWidth.value().is_number_integer() || !playerDestSizeHeight.value().is_number_integer()) continue;
+
+                        globals::currentLevel.player.destCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
+
+                    } else if (name.value() == "teleporter") {
+                        auto teleporterDestCoordsX = object.find("x");
+                        auto teleporterDestCoordsY = object.find("y");
+                        auto teleporterDestSizeWidth = object.find("width");
+                        auto teleporterDestSizeHeight = object.find("height");
+
+                        if (teleporterDestCoordsX == object.end() || teleporterDestCoordsY == object.end() || teleporterDestSizeWidth == object.end() || teleporterDestSizeHeight == object.end() || !teleporterDestCoordsX.value().is_number_integer() || !teleporterDestCoordsY.value().is_number_integer() || !teleporterDestSizeWidth.value().is_number_integer() || !teleporterDestSizeHeight.value().is_number_integer()) continue;
+
+                        globals::levelData::Teleporter teleporter;
+
+                        teleporter.destCoords = {int(teleporterDestCoordsX.value()) / int(teleporterDestSizeWidth.value()), int(teleporterDestCoordsY.value()) / int(teleporterDestSizeHeight.value())};
+
+                        auto teleporterProperties = object.find("properties");
+                        if (teleporterProperties == object.end() || !teleporterProperties.value().is_array()) continue;
+
+                        for (const auto& property : teleporterProperties.value()) {
+                            auto name = property.find("name");
+                            auto value = property.find("value");
+
+                            if (name == property.end() || value == property.end() || !name.value().is_string() || !value.value().is_string()) continue;
+
+                            if (name.value() == "target-dest-coords") {
+                                // there might be problem here
+                                std::istringstream iss(std::string(value.value()));
+                                iss >> teleporter.targetDestCoords.x >> teleporter.targetDestCoords.y;
+                            } else if (name.value() == "target-level") {
+                                teleporter.targetLevel = value.value();
+                            }
+                        }
+
+                        currentLevel.teleporters.insert(teleporter);
+                    }
+                }
+            }
         }
     }
 
@@ -237,7 +295,7 @@ namespace utils {
             utils::cleanRelativePath(xmlPath);
 
             pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file((config::TILED_ASSETS_PATH / xmlPath).string().c_str());   // All tilesets should be located in "assets/.tiled/"
+            pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).string().c_str());   // All tilesets should be located in "assets/.tiled/"
             if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
             // Parse nodes
@@ -264,7 +322,7 @@ namespace utils {
             // Load texture
             std::filesystem::path path(imageNode.attribute("source").value());
             utils::cleanRelativePath(path);
-            tilesetData.texture = IMG_LoadTexture(renderer, (config::ASSETS_PATH / path).string().c_str());
+            tilesetData.texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());
 
             // Register to collection
             tilesetDataCollection.emplace_back(tilesetData);

@@ -18,23 +18,8 @@ Interface::~Interface() {
  * @brief Initialize the interface.
 */
 void Interface::init() {
-    if (!std::filesystem::exists(config::LEVELS_PATH)) return;
+    if (!std::filesystem::exists(globals::config::LEVELS_PATH)) return;
     utils::loadLevelsData(levelMapping);
-}
-
-/**
- * @brief Prepare/re-prepare `texture` for rendering.
-*/
-void Interface::blit() {
-    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
-    SDL_SetRenderTarget(globals::renderer, texture);
-
-    loadLevel();
-
-    renderBackground();
-    renderLevel();
-
-    SDL_SetRenderTarget(globals::renderer, nullptr);
 }
 
 /**
@@ -46,9 +31,61 @@ void Interface::render() {
 }
 
 /**
+ * @brief Force load level after changes.
+*/
+void Interface::changeLevel(std::string _levelName) {
+    levelName = _levelName;
+    onLevelChange();
+}
+
+/**
+ * @brief Populate `globals::levelData` members and re-render `texture`.
+*/
+void Interface::onLevelChange() {
+    SDL_SetRenderTarget(globals::renderer, texture);
+    SDL_RenderClear(globals::renderer);
+
+    loadLevel();
+
+    renderBackgroundToTexture();
+    renderLevelTilesToTexture();
+
+    SDL_SetRenderTarget(globals::renderer, nullptr);
+}
+
+/**
+ * @brief Unnecessary perhaps?
+*/
+void Interface::onWindowChange() {
+    // NOT a good way of resizing things
+    if (texture != nullptr) SDL_DestroyTexture(texture);
+    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
+
+    // Don't even bother
+    onLevelChange();
+}
+
+/**
+ * @brief Populate `globals::levelData` members with relevant data.
+ * @note Should be called once during initialization or whenever `level` changes.
+*/
+void Interface::loadLevel() {
+    std::filesystem::path LEVEL_PATH = globals::config::TILED_ASSETS_PATH / levelMapping[levelName];
+    if (!std::filesystem::exists(LEVEL_PATH)) return;
+    json data;
+    utils::readJSON(LEVEL_PATH.string(), data);
+
+    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
+    utils::loadLevelData(globals::currentLevel, data);
+
+    // Reset `globals::TILESET_COLLECTION`
+    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
+}
+
+/**
  * @brief Fill the window with the tileset's black to achieve a seamless feel.
 */
-void Interface::renderBackground() {
+void Interface::renderBackgroundToTexture() {
     // const int BACKGROUND_RECT_SIZE = std::gcd(globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
     // const int BACKGROUND_RECT_COUNT_X = globals::WINDOW_SIZE.x / BACKGROUND_RECT_SIZE;
     // const int BACKGROUND_RECT_COUNT_Y = globals::WINDOW_SIZE.y / BACKGROUND_RECT_SIZE;
@@ -78,9 +115,9 @@ void Interface::renderBackground() {
 }
 
 /**
- * @brief Render the environments of a level.
+ * @brief Render the static portions of a level to `texture`.
 */
-void Interface::renderLevel() {
+void Interface::renderLevelTilesToTexture() {
     TileRenderDataCollection tileRenderDataCollection(globals::TILE_DEST_COUNT.y, std::vector<TileRenderData>(globals::TILE_DEST_COUNT.x));
 
     // Populate render data 
@@ -112,65 +149,13 @@ void Interface::renderLevel() {
         }
     }
 
-    // Render all tiles.
+    // Render all tiles
     for (const auto& tileRenderDataVector : tileRenderDataCollection) {
         for (const auto& tileRenderData : tileRenderDataVector) {
             int size = tileRenderData.textures.size();
             for (int i = 0; i < size; ++i) {
                 if (tileRenderData.textures[i] == nullptr) continue;
                 SDL_RenderCopy(globals::renderer, tileRenderData.textures[i], &tileRenderData.srcRects[i], &tileRenderData.destRect);
-            }
-        }
-    }
-}
-
-/**
- * @brief Force load level after changes.
-*/
-void Interface::changeLevel(std::string _levelName) {
-    levelName = _levelName;
-    loadLevel();
-}
-
-/**
- * @brief Create the environments of a level.
- * @note Should be called once during initialization or whenever `level` changes.
-*/
-void Interface::loadLevel() {
-    std::filesystem::path LEVEL_PATH = config::TILED_ASSETS_PATH / levelMapping[levelName];
-    if (!std::filesystem::exists(LEVEL_PATH)) return;
-    json data;
-    utils::readJSON(LEVEL_PATH.string(), data);
-
-    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
-    utils::loadLevelData(globals::currentLevel, data);
-
-    // Reset `globals::TILESET_COLLECTION`
-    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
-
-    // Reset `player`'s `destCoords`. Cannot be perform elsewhere due to circular dependencies.
-    auto layers = data.find("layers");
-    if (layers == data.end() || !layers.value().is_array()) return;
-
-    for (const auto& layer : layers.value()) {
-        auto type = layer.find("type");
-        auto objects = layer.find("objects");
-        if (type == layer.end() || !type.value().is_string() || type.value() != "objectgroup") continue;
-        if (objects == layer.end() || !objects.value().is_array()) continue;
-
-        for (const auto& object : objects.value()) {
-            auto name = object.find("name");
-            if (name == object.end() || !name.value().is_string()) continue;
-
-            if (name.value() == "player") {
-                auto playerDestCoordsX = object.find("x");
-                auto playerDestCoordsY = object.find("y");
-                auto playerDestSizeWidth = object.find("width");
-                auto playerDestSizeHeight = object.find("height");
-
-                if (playerDestCoordsX == object.end() || playerDestCoordsY == object.end() || playerDestSizeWidth == object.end() || playerDestSizeHeight == object.end() || !playerDestCoordsX.value().is_number_integer() || !playerDestCoordsY.value().is_number_integer() || !playerDestSizeWidth.value().is_number_integer() || !playerDestSizeHeight.value().is_number_integer()) continue;
-
-                globals::currentLevel.playerDestCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
             }
         }
     }

@@ -1,12 +1,14 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 #include <SDL.h>
 
 #include <interface.hpp>
 #include <entities.hpp>
 #include <auxiliaries/globals.hpp>
+#include <auxiliaries/utils.hpp>
 
 
 /**
@@ -23,9 +25,11 @@ class Game {
         void init();
         void gameLoop();
 
-        void blit();
         void render();
         void handleMotion();
+
+        void onLevelChange();
+        void onWindowChange();
 
         void handleEvents();
         void handleWindowEvent(const SDL_Event& event);
@@ -42,6 +46,7 @@ class Game {
         */
         Interface interface;
         Player player;
+        std::unordered_map<SDL_Point, Teleporter, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator> teleporters;
 
         // Initialization parameters
         const Flags flags;
