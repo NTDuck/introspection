@@ -12,37 +12,19 @@
 BaseTextureWrapper::BaseTextureWrapper() {}
 
 BaseTextureWrapper::~BaseTextureWrapper() {
-    if (texture != nullptr) SDL_DestroyTexture(texture);
+    tilesetData.dealloc();
     delete center;
 }
 
 /**
  * @brief Initialize the texture from a XML file.
- * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method)
+ * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method). Share many similarities but could not merge due to lack of motivation.
 */
 void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
-    if (!std::filesystem::exists(xmlPath)) return;
+    utils::loadTilesetData(globals::renderer, tilesetData, xmlPath);
 
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
-    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
-
-    // Parse nodes
-    pugi::xml_node tilesetNode = document.child("tileset");
-    pugi::xml_node propertiesNode = tilesetNode.child("properties");
-    pugi::xml_node imageNode = tilesetNode.child("image");
-
-    // `srcRect` dimensions (constant)
-    srcRect.w = tilesetNode.attribute("tilewidth").as_int();
-    srcRect.h = tilesetNode.attribute("tileheight").as_int();
-
-    // Custom properties, likely `srcRect`
-    for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
-
-    // Load texture
-    std::filesystem::path path (imageNode.attribute("source").value());
-    utils::cleanRelativePath(path);
-    texture = IMG_LoadTexture(globals::renderer, (globals::config::ASSETS_PATH / path).string().c_str());
+    srcRect.w = tilesetData.srcSize.x;
+    srcRect.h = tilesetData.srcSize.y;
 }
 
 /**
@@ -67,14 +49,14 @@ void BaseTextureWrapper::onLevelChange(const globals::leveldata::TextureData& te
  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
 */
 void BaseTextureWrapper::render() {
-    SDL_RenderCopyEx(globals::renderer, texture, &srcRect, &destRect, angle, center, flip);
+    SDL_RenderCopyEx(globals::renderer, tilesetData.texture, &srcRect, &destRect, angle, center, flip);
 }
 
 /**
  * @brief Set color modulation on `texture`. Follows standard RGB color model.
 */
 void BaseTextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
-    SDL_SetTextureColorMod(texture, r, g, b);
+    SDL_SetTextureColorMod(tilesetData.texture, r, g, b);
 }
 
 /**
@@ -83,7 +65,7 @@ void BaseTextureWrapper::setRGB(Uint8 r, Uint8 g, Uint8 b) {
  * @see https://wiki.libsdl.org/SDL2/SDL_BlendMode
 */
 void BaseTextureWrapper::setBlending(SDL_BlendMode blendMode) {
-    SDL_SetTextureBlendMode(texture, blendMode);
+    SDL_SetTextureBlendMode(tilesetData.texture, blendMode);
 }
 
 /**
@@ -91,7 +73,7 @@ void BaseTextureWrapper::setBlending(SDL_BlendMode blendMode) {
  * @param alpha the alpha value. `0` represents full transparency, `255` represents full opacity.
 */
 void BaseTextureWrapper::setAlpha(Uint8 alpha) {
-    SDL_SetTextureAlphaMod(texture, alpha);
+    SDL_SetTextureAlphaMod(tilesetData.texture, alpha);
 }
 
 /**

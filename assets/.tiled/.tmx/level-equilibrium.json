@@ -52,9 +52,9 @@
                 {
                  "height":32,
                  "id":5,
-                 "name":"player",
+                 "name":"null",
                  "rotation":0,
-                 "type":"",
+                 "type":"player",
                  "visible":true,
                  "width":32,
                  "x":640,
@@ -63,12 +63,17 @@
                 {
                  "height":32,
                  "id":7,
-                 "name":"teleporter",
+                 "name":"away",
                  "properties":[
                         {
                          "name":"target-dest-coords",
-                         "type":"string",
-                         "value":"32 6"
+                         "propertytype":"coords",
+                         "type":"class",
+                         "value":
+                            {
+                             "x":32,
+                             "y":6
+                            }
                         }, 
                         {
                          "name":"target-level",
@@ -76,7 +81,7 @@
                          "value":"level-valley-of-despair"
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"teleporter",
                  "visible":true,
                  "width":32,
                  "x":672,

@@ -12,8 +12,7 @@
 
 Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
-Game::~Game()
-{
+Game::~Game() {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
     if (window != nullptr) SDL_DestroyWindow(window);
 

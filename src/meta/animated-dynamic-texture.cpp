@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <sstream>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
@@ -89,7 +88,7 @@ bool AnimatedDynamicTextureWrapper::validateMove() {
  * @note DO NOT assume this function's purpose based on its name.
 */
 void AnimatedDynamicTextureWrapper::onMoveStart() {
-    AnimatedTextureWrapper::resetAnimation("animation-walk");
+    AnimatedTextureWrapper::resetAnimation("walk");
 }
 
 /**
@@ -100,5 +99,5 @@ void AnimatedDynamicTextureWrapper::onMoveEnd() {
     nextDestRect = nullptr;
     velocity = {0, 0};
 
-    AnimatedTextureWrapper::resetAnimation("animation-idle");
+    AnimatedTextureWrapper::resetAnimation("idle");
 }

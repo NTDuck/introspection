@@ -52,9 +52,9 @@
                 {
                  "height":32,
                  "id":2,
-                 "name":"player",
+                 "name":"null",
                  "rotation":0,
-                 "type":"",
+                 "type":"player",
                  "visible":true,
                  "width":32,
                  "x":1024,
@@ -63,12 +63,17 @@
                 {
                  "height":32,
                  "id":3,
-                 "name":"teleporter",
+                 "name":"home",
                  "properties":[
                         {
                          "name":"target-dest-coords",
-                         "type":"string",
-                         "value":"21 12"
+                         "propertytype":"coords",
+                         "type":"class",
+                         "value":
+                            {
+                             "x":21,
+                             "y":12
+                            }
                         }, 
                         {
                          "name":"target-level",
@@ -76,7 +81,7 @@
                          "value":"level-equilibrium"
                         }],
                  "rotation":0,
-                 "type":"",
+                 "type":"teleporter",
                  "visible":true,
                  "width":32,
                  "x":1024,

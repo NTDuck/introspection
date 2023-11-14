@@ -1,5 +1,3 @@
-#include <functional>
-
 #include <SDL.h>
 
 #include <entities.hpp>
@@ -8,9 +6,7 @@
 
 Teleporter::Teleporter() {}
 
-Teleporter::~Teleporter() {
-    BaseTextureWrapper::~BaseTextureWrapper();
-}
+Teleporter::~Teleporter() { BaseTextureWrapper::~BaseTextureWrapper(); }
 
 void Teleporter::onLevelChange(const globals::leveldata::TextureData& teleporter) {
     auto data = dynamic_cast<const globals::leveldata::TeleporterData*>(&teleporter);

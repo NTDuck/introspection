@@ -10,9 +10,7 @@
 
 Interface::Interface(std::string levelName) : levelName(levelName) {}
 
-Interface::~Interface() {
-    if (texture != nullptr) SDL_DestroyTexture(texture);
-}
+Interface::~Interface() { if (texture != nullptr) SDL_DestroyTexture(texture); }
 
 /**
  * @brief Initialize the interface.
@@ -79,7 +77,7 @@ void Interface::loadLevel() {
     utils::loadLevelData(globals::currentLevelData, data);
 
     // Reset `globals::TILESET_COLLECTION`
-    utils::loadTilesetData(globals::renderer, globals::TILESET_COLLECTION, data);
+    utils::loadTilesetsData(globals::renderer, globals::TILESET_COLLECTION, data);
 }
 
 /**
@@ -140,10 +138,10 @@ void Interface::renderLevelTilesToTexture() {
 
                 data.textures.emplace_back(tilesetData.properties["norender"] == "true" ? nullptr : tilesetData.texture);
                 data.srcRects.push_back({
-                    ((gid - tilesetData.firstGID) % tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.x,
-                    ((gid - tilesetData.firstGID) / tilesetData.TILE_SRC_COUNT.x) * tilesetData.TILE_SRC_SIZE.y,
-                    tilesetData.TILE_SRC_SIZE.x,
-                    tilesetData.TILE_SRC_SIZE.y,
+                    ((gid - tilesetData.firstGID) % tilesetData.srcCount.x) * tilesetData.srcSize.x,
+                    ((gid - tilesetData.firstGID) / tilesetData.srcCount.x) * tilesetData.srcSize.y,
+                    tilesetData.srcSize.x,
+                    tilesetData.srcSize.y,
                 });
             }
         }

@@ -1,5 +1,4 @@
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <string>
 #include <unordered_map>
@@ -13,6 +12,23 @@
 
 
 namespace utils {
+    /**
+     * @brief Define/re-define hash function objects for needy classes.
+     * @note Required for `std::unordered_set` and `std::unordered_map`.
+    */
+    namespace hashers {
+        std::size_t SDL_Point_Hasher::operator()(const SDL_Point& obj) const { return std::hash<int>()(obj.x) ^ (std::hash<int>()(obj.y) << 1); }
+    }
+
+    /**
+     * @brief Define/re-define common operators needed for `std::set`, `std::map`, `std::unordered_set`, `std::unordered_map`.
+    */
+    namespace operators {
+        bool SDL_Point_Equality_Operator::operator()(const SDL_Point& first, const SDL_Point& second) const { return first.x == second.x && first.y == second.y; }
+
+        bool SDL_Point_Less_Than_Operator::operator()(const SDL_Point& first, const SDL_Point& second) const { return (first.y < second.y) || (first.y == second.y && first.x < second.x); }
+    }
+
     /**
      * @brief Decrypt a base64-encrypted string.
     */
@@ -223,10 +239,10 @@ namespace utils {
                 if (objects == layer.end() || !objects.value().is_array()) continue;
                 
                 for (const auto& object : objects.value()) {
-                    auto name = object.find("name");
-                    if (name == object.end() || !name.value().is_string()) continue;
+                    auto type = object.find("type");
+                    if (type == object.end() || !type.value().is_string()) continue;
 
-                    if (name.value() == "player") {
+                    if (type.value() == "player") {
                         auto playerDestCoordsX = object.find("x");
                         auto playerDestCoordsY = object.find("y");
                         auto playerDestSizeWidth = object.find("width");
@@ -236,7 +252,7 @@ namespace utils {
 
                         globals::currentLevelData.playerLevelData.destCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
 
-                    } else if (name.value() == "teleporter") {
+                    } else if (type.value() == "teleporter") {
                         auto teleporterDestCoordsX = object.find("x");
                         auto teleporterDestCoordsY = object.find("y");
                         auto teleporterDestSizeWidth = object.find("width");
@@ -255,13 +271,21 @@ namespace utils {
                             auto name = property.find("name");
                             auto value = property.find("value");
 
-                            if (name == property.end() || value == property.end() || !name.value().is_string() || !value.value().is_string()) continue;
+                            if (name == property.end() || value == property.end() || !value.value().is_string()) continue;
 
                             if (name.value() == "target-dest-coords") {
-                                // there might be problem here
-                                std::istringstream iss(std::string(value.value()));
-                                iss >> teleporter.targetDestCoords.x >> teleporter.targetDestCoords.y;
+                                auto& value_ = value.value();
+                                if (!value_.is_object()) continue;
+
+                                auto targetDestCoordsX = value_.find("x");
+                                auto targetDestCoordsY = value_.find("y");
+                                if (targetDestCoordsX == value_.end() || targetDestCoordsY == value_.end() || !targetDestCoordsX.value().is_number() || !targetDestCoordsY.value().is_number()) continue;
+
+                                teleporter.targetDestCoords.x = targetDestCoordsX.value();
+                                teleporter.targetDestCoords.y = targetDestCoordsY.value();
+
                             } else if (name.value() == "target-level") {
+                                if (!value.value().is_string()) continue;
                                 teleporter.targetLevel = value.value();
                             }
                         }
@@ -275,8 +299,95 @@ namespace utils {
 
     /**
      * @brief Parse tileset-related data from a XML file. Also compatible with XML-like formats, including Tiled's TSX.
+     * @note Omit `firstGID` therefore is intended to be used for entities.
     */
-    void loadTilesetData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& data) {
+    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const std::filesystem::path xmlPath) {
+        // if (!std::filesystem::exists(xmlPath)) return;
+
+        pugi::xml_document document;
+        pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+        if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+
+        // Parse nodes
+        pugi::xml_node tilesetNode = document.child("tileset");
+        pugi::xml_node propertiesNode = tilesetNode.child("properties");
+        pugi::xml_node imageNode = tilesetNode.child("image");
+
+        if (tilesetNode.empty() || imageNode.empty()) return;   // A tileset can have no properties
+
+        // Dimensions
+        auto srcCountX = tilesetNode.attribute("columns");
+        auto srcCountSum = tilesetNode.attribute("tilecount");
+        auto srcSizeX = tilesetNode.attribute("tilewidth");
+        auto srcSizeY = tilesetNode.attribute("tileheight");
+
+        if (srcCountX == nullptr || srcCountSum == nullptr || srcSizeX == nullptr || srcSizeY == nullptr) return;
+
+        tilesetData.srcCount = {srcCountX.as_int(), srcCountSum.as_int() / srcCountX.as_int()};
+        tilesetData.srcSize = {srcSizeX.as_int(), srcSizeY.as_int()};
+        
+        // Properties
+        for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
+            if (propertyNode.empty()) continue;
+
+            auto name = propertyNode.attribute("name");
+            auto type = propertyNode.attribute("type");
+
+            if (name == nullptr) continue;
+
+            if (type == nullptr) {
+                auto value = propertyNode.attribute("value");
+                if (value == nullptr) continue;
+                tilesetData.properties.insert(std::make_pair(name.as_string(), value.as_string()));
+
+            } else {
+                pugi::xml_node propertiesExNode = propertyNode.child("properties");
+                if (propertiesExNode == nullptr) continue;
+
+                std::unordered_map<std::string, std::string> propertiesEx_;
+
+                for (pugi::xml_node propertyExNode = propertiesExNode.child("property"); propertyExNode; propertyExNode = propertyExNode.next_sibling("property")) {
+                    auto nameEx = propertyExNode.attribute("name");
+                    auto valueEx = propertyExNode.attribute("value");
+                    if (nameEx == nullptr || valueEx == nullptr) continue;
+                    propertiesEx_.insert(std::make_pair(nameEx.as_string(), valueEx.as_string()));
+                }
+
+                tilesetData.propertiesEx.insert(std::make_pair(name.as_string(), propertiesEx_));
+            }
+
+        }
+
+        // Load texture
+        auto src = imageNode.attribute("source");
+        if (src == nullptr) return;
+        std::filesystem::path path(src.value());
+        utils::cleanRelativePath(path);
+        tilesetData.texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());   // Should also check whether path exists
+    }
+
+    /**
+     * @brief Parse tileset-related data from a JSON file. Usually exported from Tiled's Map.
+     * @note Include `firstGID` therefore is intended to be used for tilelayers.
+    */
+    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const json& tileset) {
+        auto firstGID = tileset.find("firstgid");
+        if (firstGID == tileset.end() || !firstGID.value().is_number_integer()) return;
+        tilesetData.firstGID = firstGID.value();
+
+        auto src = tileset.find("source");
+        if (src == tileset.end() || !src.value().is_string()) return;
+        std::filesystem::path xmlPath(src.value());
+        utils::cleanRelativePath(xmlPath);
+
+        utils::loadTilesetData(renderer, tilesetData, xmlPath);
+    }
+
+    /**
+     * @brief 
+    */
+    void loadTilesetsData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& data) {
+        for (auto& tilesetData : tilesetDataCollection) tilesetData.dealloc();   // Prevent memory leak
         tilesetDataCollection.clear();
 
         auto tilesets = data.find("tilesets");
@@ -284,47 +395,7 @@ namespace utils {
 
         for (const auto& tileset : tilesets.value()) {
             TilesetData tilesetData;
-
-            auto firstGID = tileset.find("firstgid");
-            if (firstGID == tileset.end() || !firstGID.value().is_number_integer()) continue;
-            tilesetData.firstGID = firstGID.value();
-
-            auto _xmlPath = tileset.find("source");
-            if (_xmlPath == tileset.end() || !_xmlPath.value().is_string()) continue;
-            std::filesystem::path xmlPath(_xmlPath.value());
-            utils::cleanRelativePath(xmlPath);
-
-            pugi::xml_document document;
-            pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).string().c_str());   // All tilesets should be located in "assets/.tiled/"
-            if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
-
-            // Parse nodes
-            pugi::xml_node tilesetNode = document.child("tileset");
-            pugi::xml_node propertiesNode = tilesetNode.child("properties");
-            pugi::xml_node imageNode = tilesetNode.child("image");
-
-            if (tilesetNode.empty() || imageNode.empty()) continue;
-
-            tilesetData.TILE_SRC_COUNT = {
-                tilesetNode.attribute("columns").as_int(),
-                tilesetNode.attribute("tilecount").as_int() / tilesetNode.attribute("columns").as_int(),
-            };
-            tilesetData.TILE_SRC_SIZE = {
-                // image.attribute("width").as_int() / tileSrcCount.x,
-                // image.attribute("height").as_int() / tileSrcCount.y,
-                tilesetNode.attribute("tilewidth").as_int(),
-                tilesetNode.attribute("tileheight").as_int(),
-            };
-            
-            // Custom properties
-            for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) tilesetData.properties[propertyNode.attribute("name").as_string()] = propertyNode.attribute("value").as_string();
-
-            // Load texture
-            std::filesystem::path path(imageNode.attribute("source").value());
-            utils::cleanRelativePath(path);
-            tilesetData.texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());
-
-            // Register to collection
+            utils::loadTilesetData(renderer, tilesetData, tileset);
             tilesetDataCollection.emplace_back(tilesetData);
         }
     }
@@ -333,7 +404,7 @@ namespace utils {
      * @brief Retrieve the `TilesetData` associated with a `GID`.
     */
     TilesetData getTilesetData(int gid) {
-        for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.TILE_SRC_COUNT.x * TILESET_DATA.TILE_SRC_COUNT.y) return TILESET_DATA;
-        return {nullptr,  0, {0, 0}, {0, 0}, {}};   // Throw some trash value if not found
+        for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.srcCount.x * TILESET_DATA.srcCount.y) return TILESET_DATA;
+        return TilesetData();
     }
 }

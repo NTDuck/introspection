@@ -26,10 +26,15 @@
   </data>
  </layer>
  <objectgroup id="15" name="entities">
-  <object id="5" name="player" x="640" y="256" width="32" height="32"/>
-  <object id="7" name="teleporter" x="672" y="384" width="32" height="32">
+  <object id="5" name="null" type="player" x="640" y="256" width="32" height="32"/>
+  <object id="7" name="away" type="teleporter" x="672" y="384" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" value="32 6"/>
+    <property name="target-dest-coords" type="class" propertytype="coords">
+     <properties>
+      <property name="x" type="int" value="32"/>
+      <property name="y" type="int" value="6"/>
+     </properties>
+    </property>
     <property name="target-level" value="level-valley-of-despair"/>
    </properties>
   </object>

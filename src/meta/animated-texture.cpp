@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <sstream>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
@@ -11,29 +10,25 @@
 
 AnimatedTextureWrapper::AnimatedTextureWrapper() {}
 
-AnimatedTextureWrapper::~AnimatedTextureWrapper() {
-    BaseTextureWrapper::~BaseTextureWrapper();
-}
+AnimatedTextureWrapper::~AnimatedTextureWrapper() { BaseTextureWrapper::~BaseTextureWrapper(); }
 
+/**
+ * @note Involves Tiled custom type `animation` that contains 3 attributes: `startGID` (`-1` by default), `stopGID` (`-1` by default), 'isPermanent` (`false` by default).
+*/
 void AnimatedTextureWrapper::init_(const std::filesystem::path xmlPath) {
     BaseTextureWrapper::init_(xmlPath);
 
-    for (const auto& pair : properties) {
-        std::istringstream iss(pair.second);
-        std::pair<int, int> GIDs;
-        iss >> GIDs.first >> GIDs.second;
-        rotatingGIDs[pair.first] = GIDs;
+    // Register to `rotatingGID`
+    for (const auto& pair : tilesetData.propertiesEx) {
+        auto startGID = pair.second.find("startGID");
+        auto stopGID = pair.second.find("stopGID");
+
+        if (startGID == pair.second.end() || stopGID == pair.second.end()) continue;
+
+        rotatingGIDs.insert(std::make_pair(pair.first, std::make_pair(std::stoi(startGID -> second), std::stoi(stopGID -> second))));
     }
 
-    // This is really ugly and needs immediate correction
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
-    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
-
-    srcRectCount.x = document.child("tileset").attribute("columns").as_int();
-    srcRectCount.y = document.child("tileset").attribute("tilecount").as_int() / srcRectCount.x;
-
-    currAnimationState = "animation-walk";
+    currAnimationState = globals::config::PLAYER_ANIMATION_DEFAULT;
     animationUpdateRate = globals::config::ANIMATED_TEXTURE_ANIMATION_UPDATE_RATE;
     currAnimationGID = rotatingGIDs[currAnimationState].first;
 }
@@ -51,8 +46,8 @@ void AnimatedTextureWrapper::updateAnimation() {
         if (currAnimationGID == rotatingGIDs[currAnimationState].second) currAnimationGID = rotatingGIDs[currAnimationState].first; else ++currAnimationGID;
     }
 
-    srcRect.x = currAnimationGID % srcRectCount.x * srcRect.w;
-    srcRect.y = currAnimationGID / srcRectCount.x * srcRect.h;
+    srcRect.x = currAnimationGID % tilesetData.srcCount.x * srcRect.w;
+    srcRect.y = currAnimationGID / tilesetData.srcCount.x * srcRect.h;
 }
 
 /**

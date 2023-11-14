@@ -47,21 +47,26 @@ struct Flags {
  * 
  * @param texture The loaded `SDL_Texture`. Usually the tileset itself.
  * @param firstGID The GID corresponding to the first tile in the set. Regulated by the level JSON, should not be manually set or modified otherwise.
- * @param TILE_SRC_COUNT The number of tiles per dimension in the tileset.
- * @param TILE_SRC_SIZE The maximum dimension of tiles in the tileset.
+ * @param srcCount The number of tiles per dimension in the tileset.
+ * @param srcSize The maximum dimension of tiles in the tileset.
  * 
- * @param properties A mapping that stores custom tileset properties.
+ * @param properties A mapping that stores properties of Tiled standard type e.g. string, bool, int.
  * @param properties["norender"] This tileset will not be rendered.
  * @param properties["collision"] This tileset controls collision between entities.
+ * 
+ * @param propertiesEx A mapping that stores properties of Tiled non-standard type i.e. user-defined.
 */
 struct TilesetData {
     SDL_Texture* texture;
     int firstGID;
-    SDL_Point TILE_SRC_COUNT;
-    SDL_Point TILE_SRC_SIZE;
+    SDL_Point srcCount;
+    SDL_Point srcSize;
 
-    // Custom properties
     std::unordered_map<std::string, std::string> properties;
+    std::unordered_map<std::string, std::unordered_map<std::string, std::string>> propertiesEx;
+
+    TilesetData();
+    void dealloc();
 };
 
 /**
@@ -140,12 +145,12 @@ namespace globals {
 
         const std::filesystem::path ASSETS_PATH = "assets";
         const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
-        const std::filesystem::path PLAYER_TILESET_PATH = TILED_ASSETS_PATH / ".tsx" / "hp-player.tsx";
+        const std::filesystem::path PLAYER_TILESET_PATH = ".tsx/hp-player.tsx";
         const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
         
         const SDL_Point ANIMATED_DYNAMIC_TEXTURE_VELOCITY = {1, 1};
         const int ANIMATED_TEXTURE_ANIMATION_UPDATE_RATE = 64;
-        const std::string PLAYER_ANIMATION_DEFAULT = "animation-blink";
+        const std::string PLAYER_ANIMATION_DEFAULT = "blink";   // Has absolutely no effect after `AnimatedDynamicTextureWrapper`
     };
 
     /**
@@ -156,31 +161,16 @@ namespace globals {
             // Virtual destructor, required for polymorphism
             virtual ~TextureData() = default;
 
-            /**
-             * @note Should be placed elsewhere.
-            */
             struct TextureData_Hasher {
-                std::size_t operator()(const TextureData& obj) const {
-                    return std::hash<int>()(obj.destCoords.x) ^ (std::hash<int>()(obj.destCoords.y) << 1);
-                }
+                std::size_t operator()(const TextureData& obj) const;
             };
 
-            /**
-             * @note Should be placed elsewhere.
-            */
             struct TextureData_Equality_Operator {
-                bool operator()(const TextureData& first, const TextureData& second) const {
-                    return first.destCoords.x == second.destCoords.x && first.destCoords.y == second.destCoords.y;
-                }
+                bool operator()(const TextureData& first, const TextureData& second) const;
             };
 
-            /**
-             * @note Should be placed elsewhere.
-            */
             struct TextureData_Less_Than_Operator {
-                bool operator()(const TextureData& first, const TextureData& second) const {
-                    return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x);
-                }
+                bool operator()(const TextureData& first, const TextureData& second) const;
             };
             
             // Attributes

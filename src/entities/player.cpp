@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <sstream>
 
 #include <entities.hpp>
 #include <meta.hpp>
@@ -8,9 +7,7 @@
 
 Player::Player() {}
 
-Player::~Player() {
-    AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper();
-}
+Player::~Player() { AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper(); }
 
 /**
  * @see https://stackoverflow.com/questions/4146499/why-does-a-virtual-function-get-hidden
@@ -53,10 +50,11 @@ void Player::onLevelChange(const globals::leveldata::TextureData& player) {
  * @note Override base method to enlarge player without affecting `srcCoords`, which is used in many operations.
 */
 void Player::render() {
-    SDL_Rect* _destRect = new SDL_Rect(destRect);
-    _destRect -> x -= globals::TILE_DEST_SIZE.x * 0.5;
-    _destRect -> y -= globals::TILE_DEST_SIZE.y * 1.3;
-    _destRect -> w *= 2;
-    _destRect -> h *= 2;
-    SDL_RenderCopyEx(globals::renderer, texture, &srcRect, _destRect, angle, center, flip);
+    SDL_Rect* destRect_ = new SDL_Rect(destRect);
+    destRect_ -> x -= globals::TILE_DEST_SIZE.x * 0.5;
+    destRect_ -> y -= globals::TILE_DEST_SIZE.y * 1.3;
+    destRect_ -> w *= 2;
+    destRect_ -> h *= 2;
+    SDL_RenderCopyEx(globals::renderer, tilesetData.texture, &srcRect, destRect_, angle, center, flip);
+    delete destRect_;
 }

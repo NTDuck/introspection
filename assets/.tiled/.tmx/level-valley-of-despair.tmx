@@ -24,10 +24,15 @@
   </data>
  </layer>
  <objectgroup id="5" name="entities">
-  <object id="2" name="player" x="1024" y="480" width="32" height="32"/>
-  <object id="3" name="teleporter" x="1024" y="192" width="32" height="32">
+  <object id="2" name="null" type="player" x="1024" y="480" width="32" height="32"/>
+  <object id="3" name="home" type="teleporter" x="1024" y="192" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" value="21 12"/>
+    <property name="target-dest-coords" type="class" propertytype="coords">
+     <properties>
+      <property name="x" type="int" value="21"/>
+      <property name="y" type="int" value="12"/>
+     </properties>
+    </property>
     <property name="target-level" value="level-equilibrium"/>
    </properties>
   </object>

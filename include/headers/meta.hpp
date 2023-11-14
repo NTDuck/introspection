@@ -11,6 +11,7 @@
 
 /**
  * @brief An abstract class representing a texture. Supports basic operations.
+ * @note Each derived concrete class should have a static `TilesetData` member and should be populated only once during initialization.
 */
 class BaseTextureWrapper {
     public:
@@ -35,7 +36,6 @@ class BaseTextureWrapper {
         SDL_Rect getDestRectFromCoords(const SDL_Point coords);
 
     protected:
-        SDL_Texture* texture = nullptr;   // expects a single tileset
         SDL_Point destCoords;
         SDL_Rect destRect;
         SDL_Rect srcRect;
@@ -44,7 +44,7 @@ class BaseTextureWrapper {
         SDL_Point* center = nullptr;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
-        std::unordered_map<std::string, std::string> properties;
+        TilesetData tilesetData;
 };
 
 
@@ -75,11 +75,6 @@ class AnimatedTextureWrapper : public BaseTextureWrapper {
         std::unordered_map<std::string, std::pair<int, int>> rotatingGIDs;
         std::string currAnimationState;
         int currAnimationGID;
-
-        /**
-         * @brief The maximum number of tiles per dimension in the tileset.
-        */
-        SDL_Point srcRectCount;
 
         /**
          * @brief Indicates the number of frames a sprite should last before switching to the next. Should be treated as a constant.
