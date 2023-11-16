@@ -16,7 +16,6 @@ namespace utils {
         };
     };
 
-
     namespace operators {
         struct SDL_Point_Equality_Operator {
             bool operator()(const SDL_Point& first, const SDL_Point& second) const;
@@ -36,11 +35,9 @@ namespace utils {
     void cleanRelativePath(std::filesystem::path& path);
     SDL_Color SDL_ColorFromHexString(const std::string& hexString);
 
-    void loadLevelsData(LevelMapping& mapping);
-    void loadLevelData(globals::leveldata::LevelData& levelData, const json& data);
-    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const std::filesystem::path xmlPath);
-    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const json& tileset);
-    void loadTilesetsData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& jsonData);
+    void loadLevelsData(leveldata::LevelMapping& mapping);
+    void loadLevelData(leveldata::LevelData& levelData, const json& data);
+    void loadTilesetsData(SDL_Renderer* renderer, tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, const json& jsonData);
 
-    TilesetData getTilesetData(int gid);
+    tiledata::TilelayerTilesetData getTilesetData(tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, int gid);
 }

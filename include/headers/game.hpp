@@ -16,7 +16,7 @@
 */
 class Game {
     public:
-        Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title);
+        Game(InitFlags flags, SDL_Rect dims, const int frameRate, const std::string title);
         ~Game();
 
         void start();
@@ -49,7 +49,7 @@ class Game {
         Teleporter::Teleporters teleporters;
 
         // Initialization parameters
-        const Flags flags;
+        const InitFlags flags;
         SDL_Rect dims;
         const int frameRate;
         const std::string title;

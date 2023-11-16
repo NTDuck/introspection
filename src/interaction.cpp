@@ -11,7 +11,7 @@ namespace interaction {
      * @brief Handle collision between entities.
     */
     namespace collision {
-        void PlayerCollideTeleporter(Interface& interface, const Teleporter& teleporter, globals::leveldata::LevelData& currentLevelData) {
+        void PlayerCollideTeleporter(Interface& interface, const Teleporter& teleporter, leveldata::LevelData& currentLevelData) {
             interface.changeLevel(teleporter.targetLevel);
             currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
         }

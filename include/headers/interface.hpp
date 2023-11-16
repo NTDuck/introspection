@@ -10,13 +10,13 @@
 
 class Interface {
     public:
-        Interface(std::string levelName);
+        Interface(const std::string levelName);
         ~Interface();
         
         void init();
         void render();
 
-        void changeLevel(std::string levelName);
+        void changeLevel(const std::string levelName);
         void onLevelChange();
         void onWindowChange();
 
@@ -31,7 +31,7 @@ class Interface {
          * @brief Maps a level's name with its corresponding relative file path.
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
-        LevelMapping levelMapping;
+        leveldata::LevelMapping levelMapping;
 
         /**
          * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.

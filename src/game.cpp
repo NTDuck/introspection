@@ -10,7 +10,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(Flags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(InitFlags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game() {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
@@ -125,7 +125,7 @@ void Game::onLevelChange() {
 */
 void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
-    SDL_GetWindowSize(window, &globals::WINDOW_SIZE.x, &globals::WINDOW_SIZE.y);
+    SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
     // Dependencies that rely on certain dimension-related global variables
     interface.onWindowChange();

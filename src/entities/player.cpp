@@ -40,8 +40,8 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     if (validateMove()) AnimatedDynamicTextureWrapper::onMoveStart(); else AnimatedDynamicTextureWrapper::onMoveEnd();
 }
 
-void Player::onLevelChange(const globals::leveldata::TextureData& player) {
-    auto data = dynamic_cast<const globals::leveldata::PlayerData*>(&player);
+void Player::onLevelChange(const leveldata::TextureData& player) {
+    auto data = dynamic_cast<const leveldata::PlayerData*>(&player);
     AnimatedDynamicTextureWrapper::onLevelChange(*data);
 }
 
@@ -51,10 +51,10 @@ void Player::onLevelChange(const globals::leveldata::TextureData& player) {
 */
 void Player::render() {
     SDL_Rect* destRect_ = new SDL_Rect(destRect);
-    destRect_ -> x -= globals::TILE_DEST_SIZE.x * 0.5;
-    destRect_ -> y -= globals::TILE_DEST_SIZE.y * 1.3;
-    destRect_ -> w *= 2;
-    destRect_ -> h *= 2;
+    destRect_ -> x -= globals::tileDestSize.x >> 1;
+    destRect_ -> y -= globals::tileDestSize.y * 1.3;
+    destRect_ -> w <<= 1;
+    destRect_ -> h <<= 1;
     SDL_RenderCopyEx(globals::renderer, tilesetData.texture, &srcRect, destRect_, angle, center, flip);
     delete destRect_;
 }

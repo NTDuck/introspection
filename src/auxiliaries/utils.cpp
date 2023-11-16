@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -157,14 +158,12 @@ namespace utils {
     /**
      * @brief Register level initialization data to a `LevelMapping`.
     */
-    void loadLevelsData(LevelMapping& mapping) {
+    void loadLevelsData(leveldata::LevelMapping& mapping) {
         json data;
         utils::readJSON(globals::config::LEVELS_PATH.string(), data);
 
         auto levels = data.find("levels");
         if (levels == data.end() || !levels.value().is_array()) return;
-
-        // int count = 0;
 
         for (const auto& level : levels.value()) {
             if (!level.is_object()) continue;
@@ -180,7 +179,7 @@ namespace utils {
      * @note This handles A LOT.
      * @note Only `csv` and `zlib-compressed base64` are supported.
     */
-    void loadLevelData(globals::leveldata::LevelData& currentLevel, const json& data) {
+    void loadLevelData(leveldata::LevelData& currentLevel, const json& data) {
         // Clear current level data
         for (auto& tileRow : currentLevel.tileCollection) for (auto& tile : tileRow) tile.clear();
         currentLevel.teleportersLevelData.clear();
@@ -190,11 +189,11 @@ namespace utils {
         auto tileDestCountHeight = data.find("height");
         if (tileDestCountWidth == data.end() || tileDestCountHeight == data.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
 
-        globals::TILE_DEST_COUNT = {tileDestCountWidth.value(), tileDestCountHeight.value()};
-        globals::TILE_DEST_SIZE = {globals::WINDOW_SIZE.x / globals::TILE_DEST_COUNT.x, globals::WINDOW_SIZE.y / globals::TILE_DEST_COUNT.y};
-        globals::OFFSET = {
-            (globals::WINDOW_SIZE.x - globals::TILE_DEST_COUNT.x * globals::TILE_DEST_SIZE.x) / 2,
-            (globals::WINDOW_SIZE.y - globals::TILE_DEST_COUNT.y * globals::TILE_DEST_SIZE.y) / 2,
+        globals::tileDestCount = {tileDestCountWidth.value(), tileDestCountHeight.value()};
+        globals::tileDestSize = {globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y};
+        globals::windowOffset = {
+            (globals::windowSize.x - globals::tileDestCount.x * globals::tileDestSize.x) / 2,
+            (globals::windowSize.y - globals::tileDestCount.y * globals::tileDestSize.y) / 2,
         };
 
         auto backgroundColor = data.find("backgroundcolor");
@@ -202,8 +201,8 @@ namespace utils {
         currentLevel.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::DEFAULT_BACKGROUND_COLOR);
 
         // Emplace gids into `tileCollection`. Executed per layer.
-        currentLevel.tileCollection.resize(globals::TILE_DEST_COUNT.y);
-        for (auto& tileRow : currentLevel.tileCollection) tileRow.resize(globals::TILE_DEST_COUNT.x);
+        currentLevel.tileCollection.resize(globals::tileDestCount.y);
+        for (auto& tileRow : currentLevel.tileCollection) tileRow.resize(globals::tileDestCount.x);
 
         auto layers = data.find("layers");
         if (layers == data.end() || !layers.value().is_array()) return;
@@ -232,7 +231,7 @@ namespace utils {
                     } else return;
                 } else return;
 
-                for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::TILE_DEST_COUNT.x + x]);
+                for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::tileDestCount.x + x]);
 
             } else if (type.value() == "objectgroup") {
                 auto objects = layer.find("objects");
@@ -260,7 +259,7 @@ namespace utils {
 
                         if (teleporterDestCoordsX == object.end() || teleporterDestCoordsY == object.end() || teleporterDestSizeWidth == object.end() || teleporterDestSizeHeight == object.end() || !teleporterDestCoordsX.value().is_number_integer() || !teleporterDestCoordsY.value().is_number_integer() || !teleporterDestSizeWidth.value().is_number_integer() || !teleporterDestSizeHeight.value().is_number_integer()) continue;
 
-                        globals::leveldata::TeleporterData teleporter;
+                        leveldata::TeleporterData teleporter;
 
                         teleporter.destCoords = {int(teleporterDestCoordsX.value()) / int(teleporterDestSizeWidth.value()), int(teleporterDestCoordsY.value()) / int(teleporterDestSizeHeight.value())};
 
@@ -298,19 +297,45 @@ namespace utils {
     }
 
     /**
-     * @brief Parse tileset-related data from a XML file. Also compatible with XML-like formats, including Tiled's TSX.
-     * @note Omit `firstGID` therefore is intended to be used for entities.
+     * @brief Call `init()` method of all tilelayer-tileset.
     */
-    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const std::filesystem::path xmlPath) {
-        // if (!std::filesystem::exists(xmlPath)) return;
+    void loadTilesetsData(SDL_Renderer* renderer, tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, const json& data) {
+        for (auto& tilesetData : tilesetDataCollection) tilesetData.dealloc();   // Prevent memory leak
+        tilesetDataCollection.clear();
 
-        pugi::xml_document document;
-        pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
-        if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+        auto tilesets = data.find("tilesets");
+        if (tilesets == data.end() || !tilesets.value().is_array()) return;
 
+        for (const auto& tileset : tilesets.value()) {
+            tiledata::TilelayerTilesetData tilesetData;
+            tilesetData.init(tileset, renderer);
+            tilesetDataCollection.emplace_back(tilesetData);
+        }
+    }
+
+    bool compareByFirstGID(const tiledata::TilelayerTilesetData& first, const tiledata::TilelayerTilesetData& second) {
+        return first.firstGID < second.firstGID;
+    }
+
+    /**
+     * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
+     * @note Requires further optimization to reduce time complexity.
+    */
+    tiledata::TilelayerTilesetData getTilesetData(tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, int gid) {
+        for (const auto& tilesetData : tilesetDataCollection) if (tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y) return tilesetData;
+        return tiledata::TilelayerTilesetData();
+    }
+}
+
+namespace tiledata {
+    /**
+     * @brief Parse a tileset's data from a loaded `pugi::xml_document`.
+     * @note Also loads the `texture`.
+     * @note Requires `document` to be successfully loaded from a XML file.
+    */
+    void BaseTilesetData::init(pugi::xml_document& document, SDL_Renderer* renderer) {
         // Parse nodes
         pugi::xml_node tilesetNode = document.child("tileset");
-        pugi::xml_node propertiesNode = tilesetNode.child("properties");
         pugi::xml_node imageNode = tilesetNode.child("image");
 
         if (tilesetNode.empty() || imageNode.empty()) return;   // A tileset can have no properties
@@ -323,11 +348,43 @@ namespace utils {
 
         if (srcCountX == nullptr || srcCountSum == nullptr || srcSizeX == nullptr || srcSizeY == nullptr) return;
 
-        tilesetData.srcCount = {srcCountX.as_int(), srcCountSum.as_int() / srcCountX.as_int()};
-        tilesetData.srcSize = {srcSizeX.as_int(), srcSizeY.as_int()};
-        
+        srcCount = {srcCountX.as_int(), srcCountSum.as_int() / srcCountX.as_int()};
+        srcSize = {srcSizeX.as_int(), srcSizeY.as_int()};
+
+        // Load texture
+        auto src = imageNode.attribute("source");
+        if (src == nullptr) return;
+        std::filesystem::path path(src.value());
+        utils::cleanRelativePath(path);
+        texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());   // Should also check whether path exists
+    }
+
+    /**
+     * @brief Parse a tilelayer-tileset's data from a loaded `nlohmann::json`.
+     * @note Also loads the `texture` and populate `firstGID`.
+     * @note `firstGID` comes only from Tiled Map JSON files.
+    */
+    void TilelayerTilesetData::init(const json& tileset, SDL_Renderer* renderer) {
+        auto firstGID_ = tileset.find("firstgid");
+        if (firstGID_ == tileset.end() || !firstGID_.value().is_number_integer()) return;
+        firstGID = firstGID_.value();
+
+        auto src = tileset.find("source");
+        if (src == tileset.end() || !src.value().is_string()) return;
+        std::filesystem::path xmlPath(src.value());
+        utils::cleanRelativePath(xmlPath);
+
+        pugi::xml_document document;
+        pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+        if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+
+        BaseTilesetData::init(document, renderer);
+
         // Properties
-        for (pugi::xml_node propertyNode = propertiesNode.child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
+        pugi::xml_node propertiesNode = document.child("tileset").child("properties");
+        if (propertiesNode.empty()) return;
+
+        for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
             if (propertyNode.empty()) continue;
 
             auto name = propertyNode.attribute("name");
@@ -335,76 +392,65 @@ namespace utils {
 
             if (name == nullptr) continue;
 
-            if (type == nullptr) {
+            if (type == nullptr || std::strcmp(type.as_string(), "class")) {
                 auto value = propertyNode.attribute("value");
                 if (value == nullptr) continue;
-                tilesetData.properties.insert(std::make_pair(name.as_string(), value.as_string()));
+                properties.insert(std::make_pair(name.as_string(), value.as_string()));
+            }
+        }
+    }
 
+    /**
+     * @brief Parse a animated-entities-tileset's data from a loaded `pugi::xml_document`.
+     * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
+    */
+    void AnimatedEntitiesTilesetData::init(pugi::xml_document& document, SDL_Renderer* renderer) {
+        BaseTilesetData::init(document, renderer);
+
+        pugi::xml_node propertiesNode = document.child("tileset").child("properties");
+        if (propertiesNode.empty()) return;
+
+        for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
+            if (propertyNode.empty()) continue;
+
+            auto name = propertyNode.attribute("name");
+            auto type = propertyNode.attribute("type");
+
+            if (name == nullptr) continue;
+            
+            if (type == nullptr || std::strcmp(type.as_string(), "class")) {
+                auto value = propertyNode.attribute("value");
+                if (value == nullptr) continue;
+                if (!std::strcmp(name.as_string(), "animationUpdateRate")) animationUpdateRate = value.as_int();
             } else {
-                pugi::xml_node propertiesExNode = propertyNode.child("properties");
-                if (propertiesExNode == nullptr) continue;
+                auto propertytype = propertyNode.attribute("propertytype");
+                pugi::xml_node animationsNode = propertyNode.child("properties");
+                if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
 
-                std::unordered_map<std::string, std::string> propertiesEx_;
+                auto animationType = AnimatedEntitiesTilesetData::animationTypeMapping.find(name.as_string());
+                if (animationType == AnimatedEntitiesTilesetData::animationTypeMapping.end()) continue;
 
-                for (pugi::xml_node propertyExNode = propertiesExNode.child("property"); propertyExNode; propertyExNode = propertyExNode.next_sibling("property")) {
-                    auto nameEx = propertyExNode.attribute("name");
-                    auto valueEx = propertyExNode.attribute("value");
-                    if (nameEx == nullptr || valueEx == nullptr) continue;
-                    propertiesEx_.insert(std::make_pair(nameEx.as_string(), valueEx.as_string()));
+                AnimatedEntitiesTilesetData::Animation animation;
+
+                for (pugi::xml_node animationNode = animationsNode.child("property"); animationNode; animationNode = animationNode.next_sibling("property")) {
+                    if (animationNode.empty()) continue;
+
+                    auto name_ = animationNode.attribute("name");
+                    auto value_ = animationNode.attribute("value");
+                    if (name_ == nullptr || value_ == nullptr) continue;
+                    
+                    if (!std::strcmp(name_.as_string(), "startGID")) {
+                        animation.startGID = value_.as_int();
+                    } else if (!std::strcmp(name_.as_string(), "stopGID")) {
+                        animation.stopGID = value_.as_int();
+                    } else if (!std::strcmp(name_.as_string(), "isPermanent")) {
+                        animation.isPermanent = value_.as_bool();
+                    }
                 }
 
-                tilesetData.propertiesEx.insert(std::make_pair(name.as_string(), propertiesEx_));
+                // Does this need to be inserted instead?
+                animationMapping.emplace(std::make_pair(animationType -> second, animation));
             }
-
         }
-
-        // Load texture
-        auto src = imageNode.attribute("source");
-        if (src == nullptr) return;
-        std::filesystem::path path(src.value());
-        utils::cleanRelativePath(path);
-        tilesetData.texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());   // Should also check whether path exists
-    }
-
-    /**
-     * @brief Parse tileset-related data from a JSON file. Usually exported from Tiled's Map.
-     * @note Include `firstGID` therefore is intended to be used for tilelayers.
-    */
-    void loadTilesetData(SDL_Renderer* renderer, TilesetData& tilesetData, const json& tileset) {
-        auto firstGID = tileset.find("firstgid");
-        if (firstGID == tileset.end() || !firstGID.value().is_number_integer()) return;
-        tilesetData.firstGID = firstGID.value();
-
-        auto src = tileset.find("source");
-        if (src == tileset.end() || !src.value().is_string()) return;
-        std::filesystem::path xmlPath(src.value());
-        utils::cleanRelativePath(xmlPath);
-
-        utils::loadTilesetData(renderer, tilesetData, xmlPath);
-    }
-
-    /**
-     * @brief 
-    */
-    void loadTilesetsData(SDL_Renderer* renderer, TilesetDataCollection& tilesetDataCollection, const json& data) {
-        for (auto& tilesetData : tilesetDataCollection) tilesetData.dealloc();   // Prevent memory leak
-        tilesetDataCollection.clear();
-
-        auto tilesets = data.find("tilesets");
-        if (tilesets == data.end() || !tilesets.value().is_array()) return;
-
-        for (const auto& tileset : tilesets.value()) {
-            TilesetData tilesetData;
-            utils::loadTilesetData(renderer, tilesetData, tileset);
-            tilesetDataCollection.emplace_back(tilesetData);
-        }
-    }
-
-    /**
-     * @brief Retrieve the `TilesetData` associated with a `GID`.
-    */
-    TilesetData getTilesetData(int gid) {
-        for (const auto& TILESET_DATA : globals::TILESET_COLLECTION) if (TILESET_DATA.firstGID <= gid && gid < TILESET_DATA.firstGID + TILESET_DATA.srcCount.x * TILESET_DATA.srcCount.y) return TILESET_DATA;
-        return TilesetData();
     }
 }

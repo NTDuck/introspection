@@ -20,11 +20,11 @@ AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper() {
  * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
 void AnimatedDynamicTextureWrapper::init_(std::filesystem::path xmlPath) {
-    AnimatedTextureWrapper::init_(xmlPath);
+    BaseTextureWrapper::init_(xmlPath);
     VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
 }
 
-void AnimatedDynamicTextureWrapper::onLevelChange(const globals::leveldata::TextureData& texture) {
+void AnimatedDynamicTextureWrapper::onLevelChange(const leveldata::TextureData& texture) {
     BaseTextureWrapper::onLevelChange(texture);
     onMoveEnd();
 }
@@ -56,13 +56,13 @@ void AnimatedDynamicTextureWrapper::move() {
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
 */
 bool AnimatedDynamicTextureWrapper::validateMove() {
-    if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::TILE_DEST_COUNT.x || nextDestCoords -> y >= globals::TILE_DEST_COUNT.y) return false;
+    if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
-        static TilesetData* tilesetData = nullptr;
+        static tiledata::TilelayerTilesetData* tilesetData = nullptr;
         for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
-            tilesetData = new TilesetData(utils::getTilesetData(gid));
+            tilesetData = new tiledata::TilelayerTilesetData(utils::getTilesetData(globals::tilesetDataCollection, gid));
             if (!gid && tilesetData -> properties["collision"] != "true") continue;
             // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;
             return gid;
@@ -88,7 +88,7 @@ bool AnimatedDynamicTextureWrapper::validateMove() {
  * @note DO NOT assume this function's purpose based on its name.
 */
 void AnimatedDynamicTextureWrapper::onMoveStart() {
-    AnimatedTextureWrapper::resetAnimation("walk");
+    AnimatedTextureWrapper::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::WALK);
 }
 
 /**
@@ -99,5 +99,5 @@ void AnimatedDynamicTextureWrapper::onMoveEnd() {
     nextDestRect = nullptr;
     velocity = {0, 0};
 
-    AnimatedTextureWrapper::resetAnimation("idle");
+    AnimatedTextureWrapper::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::IDLE);
 }

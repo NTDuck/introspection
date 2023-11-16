@@ -21,7 +21,11 @@ BaseTextureWrapper::~BaseTextureWrapper() {
  * @see <auxiliaries/utils.cpp> loadTilesetData (namespace method). Share many similarities but could not merge due to lack of motivation.
 */
 void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
-    utils::loadTilesetData(globals::renderer, tilesetData, xmlPath);
+    pugi::xml_document document;
+    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());   // All tilesets should be located in "assets/.tiled/"
+    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+    
+    tilesetData.init(document, globals::renderer);
 
     srcRect.w = tilesetData.srcSize.x;
     srcRect.h = tilesetData.srcSize.y;
@@ -39,7 +43,7 @@ void BaseTextureWrapper::onWindowChange() {
  * @note Does nothing by default, implementation will be handled by derived classes.
  * @note Behold, polyphormism!
 */
-void BaseTextureWrapper::onLevelChange(const globals::leveldata::TextureData& texture) {
+void BaseTextureWrapper::onLevelChange(const leveldata::TextureData& texture) {
     destCoords = texture.destCoords;
 }
 
@@ -90,7 +94,7 @@ void BaseTextureWrapper::setRGBA(SDL_Color color) {
  * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
 */
 SDL_Rect BaseTextureWrapper::getDestRectFromCoords(const SDL_Point coords) {
-    return {coords.x * globals::TILE_DEST_SIZE.x + globals::OFFSET.x, coords.y * globals::TILE_DEST_SIZE.y + globals::OFFSET.y, globals::TILE_DEST_SIZE.x, globals::TILE_DEST_SIZE.y};
+    return {coords.x * globals::tileDestSize.x + globals::windowOffset.x, coords.y * globals::tileDestSize.y + globals::windowOffset.y, globals::tileDestSize.x, globals::tileDestSize.y};
 };
 
 /**

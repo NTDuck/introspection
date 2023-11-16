@@ -11,7 +11,7 @@
 
 /**
  * @brief An abstract class representing a texture. Supports basic operations.
- * @note Each derived concrete class should have a static `TilesetData` member and should be populated only once during initialization.
+ * @todo Each concrete class `C(i)` has exactly one static member `S(i)` (an instance of `TilesetData`) that is unique and accessible to all instances within class `C(i)`. All static member `S(i)` should be populated and dealloc-ed with methods from the base class. This will make sure only one `tilesetData` exists regardless of the number of instances of one concrete class, therefore effectively reduce memory overhead. Required for scalability.
 */
 class BaseTextureWrapper {
     public:
@@ -22,7 +22,7 @@ class BaseTextureWrapper {
         virtual void render();
 
         virtual void onWindowChange();
-        virtual void onLevelChange(const globals::leveldata::TextureData& texture);
+        virtual void onLevelChange(const leveldata::TextureData& texture);
 
         void setRGB(Uint8 r, Uint8 g, Uint8 b);
         void setBlending(SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND);
@@ -44,7 +44,7 @@ class BaseTextureWrapper {
         SDL_Point* center = nullptr;
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
-        TilesetData tilesetData;
+        tiledata::AnimatedEntitiesTilesetData tilesetData;
 };
 
 
@@ -56,10 +56,8 @@ class AnimatedTextureWrapper : public BaseTextureWrapper {
         AnimatedTextureWrapper();
         ~AnimatedTextureWrapper();
 
-        void init_(const std::filesystem::path xmlPath) override;
-
         void updateAnimation();
-        void resetAnimation(const std::string nextAnimationState);
+        void resetAnimation(const tiledata::AnimatedEntitiesTilesetData::AnimationType animationType);
 
         /**
          * @note Allow public access to encapsulated internal state.
@@ -67,19 +65,8 @@ class AnimatedTextureWrapper : public BaseTextureWrapper {
         bool isNextTileReached = false;
 
     protected:
-        /**
-         * @brief Maps the animation state with its respective starting and stopping GIDs.
-         * @todo Consider implementing `enum` instead of `std::string`.
-         * @todo Optimize retrieval.
-        */
-        std::unordered_map<std::string, std::pair<int, int>> rotatingGIDs;
-        std::string currAnimationState;
+        tiledata::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
         int currAnimationGID;
-
-        /**
-         * @brief Indicates the number of frames a sprite should last before switching to the next. Should be treated as a constant.
-        */
-        int animationUpdateRate;
 };
 
 
@@ -92,7 +79,7 @@ class AnimatedDynamicTextureWrapper : public AnimatedTextureWrapper {
         ~AnimatedDynamicTextureWrapper();
 
         void init_(const std::filesystem::path xmlPath) override;
-        void onLevelChange(const globals::leveldata::TextureData& texture) override;
+        void onLevelChange(const leveldata::TextureData& texture) override;
 
         virtual void move();
         virtual bool validateMove();

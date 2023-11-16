@@ -6,6 +6,6 @@
 
 namespace interaction {
     namespace collision {
-        void PlayerCollideTeleporter(Interface& interface, const Teleporter& teleporter, globals::leveldata::LevelData& currentLevelData);
+        void PlayerCollideTeleporter(Interface& interface, const Teleporter& teleporter, leveldata::LevelData& currentLevelData);
     }
 }

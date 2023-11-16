@@ -8,7 +8,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-Interface::Interface(std::string levelName) : levelName(levelName) {}
+Interface::Interface(const std::string levelName_) : levelName(levelName_) {}
 
 Interface::~Interface() { if (texture != nullptr) SDL_DestroyTexture(texture); }
 
@@ -31,8 +31,8 @@ void Interface::render() {
 /**
  * @brief Force load level after changes.
 */
-void Interface::changeLevel(std::string _levelName) {
-    levelName = _levelName;
+void Interface::changeLevel(const std::string levelName_) {
+    levelName = levelName_;
     onLevelChange();
 }
 
@@ -57,7 +57,7 @@ void Interface::onLevelChange() {
 void Interface::onWindowChange() {
     // NOT a good way of resizing things
     if (texture != nullptr) SDL_DestroyTexture(texture);
-    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::WINDOW_SIZE.x, globals::WINDOW_SIZE.y);
+    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);
 
     // Don't even bother
     onLevelChange();
@@ -77,7 +77,7 @@ void Interface::loadLevel() {
     utils::loadLevelData(globals::currentLevelData, data);
 
     // Reset `globals::TILESET_COLLECTION`
-    utils::loadTilesetsData(globals::renderer, globals::TILESET_COLLECTION, data);
+    utils::loadTilesetsData(globals::renderer, globals::tilesetDataCollection, data);
 }
 
 /**
@@ -116,25 +116,25 @@ void Interface::renderBackgroundToTexture() {
  * @brief Render the static portions of a level to `texture`.
 */
 void Interface::renderLevelTilesToTexture() {
-    TileRenderDataCollection tileRenderDataCollection(globals::TILE_DEST_COUNT.y, std::vector<TileRenderData>(globals::TILE_DEST_COUNT.x));
+    tiledata::TileRenderData::TileRenderDataCollection tileRenderDataCollection(globals::tileDestCount.y, std::vector<tiledata::TileRenderData>(globals::tileDestCount.x));
 
     // Populate render data 
-    for (int y = 0; y < globals::TILE_DEST_COUNT.y; ++y) {
-        for (int x = 0; x < globals::TILE_DEST_COUNT.x; ++x) {
-            TileRenderData& data = tileRenderDataCollection[y][x];
+    for (int y = 0; y < globals::tileDestCount.y; ++y) {
+        for (int x = 0; x < globals::tileDestCount.x; ++x) {
+            tiledata::TileRenderData& data = tileRenderDataCollection[y][x];
 
-            data.destRect.x = globals::TILE_DEST_SIZE.x * x + globals::OFFSET.x;
-            data.destRect.y = globals::TILE_DEST_SIZE.y * y + globals::OFFSET.y;
-            data.destRect.w = globals::TILE_DEST_SIZE.x;
-            data.destRect.h = globals::TILE_DEST_SIZE.y;
+            data.destRect.x = globals::tileDestSize.x * x + globals::windowOffset.x;
+            data.destRect.y = globals::tileDestSize.y * y + globals::windowOffset.y;
+            data.destRect.w = globals::tileDestSize.x;
+            data.destRect.h = globals::tileDestSize.y;
 
             for (const auto& gid : globals::currentLevelData.tileCollection[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
-                TilesetData tilesetData;
+                tiledata::TilelayerTilesetData tilesetData;
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                tilesetData = utils::getTilesetData(gid);
+                tilesetData = utils::getTilesetData(globals::tilesetDataCollection, gid);
 
                 data.textures.emplace_back(tilesetData.properties["norender"] == "true" ? nullptr : tilesetData.texture);
                 data.srcRects.push_back({

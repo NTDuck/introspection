@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="hp-player" tilewidth="32" tileheight="32" tilecount="72" columns="8" tilerendersize="grid">
  <properties>
+  <property name="animationUpdateRate" type="int" value="64"/>
   <property name="attack" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="64"/>
     <property name="stopGID" type="int" value="71"/>
+    <property name="type" propertytype="animation-type" value="attack"/>
    </properties>
   </property>
   <property name="blink" type="class" propertytype="animation">
@@ -36,6 +38,7 @@
   </property>
   <property name="idle" type="class" propertytype="animation">
    <properties>
+    <property name="isDefault" type="bool" value="true"/>
     <property name="startGID" type="int" value="0"/>
     <property name="stopGID" type="int" value="1"/>
    </properties>
