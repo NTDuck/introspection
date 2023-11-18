@@ -26,15 +26,15 @@ namespace tiledata {
     TilelayerTilesetData::TilelayerTilesetData() : BaseTilesetData::BaseTilesetData(), firstGID(0) {}
 
     const std::unordered_map<std::string, AnimatedEntitiesTilesetData::AnimationType> AnimatedEntitiesTilesetData::animationTypeMapping = {
-        {"idle", AnimationType::IDLE},
-        {"attack", AnimationType::ATTACK},
-        {"blink", AnimationType::BLINK},
-        {"death", AnimationType::DEATH},
-        {"disappear", AnimationType::DISAPPEAR},
-        {"duck", AnimationType::DUCK},
-        {"jump", AnimationType::JUMP},
-        {"run", AnimationType::RUN},
-        {"walk", AnimationType::WALK},
+        {"animation-idle", AnimationType::IDLE},
+        {"animation-attack", AnimationType::ATTACK},
+        {"animation-blink", AnimationType::BLINK},
+        {"animation-death", AnimationType::DEATH},
+        {"animation-disappear", AnimationType::DISAPPEAR},
+        {"animation-duck", AnimationType::DUCK},
+        {"animation-jump", AnimationType::JUMP},
+        {"animation-run", AnimationType::RUN},
+        {"animation-walk", AnimationType::WALK},
     };
 }
 

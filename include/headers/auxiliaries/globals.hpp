@@ -135,6 +135,7 @@ namespace tiledata {
 
     /**
      * @brief Represent data of a tileset used for entities and animated objects.
+     * @note Default values are provided in case of missing/corrupted data.
     */
     struct AnimatedEntitiesTilesetData : public BaseTilesetData {
         /**
@@ -164,12 +165,17 @@ namespace tiledata {
          * @todo Optimize retrieval.
         */
         std::unordered_map<AnimationType, Animation> animationMapping;
-        AnimationType defaultAnimation;
 
         /**
          * @brief Indicates the number of frames a sprite should last before switching to the next. Should be treated as a constant.
         */
-        int animationUpdateRate;
+        int animationUpdateRate = 64;
+
+        /**
+         * @brief Indicates the ratio between the size of one single animation/sprite and the size of a "tile" on the spritesheet per dimension.
+         * @note Should be applied alongside `globals::tileDestSize`.
+        */
+        SDL_Point animationSize = {1, 1};
 
         void init(pugi::xml_document& document, SDL_Renderer* renderer);
     };

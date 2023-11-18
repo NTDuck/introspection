@@ -320,6 +320,7 @@ namespace utils {
     /**
      * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
      * @note Requires further optimization to reduce time complexity.
+     * @todo Try binary search.
     */
     tiledata::TilelayerTilesetData getTilesetData(tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, int gid) {
         for (const auto& tilesetData : tilesetDataCollection) if (tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y) return tilesetData;
@@ -421,7 +422,13 @@ namespace tiledata {
             if (type == nullptr || std::strcmp(type.as_string(), "class")) {
                 auto value = propertyNode.attribute("value");
                 if (value == nullptr) continue;
-                if (!std::strcmp(name.as_string(), "animationUpdateRate")) animationUpdateRate = value.as_int();
+                if (!std::strcmp(name.as_string(), "animation-update-rate")) {
+                    animationUpdateRate = value.as_int();
+                } else if (!std::strcmp(name.as_string(), "animation-width")) {
+                    animationSize.x = value.as_int();
+                } else if (!std::strcmp(name.as_string(), "animation-height")) {
+                    animationSize.y = value.as_int();
+                }
             } else {
                 auto propertytype = propertyNode.attribute("propertytype");
                 pugi::xml_node animationsNode = propertyNode.child("properties");

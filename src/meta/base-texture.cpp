@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <iostream>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -27,8 +28,8 @@ void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
     
     tilesetData.init(document, globals::renderer);
 
-    srcRect.w = tilesetData.srcSize.x;
-    srcRect.h = tilesetData.srcSize.y;
+    srcRect.w = tilesetData.srcSize.x * tilesetData.animationSize.x;
+    srcRect.h = tilesetData.srcSize.y * tilesetData.animationSize.y;
 }
 
 /**
@@ -36,6 +37,7 @@ void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
 */
 void BaseTextureWrapper::onWindowChange() {
     destRect = getDestRectFromCoords(destCoords);
+    std::cout << destRect.x << ' ' << destRect.y << ' ' << destRect.w << ' ' << destRect.h << std::endl;
 }
 
 /**
@@ -53,6 +55,10 @@ void BaseTextureWrapper::onLevelChange(const leveldata::TextureData& texture) {
  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
 */
 void BaseTextureWrapper::render() {
+    // std::cout << destRect.x << ' ' << destRect.y << ' ' << destRect.w << ' ' << destRect.h << std::endl;
+    // std::cout << srcRect.x << ' ' << srcRect.y << ' ' << srcRect.w << ' ' << srcRect.h << std::endl;
+    // std::cout << destRectModifier.x << ' ' << destRectModifier.y << ' ' << destRectModifier.w << ' ' << destRectModifier.h << std::endl;
+
     SDL_RenderCopyEx(globals::renderer, tilesetData.texture, &srcRect, &destRect, angle, center, flip);
 }
 
@@ -92,22 +98,18 @@ void BaseTextureWrapper::setRGBA(SDL_Color color) {
 
 /**
  * @brief Retrieve a `SDL_Rect` representing the texture's position relative to the window.
+ * @note The following calculations bear fruition from several commits, and should be understood as-is. Additional explanation will not be provided elsewhere.
 */
 SDL_Rect BaseTextureWrapper::getDestRectFromCoords(const SDL_Point coords) {
-    return {coords.x * globals::tileDestSize.x + globals::windowOffset.x, coords.y * globals::tileDestSize.y + globals::windowOffset.y, globals::tileDestSize.x, globals::tileDestSize.y};
+    return {
+        coords.x * globals::tileDestSize.x + globals::windowOffset.x + destRectModifier.x - ((globals::tileDestSize.x * tilesetData.animationSize.x * (destRectModifier.w - 1)) >> 1),
+        coords.y * globals::tileDestSize.y + globals::windowOffset.y + destRectModifier.y - ((globals::tileDestSize.y * tilesetData.animationSize.y * (destRectModifier.h - 1)) >> 1),
+        globals::tileDestSize.x * tilesetData.animationSize.x * destRectModifier.w,
+        globals::tileDestSize.y * tilesetData.animationSize.y * destRectModifier.h,
+    };
 };
 
 /**
  * @brief Allow read-only access at public scope to protected attribute `destCoords`.
 */
-SDL_Point BaseTextureWrapper::destCoords_getter() const {
-    return destCoords;
-}
-
-bool BaseTextureWrapper::operator<(const BaseTextureWrapper& other) const {
-    return (this -> destCoords.y == other.destCoords.y ? this -> destCoords.x < other.destCoords.x : this -> destCoords.y < other.destCoords.y);
-}
-
-bool BaseTextureWrapper::operator==(const BaseTextureWrapper& other) const {
-    return (this -> destCoords.x == other.destCoords.x && this -> destCoords.y == other.destCoords.y);
-}
+SDL_Point BaseTextureWrapper::destCoords_getter() const { return destCoords; }

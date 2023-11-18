@@ -25,8 +25,8 @@ void AnimatedTextureWrapper::updateAnimation() {
         if (currAnimationGID == tilesetData.animationMapping[currAnimationType].stopGID) currAnimationGID = tilesetData.animationMapping[currAnimationType].startGID; else ++currAnimationGID;
     }
 
-    srcRect.x = currAnimationGID % tilesetData.srcCount.x * srcRect.w;
-    srcRect.y = currAnimationGID / tilesetData.srcCount.x * srcRect.h;
+    srcRect.x = currAnimationGID % tilesetData.srcCount.x * srcRect.w * tilesetData.animationSize.x;
+    srcRect.y = currAnimationGID / tilesetData.srcCount.x * srcRect.h * tilesetData.animationSize.y;
 }
 
 /**

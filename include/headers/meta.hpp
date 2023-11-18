@@ -29,9 +29,6 @@ class BaseTextureWrapper {
         void setAlpha(Uint8 alpha);
         void setRGBA(SDL_Color col);
 
-        bool operator<(const BaseTextureWrapper& other) const;
-        bool operator==(const BaseTextureWrapper& other) const;
-
         SDL_Point destCoords_getter() const;
         SDL_Rect getDestRectFromCoords(const SDL_Point coords);
 
@@ -39,6 +36,14 @@ class BaseTextureWrapper {
         SDL_Point destCoords;
         SDL_Rect destRect;
         SDL_Rect srcRect;
+
+        /**
+         * @brief Modify `destRect`.
+         * @param x,y Shift `destRect`'s coordinates by the corresponding value.
+         * @param w,h Multiply `destRect`'s width/height by the value corresponded with that dimension. Also accordingly modify `destRect.x` and `destRect.y` so that the value of `center` does not change. Works separately with `destRectModifier.x` and `destRectModifier.y`.
+         * @see BaseTextureWrapper.getDestRectFromCoords() (classmethod)
+        */
+        SDL_Rect destRectModifier = {0, 0, 1, 1};
 
         double angle = 0;
         SDL_Point* center = nullptr;

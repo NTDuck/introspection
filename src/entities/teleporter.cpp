@@ -6,7 +6,7 @@
 
 Teleporter::Teleporter() {}
 
-Teleporter::~Teleporter() { BaseTextureWrapper::~BaseTextureWrapper(); }
+Teleporter::~Teleporter() { AnimatedTextureWrapper::~AnimatedTextureWrapper(); }
 
 void Teleporter::onLevelChange(const leveldata::TextureData& teleporter) {
     auto data = dynamic_cast<const leveldata::TeleporterData*>(&teleporter);

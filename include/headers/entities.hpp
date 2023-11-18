@@ -20,14 +20,13 @@ class Player : public AnimatedDynamicTextureWrapper {
         ~Player();
 
         void init();
-        void render() override;
         
         void onLevelChange(const leveldata::TextureData& player) override;
         void handleKeyboardEvent(const SDL_Event& event);
 };
 
 
-class Teleporter : public BaseTextureWrapper {
+class Teleporter : public AnimatedTextureWrapper {
     public:
         Teleporter();
         ~Teleporter();
