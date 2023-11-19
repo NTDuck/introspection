@@ -1,5 +1,4 @@
 #include <filesystem>
-#include <iostream>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -37,7 +36,6 @@ void BaseTextureWrapper::init_(const std::filesystem::path xmlPath) {
 */
 void BaseTextureWrapper::onWindowChange() {
     destRect = getDestRectFromCoords(destCoords);
-    std::cout << destRect.x << ' ' << destRect.y << ' ' << destRect.w << ' ' << destRect.h << std::endl;
 }
 
 /**
@@ -55,10 +53,6 @@ void BaseTextureWrapper::onLevelChange(const leveldata::TextureData& texture) {
  * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
 */
 void BaseTextureWrapper::render() {
-    // std::cout << destRect.x << ' ' << destRect.y << ' ' << destRect.w << ' ' << destRect.h << std::endl;
-    // std::cout << srcRect.x << ' ' << srcRect.y << ' ' << srcRect.w << ' ' << srcRect.h << std::endl;
-    // std::cout << destRectModifier.x << ' ' << destRectModifier.y << ' ' << destRectModifier.w << ' ' << destRectModifier.h << std::endl;
-
     SDL_RenderCopyEx(globals::renderer, tilesetData.texture, &srcRect, &destRect, angle, center, flip);
 }
 

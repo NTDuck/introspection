@@ -22,7 +22,11 @@ void AnimatedTextureWrapper::updateAnimation() {
 
     if (animationUpdateCount == tilesetData.animationUpdateRate) {
         animationUpdateCount = 0;
-        if (currAnimationGID == tilesetData.animationMapping[currAnimationType].stopGID) currAnimationGID = tilesetData.animationMapping[currAnimationType].startGID; else ++currAnimationGID;
+        if (currAnimationGID == tilesetData.animationMapping[currAnimationType].stopGID) currAnimationGID = tilesetData.animationMapping[currAnimationType].startGID; else {
+            currAnimationGID += tilesetData.animationSize.x;
+            // The following calculations bear fruition directly from the dev's brain, and should be understood as-is. Additional explanation will not be provided elsewhere.
+            if (currAnimationGID / tilesetData.animationSize.x != (currAnimationGID - tilesetData.animationSize.x) / tilesetData.animationSize.x) currAnimationGID += tilesetData.srcCount.x * (tilesetData.animationSize.y - 1);
+        };
     }
 
     srcRect.x = currAnimationGID % tilesetData.srcCount.x * srcRect.w * tilesetData.animationSize.x;
