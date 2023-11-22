@@ -7,7 +7,8 @@ libpath = -L"lib"
 libs = -l"mingw32" -l"SDL2main" -l"SDL2" -l"SDL2_image" -l"z"
 
 # src & output
-src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+# src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+src = $(wildcard src/auxiliaries/globals.cpp) $(wildcard src/auxiliaries/utils.cpp) $(wildcard src/meta/base-texture.cpp) $(wildcard src/meta/animated-texture.cpp) $(wildcard src/meta/animated-dynamic-texture.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*.cpp)
 output = build/8964.exe
 
 all: $(output)

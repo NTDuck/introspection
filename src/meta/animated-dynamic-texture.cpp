@@ -7,32 +7,38 @@
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
-AnimatedDynamicTextureWrapper::AnimatedDynamicTextureWrapper() {}
 
-AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper() {
+template <class T>
+AnimatedDynamicTextureWrapper<T>::AnimatedDynamicTextureWrapper() {
+    VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
+}
+
+template <class T>
+AnimatedDynamicTextureWrapper<T>::~AnimatedDynamicTextureWrapper() {
     delete nextDestCoords;
     delete nextDestRect;
-    AnimatedTextureWrapper::~AnimatedTextureWrapper();
 }
 
 /**
  * @brief Initialize the player and populate `rotatingGIDs` for srcRect rotation.
  * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
 */
-void AnimatedDynamicTextureWrapper::init_(std::filesystem::path xmlPath) {
-    BaseTextureWrapper::init_(xmlPath);
-    VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
+template <class T>
+void AnimatedDynamicTextureWrapper<T>::initialize(std::filesystem::path xmlPath) {
+    BaseTextureWrapper<T>::initialize(xmlPath);
 }
 
-void AnimatedDynamicTextureWrapper::onLevelChange(const leveldata::TextureData& texture) {
-    BaseTextureWrapper::onLevelChange(texture);
+template <class T>
+void AnimatedDynamicTextureWrapper<T>::onLevelChange(const leveldata::TextureData& texture) {
+    BaseTextureWrapper<T>::onLevelChange(texture);
     onMoveEnd();
 }
 
 /**
  * @brief Handle ONLY moving the texture from the current `Tile` to the next. Validation is handled elsewhere.
 */
-void AnimatedDynamicTextureWrapper::move() {
+template <class T>
+void AnimatedDynamicTextureWrapper<T>::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
     isNextTileReached = false;
@@ -55,15 +61,16 @@ void AnimatedDynamicTextureWrapper::move() {
  * @brief Check whether moving the texture from one `Tile` to the next is valid.
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
 */
-bool AnimatedDynamicTextureWrapper::validateMove() {
+template <class T>
+bool AnimatedDynamicTextureWrapper<T>::validateMove() {
     if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
-        static tiledata::TilelayerTilesetData* tilesetData = nullptr;
+        static tiledata::TilelayerTilesetData* tilelayerTilesetData = nullptr;
         for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
-            tilesetData = new tiledata::TilelayerTilesetData(utils::getTilesetData(globals::tilesetDataCollection, gid));
-            if (!gid && tilesetData -> properties["collision"] != "true") continue;
+            tilelayerTilesetData = new tiledata::TilelayerTilesetData(utils::getTilesetData(globals::tilesetDataCollection, gid));
+            if (!gid && tilelayerTilesetData->properties["collision"] != "true") continue;
             // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;
             return gid;
         }
@@ -87,17 +94,19 @@ bool AnimatedDynamicTextureWrapper::validateMove() {
 /**
  * @note DO NOT assume this function's purpose based on its name.
 */
-void AnimatedDynamicTextureWrapper::onMoveStart() {
-    AnimatedTextureWrapper::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::WALK);
+template <class T>
+void AnimatedDynamicTextureWrapper<T>::onMoveStart() {
+    AnimatedTextureWrapper<T>::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::WALK);
 }
 
 /**
  * @note DO NOT assume this function's purpose based on its name.
 */
-void AnimatedDynamicTextureWrapper::onMoveEnd() {
+template <class T>
+void AnimatedDynamicTextureWrapper<T>::onMoveEnd() {
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
     velocity = {0, 0};
 
-    AnimatedTextureWrapper::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::IDLE);
+    AnimatedTextureWrapper<T>::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::IDLE);
 }

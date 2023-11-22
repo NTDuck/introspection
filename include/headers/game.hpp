@@ -45,8 +45,7 @@ class Game {
          * Member instances.
         */
         Interface interface;
-        Player player;
-        Teleporter::Teleporters teleporters;
+        Player* player = nullptr;
 
         // Initialization parameters
         const InitFlags flags;

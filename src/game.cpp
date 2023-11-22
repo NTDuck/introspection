@@ -10,6 +10,10 @@
 #include <auxiliaries/globals.hpp>
 
 
+extern template class AnimatedDynamicTextureWrapper<Player>;
+extern template class AnimatedTextureWrapper<Teleporter>;
+
+
 Game::Game(InitFlags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
 
 Game::~Game() {
@@ -17,6 +21,8 @@ Game::~Game() {
     if (window != nullptr) SDL_DestroyWindow(window);
 
     globals::dealloc();
+    Player::terminate();
+    Teleporter::terminate();
 
     // Quit SDL subsystems
     IMG_Quit();
@@ -50,7 +56,10 @@ void Game::init() {
     state = GameState::MENU;
 
     interface.init();
-    player.init();
+    Player::initialize();
+    Teleporter::initialize();
+
+    player = Player::instance;
 }
 
 /**
@@ -84,7 +93,7 @@ void Game::render() {
 
     if (state == GameState::INGAME_PLAYING) {
         interface.render();
-        player.render();
+        player->render();
     }
 
     SDL_RenderPresent(globals::renderer);
@@ -96,16 +105,16 @@ void Game::render() {
 void Game::handleMotion() {
     // Check if player has walked into teleporter
     // Hey, it's this part that needs correction!
-    if (player.nextDestCoords != nullptr) {
-        auto result = teleporters.find(*player.nextDestCoords);
-        if (result != teleporters.end() && player.isNextTileReached) {
-            interaction::collision::PlayerCollideTeleporter(interface, result -> second, globals::currentLevelData);
+    if (player->nextDestCoords != nullptr) {
+        auto result = Teleporter::instanceMapping.find(*player->nextDestCoords);
+        if (result != Teleporter::instanceMapping.end() && player->isNextTileReached) {
+            interaction::collision::PlayerCollideTeleporter(interface, *result->second, globals::currentLevelData);
             onLevelChange(); onWindowChange();
         }
     }
     
-    player.move();
-    player.updateAnimation();
+    player->move();
+    player->updateAnimation();
 }
 
 /**
@@ -116,8 +125,8 @@ void Game::onLevelChange() {
     interface.onLevelChange();
 
     // Make changes to dependencies based on populated `globals::levelData` members
-    player.onLevelChange(globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChange_(teleporters, globals::currentLevelData.teleportersLevelData);
+    player->onLevelChange(globals::currentLevelData.playerLevelData);
+    Teleporter::onLevelChangeAll(globals::currentLevelData.teleportersLevelData);
 }
 
 /**
@@ -129,8 +138,8 @@ void Game::onWindowChange() {
 
     // Dependencies that rely on certain dimension-related global variables
     interface.onWindowChange();
-    player.onWindowChange();
-    Teleporter::onWindowChange_(teleporters);
+    player->onWindowChange();
+    Teleporter::onWindowChangeAll();
 
     SDL_UpdateWindowSurface(window);
 }
@@ -143,7 +152,7 @@ void Game::handleEvents() {
     SDL_Event* event = new SDL_Event;
     if (!SDL_PollEvent(event)) return;
 
-    switch (event -> type) {
+    switch (event->type) {
         case SDL_QUIT:
             state = GameState::EXIT;
             break;
@@ -186,7 +195,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
                 state = GameState::EXIT;
                 break;
             }
-            player.handleKeyboardEvent(event);
+            player->handleKeyboardEvent(event);
 
         default: break;
     }

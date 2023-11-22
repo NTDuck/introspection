@@ -263,6 +263,7 @@ namespace globals {
         const std::filesystem::path TILED_ASSETS_PATH = ASSETS_PATH / ".tiled";
         const std::filesystem::path TILED_TILESETS_PATH = TILED_ASSETS_PATH / ".tsx";
         const std::filesystem::path PLAYER_TILESET_PATH = TILED_TILESETS_PATH / "hp-player.tsx";
+        const std::filesystem::path TELEPORTER_TILESET_PATH = TILED_TILESETS_PATH / "mi-a-cat.tsx";
         const std::filesystem::path LEVELS_PATH = TILED_ASSETS_PATH / "levels.json";
         
         const SDL_Point ANIMATED_DYNAMIC_TEXTURE_VELOCITY = {1, 1};

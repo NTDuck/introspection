@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <string>
 #include <unordered_map>
 
@@ -13,30 +12,35 @@
 
 /**
  * @brief Represents the player.
+ * @note Only one instance should exist at a time.
 */
-class Player : public AnimatedDynamicTextureWrapper {
+class Player : public AnimatedDynamicTextureWrapper<Player> {
     public:
-        Player();
-        ~Player();
-
-        void init();
+        static void instantiate();
+        ~Player() = default;
+        static void initialize();
         
         void onLevelChange(const leveldata::TextureData& player) override;
         void handleKeyboardEvent(const SDL_Event& event);
+
+        static Player* instance;
+
+    private:
+        Player();
 };
 
 
-class Teleporter : public AnimatedTextureWrapper {
+class Teleporter : public AnimatedTextureWrapper<Teleporter> {
     public:
-        Teleporter();
-        ~Teleporter();
+        static void initialize();
 
-        using Teleporters = std::unordered_map<SDL_Point, Teleporter, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator>;
-
-        void onLevelChange(const leveldata::TextureData& teleporter) override;
-        static void onLevelChange_(Teleporters& teleporters, const leveldata::TeleporterData::TeleporterDataCollection& teleportersData);
-        static void onWindowChange_(Teleporters& teleporters);
+        void onLevelChange(const leveldata::TextureData& teleporterData) override;
+        static void onLevelChangeAll(const leveldata::TeleporterData::TeleporterDataCollection& teleporterDataCollection);
 
         SDL_Point targetDestCoords;
         std::string targetLevel;
+
+    private:
+        Teleporter() = default;
+        ~Teleporter() = default;
 };

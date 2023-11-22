@@ -5,16 +5,29 @@
 #include <auxiliaries/utils.hpp>
 
 
-Player::Player() {}
+extern template class AnimatedDynamicTextureWrapper<Player>;
+extern template class AnimatedTextureWrapper<Teleporter>;
 
-Player::~Player() { AnimatedDynamicTextureWrapper::~AnimatedDynamicTextureWrapper(); }
+
+Player::Player() {
+    destRectModifier = {0, -23, 2, 2};
+}
+
+/**
+ * @brief Creates an instance of this class, accessible as a static member.
+ * @note Only one instance should exist at a time.
+ * @todo Check for conflict with base class.
+*/
+void Player::instantiate() {
+    if (instance == nullptr) return;
+    instance = new Player;
+}
 
 /**
  * @see https://stackoverflow.com/questions/4146499/why-does-a-virtual-function-get-hidden
 */
-void Player::init() {
-    AnimatedDynamicTextureWrapper::init_(globals::config::PLAYER_TILESET_PATH);   // static_cast<NonStaticTextureWrapper*>(this) -> _init(config::PLAYER_TILESET_PATH);
-    destRectModifier = {0, -23, 2, 2};
+void Player::initialize() {
+    AnimatedDynamicTextureWrapper<Player>::initialize(globals::config::PLAYER_TILESET_PATH);
 }
 
 /**
@@ -38,10 +51,12 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     nextDestCoords = new SDL_Point({destCoords.x + velocity.x, destCoords.y + velocity.y});
     nextDestRect = new SDL_Rect(BaseTextureWrapper::getDestRectFromCoords(*nextDestCoords));
 
-    if (validateMove()) AnimatedDynamicTextureWrapper::onMoveStart(); else AnimatedDynamicTextureWrapper::onMoveEnd();
+    if (validateMove()) AnimatedDynamicTextureWrapper<Player>::onMoveStart(); else AnimatedDynamicTextureWrapper<Player>::onMoveEnd();
 }
 
 void Player::onLevelChange(const leveldata::TextureData& player) {
     auto data = dynamic_cast<const leveldata::PlayerData*>(&player);
-    AnimatedDynamicTextureWrapper::onLevelChange(*data);
+    AnimatedDynamicTextureWrapper<Player>::onLevelChange(*data);
 }
+
+Player* Player::instance = nullptr;

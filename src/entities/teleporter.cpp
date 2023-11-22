@@ -1,31 +1,36 @@
 #include <SDL.h>
 
 #include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries/globals.hpp>
 
 
-Teleporter::Teleporter() {}
+extern template class AnimatedDynamicTextureWrapper<Player>;
+extern template class AnimatedTextureWrapper<Teleporter>;
 
-Teleporter::~Teleporter() { AnimatedTextureWrapper::~AnimatedTextureWrapper(); }
 
-void Teleporter::onLevelChange(const leveldata::TextureData& teleporter) {
-    auto data = dynamic_cast<const leveldata::TeleporterData*>(&teleporter);
+void Teleporter::initialize() {
+    BaseTextureWrapper<Teleporter>::initialize(globals::config::TELEPORTER_TILESET_PATH);
+}
+
+
+void Teleporter::onLevelChange(const leveldata::TextureData& teleporterData) {
+    auto data = dynamic_cast<const leveldata::TeleporterData*>(&teleporterData);
     
-    BaseTextureWrapper::onLevelChange(*data);
-    targetDestCoords = data -> targetDestCoords;
-    targetLevel = data -> targetLevel;
+    dynamic_cast<BaseTextureWrapper<Player>*>(this)->onLevelChange(*data);
+    targetDestCoords = data->targetDestCoords;
+    targetLevel = data->targetLevel;
 }
 
 /**
  * @brief Call method `onLevelChange()` on each element in `teleporters`.
 */
-void Teleporter::onLevelChange_(Teleporters& teleporters, const leveldata::TeleporterData::TeleporterDataCollection& teleportersData) {
-    for (const auto& data : teleportersData) teleporters.emplace(data.destCoords, Teleporter{}).first -> second.onLevelChange(data);
-}
+void Teleporter::onLevelChangeAll(const leveldata::TeleporterData::TeleporterDataCollection& teleporterDataCollection) {
+    // for (const auto& data : teleportersData) {instanceMapping.emplace(data.destCoords, Teleporter{}).first -> second.onLevelChange(data)};
+    instanceMapping.clear();
 
-/**
- * @brief Call method `onWindowChange()` on each element in `teleporters`.
-*/
-void Teleporter::onWindowChange_(Teleporters& teleporters) {
-    for (auto& pair : teleporters) pair.second.onWindowChange();
+    for (const auto& data : teleporterDataCollection) {
+        auto instance = Teleporter::instantiate(data.destCoords);
+        instance->onLevelChange(data);
+    }
 }

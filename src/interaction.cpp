@@ -3,6 +3,9 @@
 #include <entities.hpp>
 
 
+extern template class AnimatedDynamicTextureWrapper<Player>;
+extern template class AnimatedTextureWrapper<Teleporter>;
+
 /**
  * @brief Handle interaction between entities.
 */
