@@ -5,10 +5,39 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+
 #include <SDL.h>
 
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
+
+
+/**
+ * ┌────────────────┐
+ * │ AbstractEntity │
+ * └───┬────────────┘
+ *     │
+ *     │
+ * ┌───▼────────────────────┐
+ * │ AbstractAnimatedEntity │
+ * └───┬───────┬────────────┘
+ *     │       │
+ *     │       ├─────────┐
+ *     │       │         │
+ *     │   ┌───▼────┐ ┌──▼──┐
+ *     │   │ Player │ │ ... │
+ *     │   └────────┘ └─────┘
+ *     │
+ * ┌───▼───────────────────────────┐
+ * │ AbstractAnimatedDynamicEntity │
+ * └───────────┬───────────────────┘
+ *             │
+ *             ├─────────────┐
+ *             │             │
+ *         ┌───▼────────┐ ┌──▼──┐
+ *         │ Teleporter │ │ ... │
+ *         └────────────┘ └─────┘
+*/
 
 
 /**
@@ -35,9 +64,13 @@ class AbstractEntity {
         static void setAlpha(Uint8 alpha);
         static void setRGBA(SDL_Color& color);
 
+        static void renderAll();
+        static void onWindowChangeAll();
+        template <typename LevelData> static void onLevelChangeAll(const typename level::Collection<LevelData>& entityLevelDataCollection);
+
         virtual void render() const;
         virtual void onWindowChange();
-        virtual void onLevelChange(const level::EntityLevelData& textureData);
+        virtual void onLevelChange(const level::EntityLevelData& entityLevelData);
 
         SDL_Rect getDestRectFromCoords(const SDL_Point& coords);
 
@@ -98,6 +131,8 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         virtual ~AbstractAnimatedEntity() = default;
 
+        static void updateAnimationAll();
+
         void updateAnimation();
         void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType);
 
@@ -122,7 +157,9 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
         virtual ~AbstractAnimatedDynamicEntity();
 
-        void onLevelChange(const level::EntityLevelData& textureData) override;
+        static void moveAll();
+
+        void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         virtual void move();
         virtual bool validateMove();

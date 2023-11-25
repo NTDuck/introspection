@@ -19,9 +19,17 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     delete nextDestRect;
 }
 
+/**
+ * @brief Call `move()` method on every instance of derived class `T`.
+*/
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& textureData) {
-    AbstractEntity<T>::onLevelChange(textureData);
+void AbstractAnimatedDynamicEntity<T>::moveAll() {
+    for (auto& pair : instanceMapping) pair.second->move();
+}
+
+template <class T>
+void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
+    AbstractEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
 }
 

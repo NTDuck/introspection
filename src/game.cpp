@@ -116,7 +116,7 @@ void Game::handleMovement() {
     
     player->move();
     player->updateAnimation();
-    for (auto& pair : Teleporter::instanceMapping) pair.second->updateAnimation();
+    Teleporter::updateAnimationAll();
 }
 
 /**
@@ -128,7 +128,7 @@ void Game::onLevelChange() {
 
     // Make changes to dependencies based on populated `globals::levelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChange(globals::currentLevelData.teleportersLevelData);
+    Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
 }
 
 /**
@@ -141,7 +141,7 @@ void Game::onWindowChange() {
     // Dependencies that rely on certain dimension-related global variables
     interface->onWindowChange();
     player->onWindowChange();
-    for (auto& pair : Teleporter::instanceMapping) pair.second->onWindowChange();
+    Teleporter::onWindowChangeAll();
 
     SDL_UpdateWindowSurface(window);
 }

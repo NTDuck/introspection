@@ -16,6 +16,14 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity() {
 }
 
 /**
+ * @brief Call `updateAnimation()` method on every instance of derived class `T`.
+*/
+template <class T>
+void AbstractAnimatedEntity<T>::updateAnimationAll() {
+    for (auto& pair : instanceMapping) pair.second->updateAnimation();
+}
+
+/**
  * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
  * @see <interface.h> Interface::renderLevelTiles()
 */

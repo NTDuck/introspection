@@ -43,7 +43,6 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
         static void initialize();
 
         void onLevelChange(const level::EntityLevelData& teleporterData) override;
-        static void onLevelChange(const level::TeleporterLevelData::Collection& teleporterDataCollection);
 
         /**
          * The new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".

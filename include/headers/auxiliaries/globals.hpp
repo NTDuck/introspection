@@ -201,7 +201,7 @@ namespace level {
 
     /**
      * Map a level name to the corresponding relative file path.
-     * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameInterface::initialize()` and should henceforth be treated as a constant.
+     * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameInterface::initialize()` and should henceforth be treated as a constant. Additionally, `Collection` must be re-declared in every derived class declaration.
      * @note For optimized memory usage, this approach does not encapsulate `LevelData`, instead `globals::currentLevelData` is loaded via `<interface.h> IngameInterface::loadLevel()` based on file path.
     */
     using LevelMapping = std::unordered_map<LevelName, std::string>;
@@ -213,20 +213,28 @@ namespace level {
     struct EntityLevelData {
         virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
 
-        struct TextureData_Hasher {
+        struct Hasher {
             std::size_t operator()(const EntityLevelData& obj) const;
         };
 
-        struct TextureData_Equality_Operator {
+        struct Equality_Operator {
             bool operator()(const EntityLevelData& first, const EntityLevelData& second) const;
         };
 
-        struct TextureData_Less_Than_Operator {
+        struct Less_Than_Operator {
             bool operator()(const EntityLevelData& first, const EntityLevelData& second) const;
         };
         
+        using Collection = std::unordered_set<EntityLevelData, Hasher, Equality_Operator>;
+        
         SDL_Point destCoords;
     };
+
+    /**
+     * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
+    */
+    template <typename T>
+    using Collection = std::unordered_set<T, EntityLevelData::Hasher, EntityLevelData::Equality_Operator>;
 
     /**
      * @brief Contain data associated with a player entity, used in level-loading.
@@ -239,7 +247,7 @@ namespace level {
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
     struct TeleporterLevelData : public EntityLevelData {
-        using Collection = std::unordered_set<TeleporterLevelData, TeleporterLevelData::TextureData_Hasher, TeleporterLevelData::TextureData_Equality_Operator>;
+        // using Collection = std::unordered_set<TeleporterLevelData, Hasher, Equality_Operator>;
 
         SDL_Point targetDestCoords;
         level::LevelName targetLevel;
@@ -258,7 +266,7 @@ namespace level {
         tile::TileCollection tileCollection;
         SDL_Color backgroundColor;
         level::PlayerLevelData playerLevelData;
-        TeleporterLevelData::Collection teleportersLevelData;
+        Collection<TeleporterLevelData> teleportersLevelData;
     };
 };
 

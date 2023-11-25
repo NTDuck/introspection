@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include <unordered_map>
+#include <type_traits>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -97,8 +98,40 @@ void AbstractEntity<T>::setRGBA(SDL_Color& color) {
     setAlpha(color.a);
 }
 
+
 /**
- * @brief Render the current sprite.
+ * @brief Call `render()` method on every instance of derived class `T`.
+*/
+template <class T>
+void AbstractEntity<T>::renderAll() {
+    for (auto& pair : instanceMapping) pair.second->render();
+}
+
+/**
+ * @brief Call `onWindowChange()` method on every instance of derived class `T`.
+*/
+template <class T>
+void AbstractEntity<T>::onWindowChangeAll() {
+    for (auto& pair : instanceMapping) pair.second->onWindowChange();
+}
+
+/**
+ * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
+ * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
+*/
+template <class T>
+template <typename LevelData>
+void AbstractEntity<T>::onLevelChangeAll(const typename level::Collection<LevelData>& entityLevelDataCollection) {
+    instanceMapping.clear();
+
+    for (const auto& entityLevelData : entityLevelDataCollection) {
+        auto instance = instantiate(entityLevelData.destCoords);
+        instance->onLevelChange(entityLevelData);
+    }
+}
+
+/**
+ * @brief Render the current sprite to the window.
  * @note Recommended implementation: this method requires `destRect` and `srcRect` to be set properly prior to being called.
 */
 template <class T>
@@ -119,8 +152,8 @@ void AbstractEntity<T>::onWindowChange() {
  * @note Recommended implementation: this method should be defined by derived classes.
 */
 template <class T>
-void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& textureData) {
-    destCoords = textureData.destCoords;
+void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
+    destCoords = entityLevelData.destCoords;
 }
 
 /**
@@ -151,7 +184,9 @@ tile::AnimatedEntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
 /**
  * @note Explicit Template Instantiation.
  * @note Bear fruition from 8 hours of debugging and not less than 50 articles from StackOverflow and other places.
- * @warning Recommended implementation: derived abstract classes MUST provide similar implementation.
+ * @warning Recommended implementation: derived abstract classes MUST provide similar implementation at the end of the corresponding source files.
 */
 template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
+
+template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::Collection<level::TeleporterLevelData>& entityLevelDataCollection);

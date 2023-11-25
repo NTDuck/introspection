@@ -35,11 +35,11 @@ namespace level {
         {"level-valley-of-despair", LevelName::kLevelValleyOfDespair},
     };
 
-    std::size_t EntityLevelData::TextureData_Hasher::operator()(const EntityLevelData& obj) const { return std::hash<int>()(obj.destCoords.x) ^ (std::hash<int>()(obj.destCoords.y) << 1); }
+    std::size_t EntityLevelData::Hasher::operator()(const EntityLevelData& obj) const { return std::hash<int>()(obj.destCoords.x) ^ (std::hash<int>()(obj.destCoords.y) << 1); }
 
-    bool EntityLevelData::TextureData_Equality_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return first.destCoords.x == second.destCoords.x && first.destCoords.y == second.destCoords.y; }
+    bool EntityLevelData::Equality_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return first.destCoords.x == second.destCoords.x && first.destCoords.y == second.destCoords.y; }
 
-    bool EntityLevelData::TextureData_Less_Than_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x); }
+    bool EntityLevelData::Less_Than_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x); }
 }
 
 
