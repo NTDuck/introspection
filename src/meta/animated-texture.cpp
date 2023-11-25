@@ -1,40 +1,53 @@
+#include <meta.hpp>
+
 #include <filesystem>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
 
-#include <meta.hpp>
+#include <entities.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
 
+template <class T>
+AbstractAnimatedEntity<T>::AbstractAnimatedEntity() {
+    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
+}
+
 /**
  * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
- * @see <src/interface.cpp> Interface.renderLevel() (classmethod)
+ * @see <interface.h> Interface::renderLevelTiles()
 */
 template <class T>
-void AnimatedTextureWrapper<T>::updateAnimation() {
+void AbstractAnimatedEntity<T>::updateAnimation() {
     static int animationUpdateCount = 0;
     ++animationUpdateCount;
     
     if (animationUpdateCount == tilesetData->animationUpdateRate) {
         animationUpdateCount = 0;
-        if (currAnimationGID == tilesetData->animationMapping[currAnimationType].stopGID) currAnimationGID = tilesetData->animationMapping[currAnimationType].startGID; else {
+        if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
             currAnimationGID += tilesetData->animationSize.x;
-            // The following calculations bear fruition directly from the dev's brain, and should be understood as-is. Additional explanation will not be provided elsewhere.
+            // Behold, heresy!
             if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);
+        } else {
+            currAnimationGID = tilesetData->animationMapping[currAnimationType].startGID;
         };
     }
 
-    srcRect.x = currAnimationGID % tilesetData->srcCount.x * srcRect.w * tilesetData->animationSize.x;
-    srcRect.y = currAnimationGID / tilesetData->srcCount.x * srcRect.h * tilesetData.animationSize->y;
+    srcRect.x = currAnimationGID % tilesetData->srcCount.x * tilesetData->srcSize.x;
+    srcRect.y = currAnimationGID / tilesetData->srcCount.x * tilesetData->srcSize.y;
 }
 
 /**
- * @brief Switch to new animation state i.e. new collection of sprites.
+ * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <class T>
-void AnimatedTextureWrapper<T>::resetAnimation(const tiledata::AnimatedEntitiesTilesetData::AnimationType animationType) {
+void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType) {
     currAnimationType = animationType;
-    currAnimationGID = BaseTextureWrapper<T>::tilesetData->animationMapping[currAnimationType].startGID;
+    currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
 }
+
+
+template class AbstractAnimatedEntity<Player>;
+template class AbstractAnimatedEntity<Teleporter>;

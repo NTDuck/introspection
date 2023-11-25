@@ -1,53 +1,44 @@
+#include <meta.hpp>
+
 #include <filesystem>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
 
-#include <meta.hpp>
+#include <entities.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
 
 template <class T>
-AnimatedDynamicTextureWrapper<T>::AnimatedDynamicTextureWrapper() {
-    VELOCITY = globals::config::ANIMATED_DYNAMIC_TEXTURE_VELOCITY;
-}
+AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity() : kVelocity(globals::config::kDefaultAnimatedDynamicEntityVelocity) {}
 
 template <class T>
-AnimatedDynamicTextureWrapper<T>::~AnimatedDynamicTextureWrapper() {
+AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     delete nextDestCoords;
     delete nextDestRect;
 }
 
-/**
- * @brief Initialize the player and populate `rotatingGIDs` for srcRect rotation.
- * @see https://en.cppreference.com/w/cpp/utility/from_chars (hopefully better than `std::istringstream`)
-*/
 template <class T>
-void AnimatedDynamicTextureWrapper<T>::initialize(std::filesystem::path xmlPath) {
-    BaseTextureWrapper<T>::initialize(xmlPath);
-}
-
-template <class T>
-void AnimatedDynamicTextureWrapper<T>::onLevelChange(const leveldata::TextureData& texture) {
-    BaseTextureWrapper<T>::onLevelChange(texture);
+void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& textureData) {
+    AbstractEntity<T>::onLevelChange(textureData);
     onMoveEnd();
 }
 
 /**
- * @brief Handle ONLY moving the texture from the current `Tile` to the next. Validation is handled elsewhere.
+ * @brief Handle the movement of the entity from the current `Tile` to the next.
 */
 template <class T>
-void AnimatedDynamicTextureWrapper<T>::move() {
+void AbstractAnimatedDynamicEntity<T>::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
     isNextTileReached = false;
 
-    destRect.x += velocity.x * VELOCITY.x;
-    destRect.y += velocity.y * VELOCITY.y;
+    destRect.x += currentVelocity.x * kVelocity.x;
+    destRect.y += currentVelocity.y * kVelocity.y;
 
     // Continue movement until new `Tile` has been reached.
-    if ((nextDestRect -> x - destRect.x) * velocity.x > 0 || (nextDestRect -> y - destRect.y) * velocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+    if ((nextDestRect -> x - destRect.x) * currentVelocity.x > 0 || (nextDestRect -> y - destRect.y) * currentVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
     // Terminate movement when reached new `Tile`
     isNextTileReached = true;
@@ -58,18 +49,18 @@ void AnimatedDynamicTextureWrapper<T>::move() {
 }
 
 /**
- * @brief Check whether moving the texture from one `Tile` to the next is valid.
+ * @brief Check whether moving the entity from one `Tile` to the next is valid.
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
 */
 template <class T>
-bool AnimatedDynamicTextureWrapper<T>::validateMove() {
+bool AbstractAnimatedDynamicEntity<T>::validateMove() {
     if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
-        static tiledata::TilelayerTilesetData* tilelayerTilesetData = nullptr;
+        static tile::TilelayerTilesetData* tilelayerTilesetData = nullptr;
         for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
-            tilelayerTilesetData = new tiledata::TilelayerTilesetData(utils::getTilesetData(globals::tilesetDataCollection, gid));
+            tilelayerTilesetData = new tile::TilelayerTilesetData(utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid));
             if (!gid && tilelayerTilesetData->properties["collision"] != "true") continue;
             // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;
             return gid;
@@ -95,18 +86,21 @@ bool AnimatedDynamicTextureWrapper<T>::validateMove() {
  * @note DO NOT assume this function's purpose based on its name.
 */
 template <class T>
-void AnimatedDynamicTextureWrapper<T>::onMoveStart() {
-    AnimatedTextureWrapper<T>::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::WALK);
+void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
+    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk);
 }
 
 /**
  * @note DO NOT assume this function's purpose based on its name.
 */
 template <class T>
-void AnimatedDynamicTextureWrapper<T>::onMoveEnd() {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd() {
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
-    velocity = {0, 0};
+    currentVelocity = {0, 0};
 
-    AnimatedTextureWrapper<T>::resetAnimation(tiledata::AnimatedEntitiesTilesetData::AnimationType::IDLE);
+    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
 }
+
+
+template class AbstractAnimatedDynamicEntity<Player>;

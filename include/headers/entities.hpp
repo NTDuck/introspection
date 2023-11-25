@@ -1,7 +1,7 @@
-#pragma once
+#ifndef ENTITIES_H
+#define ENTITIES_H
 
 #include <string>
-#include <unordered_map>
 
 #include <SDL.h>
 
@@ -11,36 +11,50 @@
 
 
 /**
- * @brief Represents the player.
+ * @brief A singleton class representing one instance of the player entity.
  * @note Only one instance should exist at a time.
 */
-class Player : public AnimatedDynamicTextureWrapper<Player> {
+class Player final : public AbstractAnimatedDynamicEntity<Player> {
+    friend AbstractAnimatedDynamicEntity<Player>;
     public:
-        static void instantiate();
+        static Player* instantiate();
+        Player();
         ~Player() = default;
+
         static void initialize();
+        static void deinitialize();
         
-        void onLevelChange(const leveldata::TextureData& player) override;
+        void onLevelChange(const level::EntityLevelData& player) override;
         void handleKeyboardEvent(const SDL_Event& event);
 
-        static Player* instance;
-
     private:
-        Player();
+        static Player* instance;
 };
 
 
-class Teleporter : public AnimatedTextureWrapper<Teleporter> {
+/**
+ * @brief A multiton class representing controlled instances of teleporter entities.
+*/
+class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
+    friend AbstractAnimatedEntity<Teleporter>;
     public:
+        Teleporter();
+        ~Teleporter() = default;
         static void initialize();
 
-        void onLevelChange(const leveldata::TextureData& teleporterData) override;
-        static void onLevelChangeAll(const leveldata::TeleporterData::TeleporterDataCollection& teleporterDataCollection);
+        void onLevelChange(const level::EntityLevelData& teleporterData) override;
+        static void onLevelChange(const level::TeleporterLevelData::Collection& teleporterDataCollection);
 
+        /**
+         * The new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
+        */
         SDL_Point targetDestCoords;
-        std::string targetLevel;
 
-    private:
-        Teleporter() = default;
-        ~Teleporter() = default;
+        /**
+         * The new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
+        */
+        level::LevelName targetLevel;
 };
+
+
+#endif

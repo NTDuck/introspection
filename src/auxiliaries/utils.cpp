@@ -1,3 +1,5 @@
+#include <auxiliaries/utils.hpp>
+
 #include <algorithm>
 #include <fstream>
 #include <vector>
@@ -8,22 +10,14 @@
 #include <pugixml/pugixml.hpp>
 #include <zlib/zlib.h>
 
-#include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
 
 namespace utils {
-    /**
-     * @brief Define/re-define hash function objects for needy classes.
-     * @note Required for `std::unordered_set` and `std::unordered_map`.
-    */
     namespace hashers {
         std::size_t SDL_Point_Hasher::operator()(const SDL_Point& obj) const { return std::hash<int>()(obj.x) ^ (std::hash<int>()(obj.y) << 1); }
     }
 
-    /**
-     * @brief Define/re-define common operators needed for `std::set`, `std::map`, `std::unordered_set`, `std::unordered_map`.
-    */
     namespace operators {
         bool SDL_Point_Equality_Operator::operator()(const SDL_Point& first, const SDL_Point& second) const { return first.x == second.x && first.y == second.y; }
 
@@ -32,8 +26,9 @@ namespace utils {
 
     /**
      * @brief Decrypt a base64-encrypted string.
+     * @param s the base-64 encrypted string.
     */
-    std::string base64Decode(const std::string s) {
+    std::string base64Decode(const std::string& s) {
         const std::string b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";   // Characters used in base64 encoding alphabet
 
         // Map each base64 character to its corresponding index
@@ -63,13 +58,13 @@ namespace utils {
     }
 
     /**
-     * @brief Decompress a zlib-compressed `std::string`.
-     * @note Conversion to `std::string` can be done as follows:
-     * @note `std::vector<char> vec = utils::zlibDecompress(compressed);`
-     * @note `std::string decompressed(vec.data(), vec.size());`
+     * @brief Decompress a zlib-compressed string.
+     * @param s the zlib-compressed string.
+     * @return the decompressed stream represented as a vector of the specified data type.
+     * @note Conversion to `std::string` can be done as follows: `std::vector<char> vec = utils::zlibDecompress(compressed); `std::string decompressed(vec.data(), vec.size());`
     */
     template <typename T>
-    std::vector<T> zlibDecompress(const std::string s) {
+    std::vector<T> zlibDecompress(const std::string& s) {
         std::vector<T> decompressed;   // Avoid guessing decompressed data size
         unsigned char buffer[sizeof(T)];   // Temporarily hold decompressed data in bytes
 
@@ -83,7 +78,7 @@ namespace utils {
         stream.avail_in = 0;
         stream.next_in = Z_NULL;
 
-        // "Clears" `stream` by setting all bytes to `0`
+        // "Clear" `stream` by setting all bytes to `0`
         std::memset(&stream, 0, sizeof(stream));
         
         // Initialize zlib for inflation i.e. decompression
@@ -114,7 +109,7 @@ namespace utils {
     /**
      * @brief Read a JSON file.
     */
-    void readJSON(const std::filesystem::path path, json& data) {
+    void readJSON(const std::filesystem::path& path, json& data) {
         std::ifstream file;
         file.open(path);
         if (!file.is_open()) return;
@@ -125,7 +120,7 @@ namespace utils {
 
     /**
      * @brief Remove leading dots (`.`) and slashes (`/` `\`) in a `std::filesystem::path`.
-     * @note Fall back to string manipulation for `std::filesystem` methods (`canonical()`, `lexically_normal()`, etc.) fails inexplicably.
+     * @note Fall back to string manipulation since `std::filesystem` methods (`canonical()`, `lexically_normal()`, etc.) fails inexplicably.
     */
     void cleanRelativePath(std::filesystem::path& path) {
         std::string s = path.string();
@@ -140,7 +135,7 @@ namespace utils {
     }
 
     /**
-     * @brief Converts a `std::string` representing a hex color value to `SDL_Color`.
+     * @brief Convert a string representing a hex color value to `SDL_Color`.
     */
     SDL_Color SDL_ColorFromHexString(const std::string& hexString) {
         // Convert hexadecimal string to unsigned integer
@@ -152,37 +147,43 @@ namespace utils {
         uint8_t green = (ARGB >> 8) & 0xff;
         uint8_t blue = ARGB & 0xff;
 
-        return SDL_Color({red, green, blue, alpha});
+        return {red, green, blue, alpha};
     }
 
     /**
-     * @brief Register level initialization data to a `LevelMapping`.
+     * @brief Register data associated with levels initialization to a temporary storage.
+     * @param mapping the aforementioned storage.
     */
-    void loadLevelsData(leveldata::LevelMapping& mapping) {
+    void loadLevelsData(level::LevelMapping& mapping) {
         json data;
-        utils::readJSON(globals::config::LEVELS_PATH.string(), data);
+        utils::readJSON(globals::config::kConfigPathLevel.string(), data);
 
         auto levels = data.find("levels");
         if (levels == data.end() || !levels.value().is_array()) return;
 
         for (const auto& level : levels.value()) {
             if (!level.is_object()) continue;
+
             auto name = level.find("name");
             auto source = level.find("source");
             if (name == level.end() || source == level.end() || !name.value().is_string() || !source.value().is_string()) continue;
-            mapping[name.value()] = source.value();
+
+            auto result = level::kLevelNameConversionMapping.find(name.value());
+            if (result == level::kLevelNameConversionMapping.end()) continue;
+
+            mapping[result->second] = source.value();
         }
     }
 
     /**
-     * @brief Parse level-related data from a JSON file. Converted from TMX file, preferably.
-     * @note This handles A LOT.
+     * @brief Read data associated with a level from a JSON file (preferrably converted from a Tiled TMX file).
      * @note Only `csv` and `zlib-compressed base64` are supported.
+     * @todo Reimplementation should be made to adhere to SoC. (this is a true mess)
     */
-    void loadLevelData(leveldata::LevelData& currentLevel, const json& data) {
+    void loadLevelData(level::LevelData& currentLevelData, const json& data) {
         // Clear current level data
-        for (auto& tileRow : currentLevel.tileCollection) for (auto& tile : tileRow) tile.clear();
-        currentLevel.teleportersLevelData.clear();
+        for (auto& tileRow : currentLevelData.tileCollection) for (auto& tile : tileRow) tile.clear();
+        currentLevelData.teleportersLevelData.clear();
 
         // Update global variables
         auto tileDestCountWidth = data.find("width");
@@ -198,11 +199,11 @@ namespace utils {
 
         auto backgroundColor = data.find("backgroundcolor");
         if (backgroundColor != data.end() && !backgroundColor.value().is_string()) return;
-        currentLevel.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::DEFAULT_BACKGROUND_COLOR);
+        currentLevelData.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::kDefaultBackgroundColor);
 
         // Emplace gids into `tileCollection`. Executed per layer.
-        currentLevel.tileCollection.resize(globals::tileDestCount.y);
-        for (auto& tileRow : currentLevel.tileCollection) tileRow.resize(globals::tileDestCount.x);
+        currentLevelData.tileCollection.resize(globals::tileDestCount.y);
+        for (auto& tileRow : currentLevelData.tileCollection) tileRow.resize(globals::tileDestCount.x);
 
         auto layers = data.find("layers");
         if (layers == data.end() || !layers.value().is_array()) return;
@@ -231,7 +232,7 @@ namespace utils {
                     } else return;
                 } else return;
 
-                for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) currentLevel.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::tileDestCount.x + x]);
+                for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) currentLevelData.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::tileDestCount.x + x]);
 
             } else if (type.value() == "objectgroup") {
                 auto objects = layer.find("objects");
@@ -259,7 +260,7 @@ namespace utils {
 
                         if (teleporterDestCoordsX == object.end() || teleporterDestCoordsY == object.end() || teleporterDestSizeWidth == object.end() || teleporterDestSizeHeight == object.end() || !teleporterDestCoordsX.value().is_number_integer() || !teleporterDestCoordsY.value().is_number_integer() || !teleporterDestSizeWidth.value().is_number_integer() || !teleporterDestSizeHeight.value().is_number_integer()) continue;
 
-                        leveldata::TeleporterData teleporter;
+                        level::TeleporterLevelData teleporter;
 
                         teleporter.destCoords = {int(teleporterDestCoordsX.value()) / int(teleporterDestSizeWidth.value()), int(teleporterDestCoordsY.value()) / int(teleporterDestSizeHeight.value())};
 
@@ -285,11 +286,13 @@ namespace utils {
 
                             } else if (name.value() == "target-level") {
                                 if (!value.value().is_string()) continue;
-                                teleporter.targetLevel = value.value();
+                                auto result = level::kLevelNameConversionMapping.find(value.value());
+                                if (result == level::kLevelNameConversionMapping.end()) continue;
+                                teleporter.targetLevel = result->second;
                             }
                         }
 
-                        currentLevel.teleportersLevelData.insert(teleporter);
+                        currentLevelData.teleportersLevelData.insert(teleporter);
                     }
                 }
             }
@@ -297,44 +300,39 @@ namespace utils {
     }
 
     /**
-     * @brief Call `init()` method of all tilelayer-tileset.
+     * @brief Initialize all tilelayer tilesets associated with the current level.
     */
-    void loadTilesetsData(SDL_Renderer* renderer, tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, const json& data) {
-        for (auto& tilesetData : tilesetDataCollection) tilesetData.dealloc();   // Prevent memory leak
+    void loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, const json& data) {
+        for (auto& tilesetData : tilesetDataCollection) tilesetData.deinitialize();   // Prevent memory leak
         tilesetDataCollection.clear();
 
         auto tilesets = data.find("tilesets");
         if (tilesets == data.end() || !tilesets.value().is_array()) return;
 
         for (const auto& tileset : tilesets.value()) {
-            tiledata::TilelayerTilesetData tilesetData;
-            tilesetData.init(tileset, renderer);
+            tile::TilelayerTilesetData tilesetData;
+            tilesetData.initialize(tileset, renderer);
             tilesetDataCollection.emplace_back(tilesetData);
         }
     }
 
-    bool compareByFirstGID(const tiledata::TilelayerTilesetData& first, const tiledata::TilelayerTilesetData& second) {
-        return first.firstGID < second.firstGID;
-    }
-
     /**
      * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
-     * @note Requires further optimization to reduce time complexity.
-     * @todo Try binary search.
+     * @todo Optimization should be made to reduce time complexity. Try binary search.
     */
-    tiledata::TilelayerTilesetData getTilesetData(tiledata::TilelayerTilesetData::TilelayerTilesetDataCollection& tilesetDataCollection, int gid) {
+    tile::TilelayerTilesetData getTilesetData(tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
         for (const auto& tilesetData : tilesetDataCollection) if (tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y) return tilesetData;
-        return tiledata::TilelayerTilesetData();
+        return tile::TilelayerTilesetData();
     }
 }
 
-namespace tiledata {
+namespace tile {
     /**
-     * @brief Parse a tileset's data from a loaded `pugi::xml_document`.
+     * @brief Read data associated with a tileset from loaded XML data.
      * @note Also loads the `texture`.
      * @note Requires `document` to be successfully loaded from a XML file.
     */
-    void BaseTilesetData::init(pugi::xml_document& document, SDL_Renderer* renderer) {
+    void BaseTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
         // Parse nodes
         pugi::xml_node tilesetNode = document.child("tileset");
         pugi::xml_node imageNode = tilesetNode.child("image");
@@ -355,17 +353,18 @@ namespace tiledata {
         // Load texture
         auto src = imageNode.attribute("source");
         if (src == nullptr) return;
-        std::filesystem::path path(src.value());
+
+        std::filesystem::path path(src.as_string());
         utils::cleanRelativePath(path);
-        texture = IMG_LoadTexture(renderer, (globals::config::ASSETS_PATH / path).string().c_str());   // Should also check whether path exists
+        texture = IMG_LoadTexture(renderer, (globals::config::kAssetPath / path).string().c_str());   // Should also check whether path exists
     }
 
     /**
-     * @brief Parse a tilelayer-tileset's data from a loaded `nlohmann::json`.
+     * @brief Read data associated with a tilelayer tileset from loaded JSON data.
      * @note Also loads the `texture` and populate `firstGID`.
-     * @note `firstGID` comes only from Tiled Map JSON files.
+     * @note `firstGID` is contained only in Tiled Map JSON files.
     */
-    void TilelayerTilesetData::init(const json& tileset, SDL_Renderer* renderer) {
+    void TilelayerTilesetData::initialize(const json& tileset, SDL_Renderer* renderer) {
         auto firstGID_ = tileset.find("firstgid");
         if (firstGID_ == tileset.end() || !firstGID_.value().is_number_integer()) return;
         firstGID = firstGID_.value();
@@ -376,10 +375,10 @@ namespace tiledata {
         utils::cleanRelativePath(xmlPath);
 
         pugi::xml_document document;
-        pugi::xml_parse_result result = document.load_file((globals::config::TILED_ASSETS_PATH / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+        pugi::xml_parse_result result = document.load_file((globals::config::kTiledAssetPath / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
         if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
-        BaseTilesetData::init(document, renderer);
+        BaseTilesetData::initialize(document, renderer);
 
         // Properties
         pugi::xml_node propertiesNode = document.child("tileset").child("properties");
@@ -402,11 +401,11 @@ namespace tiledata {
     }
 
     /**
-     * @brief Parse a animated-entities-tileset's data from a loaded `pugi::xml_document`.
+     * @brief Read data associated with a tileset used for an entity or an animated object from loaded XML data.
      * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
     */
-    void AnimatedEntitiesTilesetData::init(pugi::xml_document& document, SDL_Renderer* renderer) {
-        BaseTilesetData::init(document, renderer);
+    void AnimatedEntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
+        BaseTilesetData::initialize(document, renderer);
 
         pugi::xml_node propertiesNode = document.child("tileset").child("properties");
         if (propertiesNode.empty()) return;
@@ -434,8 +433,8 @@ namespace tiledata {
                 pugi::xml_node animationsNode = propertyNode.child("properties");
                 if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
 
-                auto animationType = AnimatedEntitiesTilesetData::animationTypeMapping.find(name.as_string());
-                if (animationType == AnimatedEntitiesTilesetData::animationTypeMapping.end()) continue;
+                auto animationType = AnimatedEntitiesTilesetData::kAnimationTypeConversionMapping.find(name.as_string());
+                if (animationType == AnimatedEntitiesTilesetData::kAnimationTypeConversionMapping.end()) continue;
 
                 AnimatedEntitiesTilesetData::Animation animation;
 
@@ -456,7 +455,7 @@ namespace tiledata {
                 }
 
                 // Does this need to be inserted instead?
-                animationMapping.emplace(std::make_pair(animationType -> second, animation));
+                animationMapping.emplace(std::make_pair(animationType->second, animation));
             }
         }
     }

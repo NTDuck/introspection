@@ -1,4 +1,5 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
 
 #include <string>
 #include <unordered_map>
@@ -12,21 +13,28 @@
 
 
 /**
- * @brief The master class that controls all operations in-game.
+ * @brief A singleton class that controls are ingame operations.
 */
 class Game {
     public:
-        Game(InitFlags flags, SDL_Rect dims, const int frameRate, const std::string title);
+        static Game* instantiate(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
+
+        Game(const Game&) = delete;   // copy constructor
+        Game& operator=(Game const&) = delete;   // copy assignment constructor
+        Game(Game&&) = delete;   // move constructor
+        Game& operator=(Game&&) = delete;   // move assignment constructor
         ~Game();
 
         void start();
 
     private:
-        void init();
-        void gameLoop();
+        explicit Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
+        
+        void initialize();
+        void startGameLoop();
 
         void render();
-        void handleMotion();
+        void handleMovement();
 
         void onLevelChange();
         void onWindowChange();
@@ -36,22 +44,37 @@ class Game {
         void handleMouseEvent(const SDL_Event& event);
         void handleKeyBoardEvent(const SDL_Event& event);
 
-        // SDL2-native assets
-        SDL_Window* window = nullptr;
-        SDL_Surface* windowSurface = nullptr;
+        /**
+         * The pointer to the main window.
+        */
+        SDL_Window* window;
+        /**
+         * The pointer to the `SDL_Surface` bound to the main window.
+        */
+        SDL_Surface* windowSurface;
+        /**
+         * The ID of the main window. Used to determine certain interactions.
+        */
         Uint32 windowID;
 
-        /**
-         * Member instances.
-        */
-        Interface interface;
-        Player* player = nullptr;
+        IngameInterface* interface;
+        Player* player;
 
-        // Initialization parameters
-        const InitFlags flags;
-        SDL_Rect dims;
+        /**
+         * Flags used for initialization. Predominantly SDL-native.
+        */
+        const GameFlag flags;
+        SDL_Rect windowDimension;
         const int frameRate;
         const std::string title;
 
+        /**
+         * The current game state. Is strictly bound to the main control flow.
+        */
         GameState state;
+
+        static Game* instance;
 };
+
+
+#endif

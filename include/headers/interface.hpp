@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
 #include <unordered_map>
 
@@ -8,34 +9,51 @@
 #include <auxiliaries/globals.hpp>
 
 
-class Interface {
+/**
+ * @brief Represent the in-game interface.
+*/
+class IngameInterface {
     public:
-        Interface(const std::string levelName);
-        ~Interface();
+        static IngameInterface* instantiate(const level::LevelName levelName);
+
+        IngameInterface(const IngameInterface&) = delete;   // copy constructor
+        IngameInterface& operator=(IngameInterface const&) = delete;   // copy assignment constructor
+        IngameInterface(IngameInterface&&) = delete;   // move constructor
+        IngameInterface& operator=(IngameInterface&&) = delete;   // move assignment constructor
+        ~IngameInterface();
+
+        static void initialize();
+        static void deinitialize();
         
-        void init();
         void render();
 
-        void changeLevel(const std::string levelName);
+        void changeLevel(const level::LevelName levelName);
         void onLevelChange();
         void onWindowChange();
 
     private:
-        void loadLevel();
-        void renderBackgroundToTexture();
-        void renderLevelTilesToTexture();
+        IngameInterface(const level::LevelName levelName);
 
-        std::string levelName;
+        void loadLevel();
+        void renderBackground();
+        void renderLevelTiles();
+
+        level::LevelName levelName;
 
         /**
          * @brief Maps a level's name with its corresponding relative file path.
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
-        leveldata::LevelMapping levelMapping;
+        static level::LevelMapping levelMapping;
 
         /**
          * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
          * @note Needs optimization to perfect relative positions of props to entities.
         */
-        SDL_Texture* texture = nullptr;
+        SDL_Texture* texture;
+
+        static IngameInterface* instance;
 };
+
+
+#endif

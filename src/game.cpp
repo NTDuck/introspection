@@ -1,98 +1,99 @@
+#include <game.hpp>
+
 #include <string>
 
 #include <SDL.h>
 #include <SDL_image.h>
 
-#include <game.hpp>
 #include <interaction.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
 #include <auxiliaries/globals.hpp>
 
 
-extern template class AnimatedDynamicTextureWrapper<Player>;
-extern template class AnimatedTextureWrapper<Teleporter>;
-
-
-Game::Game(InitFlags flags, SDL_Rect dims, const int frameRate, const std::string title) : interface(globals::config::DEFAULT_LEVEL), flags(flags), dims(dims), frameRate(frameRate), title(title) {}
+Game::Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : window(nullptr), windowSurface(nullptr), interface(nullptr), player(nullptr), flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
 
 Game::~Game() {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
     if (window != nullptr) SDL_DestroyWindow(window);
 
-    globals::dealloc();
-    Player::terminate();
-    Teleporter::terminate();
+    globals::deinitialize();
+    IngameInterface::deinitialize();
+    Player::deinitialize();
+    Teleporter::deinitialize();
 
     // Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
 }
 
+Game* Game::instantiate(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) {
+    if (instance == nullptr) instance = new Game(flags, windowDimension, frameRate, title);
+    return instance;
+}
+
 /**
- * @brief The only method accessible at public scope.
+ * @brief The only non-static method accessible at public scope.
  * @note Call this exactly once.
 */
 void Game::start() {
-    init();
-    gameLoop();
+    initialize();
+    startGameLoop();
 }
 
 /**
  * @brief Initialize everything.
- * @note Any `init()` methods should be placed here.
+ * @note Any `initialize()` methods should be placed here.
 */
-void Game::init() {
+void Game::initialize() {
     // Initialize SDL subsystems.
     SDL_Init(flags.init);
     IMG_Init(flags.image);
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
-    window = SDL_CreateWindow(title.c_str(), dims.x, dims.y, dims.w, dims.h, flags.window);
+    window = SDL_CreateWindow(title.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
     windowID = SDL_GetWindowID(window);
 
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
 
-    state = GameState::MENU;
+    state = GameState::kMenu;
 
-    interface.init();
+    IngameInterface::initialize();
     Player::initialize();
     Teleporter::initialize();
 
-    player = Player::instance;
+    interface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
+    player = Player::instantiate();
 }
 
 /**
  * @brief Start the game loop.
  * @todo Manually cap frame rate (VSync disabled)
 */
-void Game::gameLoop() {
+void Game::startGameLoop() {
     // Call this once.
     onLevelChange();
     onWindowChange();
 
-    while (state != GameState::EXIT) {
-        if (state == GameState::INGAME_PLAYING) handleMotion();
+    while (state != GameState::kExit) {
+        if (state == GameState::kIngamePlaying) handleMovement();
         handleEvents();
         render();
     }
 }
 
 /**
- * @brief Handles the rendering of graphics that updates constantly.
+ * @brief Render everything.
  * 
- * @note The order should be as follows:
- * -> `interface` i.e. environments
- * -> interactables
- * -> entities
- * -> player
+ * @note The order should be as follows: `interface` i.e. environments -> interactables -> entities -> player
  * @note Any `render()` methods should be placed here.
 */
 void Game::render() {
     SDL_RenderClear(globals::renderer);
 
-    if (state == GameState::INGAME_PLAYING) {
-        interface.render();
+    if (state == GameState::kIngamePlaying) {
+        interface->render();
+        for (auto& pair : Teleporter::instanceMapping) pair.second->render();
         player->render();
     }
 
@@ -100,21 +101,22 @@ void Game::render() {
 }
 
 /**
- * @brief Handle all entities movement & animation update.
+ * @brief Handle all entities movements & animation updates.
 */
-void Game::handleMotion() {
+void Game::handleMovement() {
     // Check if player has walked into teleporter
     // Hey, it's this part that needs correction!
     if (player->nextDestCoords != nullptr) {
         auto result = Teleporter::instanceMapping.find(*player->nextDestCoords);
         if (result != Teleporter::instanceMapping.end() && player->isNextTileReached) {
-            interaction::collision::PlayerCollideTeleporter(interface, *result->second, globals::currentLevelData);
+            interaction::collision::PlayerCollideTeleporter(*interface, *result->second, globals::currentLevelData);
             onLevelChange(); onWindowChange();
         }
     }
     
     player->move();
     player->updateAnimation();
+    for (auto& pair : Teleporter::instanceMapping) pair.second->updateAnimation();
 }
 
 /**
@@ -122,11 +124,11 @@ void Game::handleMotion() {
 */
 void Game::onLevelChange() {
     // Populate `globals::levelData` members
-    interface.onLevelChange();
+    interface->onLevelChange();
 
     // Make changes to dependencies based on populated `globals::levelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChangeAll(globals::currentLevelData.teleportersLevelData);
+    Teleporter::onLevelChange(globals::currentLevelData.teleportersLevelData);
 }
 
 /**
@@ -137,9 +139,9 @@ void Game::onWindowChange() {
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
     // Dependencies that rely on certain dimension-related global variables
-    interface.onWindowChange();
+    interface->onWindowChange();
     player->onWindowChange();
-    Teleporter::onWindowChangeAll();
+    for (auto& pair : Teleporter::instanceMapping) pair.second->onWindowChange();
 
     SDL_UpdateWindowSurface(window);
 }
@@ -154,17 +156,20 @@ void Game::handleEvents() {
 
     switch (event->type) {
         case SDL_QUIT:
-            state = GameState::EXIT;
+            state = GameState::kExit;
+            delete instance;   // ?
             break;
         
         case SDL_WINDOWEVENT:
             handleWindowEvent(*event);
             break;
+
         // track mouse motion & buttons only
         // also invoked when mouse focus regained/lost
         case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
             handleMouseEvent(*event);
             break;
+
         case SDL_KEYDOWN: case SDL_KEYUP:
             handleKeyBoardEvent(*event);
             break;
@@ -190,9 +195,9 @@ void Game::handleWindowEvent(const SDL_Event& event) {
 */
 void Game::handleKeyBoardEvent(const SDL_Event& event) {
     switch (state) {
-        case GameState::INGAME_PLAYING:
+        case GameState::kIngamePlaying:
             if (event.key.keysym.sym == SDLK_ESCAPE) {
-                state = GameState::EXIT;
+                state = GameState::kExit;
                 break;
             }
             player->handleKeyboardEvent(event);
@@ -206,12 +211,15 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
 */
 void Game::handleMouseEvent(const SDL_Event& event) {
     switch (state) {
-        case GameState::MENU: case GameState::INGAME_PLAYING:
+        case GameState::kMenu: case GameState::kIngamePlaying:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
-            state = GameState::INGAME_PLAYING;
+            state = GameState::kIngamePlaying;
             onLevelChange(); onWindowChange();
             break;
 
         default: break;
     }
 }
+
+
+Game* Game::instance = nullptr;

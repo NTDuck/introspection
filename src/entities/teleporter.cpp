@@ -1,23 +1,24 @@
+#include <entities.hpp>
+
 #include <SDL.h>
 
-#include <entities.hpp>
 #include <meta.hpp>
 #include <auxiliaries/globals.hpp>
 
 
-extern template class AnimatedDynamicTextureWrapper<Player>;
-extern template class AnimatedTextureWrapper<Teleporter>;
-
-
-void Teleporter::initialize() {
-    BaseTextureWrapper<Teleporter>::initialize(globals::config::TELEPORTER_TILESET_PATH);
+Teleporter::Teleporter() {
+    destRectModifier.x -= globals::tileDestSize.x;
 }
 
+void Teleporter::initialize() {
+    AbstractAnimatedEntity<Teleporter>::initialize(globals::config::kTilesetPathTeleporter);
+}
 
-void Teleporter::onLevelChange(const leveldata::TextureData& teleporterData) {
-    auto data = dynamic_cast<const leveldata::TeleporterData*>(&teleporterData);
+void Teleporter::onLevelChange(const level::EntityLevelData& teleporterData) {
+    auto data = dynamic_cast<const level::TeleporterLevelData*>(&teleporterData);
     
-    dynamic_cast<BaseTextureWrapper<Player>*>(this)->onLevelChange(*data);
+    AbstractAnimatedEntity<Teleporter>::onLevelChange(*data);
+
     targetDestCoords = data->targetDestCoords;
     targetLevel = data->targetLevel;
 }
@@ -25,12 +26,11 @@ void Teleporter::onLevelChange(const leveldata::TextureData& teleporterData) {
 /**
  * @brief Call method `onLevelChange()` on each element in `teleporters`.
 */
-void Teleporter::onLevelChangeAll(const leveldata::TeleporterData::TeleporterDataCollection& teleporterDataCollection) {
-    // for (const auto& data : teleportersData) {instanceMapping.emplace(data.destCoords, Teleporter{}).first -> second.onLevelChange(data)};
+void Teleporter::onLevelChange(const level::TeleporterLevelData::Collection& teleporterDataCollection) {
     instanceMapping.clear();
 
     for (const auto& data : teleporterDataCollection) {
-        auto instance = Teleporter::instantiate(data.destCoords);
+        auto instance = instantiate(data.destCoords);
         instance->onLevelChange(data);
     }
 }

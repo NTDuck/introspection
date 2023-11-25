@@ -1,14 +1,14 @@
+#include <entities.hpp>
+
 #include <filesystem>
 
-#include <entities.hpp>
 #include <meta.hpp>
 #include <auxiliaries/utils.hpp>
 
 
-extern template class AnimatedDynamicTextureWrapper<Player>;
-extern template class AnimatedTextureWrapper<Teleporter>;
-
-
+/**
+ * @note Constructor initializer list is unusable.
+*/
 Player::Player() {
     destRectModifier = {0, -23, 2, 2};
 }
@@ -18,16 +18,22 @@ Player::Player() {
  * @note Only one instance should exist at a time.
  * @todo Check for conflict with base class.
 */
-void Player::instantiate() {
-    if (instance == nullptr) return;
-    instance = new Player;
+Player* Player::instantiate() {
+    if (instance == nullptr) instance = new Player;
+    return instance;
 }
 
 /**
  * @see https://stackoverflow.com/questions/4146499/why-does-a-virtual-function-get-hidden
 */
 void Player::initialize() {
-    AnimatedDynamicTextureWrapper<Player>::initialize(globals::config::PLAYER_TILESET_PATH);
+    AbstractAnimatedDynamicEntity<Player>::initialize(globals::config::kTilesetPathPlayer);
+}
+
+void Player::deinitialize() {
+    tilesetData->deinitialize();
+    delete instance;
+    instance = nullptr;
 }
 
 /**
@@ -41,22 +47,22 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     // if ((nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::TILE_DEST_COUNT.x || nextDestCoords -> y >= globals::TILE_DEST_COUNT.y)) return;
 
     switch (event.key.keysym.sym) {
-        case SDLK_w: --velocity.y; break;
-        case SDLK_s: ++velocity.y; break;
-        case SDLK_a: --velocity.x; flip = SDL_FLIP_HORIZONTAL; break;
-        case SDLK_d: ++velocity.x; flip = SDL_FLIP_NONE; break;
+        case SDLK_w: --currentVelocity.y; break;
+        case SDLK_s: ++currentVelocity.y; break;
+        case SDLK_a: --currentVelocity.x; flip = SDL_FLIP_HORIZONTAL; break;
+        case SDLK_d: ++currentVelocity.x; flip = SDL_FLIP_NONE; break;
         default: return;
     }
 
-    nextDestCoords = new SDL_Point({destCoords.x + velocity.x, destCoords.y + velocity.y});
-    nextDestRect = new SDL_Rect(BaseTextureWrapper::getDestRectFromCoords(*nextDestCoords));
+    nextDestCoords = new SDL_Point({destCoords.x + currentVelocity.x, destCoords.y + currentVelocity.y});
+    nextDestRect = new SDL_Rect(AbstractAnimatedDynamicEntity::getDestRectFromCoords(*nextDestCoords));
 
-    if (validateMove()) AnimatedDynamicTextureWrapper<Player>::onMoveStart(); else AnimatedDynamicTextureWrapper<Player>::onMoveEnd();
+    if (validateMove()) AbstractAnimatedDynamicEntity<Player>::onMoveStart(); else AbstractAnimatedDynamicEntity<Player>::onMoveEnd();
 }
 
-void Player::onLevelChange(const leveldata::TextureData& player) {
-    auto data = dynamic_cast<const leveldata::PlayerData*>(&player);
-    AnimatedDynamicTextureWrapper<Player>::onLevelChange(*data);
+void Player::onLevelChange(const level::EntityLevelData& player) {
+    auto data = dynamic_cast<const level::PlayerLevelData*>(&player);
+    AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
 }
 
 Player* Player::instance = nullptr;

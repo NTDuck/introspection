@@ -8,8 +8,7 @@ a RPG made without a game engine.
 ![](preview.png)
 
 
-https://github.com/NTDuck/8964/assets/105532764/425c797a-7332-4926-91f9-5c2d7478b300
-
+> Also check out `preview.mp4`~
 
 
 ## Features
