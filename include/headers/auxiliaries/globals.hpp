@@ -211,8 +211,6 @@ namespace level {
      * @param destCoords the new `destCoords` of the entity upon entering new level.
     */
     struct EntityLevelData {
-        virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
-
         struct Hasher {
             std::size_t operator()(const EntityLevelData& obj) const;
         };
@@ -225,16 +223,18 @@ namespace level {
             bool operator()(const EntityLevelData& first, const EntityLevelData& second) const;
         };
         
-        using Collection = std::unordered_set<EntityLevelData, Hasher, Equality_Operator>;
+        /**
+         * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
+        */
+        template <typename T>
+        using Collection = std::unordered_set<T, EntityLevelData::Hasher, EntityLevelData::Equality_Operator>;
+
+        virtual void initialize(const json& entityJSONLevelData);
+        virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
         
         SDL_Point destCoords;
     };
 
-    /**
-     * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
-    */
-    template <typename T>
-    using Collection = std::unordered_set<T, EntityLevelData::Hasher, EntityLevelData::Equality_Operator>;
 
     /**
      * @brief Contain data associated with a player entity, used in level-loading.
@@ -247,12 +247,16 @@ namespace level {
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
     struct TeleporterLevelData : public EntityLevelData {
-        // using Collection = std::unordered_set<TeleporterLevelData, Hasher, Equality_Operator>;
+        void initialize(const json& entityJSONLevelData) override;
 
         SDL_Point targetDestCoords;
         level::LevelName targetLevel;
     };
 
+    /**
+     * @brief Contain data associated with a slime entity, used in level-loading.
+    */
+    struct SlimeLevelData : public EntityLevelData {};
 
     /**
      * @brief Contain data associated with a level.
@@ -266,7 +270,11 @@ namespace level {
         tile::TileCollection tileCollection;
         SDL_Color backgroundColor;
         level::PlayerLevelData playerLevelData;
-        Collection<TeleporterLevelData> teleportersLevelData;
+        level::EntityLevelData::Collection<TeleporterLevelData> teleportersLevelData;
+        level::EntityLevelData::Collection<SlimeLevelData> slimesLevelData;
+
+        void initialize(const json& JSONLayerData);
+        void deinitialize();
     };
 };
 
@@ -301,6 +309,7 @@ namespace globals {
         const std::filesystem::path kTilesetPath = kTiledAssetPath / ".tsx";
         const std::filesystem::path kTilesetPathPlayer = kTilesetPath / "hp-player.tsx";
         const std::filesystem::path kTilesetPathTeleporter = kTilesetPath / "mi-a-cat.tsx";
+        const std::filesystem::path kTilesetPathSlime = kTilesetPath / "eg-slime-full.tsx";
         const std::filesystem::path kConfigPathLevel = kTiledAssetPath / "levels.json";
         
         const SDL_Point kDefaultAnimatedDynamicEntityVelocity = {1, 1};

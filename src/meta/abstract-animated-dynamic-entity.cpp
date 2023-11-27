@@ -24,7 +24,7 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::moveAll() {
-    for (auto& pair : instanceMapping) pair.second->move();
+    for (auto& instance : instances) instance->move();
 }
 
 template <class T>
@@ -48,12 +48,19 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     // Continue movement until new `Tile` has been reached.
     if ((nextDestRect -> x - destRect.x) * currentVelocity.x > 0 || (nextDestRect -> y - destRect.y) * currentVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
-    // Terminate movement when reached new `Tile`
-    isNextTileReached = true;
-
-    destCoords = *nextDestCoords;
-    destRect = *nextDestRect;
     onMoveEnd();
+}
+
+/**
+ * @brief Initiate the movement of the entity from the current `Tile` to the next.
+ * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
+*/
+template <class T>
+void AbstractAnimatedDynamicEntity<T>::initiateMove() {
+    nextDestCoords = new SDL_Point({destCoords.x + currentVelocity.x, destCoords.y + currentVelocity.y});
+    nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
+
+    if (validateMove()) onMoveStart(); else onMoveEnd();
 }
 
 /**
@@ -62,7 +69,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() {
-    if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
+    if ((currentVelocity.x | currentVelocity.y) == 0 || nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
@@ -70,7 +77,6 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
         for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
             tilelayerTilesetData = new tile::TilelayerTilesetData(utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid));
             if (!gid && tilelayerTilesetData->properties["collision"] != "true") continue;
-            // if (!collisionTransitionLevel) collisionTransitionLevel = std::stoi(tilesetData -> properties["collision-transition"]) + tilesetData -> firstGID;
             return gid;
         }
         return 0;
@@ -79,14 +85,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
     int currCollisionLevel = findCollisionLevelGID(destCoords);
     int nextCollisionLevel = findCollisionLevelGID(*nextDestCoords);
 
-    /**
-     * @details The move is validated only if `nextCollisionLevel` exists, and one of the following scenarios occurs:
-     * 1. `currCollisionLevel` is equal to `collisionTransitionLevel`
-     * 2. `nextCollisionLevel` is equal to `collisionTransitionLevel`
-     * 3. `currCollisionLevel` is equal to `nextCollisionLevel`
-    */
     if (!nextCollisionLevel) return false;
-    // return (currCollisionLevel == collisionTransitionLevel || nextCollisionLevel == collisionTransitionLevel || currCollisionLevel == nextCollisionLevel);
     return currCollisionLevel == nextCollisionLevel;
 }
 
@@ -95,6 +94,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
+    if (currentVelocity.x) flip = (currentVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk);
 }
 
@@ -103,6 +103,15 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd() {
+    // Terminate movement when reached new `Tile`
+    if (!isNextTileReached) {
+        isNextTileReached = true;
+        if (nextDestCoords != nullptr && nextDestRect != nullptr) {
+            destCoords = *nextDestCoords;
+            destRect = *nextDestRect;
+        }
+    }
+
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
     currentVelocity = {0, 0};
@@ -112,3 +121,4 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd() {
 
 
 template class AbstractAnimatedDynamicEntity<Player>;
+template class AbstractAnimatedDynamicEntity<Slime>;

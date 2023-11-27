@@ -21,6 +21,7 @@ Game::~Game() {
     IngameInterface::deinitialize();
     Player::deinitialize();
     Teleporter::deinitialize();
+    Slime::deinitialize();
 
     // Quit SDL subsystems
     IMG_Quit();
@@ -61,6 +62,7 @@ void Game::initialize() {
     IngameInterface::initialize();
     Player::initialize();
     Teleporter::initialize();
+    Slime::initialize();
 
     interface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
     player = Player::instantiate();
@@ -93,7 +95,8 @@ void Game::render() {
 
     if (state == GameState::kIngamePlaying) {
         interface->render();
-        for (auto& pair : Teleporter::instanceMapping) pair.second->render();
+        Teleporter::renderAll();
+        Slime::renderAll();
         player->render();
     }
 
@@ -105,18 +108,31 @@ void Game::render() {
 */
 void Game::handleMovement() {
     // Check if player has walked into teleporter
-    // Hey, it's this part that needs correction!
+    // Requires optimization
     if (player->nextDestCoords != nullptr) {
-        auto result = Teleporter::instanceMapping.find(*player->nextDestCoords);
-        if (result != Teleporter::instanceMapping.end() && player->isNextTileReached) {
-            interaction::collision::PlayerCollideTeleporter(*interface, *result->second, globals::currentLevelData);
+        Teleporter* result = nullptr;
+
+        for (const auto& instance : Teleporter::instances) {
+            if (instance->destCoords.x == player->nextDestCoords->x && instance->destCoords.y == player->nextDestCoords->y) {
+                result = instance;
+                break;
+            }
+        }
+
+        if (result != nullptr && player->isNextTileReached) {
+            interaction::collision::PlayerCollideTeleporter(*interface, *result, globals::currentLevelData);
             onLevelChange(); onWindowChange();
         }
     }
     
     player->move();
     player->updateAnimation();
+
     Teleporter::updateAnimationAll();
+
+    Slime::calculateMoveAll(player->destCoords);
+    Slime::moveAll();
+    Slime::updateAnimationAll();
 }
 
 /**
@@ -129,6 +145,7 @@ void Game::onLevelChange() {
     // Make changes to dependencies based on populated `globals::levelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
     Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
+    Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
 }
 
 /**
@@ -142,6 +159,7 @@ void Game::onWindowChange() {
     interface->onWindowChange();
     player->onWindowChange();
     Teleporter::onWindowChangeAll();
+    Slime::onWindowChangeAll();
 
     SDL_UpdateWindowSurface(window);
 }

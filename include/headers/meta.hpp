@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <unordered_set>
 
 #include <SDL.h>
 
@@ -12,7 +12,7 @@
 #include <auxiliaries/globals.hpp>
 
 
-/**
+/*
  * ┌────────────────┐
  * │ AbstractEntity │
  * └───┬────────────┘
@@ -22,41 +22,59 @@
  * │ AbstractAnimatedEntity │
  * └───┬───────┬────────────┘
  *     │       │
- *     │       ├─────────┐
- *     │       │         │
- *     │   ┌───▼────┐ ┌──▼──┐
- *     │   │ Player │ │ ... │
- *     │   └────────┘ └─────┘
+ *     │       │
+ *     │       │
+ *     │   ┌───▼────────┐
+ *     │   │ Teleporter │
+ *     │   └────────────┘
  *     │
  * ┌───▼───────────────────────────┐
  * │ AbstractAnimatedDynamicEntity │
  * └───────────┬───────────────────┘
  *             │
- *             ├─────────────┐
- *             │             │
- *         ┌───▼────────┐ ┌──▼──┐
- *         │ Teleporter │ │ ... │
- *         └────────────┘ └─────┘
+ *             ├──────────┐
+ *             │          │
+ *         ┌───▼────┐ ┌───▼───┐
+ *         │ Player │ │ Slime │
+ *         └────────┘ └───────┘
 */
 
 
 /**
  * @brief An abstract class combining CRTP and adapted Multiton pattern. Represents a generic entity.
  * @note Provide flexibility and compile-time polymorphism.
+ * @note Recommended implementation: derived classes are responsible for the following:
+ * 1. Define of static member `std::filesystem::path tilesetPath`
+ * 2. Place constructor at public scope
+ * @see https://stackoverflow.com/questions/4173254/what-is-the-curiously-recurring-template-pattern-crtp
  * @see https://stackoverflow.com/questions/26950274/implementing-crtp-and-issue-with-undefined-reference
  * @see https://google.github.io/styleguide/cppguide.html#Declaration_Order
 */
 template <class T>
 class AbstractEntity {
     public:
+        struct Hasher {
+            std::size_t operator()(const AbstractEntity& object) const;
+        };
+
+        struct PointerHasher {
+            std::size_t operator()(const T* pointer) const;
+        };
+
+        struct PointerEqualityOperator {
+            bool operator()(const T* first, const T* second) const;
+        };
+
         static T* instantiate(SDL_Point destCoords);
         AbstractEntity(AbstractEntity const&) = delete;   // copy constructor
         AbstractEntity& operator=(const AbstractEntity&) = delete;   // copy assignment constructor
         AbstractEntity(AbstractEntity&&) = delete;   // move constructor
         AbstractEntity& operator=(AbstractEntity&&) = delete;   // move assignment constructor
+        bool operator==(const AbstractEntity<T>& other) const;
+        bool operator<(const AbstractEntity<T>& other) const;
         virtual ~AbstractEntity();
 
-        static void initialize(const std::filesystem::path& xmlPath);
+        static void initialize();
         static void deinitialize();
 
         static void setRGB(Uint8 r, Uint8 g, Uint8 b);
@@ -66,7 +84,7 @@ class AbstractEntity {
 
         static void renderAll();
         static void onWindowChangeAll();
-        template <typename LevelData> static void onLevelChangeAll(const typename level::Collection<LevelData>& entityLevelDataCollection);
+        template <typename LevelData> static void onLevelChangeAll(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection);
 
         virtual void render() const;
         virtual void onWindowChange();
@@ -74,7 +92,7 @@ class AbstractEntity {
 
         SDL_Rect getDestRectFromCoords(const SDL_Point& coords);
 
-        static std::unordered_map<SDL_Point, T*, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator> instanceMapping;
+        static std::unordered_set<T*, typename AbstractEntity<T>::PointerHasher, typename AbstractEntity<T>::PointerEqualityOperator> instances;
         static tile::AnimatedEntitiesTilesetData* tilesetData;
 
         /**
@@ -85,6 +103,8 @@ class AbstractEntity {
 
     protected:
         AbstractEntity();
+
+        static const std::filesystem::path kTilesetPath;
 
         /**
          * Contain data associated with the position of the entity relative to the window. In pixels.
@@ -127,7 +147,7 @@ class AbstractEntity {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using AbstractEntity<T>::instanceMapping, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
 
@@ -152,7 +172,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using AbstractEntity<T>::instanceMapping, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
         using AbstractAnimatedEntity<T>::currAnimationType;
 
         virtual ~AbstractAnimatedDynamicEntity();
@@ -162,6 +182,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         virtual void move();
+        virtual void initiateMove();
         virtual bool validateMove();
         void onMoveStart();
         void onMoveEnd();

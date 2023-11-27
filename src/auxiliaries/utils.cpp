@@ -1,6 +1,7 @@
 #include <auxiliaries/utils.hpp>
 
 #include <algorithm>
+#include <random>
 #include <fstream>
 #include <vector>
 #include <string>
@@ -14,14 +15,19 @@
 
 
 namespace utils {
-    namespace hashers {
-        std::size_t SDL_Point_Hasher::operator()(const SDL_Point& obj) const { return std::hash<int>()(obj.x) ^ (std::hash<int>()(obj.y) << 1); }
-    }
+    /**
+     * @brief Retrieve a binary outcome. Models a Bernoulli distribution.
+     * @see https://en.wikipedia.org/wiki/Bernoulli_distribution
+     * @see https://en.wikipedia.org/wiki/Mersenne_Twister
+    */
+    int generateRandomBinary() {
+        std::random_device rd;
+        std::mt19937 mt(rd());  // Mersenne Twister 19937 engine
 
-    namespace operators {
-        bool SDL_Point_Equality_Operator::operator()(const SDL_Point& first, const SDL_Point& second) const { return first.x == second.x && first.y == second.y; }
-
-        bool SDL_Point_Less_Than_Operator::operator()(const SDL_Point& first, const SDL_Point& second) const { return (first.y < second.y) || (first.y == second.y && first.x < second.x); }
+        double probability = 0.5;   // the probability of success i.e. getting `1`
+        std::bernoulli_distribution dist(probability);
+        
+        return dist(mt);
     }
 
     /**
@@ -180,15 +186,14 @@ namespace utils {
      * @note Only `csv` and `zlib-compressed base64` are supported.
      * @todo Reimplementation should be made to adhere to SoC. (this is a true mess)
     */
-    void loadLevelData(level::LevelData& currentLevelData, const json& data) {
+    void loadLevelData(level::LevelData& currentLevelData, const json& JSONLevelData) {
         // Clear current level data
-        for (auto& tileRow : currentLevelData.tileCollection) for (auto& tile : tileRow) tile.clear();
-        currentLevelData.teleportersLevelData.clear();
+        currentLevelData.deinitialize();
 
         // Update global variables
-        auto tileDestCountWidth = data.find("width");
-        auto tileDestCountHeight = data.find("height");
-        if (tileDestCountWidth == data.end() || tileDestCountHeight == data.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
+        auto tileDestCountWidth = JSONLevelData.find("width");
+        auto tileDestCountHeight = JSONLevelData.find("height");
+        if (tileDestCountWidth == JSONLevelData.end() || tileDestCountHeight == JSONLevelData.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
 
         globals::tileDestCount = {tileDestCountWidth.value(), tileDestCountHeight.value()};
         globals::tileDestSize = {globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y};
@@ -197,16 +202,16 @@ namespace utils {
             (globals::windowSize.y - globals::tileDestCount.y * globals::tileDestSize.y) / 2,
         };
 
-        auto backgroundColor = data.find("backgroundcolor");
-        if (backgroundColor != data.end() && !backgroundColor.value().is_string()) return;
-        currentLevelData.backgroundColor = (backgroundColor != data.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::kDefaultBackgroundColor);
+        auto backgroundColor = JSONLevelData.find("backgroundcolor");
+        if (backgroundColor != JSONLevelData.end() && !backgroundColor.value().is_string()) return;
+        currentLevelData.backgroundColor = (backgroundColor != JSONLevelData.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::kDefaultBackgroundColor);
 
         // Emplace gids into `tileCollection`. Executed per layer.
         currentLevelData.tileCollection.resize(globals::tileDestCount.y);
         for (auto& tileRow : currentLevelData.tileCollection) tileRow.resize(globals::tileDestCount.x);
 
-        auto layers = data.find("layers");
-        if (layers == data.end() || !layers.value().is_array()) return;
+        auto layers = JSONLevelData.find("layers");
+        if (layers == JSONLevelData.end() || !layers.value().is_array()) return;
 
         for (const auto& layer : layers.value()) {
             // Prevent registering non-tilelayers e.g. object layers
@@ -235,66 +240,7 @@ namespace utils {
                 for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) currentLevelData.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::tileDestCount.x + x]);
 
             } else if (type.value() == "objectgroup") {
-                auto objects = layer.find("objects");
-                if (objects == layer.end() || !objects.value().is_array()) continue;
-                
-                for (const auto& object : objects.value()) {
-                    auto type = object.find("type");
-                    if (type == object.end() || !type.value().is_string()) continue;
-
-                    if (type.value() == "player") {
-                        auto playerDestCoordsX = object.find("x");
-                        auto playerDestCoordsY = object.find("y");
-                        auto playerDestSizeWidth = object.find("width");
-                        auto playerDestSizeHeight = object.find("height");
-
-                        if (playerDestCoordsX == object.end() || playerDestCoordsY == object.end() || playerDestSizeWidth == object.end() || playerDestSizeHeight == object.end() || !playerDestCoordsX.value().is_number_integer() || !playerDestCoordsY.value().is_number_integer() || !playerDestSizeWidth.value().is_number_integer() || !playerDestSizeHeight.value().is_number_integer()) continue;
-
-                        globals::currentLevelData.playerLevelData.destCoords = {int(playerDestCoordsX.value()) / int(playerDestSizeWidth.value()), int(playerDestCoordsY.value()) / int(playerDestSizeHeight.value())};
-
-                    } else if (type.value() == "teleporter") {
-                        auto teleporterDestCoordsX = object.find("x");
-                        auto teleporterDestCoordsY = object.find("y");
-                        auto teleporterDestSizeWidth = object.find("width");
-                        auto teleporterDestSizeHeight = object.find("height");
-
-                        if (teleporterDestCoordsX == object.end() || teleporterDestCoordsY == object.end() || teleporterDestSizeWidth == object.end() || teleporterDestSizeHeight == object.end() || !teleporterDestCoordsX.value().is_number_integer() || !teleporterDestCoordsY.value().is_number_integer() || !teleporterDestSizeWidth.value().is_number_integer() || !teleporterDestSizeHeight.value().is_number_integer()) continue;
-
-                        level::TeleporterLevelData teleporter;
-
-                        teleporter.destCoords = {int(teleporterDestCoordsX.value()) / int(teleporterDestSizeWidth.value()), int(teleporterDestCoordsY.value()) / int(teleporterDestSizeHeight.value())};
-
-                        auto teleporterProperties = object.find("properties");
-                        if (teleporterProperties == object.end() || !teleporterProperties.value().is_array()) continue;
-
-                        for (const auto& property : teleporterProperties.value()) {
-                            auto name = property.find("name");
-                            auto value = property.find("value");
-
-                            if (name == property.end() || value == property.end() || !value.value().is_string()) continue;
-
-                            if (name.value() == "target-dest-coords") {
-                                auto& value_ = value.value();
-                                if (!value_.is_object()) continue;
-
-                                auto targetDestCoordsX = value_.find("x");
-                                auto targetDestCoordsY = value_.find("y");
-                                if (targetDestCoordsX == value_.end() || targetDestCoordsY == value_.end() || !targetDestCoordsX.value().is_number() || !targetDestCoordsY.value().is_number()) continue;
-
-                                teleporter.targetDestCoords.x = targetDestCoordsX.value();
-                                teleporter.targetDestCoords.y = targetDestCoordsY.value();
-
-                            } else if (name.value() == "target-level") {
-                                if (!value.value().is_string()) continue;
-                                auto result = level::kLevelNameConversionMapping.find(value.value());
-                                if (result == level::kLevelNameConversionMapping.end()) continue;
-                                teleporter.targetLevel = result->second;
-                            }
-                        }
-
-                        currentLevelData.teleportersLevelData.insert(teleporter);
-                    }
-                }
+                currentLevelData.initialize(layer);
             }
         }
     }
@@ -459,4 +405,88 @@ namespace tile {
             }
         }
     }
+}
+
+namespace level {
+    /**
+     * @brief An alternative to the constructor. Populate data members based on JSON data.
+     * @note Requires JSON data to be in proper format before being called.
+    */
+    void EntityLevelData::initialize(const json& entityJSONLeveData) {
+        auto destCoordsX = entityJSONLeveData.find("x");
+        auto destCoordsY = entityJSONLeveData.find("y");
+        auto destSizeWidth = entityJSONLeveData.find("width");
+        auto destSizeHeight = entityJSONLeveData.find("height");
+
+        // Also check for division by zero
+        if (destCoordsX == entityJSONLeveData.end() || destCoordsY == entityJSONLeveData.end() || destSizeWidth == entityJSONLeveData.end() || destSizeHeight == entityJSONLeveData.end() || !destCoordsX.value().is_number_integer() || !destCoordsY.value().is_number_integer() || !destSizeWidth.value().is_number_integer() || !destSizeHeight.value().is_number_integer()) return;
+
+        destCoords = {
+            int(destCoordsX.value()) / int(destSizeWidth.value()),
+            int(destCoordsY.value()) / int(destSizeHeight.value()),
+        };
+    }
+
+    void TeleporterLevelData::initialize(const json& entityJSONLevelData) {
+        EntityLevelData::initialize(entityJSONLevelData);
+
+        auto teleporterProperties = entityJSONLevelData.find("properties");
+        if (teleporterProperties == entityJSONLevelData.end() || !teleporterProperties.value().is_array()) return;
+
+        for (const auto& property : teleporterProperties.value()) {
+            auto name = property.find("name");
+            auto value = property.find("value");
+
+            if (name == property.end() || value == property.end() || !value.value().is_string()) continue;
+
+            if (name.value() == "target-dest-coords") {
+                auto& value_ = value.value();
+                if (!value_.is_object()) continue;
+
+                auto targetDestCoordsX = value_.find("x");
+                auto targetDestCoordsY = value_.find("y");
+                if (targetDestCoordsX == value_.end() || targetDestCoordsY == value_.end() || !targetDestCoordsX.value().is_number() || !targetDestCoordsY.value().is_number()) continue;
+
+                targetDestCoords = {targetDestCoordsX.value(), targetDestCoordsY.value()};
+
+            } else if (name.value() == "target-level") {
+                if (!value.value().is_string()) continue;
+                auto result = level::kLevelNameConversionMapping.find(value.value());
+                if (result == level::kLevelNameConversionMapping.end()) continue;
+                targetLevel = result->second;
+            }
+        }
+    }
+
+    void LevelData::initialize(const json& JSONLayerData) {
+        auto objects = JSONLayerData.find("objects");
+        if (objects == JSONLayerData.end() || !objects.value().is_array()) return;
+        
+        for (const auto& object : objects.value()) {
+            auto type = object.find("type");
+            if (type == object.end() || !type.value().is_string()) continue;
+
+            if (type.value() == "player") {
+                level::PlayerLevelData data;
+                data.initialize(object);
+                playerLevelData = data;
+            } else if (type.value() == "teleporter") {
+                level::TeleporterLevelData data;
+                data.initialize(object);
+                teleportersLevelData.insert(data);
+            } else if (type.value() == "slime") {
+                level::SlimeLevelData data;
+                data.initialize(object);
+                slimesLevelData.insert(data);
+            }
+        }
+    }
+
+    void LevelData::deinitialize() {
+        for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
+        backgroundColor = globals::config::kDefaultBackgroundColor;
+        teleportersLevelData.clear();
+        slimesLevelData.clear();
+    }
+
 }

@@ -21,7 +21,6 @@ class Player final : public AbstractAnimatedDynamicEntity<Player> {
         Player();
         ~Player() = default;
 
-        static void initialize();
         static void deinitialize();
         
         void onLevelChange(const level::EntityLevelData& player) override;
@@ -40,7 +39,6 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
     public:
         Teleporter();
         ~Teleporter() = default;
-        static void initialize();
 
         void onLevelChange(const level::EntityLevelData& teleporterData) override;
 
@@ -53,6 +51,18 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
          * The new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
         */
         level::LevelName targetLevel;
+};
+
+
+class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
+    friend AbstractAnimatedDynamicEntity<Slime>;
+    public:
+        Slime();
+        ~Slime() = default;
+
+        static void calculateMoveAll(const SDL_Point& playerDestCoords);
+        void calculateMove(const SDL_Point& playerDestCoords);
+        // bool validateMove() override;
 };
 
 

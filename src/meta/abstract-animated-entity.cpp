@@ -20,7 +20,7 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity() {
 */
 template <class T>
 void AbstractAnimatedEntity<T>::updateAnimationAll() {
-    for (auto& pair : instanceMapping) pair.second->updateAnimation();
+    for (auto& instance : instances) instance->updateAnimation();
 }
 
 /**
@@ -59,3 +59,4 @@ void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTiles
 
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;
+template class AbstractAnimatedEntity<Slime>;

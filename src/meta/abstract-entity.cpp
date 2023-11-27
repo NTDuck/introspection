@@ -1,8 +1,7 @@
 #include <meta.hpp>
 
 #include <filesystem>
-#include <unordered_map>
-#include <type_traits>
+#include <unordered_set>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -13,6 +12,26 @@
 #include <auxiliaries/globals.hpp>
 
 
+template <class T>
+bool AbstractEntity<T>::operator==(const AbstractEntity<T>& other) const {
+    return destCoords.x == other.destCoords.x && destCoords.y == other.destCoords.y;
+}
+
+template <class T>
+bool AbstractEntity<T>::operator<(const AbstractEntity<T>& other) const {
+    return (destCoords.y < other.destCoords.y) || (destCoords.y == other.destCoords.y && destCoords.x < other.destCoords.x);
+}
+
+template <class T>
+std::size_t AbstractEntity<T>::PointerHasher::operator()(const T* pointer) const {
+    return std::hash<int>()(pointer->destCoords.x) ^ std::hash<int>()(pointer->destCoords.y);
+}
+
+template <class T>
+bool AbstractEntity<T>::PointerEqualityOperator::operator()(const T* first, const T* second) const {
+    return *first == *second;
+}
+
 /**
  * @brief Create an instance of derived class `T` and register to `instanceMapping`.
 */
@@ -20,7 +39,7 @@ template <class T>
 T* AbstractEntity<T>::instantiate(SDL_Point destCoords) {
     auto instance = new T;
     instance->destCoords = destCoords;
-    instanceMapping.emplace(std::make_pair(destCoords, instance));   // `if constexpr(requires{ instance->destCoords; })`
+    instances.emplace(instance);   // `if constexpr(requires{ instance->destCoords; })`
     return instance;
 }
 
@@ -35,16 +54,17 @@ AbstractEntity<T>::AbstractEntity() : destRectModifier({0, 0, 1, 1}), angle(0), 
 */
 template <class T>
 AbstractEntity<T>::~AbstractEntity() {
-    instanceMapping.erase(destCoords);   // by key
+    instances.erase(static_cast<T*>(this));
 }
 
 /**
  * @see <utils.h> utils::loadTilesetsData
 */
 template <class T>
-void AbstractEntity<T>::initialize(const std::filesystem::path& xmlPath) {
+void AbstractEntity<T>::initialize() {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(xmlPath.c_str());
+    pugi::xml_parse_result result = document.load_file(kTilesetPath.c_str());
+    // delete tilesetPath;
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
     
     tilesetData = new tile::AnimatedEntitiesTilesetData;
@@ -53,8 +73,8 @@ void AbstractEntity<T>::initialize(const std::filesystem::path& xmlPath) {
 
 template <class T>
 void AbstractEntity<T>::deinitialize() {
-    for (auto& pair : instanceMapping) delete pair.second;
-    instanceMapping.clear();
+    for (auto& instance : instances) delete instance;
+    instances.clear();
     tilesetData->deinitialize();
     tilesetData = nullptr;
 }
@@ -104,7 +124,7 @@ void AbstractEntity<T>::setRGBA(SDL_Color& color) {
 */
 template <class T>
 void AbstractEntity<T>::renderAll() {
-    for (auto& pair : instanceMapping) pair.second->render();
+    for (auto& instance : instances) instance->render();
 }
 
 /**
@@ -112,7 +132,7 @@ void AbstractEntity<T>::renderAll() {
 */
 template <class T>
 void AbstractEntity<T>::onWindowChangeAll() {
-    for (auto& pair : instanceMapping) pair.second->onWindowChange();
+    for (auto& instance : instances) instance->onWindowChange();
 }
 
 /**
@@ -121,8 +141,9 @@ void AbstractEntity<T>::onWindowChangeAll() {
 */
 template <class T>
 template <typename LevelData>
-void AbstractEntity<T>::onLevelChangeAll(const typename level::Collection<LevelData>& entityLevelDataCollection) {
-    instanceMapping.clear();
+void AbstractEntity<T>::onLevelChangeAll(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection) {
+    for (auto& instance : instances) delete instance;
+    instances.clear();
 
     for (const auto& entityLevelData : entityLevelDataCollection) {
         auto instance = instantiate(entityLevelData.destCoords);
@@ -172,10 +193,10 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
 
 
 /**
- * Map the `destCoords` of each active instance of derived class `T` to its corresponding pointer. Useful for determining interactions between different instances of different derived classes e.g. entity collision.
+ * Store pointers of instances of derived class `T`. Based on `destCoords`. Useful for determining interactions between different instances of different derived classes e.g. entity collision.
 */
 template <class T>
-std::unordered_map<SDL_Point, T*, utils::hashers::SDL_Point_Hasher, utils::operators::SDL_Point_Equality_Operator> AbstractEntity<T>::instanceMapping;
+std::unordered_set<T*, typename AbstractEntity<T>::PointerHasher, typename AbstractEntity<T>::PointerEqualityOperator> AbstractEntity<T>::instances;
 
 template <class T>
 tile::AnimatedEntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
@@ -188,5 +209,7 @@ tile::AnimatedEntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
 */
 template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
+template class AbstractEntity<Slime>;
 
-template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Slime>::onLevelChangeAll<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);

@@ -36,9 +36,9 @@
     <property name="target-level" value="level-equilibrium"/>
    </properties>
   </object>
-  <object id="4" name="mob1" type="enemy" x="128" y="192" width="32" height="32"/>
-  <object id="5" name="mob2" type="enemy" x="224" y="160" width="32" height="32"/>
-  <object id="6" name="mob3" type="enemy" x="96" y="288" width="32" height="32"/>
+  <object id="4" name="mob1" type="slime" x="128" y="192" width="32" height="32"/>
+  <object id="5" name="mob2" type="slime" x="224" y="160" width="32" height="32"/>
+  <object id="6" name="mob3" type="slime" x="96" y="288" width="32" height="32"/>
  </objectgroup>
  <layer id="3" name="props-0" width="38" height="20">
   <data encoding="base64" compression="zlib">
