@@ -53,10 +53,6 @@
 template <class T>
 class AbstractEntity {
     public:
-        struct Hasher {
-            std::size_t operator()(const AbstractEntity& object) const;
-        };
-
         struct PointerHasher {
             std::size_t operator()(const T* pointer) const;
         };
@@ -162,6 +158,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         AbstractAnimatedEntity();
 
     private:
+        int currAnimationUpdateCount = 0;
         int currAnimationGID;
 };
 
@@ -202,18 +199,28 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Rect* nextDestRect = nullptr;
 
     protected:
-        AbstractAnimatedDynamicEntity();
+        AbstractAnimatedDynamicEntity() = default;
+
+        /**
+         * Represent the minimum number of frames of inaction, between 2 consecutive moves.
+        */
+        static const int kMoveDelay;
 
         /**
          * Represent the number of pixels the entity should shift per frame, during movement.
         */
-        const SDL_Point kVelocity;
+        static const SDL_Point kVelocity;
+
+        /**
+         * A counter for `kMoveDelay`.
+        */
+        int currMoveDelay;
 
         /**
          * Represent the current direction of the entity.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
-        SDL_Point currentVelocity;
+        SDL_Point currVelocity;
 };
 
 

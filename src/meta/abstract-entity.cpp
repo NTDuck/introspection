@@ -44,7 +44,7 @@ T* AbstractEntity<T>::instantiate(SDL_Point destCoords) {
 }
 
 template <class T>
-AbstractEntity<T>::AbstractEntity() : destRectModifier({0, 0, 1, 1}), angle(0), center(nullptr), flip(SDL_FLIP_NONE) {
+AbstractEntity<T>::AbstractEntity() : destRectModifier(globals::config::kDefaultAbstractEntityDestRectModifier), angle(0), center(nullptr), flip(SDL_FLIP_NONE) {
     srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
     srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
 }

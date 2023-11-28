@@ -5,10 +5,7 @@ a RPG made without a game engine.
 
 
 ## Screenshots
-![](preview.png)
-
-
-> Also check out `preview.mp4`~
+![](preview.gif)
 
 
 ## Features

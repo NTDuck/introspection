@@ -10,7 +10,7 @@
  * @note Constructor initializer list is unusable.
 */
 Player::Player() {
-    destRectModifier = {0, -23, 2, 2};
+    destRectModifier = globals::config::kDefaultPlayerDestRectModifier;
 }
 
 /**
@@ -38,10 +38,10 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     if (nextDestCoords != nullptr) return;
 
     switch (event.key.keysym.sym) {
-        case SDLK_w: --currentVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_s: ++currentVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_a: --currentVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_d: ++currentVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
+        case SDLK_w: --currVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
+        case SDLK_s: ++currVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
+        case SDLK_a: --currVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
+        case SDLK_d: ++currVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
         default: return;
     }
 }
@@ -53,6 +53,10 @@ void Player::onLevelChange(const level::EntityLevelData& player) {
 
 
 Player* Player::instance = nullptr;
+
+
+template <>
+const int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = globals::config::kDefaultPlayerMoveDelay;
 
 template <>
 const std::filesystem::path AbstractEntity<Player>::kTilesetPath = globals::config::kTilesetPathPlayer;

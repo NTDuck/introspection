@@ -8,7 +8,7 @@
 
 
 Slime::Slime() {
-    destRectModifier = {0, -globals::tileDestSize.y, 5, 5};
+    destRectModifier = globals::config::kDefaultSlimeDestRectModifier;
 }
 
 void Slime::calculateMoveAll(const SDL_Point& playerDestCoords) {
@@ -23,14 +23,17 @@ void Slime::calculateMove(const SDL_Point& playerDestCoords) {
     if (nextDestCoords != nullptr) return;
 
     if (utils::generateRandomBinary()) {
-        currentVelocity.x += ((playerDestCoords.x > destCoords.x) << 1) - 1;
+        currVelocity.x += ((playerDestCoords.x > destCoords.x) << 1) - 1;
     } else {
-        currentVelocity.y += ((playerDestCoords.y > destCoords.y) << 1) - 1;
+        currVelocity.y += ((playerDestCoords.y > destCoords.y) << 1) - 1;
     }
 
     AbstractAnimatedDynamicEntity<Slime>::initiateMove();
 }
 
+
+template <>
+const int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;
 
 template <>
 const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = globals::config::kTilesetPathSlime;

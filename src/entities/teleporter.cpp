@@ -9,7 +9,7 @@
 
 
 Teleporter::Teleporter() {
-    destRectModifier.x -= globals::tileDestSize.x;
+    destRectModifier = globals::config::kDefaultTeleporterDestRectModifier;
 }
 
 void Teleporter::onLevelChange(const level::EntityLevelData& teleporterData) {

@@ -1,5 +1,6 @@
 #include <meta.hpp>
 
+#include <algorithm>
 #include <filesystem>
 
 #include <SDL.h>
@@ -9,9 +10,6 @@
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
-
-template <class T>
-AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity() : kVelocity(globals::config::kDefaultAnimatedDynamicEntityVelocity) {}
 
 template <class T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
@@ -40,15 +38,21 @@ template <class T>
 void AbstractAnimatedDynamicEntity<T>::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
-    isNextTileReached = false;
+    if (currMoveDelay == kMoveDelay) {
+        isNextTileReached = false;
 
-    destRect.x += currentVelocity.x * kVelocity.x;
-    destRect.y += currentVelocity.y * kVelocity.y;
+        destRect.x += currVelocity.x * kVelocity.x;
+        destRect.y += currVelocity.y * kVelocity.y;
 
-    // Continue movement until new `Tile` has been reached.
-    if ((nextDestRect -> x - destRect.x) * currentVelocity.x > 0 || (nextDestRect -> y - destRect.y) * currentVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+        // Continue movement if new `Tile` has not been reached
+        if ((nextDestRect->x - destRect.x) * currVelocity.x > 0 || (nextDestRect->y - destRect.y) * currVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
-    onMoveEnd();
+        // When new `Tile` has been reached, reset to IDLE state
+        onMoveStart();
+    }
+
+    // Enable new movement based on `kMoveDelay`
+    if (currMoveDelay) --currMoveDelay; else onMoveEnd();
 }
 
 /**
@@ -57,7 +61,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove() {
-    nextDestCoords = new SDL_Point({destCoords.x + currentVelocity.x, destCoords.y + currentVelocity.y});
+    nextDestCoords = new SDL_Point({destCoords.x + currVelocity.x, destCoords.y + currVelocity.y});
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 
     if (validateMove()) onMoveStart(); else onMoveEnd();
@@ -66,10 +70,22 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove() {
 /**
  * @brief Check whether moving the entity from one `Tile` to the next is valid.
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
+ * @todo Check overlap between entities of different types.
 */
 template <class T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() {
-    if ((currentVelocity.x | currentVelocity.y) == 0 || nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
+    if ((currVelocity.x | currVelocity.y) == 0 || nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
+
+    // Prevent `destCoords` overlap
+    // Warning: expensive operation
+    if (
+        std::find_if(
+            instances.begin(), instances.end(),
+            [&](const auto& instance) {
+                return (nextDestCoords->x == instance->destCoords.x && nextDestCoords->y == instance->destCoords.y);   // Not handled: `(instance->nextDestCoords != nullptr && nextDestCoords->x == instance->nextDestCoords->x && nextDestCoords->y == instance->nextDestCoords->y)`
+            }
+        ) != instances.end()
+    ) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
@@ -94,7 +110,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
-    if (currentVelocity.x) flip = (currentVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
+    if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk);
 }
 
@@ -114,10 +130,16 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd() {
 
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
-    currentVelocity = {0, 0};
+    currVelocity = {0, 0};
+
+    currMoveDelay = kMoveDelay;
 
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
 }
+
+
+template <class T>
+const SDL_Point AbstractAnimatedDynamicEntity<T>::kVelocity = globals::config::kDefaultAnimatedDynamicEntityVelocity;
 
 
 template class AbstractAnimatedDynamicEntity<Player>;

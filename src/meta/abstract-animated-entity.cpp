@@ -29,11 +29,10 @@ void AbstractAnimatedEntity<T>::updateAnimationAll() {
 */
 template <class T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
-    static int animationUpdateCount = 0;
-    ++animationUpdateCount;
+    ++currAnimationUpdateCount;
     
-    if (animationUpdateCount == tilesetData->animationUpdateRate) {
-        animationUpdateCount = 0;
+    if (currAnimationUpdateCount == tilesetData->animationUpdateRate) {
+        currAnimationUpdateCount = 0;
         if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
             currAnimationGID += tilesetData->animationSize.x;
             // Behold, heresy!

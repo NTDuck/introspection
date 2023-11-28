@@ -1,6 +1,8 @@
 #include <game.hpp>
 
+#include <algorithm>
 #include <string>
+#include <iostream>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -107,24 +109,15 @@ void Game::render() {
  * @brief Handle all entities movements & animation updates.
 */
 void Game::handleMovement() {
-    // Check if player has walked into teleporter
-    // Requires optimization
-    if (player->nextDestCoords != nullptr) {
-        Teleporter* result = nullptr;
-
-        for (const auto& instance : Teleporter::instances) {
-            if (instance->destCoords.x == player->nextDestCoords->x && instance->destCoords.y == player->nextDestCoords->y) {
-                result = instance;
-                break;
-            }
-        }
-
-        if (result != nullptr && player->isNextTileReached) {
-            interaction::collision::PlayerCollideTeleporter(*interface, *result, globals::currentLevelData);
-            onLevelChange(); onWindowChange();
-        }
+    // Handle Player - Teleporter collision
+    auto collidedTeleporter = interaction::collision::checkCollision(*player, *interface);
+    if (collidedTeleporter != nullptr) {
+        state = GameState::kIngamePaused;
+        interaction::collision::onCollision(*collidedTeleporter, *interface, globals::currentLevelData);
+        onLevelChange(); onWindowChange();
+        state = GameState::kIngamePlaying;
     }
-    
+
     player->move();
     player->updateAnimation();
 
@@ -139,10 +132,10 @@ void Game::handleMovement() {
  * @brief Called when switching to a new level.
 */
 void Game::onLevelChange() {
-    // Populate `globals::levelData` members
+    // Populate `globals::currentLevelData` members
     interface->onLevelChange();
 
-    // Make changes to dependencies based on populated `globals::levelData` members
+    // Make changes to dependencies based on populated `globals::currentLevelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
     Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
     Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
@@ -231,8 +224,8 @@ void Game::handleMouseEvent(const SDL_Event& event) {
     switch (state) {
         case GameState::kMenu: case GameState::kIngamePlaying:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
-            state = GameState::kIngamePlaying;
             onLevelChange(); onWindowChange();
+            state = GameState::kIngamePlaying;
             break;
 
         default: break;

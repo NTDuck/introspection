@@ -13,7 +13,8 @@ namespace interaction {
      * @brief Handle collision between entities.
     */
     namespace collision {
-        void PlayerCollideTeleporter(IngameInterface& interface, const Teleporter& teleporter, level::LevelData& currentLevelData);
+        Teleporter* checkCollision(const Player& player, IngameInterface& interface);
+        void onCollision(const Teleporter& teleporter, IngameInterface& interface, level::LevelData& currentLevelData);
     }
 }
 

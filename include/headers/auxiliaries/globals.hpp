@@ -312,7 +312,13 @@ namespace globals {
         const std::filesystem::path kTilesetPathSlime = kTilesetPath / "eg-slime-full.tsx";
         const std::filesystem::path kConfigPathLevel = kTiledAssetPath / "levels.json";
         
+        const SDL_Rect kDefaultAbstractEntityDestRectModifier = {0, 0, 1, 1};
+        const SDL_Rect kDefaultPlayerDestRectModifier = {0, -23, 2, 2};
+        const SDL_Rect kDefaultTeleporterDestRectModifier = {-32, 0, 1, 1};
+        const SDL_Rect kDefaultSlimeDestRectModifier = {0, -32, 5, 5};
         const SDL_Point kDefaultAnimatedDynamicEntityVelocity = {1, 1};
+        const int kDefaultPlayerMoveDelay = 0;
+        const int kDefaultSlimeMoveDelay = 128;
     };
 
     void deinitialize();
