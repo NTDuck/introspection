@@ -75,19 +75,19 @@ void Game::initialize() {
  * @todo Manually cap frame rate (VSync disabled)
 */
 void Game::startGameLoop() {
-    // Call this once.
+    // Call this once
     onLevelChange();
     onWindowChange();
 
     while (state != GameState::kExit) {
-        if (state == GameState::kIngamePlaying) handleMovement();
+        handleEntities();
         handleEvents();
         render();
     }
 }
 
 /**
- * @brief Render everything.
+ * @brief Handle everything about rendering.
  * 
  * @note The order should be as follows: `interface` i.e. environments -> interactables -> entities -> player
  * @note Any `render()` methods should be placed here.
@@ -103,29 +103,6 @@ void Game::render() {
     }
 
     SDL_RenderPresent(globals::renderer);
-}
-
-/**
- * @brief Handle all entities movements & animation updates.
-*/
-void Game::handleMovement() {
-    // Handle Player - Teleporter collision
-    auto collidedTeleporter = interaction::collision::checkCollision(*player, *interface);
-    if (collidedTeleporter != nullptr) {
-        state = GameState::kIngamePaused;
-        interaction::collision::onCollision(*collidedTeleporter, *interface, globals::currentLevelData);
-        onLevelChange(); onWindowChange();
-        state = GameState::kIngamePlaying;
-    }
-
-    player->move();
-    player->updateAnimation();
-
-    Teleporter::updateAnimationAll();
-
-    Slime::calculateMoveAll(player->destCoords);
-    Slime::moveAll();
-    Slime::updateAnimationAll();
 }
 
 /**
@@ -155,6 +132,59 @@ void Game::onWindowChange() {
     Slime::onWindowChangeAll();
 
     SDL_UpdateWindowSurface(window);
+}
+
+/**
+ * @brief Handle everything about entities.
+*/
+void Game::handleEntities() {
+    if (state == GameState::kIngamePlaying) {
+        handleEntitiesMovement();
+        handleEntitiesInteraction();
+    }
+}
+
+/**
+ * @brief Handle all entities movements & animation updates.
+*/
+void Game::handleEntitiesMovement() {
+    player->move();
+    player->updateAnimation();
+
+    Teleporter::updateAnimationAll();
+
+    Slime::calculateMoveAll(player->destCoords);
+    Slime::moveAll();
+    Slime::updateAnimationAll();
+}
+
+/**
+ * @brief Handle interactions between entities.
+*/
+void Game::handleEntitiesInteraction() {
+    // Handle Player - Teleporter collision
+    auto collidedTeleporter = utils::checkCollision<Player, Teleporter>(*player, InteractionType::kCoords);
+    if (collidedTeleporter != nullptr) onCollision<Player, Teleporter>(*player, *collidedTeleporter);
+
+    auto collidedSlime = utils::checkCollision<Player, Slime>(*player, InteractionType::kRect);
+    if (collidedSlime != nullptr) onCollision<Player, Slime>(*player, *collidedSlime);
+}
+
+template <class Active, class Passive>
+void Game::onCollision(Active& active, Passive& passive) {}
+
+template <>
+void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
+    state = GameState::kIngamePaused;
+    interface->changeLevel(teleporter.targetLevel);
+    globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
+    onLevelChange(); onWindowChange();
+    state = GameState::kIngamePlaying;
+}
+
+template <>
+void Game::onCollision<Player, Slime>(Player& player, Slime& slime) {
+    state = GameState::kExit;
 }
 
 /**

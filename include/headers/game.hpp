@@ -33,13 +33,18 @@ class Game {
         void initialize();
         void startGameLoop();
 
+        void handleEntities();
+        void handleEvents();
         void render();
-        void handleMovement();
 
         void onLevelChange();
         void onWindowChange();
 
-        void handleEvents();
+        void handleEntitiesMovement();
+        void handleEntitiesInteraction();
+        template <class Active, class Passive>
+        void onCollision(Active& active, Passive& passive);
+
         void handleWindowEvent(const SDL_Event& event);
         void handleMouseEvent(const SDL_Event& event);
         void handleKeyBoardEvent(const SDL_Event& event);
@@ -75,6 +80,13 @@ class Game {
 
         static Game* instance;
 };
+
+
+template <>
+void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporter);
+
+template <>
+void Game::onCollision<Player, Slime>(Player& player, Slime& slime);
 
 
 #endif

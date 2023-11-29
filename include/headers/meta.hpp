@@ -182,9 +182,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual void initiateMove();
         virtual bool validateMove();
         void onMoveStart();
-        void onMoveEnd();
-
-        bool isNextTileReached = false;   // Allow public access to encapsulated internal state.
+        void onMoveEnd(bool invalidated = false);
 
         /**
          * A pointer to the "next" `destCoords`.

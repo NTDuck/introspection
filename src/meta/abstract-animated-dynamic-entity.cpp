@@ -39,8 +39,6 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
     if (currMoveDelay == kMoveDelay) {
-        isNextTileReached = false;
-
         destRect.x += currVelocity.x * kVelocity.x;
         destRect.y += currVelocity.y * kVelocity.y;
 
@@ -64,7 +62,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove() {
     nextDestCoords = new SDL_Point({destCoords.x + currVelocity.x, destCoords.y + currVelocity.y});
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 
-    if (validateMove()) onMoveStart(); else onMoveEnd();
+    if (validateMove()) onMoveStart(); else onMoveEnd(true);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
 
 /**
@@ -106,7 +104,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
 }
 
 /**
- * @note DO NOT assume this function's purpose based on its name.
+ * @note Called when a move is initiated after successful validation.
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
@@ -115,17 +113,15 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
 }
 
 /**
- * @note DO NOT assume this function's purpose based on its name.
+ * @note Called when a validated move is finalized, or when a move is invalidated.
+ * @param invalidated only set to `true` when called after a move is invalidated.
 */
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::onMoveEnd() {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd(bool invalidated) {
     // Terminate movement when reached new `Tile`
-    if (!isNextTileReached) {
-        isNextTileReached = true;
-        if (nextDestCoords != nullptr && nextDestRect != nullptr) {
-            destCoords = *nextDestCoords;
-            destRect = *nextDestRect;
-        }
+    if (nextDestCoords != nullptr && nextDestRect != nullptr && !invalidated) {
+        destCoords = *nextDestCoords;
+        destRect = *nextDestRect;
     }
 
     nextDestCoords = nullptr;
