@@ -180,14 +180,15 @@ void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelD
 /**
  * Adjust `destRect` based on `tilesetData->animationSize` and `destRectModifier`.
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
+ * @see https://stackoverflow.com/questions/3127962/c-float-to-int
 */
 template <class T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
     return {
-        coords.x * globals::tileDestSize.x + globals::windowOffset.x + destRectModifier.x - int(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) * 0.5),
-        coords.y * globals::tileDestSize.y + globals::windowOffset.y + destRectModifier.y - int(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) * 0.5),
-        globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w,
-        globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h,
+        coords.x * globals::tileDestSize.x + globals::windowOffset.x + utils::convertFloatToInt(destRectModifier.x * globals::tileDestSize.x) - int(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),
+        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::convertFloatToInt(destRectModifier.y * globals::tileDestSize.y) - int(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) / 2),
+        utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w),
+        utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h),
     };
 };
 

@@ -11,6 +11,7 @@
 
 
 namespace utils {
+    int convertFloatToInt(float f);
     int generateRandomBinary();
     std::string base64Decode(const std::string& s);
 

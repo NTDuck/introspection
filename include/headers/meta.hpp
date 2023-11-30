@@ -114,10 +114,14 @@ class AbstractEntity {
 
         /**
          * Modify `destRect`.
-         * @param x,y Shift `destRect`'s coordinates by the corresponding value. In pixels.
-         * @param w,h Multiply `destRect`'s width/height by the value corresponded with that dimension. Also accordingly modify `destRect.x` and `destRect.y` so that the value of `center` does not change. Works separately with `destRectModifier.x` and `destRectModifier.y`.
+         * @param x a value of `k` specifies that `destRect.x` would be shifted by `k * globals::tileDestSize.x` pixels.
+         * @param y a value of `k` specifies that `destRect.y` would be shifted by `k * globals::tileDestSize.y` pixels.
+         * @param w a value of `k` specifies that `destRect.w` would be multiplied by `k`.
+         * @param h a value of `k` specifies that `destRect.h` would be multiplied by `k`.
+         * @note The use of `float` might cause significant data loss.
+         * @note Recommended implementation: this should not affect `center`.
         */
-        SDL_Rect destRectModifier;
+        SDL_FRect destRectModifier;
 
         /**
          * Indicate the rotation (clockwise) applied to the entity. In degrees.
@@ -176,6 +180,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
         static void moveAll();
 
+        void onWindowChange() override;
         void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         virtual void move();
@@ -205,20 +210,22 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         static const int kMoveDelay;
 
         /**
-         * Represent the number of pixels the entity should shift per frame, during movement.
+         * For dimension `i`, a number of `kVelocity.i` frames is required for the entity to make a full move i.e. `destRect.i` shifts by `globals::tileDestSize.i` pixels.
+         * @note This constant and the "physical" speed of the entity are in an inverse ratio.
         */
-        static const SDL_Point kVelocity;
-
-        /**
-         * A counter for `kMoveDelay`.
-        */
-        int currMoveDelay;
+        static const SDL_FPoint kVelocity;
 
         /**
          * Represent the current direction of the entity.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
         SDL_Point currVelocity;
+
+    private:
+        int counterMoveDelay;
+        SDL_FPoint counterFractionalVelocity;   // Non-negative
+        SDL_FPoint kFractionalVelocity;
+        SDL_Point kIntegralVelocity;
 };
 
 

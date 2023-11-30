@@ -304,13 +304,13 @@ namespace globals {
                 {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
             }
         };
-        const SDL_Rect kWindowDimension = {
+        constexpr SDL_Rect kWindowDimension = {
             SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
             1280, 720,
         };
-        const int kFrameRate = 120;
-        const SDL_Color kDefaultBackgroundColor = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
-        const level::LevelName kDefaultLevelName = level::LevelName::kLevelEquilibrium;
+        constexpr int kFrameRate = 120;
+        constexpr SDL_Color kDefaultBackgroundColor = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
+        constexpr level::LevelName kDefaultLevelName = level::LevelName::kLevelEquilibrium;
 
         const std::filesystem::path kAssetPath = "assets";
         const std::filesystem::path kTiledAssetPath = kAssetPath / ".tiled";
@@ -320,13 +320,16 @@ namespace globals {
         const std::filesystem::path kTilesetPathSlime = kTilesetPath / "eg-slime-full.tsx";
         const std::filesystem::path kConfigPathLevel = kTiledAssetPath / "levels.json";
         
-        const SDL_Rect kDefaultAbstractEntityDestRectModifier = {0, 0, 1, 1};
-        const SDL_Rect kDefaultPlayerDestRectModifier = {0, -23, 2, 2};
-        const SDL_Rect kDefaultTeleporterDestRectModifier = {-32, 0, 1, 1};
-        const SDL_Rect kDefaultSlimeDestRectModifier = {0, -32, 5, 5};
-        const SDL_Point kDefaultAnimatedDynamicEntityVelocity = {1, 1};
-        const int kDefaultPlayerMoveDelay = 0;
-        const int kDefaultSlimeMoveDelay = 128;
+        constexpr SDL_FRect kDefaultAbstractEntityDestRectModifier = {0, 0, 1, 1};
+        constexpr SDL_FRect kDefaultPlayerDestRectModifier = {0, -0.75, 2, 2};
+        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = {-1, 0, 1, 1};
+        constexpr SDL_FRect kDefaultSlimeDestRectModifier = {0, -1, 5, 5};
+
+        constexpr SDL_FPoint kDefaultPlayerVelocity = {32, 32};
+        constexpr SDL_FPoint kDefaultSlimeVelocity = {128, 128};
+
+        constexpr int kDefaultPlayerMoveDelay = 0;
+        constexpr int kDefaultSlimeMoveDelay = 128;
     };
 
     void deinitialize();

@@ -36,4 +36,7 @@ template <>
 const int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;
 
 template <>
+const SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = globals::config::kDefaultSlimeVelocity;
+
+template <>
 const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = globals::config::kTilesetPathSlime;

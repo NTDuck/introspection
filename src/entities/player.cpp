@@ -59,4 +59,7 @@ template <>
 const int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = globals::config::kDefaultPlayerMoveDelay;
 
 template <>
+const SDL_FPoint AbstractAnimatedDynamicEntity<Player>::kVelocity = globals::config::kDefaultPlayerVelocity;
+
+template <>
 const std::filesystem::path AbstractEntity<Player>::kTilesetPath = globals::config::kTilesetPathPlayer;

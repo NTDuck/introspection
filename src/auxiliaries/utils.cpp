@@ -1,6 +1,7 @@
 #include <auxiliaries/utils.hpp>
 
 #include <algorithm>
+#include <cmath>
 #include <random>
 #include <fstream>
 #include <vector>
@@ -13,6 +14,12 @@
 
 #include <auxiliaries/globals.hpp>
 
+
+/**
+ * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
+ * @note Susceptible to data loss.
+*/
+int utils::convertFloatToInt(float f) { return static_cast<int>(std::lroundf(f)); }
 
 /**
  * @brief Retrieve a binary outcome. Models a Bernoulli distribution.
@@ -195,7 +202,7 @@ void utils::loadLevelData(level::LevelData& currentLevelData, const json& JSONLe
     if (tileDestCountWidth == JSONLevelData.end() || tileDestCountHeight == JSONLevelData.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
 
     globals::tileDestCount = {tileDestCountWidth.value(), tileDestCountHeight.value()};
-    globals::tileDestSize = {globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y};
+    globals::tileDestSize.x = globals::tileDestSize.y = 1 << int(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));   // The closest power of 2
     globals::windowOffset = {
         (globals::windowSize.x - globals::tileDestCount.x * globals::tileDestSize.x) / 2,
         (globals::windowSize.y - globals::tileDestCount.y * globals::tileDestSize.y) / 2,

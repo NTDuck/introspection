@@ -221,11 +221,14 @@ void Game::handleEvents() {
 
 /**
  * @brief Handle a windows event.
+ * @bug Event `SDL_WINDOWEVENT_SIZE_CHANGED` causes temporary undefined behavior for non-stationary entities.
 */
 void Game::handleWindowEvent(const SDL_Event& event) {
     if (event.window.windowID != windowID) return;
     switch (event.window.event) {
-        case SDL_WINDOWEVENT_SIZE_CHANGED: onWindowChange(); break;
+        case SDL_WINDOWEVENT_SIZE_CHANGED:
+            onWindowChange();
+            break;
         default: break;
     }
 }

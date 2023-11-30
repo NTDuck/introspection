@@ -26,6 +26,22 @@ void AbstractAnimatedDynamicEntity<T>::moveAll() {
 }
 
 template <class T>
+void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
+    AbstractEntity<T>::onWindowChange();
+
+    // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
+    kIntegralVelocity = {
+        utils::convertFloatToInt(globals::tileDestSize.x / kVelocity.x),
+        utils::convertFloatToInt(globals::tileDestSize.y / kVelocity.y),
+    };
+
+    kFractionalVelocity = {
+        globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
+        globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
+    };
+}
+
+template <class T>
 void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
     AbstractEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
@@ -38,9 +54,23 @@ template <class T>
 void AbstractAnimatedDynamicEntity<T>::move() {
     if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
 
-    if (currMoveDelay == kMoveDelay) {
-        destRect.x += currVelocity.x * kVelocity.x;
-        destRect.y += currVelocity.y * kVelocity.y;
+    if (counterMoveDelay == kMoveDelay) {
+        destRect.x += currVelocity.x * kIntegralVelocity.x;
+        destRect.y += currVelocity.y * kIntegralVelocity.y;
+
+        // Store the fractional part
+        counterFractionalVelocity.x += kFractionalVelocity.x;
+        counterFractionalVelocity.y += kFractionalVelocity.y;
+
+        // Prevent movement loss by handling accumulative movement 
+        if (counterFractionalVelocity.x >= 1) {
+            destRect.x += currVelocity.x;
+            --counterFractionalVelocity.x;
+        }
+        if (counterFractionalVelocity.y >= 1) {
+            destRect.y += currVelocity.y;
+            --counterFractionalVelocity.y;
+        }
 
         // Continue movement if new `Tile` has not been reached
         if ((nextDestRect->x - destRect.x) * currVelocity.x > 0 || (nextDestRect->y - destRect.y) * currVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
@@ -50,7 +80,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     }
 
     // Enable new movement based on `kMoveDelay`
-    if (currMoveDelay) --currMoveDelay; else onMoveEnd();
+    if (counterMoveDelay) --counterMoveDelay; else onMoveEnd();
 }
 
 /**
@@ -128,14 +158,11 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(bool invalidated) {
     nextDestRect = nullptr;
     currVelocity = {0, 0};
 
-    currMoveDelay = kMoveDelay;
+    counterMoveDelay = kMoveDelay;
+    counterFractionalVelocity = {0, 0};
 
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
 }
-
-
-template <class T>
-const SDL_Point AbstractAnimatedDynamicEntity<T>::kVelocity = globals::config::kDefaultAnimatedDynamicEntityVelocity;
 
 
 template class AbstractAnimatedDynamicEntity<Player>;
