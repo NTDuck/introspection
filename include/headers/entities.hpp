@@ -54,15 +54,16 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
 };
 
 
+/**
+ * @brief A multiton class representing controlled instances of slime entities.
+*/
 class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
     friend AbstractAnimatedDynamicEntity<Slime>;
     public:
         Slime();
         ~Slime() = default;
 
-        static void calculateMoveAll(const SDL_Point& playerDestCoords);
         void calculateMove(const SDL_Point& playerDestCoords);
-        // bool validateMove() override;
 };
 
 

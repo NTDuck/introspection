@@ -118,30 +118,13 @@ void AbstractEntity<T>::setRGBA(SDL_Color& color) {
     setAlpha(color.a);
 }
 
-
-/**
- * @brief Call `render()` method on every instance of derived class `T`.
-*/
-template <class T>
-void AbstractEntity<T>::renderAll() {
-    for (auto& instance : instances) instance->render();
-}
-
-/**
- * @brief Call `onWindowChange()` method on every instance of derived class `T`.
-*/
-template <class T>
-void AbstractEntity<T>::onWindowChangeAll() {
-    for (auto& instance : instances) instance->onWindowChange();
-}
-
 /**
  * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
  * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
 */
 template <class T>
 template <typename LevelData>
-void AbstractEntity<T>::onLevelChangeAll(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection) {
+void AbstractEntity<T>::callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection) {
     for (auto& instance : instances) delete instance;
     instances.clear();
 
@@ -190,7 +173,13 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
         utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w),
         utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h),
     };
-};
+}
+
+// template <class T>
+// template <typename ClassMethod>
+// void AbstractEntity<T>::callOnEach(ClassMethod&& method) {
+//     for (auto& instance : instances) (instance->*method)();
+// }
 
 
 /**
@@ -212,5 +201,5 @@ template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
 template class AbstractEntity<Slime>;
 
-template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
-template void AbstractEntity<Slime>::onLevelChangeAll<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Teleporter>::callOnEach_onLevelChange<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Slime>::callOnEach_onLevelChange<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);

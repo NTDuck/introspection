@@ -11,10 +11,6 @@ Slime::Slime() {
     destRectModifier = globals::config::kDefaultSlimeDestRectModifier;
 }
 
-void Slime::calculateMoveAll(const SDL_Point& playerDestCoords) {
-    for (auto& instance : instances) instance->calculateMove(playerDestCoords);
-}
-
 /**
  * @brief Calculate the movement of an instance based on the position of the player entity.
  * @note Use `<cstdlib>` instead of `<random>` for slight performance gains. (sacrifice crypt)
@@ -30,7 +26,6 @@ void Slime::calculateMove(const SDL_Point& playerDestCoords) {
 
     AbstractAnimatedDynamicEntity<Slime>::initiateMove();
 }
-
 
 template <>
 const int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;

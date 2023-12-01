@@ -4,7 +4,10 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <type_traits>
 #include <unordered_set>
+#include <utility> 
+#include <iostream>
 
 #include <SDL.h>
 
@@ -78,9 +81,16 @@ class AbstractEntity {
         static void setAlpha(Uint8 alpha);
         static void setRGBA(SDL_Color& color);
 
-        static void renderAll();
-        static void onWindowChangeAll();
-        template <typename LevelData> static void onLevelChangeAll(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection);
+        /**
+         * @brief Variadically call `method` on each instance of derived class `T` with the same parameters `Args...`.
+         * @note `inline` could solve GCC's `undefined reference`. Sometimes.
+        */
+        template <typename ClassMethod, typename... Args>
+        inline static void callOnEach(ClassMethod&& method, Args&&... args) {
+            for (auto& instance : instances) (instance->*method)(std::forward<Args>(args)...);
+        }
+
+        template <typename LevelData> static void callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection);
 
         virtual void render() const;
         virtual void onWindowChange();
@@ -151,8 +161,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         virtual ~AbstractAnimatedEntity() = default;
 
-        static void updateAnimationAll();
-
         void updateAnimation();
         void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType);
 
@@ -178,16 +186,14 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
         virtual ~AbstractAnimatedDynamicEntity();
 
-        static void moveAll();
-
         void onWindowChange() override;
         void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         virtual void move();
         virtual void initiateMove();
         virtual bool validateMove();
-        void onMoveStart();
-        void onMoveEnd(bool invalidated = false);
+        virtual void onMoveStart();
+        virtual void onMoveEnd(bool invalidated = false);
 
         /**
          * A pointer to the "next" `destCoords`.
@@ -223,7 +229,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
     private:
         int counterMoveDelay;
-        SDL_FPoint counterFractionalVelocity;   // Non-negative
+        SDL_FPoint counterFractionalVelocity;
         SDL_FPoint kFractionalVelocity;
         SDL_Point kIntegralVelocity;
 };

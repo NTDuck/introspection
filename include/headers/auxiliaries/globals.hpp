@@ -329,7 +329,7 @@ namespace globals {
         constexpr SDL_FPoint kDefaultSlimeVelocity = {128, 128};
 
         constexpr int kDefaultPlayerMoveDelay = 0;
-        constexpr int kDefaultSlimeMoveDelay = 128;
+        constexpr int kDefaultSlimeMoveDelay = 0;
     };
 
     void deinitialize();

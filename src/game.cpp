@@ -97,8 +97,8 @@ void Game::render() {
 
     if (state == GameState::kIngamePlaying) {
         interface->render();
-        Teleporter::renderAll();
-        Slime::renderAll();
+        Teleporter::callOnEach(&Teleporter::render);
+        Slime::callOnEach(&Slime::render);
         player->render();
     }
 
@@ -114,8 +114,8 @@ void Game::onLevelChange() {
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
-    Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
+    Teleporter::callOnEach_onLevelChange<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
+    Slime::callOnEach_onLevelChange<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
 }
 
 /**
@@ -128,8 +128,8 @@ void Game::onWindowChange() {
     // Dependencies that rely on certain dimension-related global variables
     interface->onWindowChange();
     player->onWindowChange();
-    Teleporter::onWindowChangeAll();
-    Slime::onWindowChangeAll();
+    Teleporter::callOnEach(&Teleporter::onWindowChange);
+    Slime::callOnEach(&Slime::onWindowChange);
 
     SDL_UpdateWindowSurface(window);
 }
@@ -151,11 +151,11 @@ void Game::handleEntitiesMovement() {
     player->move();
     player->updateAnimation();
 
-    Teleporter::updateAnimationAll();
+    Teleporter::callOnEach(&Teleporter::updateAnimation);
 
-    Slime::calculateMoveAll(player->destCoords);
-    Slime::moveAll();
-    Slime::updateAnimationAll();
+    Slime::callOnEach(&Slime::calculateMove, player->destCoords);
+    Slime::callOnEach(&Slime::move);
+    Slime::callOnEach(&Slime::updateAnimation);
 }
 
 /**

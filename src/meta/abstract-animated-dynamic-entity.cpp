@@ -17,14 +17,6 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     delete nextDestRect;
 }
 
-/**
- * @brief Call `move()` method on every instance of derived class `T`.
-*/
-template <class T>
-void AbstractAnimatedDynamicEntity<T>::moveAll() {
-    for (auto& instance : instances) instance->move();
-}
-
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
     AbstractEntity<T>::onWindowChange();
