@@ -14,12 +14,12 @@
 
 template <class T>
 bool AbstractEntity<T>::operator==(const AbstractEntity<T>& other) const {
-    return destCoords.x == other.destCoords.x && destCoords.y == other.destCoords.y;
+    return destCoords == other.destCoords;
 }
 
 template <class T>
 bool AbstractEntity<T>::operator<(const AbstractEntity<T>& other) const {
-    return (destCoords.y < other.destCoords.y) || (destCoords.y == other.destCoords.y && destCoords.x < other.destCoords.x);
+    return destCoords < other.destCoords;
 }
 
 template <class T>
@@ -168,19 +168,13 @@ void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelD
 template <class T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
     return {
-        coords.x * globals::tileDestSize.x + globals::windowOffset.x + utils::convertFloatToInt(destRectModifier.x * globals::tileDestSize.x) - int(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),
-        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::convertFloatToInt(destRectModifier.y * globals::tileDestSize.y) - int(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) / 2),
+        coords.x * globals::tileDestSize.x + globals::windowOffset.x
+        + utils::convertFloatToInt(destRectModifier.x * globals::tileDestSize.x) - (tilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x - utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::convertFloatToInt(destRectModifier.y * globals::tileDestSize.y) - (tilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
         utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w),
         utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h),
     };
 }
-
-// template <class T>
-// template <typename ClassMethod>
-// void AbstractEntity<T>::callOnEach(ClassMethod&& method) {
-//     for (auto& instance : instances) (instance->*method)();
-// }
-
 
 /**
  * Store pointers of instances of derived class `T`. Based on `destCoords`. Useful for determining interactions between different instances of different derived classes e.g. entity collision.

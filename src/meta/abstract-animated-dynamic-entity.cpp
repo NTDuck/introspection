@@ -11,6 +11,43 @@
 #include <auxiliaries/globals.hpp>
 
 
+/**
+ * @brief Flow 1: move handling
+ * ┌───────────────┐
+ * │    Derived    │
+ * └───┬───────────┘
+ *     │
+ *     │   ┌────────────────────┐
+ *     └───┤ calculateMove(...) ├──────┐
+ *         └───┬────────────────┘      │
+ *             │                       │
+ *             └───► currVelocity      │
+ *                                     │
+ * ┌───────────────────────────────┐   │
+ * │ AbstractAnimatedDynamicEntity │   │
+ * └───┬───────────────────────────┘   │
+ *     │                               │
+ *     │   ┌────────────────┐          │
+ *     ├───┤ initiateMove() ◄──────────┘
+ *     │   └───┬───┬────────┘
+ *     │       │   │
+ *     │       │   └───► nextDestCoords, nextDestRect
+ *     │       │
+ *     │   ┌───▼────────────┐
+ *     ├───┤ validateMove() │
+ *     │   └───┬────────────┘
+ *     │       │
+ *     │       ├─────────────────┐
+ *     │       │                 │
+ *     │   ┌───▼───────────┐ ┌───▼─────────────────────────┐
+ *     └───┤ onMoveStart() ├─┤ onMoveEnd(invalidated=true) │
+ *         └───┬───────────┘ └───┬─────────────────────────┘
+ *             │                 │
+ *             └───► reset       └───► reset
+ *                   to WALK           to IDLE
+*/
+
+
 template <class T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     delete nextDestCoords;
@@ -44,9 +81,9 @@ void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelDat
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::move() {
-    if (nextDestCoords == nullptr) return;   // DO NOT remove this - without this the program magically terminates itself.
+    if (nextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
 
-    if (counterMoveDelay == kMoveDelay) {
+    if (counterMoveDelay == kMoveDelay) {   // Only executed if 
         destRect.x += currVelocity.x * kIntegralVelocity.x;
         destRect.y += currVelocity.y * kIntegralVelocity.y;
 
@@ -66,13 +103,22 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 
         // Continue movement if new `Tile` has not been reached
         if ((nextDestRect->x - destRect.x) * currVelocity.x > 0 || (nextDestRect->y - destRect.y) * currVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
-
-        // When new `Tile` has been reached, reset to IDLE state
-        onMoveStart();
     }
 
     // Enable new movement based on `kMoveDelay`
-    if (counterMoveDelay) --counterMoveDelay; else onMoveEnd();
+    if (counterMoveDelay) {
+        --counterMoveDelay;
+        return;
+    }
+
+    // If new move has not been "initiated", terminate movement i.e. switch back to IDLE
+    if ((nextVelocity.x | nextVelocity.y) == 0) {
+        onMoveEnd();
+        return;
+    }
+
+    onMoveEnd(MoveStatusFlag::kContinued);
+    initiateMove(MoveStatusFlag::kContinued);
 }
 
 /**
@@ -80,11 +126,12 @@ void AbstractAnimatedDynamicEntity<T>::move() {
  * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
 */
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::initiateMove() {
-    nextDestCoords = new SDL_Point({destCoords.x + currVelocity.x, destCoords.y + currVelocity.y});
+void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
+    if (nextDestCoords != nullptr) return;   // A new move should not be initiated if another is present
+    nextDestCoords = new SDL_Point(destCoords + nextVelocity);
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 
-    if (validateMove()) onMoveStart(); else onMoveEnd(true);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
+    if (validateMove()) onMoveStart(flag); else onMoveEnd(MoveStatusFlag::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
 
 /**
@@ -94,7 +141,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove() {
 */
 template <class T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() {
-    if ((currVelocity.x | currVelocity.y) == 0 || nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
+    if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Prevent `destCoords` overlap
     // Warning: expensive operation
@@ -102,7 +149,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
         std::find_if(
             instances.begin(), instances.end(),
             [&](const auto& instance) {
-                return (nextDestCoords->x == instance->destCoords.x && nextDestCoords->y == instance->destCoords.y);   // Not handled: `(instance->nextDestCoords != nullptr && nextDestCoords->x == instance->nextDestCoords->x && nextDestCoords->y == instance->nextDestCoords->y)`
+                return (*nextDestCoords == instance->destCoords);
             }
         ) != instances.end()
     ) return false;
@@ -129,31 +176,34 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() {
  * @note Called when a move is initiated after successful validation.
 */
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::onMoveStart() {
+void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
+    currVelocity = nextVelocity;
+
     if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
-    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk);
+
+    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk, flag);
 }
 
 /**
  * @note Called when a validated move is finalized, or when a move is invalidated.
- * @param invalidated only set to `true` when called after a move is invalidated.
 */
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::onMoveEnd(bool invalidated) {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     // Terminate movement when reached new `Tile`
-    if (nextDestCoords != nullptr && nextDestRect != nullptr && !invalidated) {
+    if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != MoveStatusFlag::kInvalidated) {
         destCoords = *nextDestCoords;
         destRect = *nextDestRect;
     }
 
     nextDestCoords = nullptr;
     nextDestRect = nullptr;
-    currVelocity = {0, 0};
 
+    currVelocity = {0, 0};
     counterMoveDelay = kMoveDelay;
     counterFractionalVelocity = {0, 0};
 
-    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
+    if (flag == MoveStatusFlag::kContinued) return;
+    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle, flag);
 }
 
 

@@ -42,8 +42,9 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <class T>
-void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType) {
+void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag) {
     currAnimationType = animationType;
+    if (flag == MoveStatusFlag::kContinued) return;
     currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
 }
 

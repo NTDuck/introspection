@@ -9,6 +9,7 @@
 
 Slime::Slime() {
     destRectModifier = globals::config::kDefaultSlimeDestRectModifier;
+    destCoordsDetectRange = globals::config::kDefaultSlimeDestCoordsDetectRange;
 }
 
 /**
@@ -16,14 +17,14 @@ Slime::Slime() {
  * @note Use `<cstdlib>` instead of `<random>` for slight performance gains. (sacrifice crypt)
 */
 void Slime::calculateMove(const SDL_Point& playerDestCoords) {
-    if (nextDestCoords != nullptr) return;
+    auto distance = utils::calculateDistance(destCoords, playerDestCoords);
 
-    if (utils::generateRandomBinary()) {
-        currVelocity.x += ((playerDestCoords.x > destCoords.x) << 1) - 1;
-    } else {
-        currVelocity.y += ((playerDestCoords.y > destCoords.y) << 1) - 1;
+    if (destCoordsDetectRange.x < distance && destCoordsDetectRange.y < distance) {
+        nextVelocity = {0, 0};
+        return;
     }
 
+    nextVelocity = (utils::generateRandomBinary() ? SDL_Point{(playerDestCoords.x > destCoords.x) * 2 - 1, 0} : SDL_Point{0, (playerDestCoords.y > destCoords.y) * 2 - 1});
     AbstractAnimatedDynamicEntity<Slime>::initiateMove();
 }
 

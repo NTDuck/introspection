@@ -59,6 +59,13 @@ struct GameFlag {
     std::unordered_map<std::string, std::string> hints;
 };
 
+/**
+ * @brief Provide flexible handling base on a move's status.
+*/
+enum class MoveStatusFlag {
+    kDefault, kInvalidated, kContinued,
+};
+
 
 /**
  * @brief Group components that are associated with tiles.
@@ -322,14 +329,16 @@ namespace globals {
         
         constexpr SDL_FRect kDefaultAbstractEntityDestRectModifier = {0, 0, 1, 1};
         constexpr SDL_FRect kDefaultPlayerDestRectModifier = {0, -0.75, 2, 2};
-        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = {-1, 0, 1, 1};
+        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = {0, 0, 1, 1};
         constexpr SDL_FRect kDefaultSlimeDestRectModifier = {0, -1, 5, 5};
 
         constexpr SDL_FPoint kDefaultPlayerVelocity = {32, 32};
         constexpr SDL_FPoint kDefaultSlimeVelocity = {128, 128};
 
         constexpr int kDefaultPlayerMoveDelay = 0;
-        constexpr int kDefaultSlimeMoveDelay = 0;
+        constexpr int kDefaultSlimeMoveDelay = 32;
+
+        constexpr SDL_Point kDefaultSlimeDestCoordsDetectRange = {16, 16};
     };
 
     void deinitialize();

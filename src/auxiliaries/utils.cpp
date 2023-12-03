@@ -15,6 +15,23 @@
 #include <auxiliaries/globals.hpp>
 
 
+bool operator==(const SDL_Point& first, const SDL_Point& second) {
+    return first.x == second.x && first.y == second.y;
+}
+
+bool operator<(const SDL_Point& first, const SDL_Point& second) {
+    return (first.y < second.y) || (first.y == second.y && first.x < second.x);
+}
+
+SDL_Point operator+(const SDL_Point& first, const SDL_Point& second) {
+    return {first.x + second.x, first.y + second.y};
+}
+
+SDL_Point operator-(const SDL_Point& first, const SDL_Point& second) {
+    return {first.x - second.x, first.y - second.y};
+}
+
+
 /**
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
  * @note Susceptible to data loss.
@@ -35,6 +52,15 @@ int utils::generateRandomBinary() {
     
     return dist(mt);
 }
+
+/**
+ * @brief Calculate the distance between two `SDL_Point`.
+*/
+double utils::calculateDistance(const SDL_Point& first, const SDL_Point& second) {
+    auto sub = first - second;
+    return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
+}
+
 
 /**
  * @brief Decrypt a base64-encrypted string.

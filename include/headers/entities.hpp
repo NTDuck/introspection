@@ -64,6 +64,12 @@ class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
         ~Slime() = default;
 
         void calculateMove(const SDL_Point& playerDestCoords);
+
+    private:
+        /**
+         * If the player entity is "within" the specified range, the slime entity would move towards the player. The slime would remain IDLE otherwise.
+        */
+        SDL_Point destCoordsDetectRange;
 };
 
 

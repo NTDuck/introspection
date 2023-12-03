@@ -18,10 +18,13 @@ a RPG made without a game engine.
 - Move with `W` `A` `S` `D`
 
 #### Enemies:
-(_pending_)
+- Slime. Approach with caution.
 
 #### Map:
-- Solitary Confinement (yeah)
+- Equilibrium
+- Valley of Despair
+
+(bad names btw)
 
 
 ## Installation

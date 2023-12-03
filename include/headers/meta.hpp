@@ -162,7 +162,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual ~AbstractAnimatedEntity() = default;
 
         void updateAnimation();
-        void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType);
+        void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
         tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
 
@@ -190,10 +190,10 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         virtual void move();
-        virtual void initiateMove();
+        virtual void initiateMove(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual bool validateMove();
-        virtual void onMoveStart();
-        virtual void onMoveEnd(bool invalidated = false);
+        virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
+        virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
         /**
          * A pointer to the "next" `destCoords`.
@@ -222,12 +222,17 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         static const SDL_FPoint kVelocity;
 
         /**
+         * Represent the next direction of the entity. Might change every frame.
+         * @note Data members should only receive values of `-1`, `1`, and `0`.
+        */
+        SDL_Point nextVelocity;
+
+    private:
+        /**
          * Represent the current direction of the entity.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
         SDL_Point currVelocity;
-
-    private:
         int counterMoveDelay;
         SDL_FPoint counterFractionalVelocity;
         SDL_FPoint kFractionalVelocity;

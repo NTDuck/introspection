@@ -34,15 +34,23 @@ void Player::deinitialize() {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(const SDL_Event& event) {
-    // Only move if the player is not already moving
-    if (nextDestCoords != nullptr) return;
+    auto handleKeyboardMovementInput = [&]() {
+        if (event.type == SDL_KEYUP) {
+            nextVelocity = {0, 0};
+            return;
+        }
+        switch (event.key.keysym.sym) {
+            case SDLK_w: nextVelocity = {0, -1}; break;
+            case SDLK_s: nextVelocity = {0, 1}; break;
+            case SDLK_a: nextVelocity = {-1, 0}; break;
+            case SDLK_d: nextVelocity = {1, 0}; break;
+        }
+        AbstractAnimatedDynamicEntity<Player>::initiateMove();
+    };
 
     switch (event.key.keysym.sym) {
-        case SDLK_w: --currVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_s: ++currVelocity.y; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_a: --currVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        case SDLK_d: ++currVelocity.x; AbstractAnimatedDynamicEntity<Player>::initiateMove(); break;
-        default: return;
+        case SDLK_w: case SDLK_s: case SDLK_a: case SDLK_d:
+            handleKeyboardMovementInput(); break;
     }
 }
 

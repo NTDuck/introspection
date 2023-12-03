@@ -10,9 +10,15 @@
 #include <auxiliaries/globals.hpp>
 
 
+bool operator==(const SDL_Point& first, const SDL_Point& second);
+bool operator<(const SDL_Point& first, const SDL_Point& second);
+SDL_Point operator+(const SDL_Point& first, const SDL_Point& second);
+SDL_Point operator-(const SDL_Point& first, const SDL_Point& second);
+
 namespace utils {
     int convertFloatToInt(float f);
     int generateRandomBinary();
+    double calculateDistance(const SDL_Point& first, const SDL_Point& second);
     std::string base64Decode(const std::string& s);
 
     template <typename T>
