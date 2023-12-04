@@ -5,6 +5,8 @@
 #include <unordered_map>
 
 #include <entities.hpp>
+#include <auxiliaries/utils.hpp>
+#include <auxiliaries/globals.hpp>
 
 
 template <class Active, class Passive>
@@ -43,6 +45,23 @@ Passive* utils::checkCollision(const Active& active, InteractionType interaction
     it = Passive::instances.end();   // Without this the program magically terminates
     return target;
 }
+
+/**
+ * @brief Check whether the `active` entity is able to initiate an attack onto the `passive` entity.
+*/
+template <class Active, class Passive>
+bool utils::checkAttack(const Active& active, const Passive& passive) {
+    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return false;
+}
+
+/**
+ * @brief Check whether the `active` entity is able to be damaged by the `passive` entity.
+*/
+template <class Active, class Passive>
+bool utils::checkDamaged(const Active& active, const Passive& passive) {
+    return false;
+}
+
 
 template Teleporter* utils::checkCollision<Player, Teleporter>(const Player& player, InteractionType interactionType);
 

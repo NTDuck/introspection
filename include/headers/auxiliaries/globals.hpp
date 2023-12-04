@@ -168,6 +168,7 @@ namespace tile {
             kJump,
             kRun,
             kWalk,
+            kDamaged,
         };
 
         /**

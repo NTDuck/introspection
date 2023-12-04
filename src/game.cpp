@@ -141,6 +141,7 @@ void Game::handleEntities() {
     if (state == GameState::kIngamePlaying) {
         handleEntitiesMovement();
         handleEntitiesInteraction();
+        if (player->currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack && player->isAnimationAtFinalSprite) std::cout << "last of attack!" << std::endl;
     }
 }
 
@@ -184,7 +185,8 @@ void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporte
 
 template <>
 void Game::onCollision<Player, Slime>(Player& player, Slime& slime) {
-    state = GameState::kExit;
+    // state = GameState::kExit;
+    player.onDeath();
 }
 
 /**
@@ -240,10 +242,10 @@ void Game::handleWindowEvent(const SDL_Event& event) {
 void Game::handleKeyBoardEvent(const SDL_Event& event) {
     switch (state) {
         case GameState::kIngamePlaying:
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                state = GameState::kExit;
-                break;
-            }
+            // if (event.key.keysym.sym == SDLK_ESCAPE) {
+            //     state = GameState::kExit;
+            //     break;
+            // }
             player->handleKeyboardEvent(event);
 
         default: break;

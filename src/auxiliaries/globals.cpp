@@ -25,6 +25,7 @@ const std::unordered_map<std::string, tile::AnimatedEntitiesTilesetData::Animati
     {"animation-jump", AnimationType::kJump},
     {"animation-run", AnimationType::kRun},
     {"animation-walk", AnimationType::kWalk},
+    {"animation-damaged", AnimationType::kDamaged},
 };
 
 

@@ -3,6 +3,7 @@
  <properties>
   <property name="animation-attack" type="class" propertytype="animation">
    <properties>
+    <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="64"/>
     <property name="stopGID" type="int" value="71"/>
     <property name="type" value="attack"/>
@@ -12,6 +13,13 @@
    <properties>
     <property name="startGID" type="int" value="8"/>
     <property name="stopGID" type="int" value="9"/>
+   </properties>
+  </property>
+  <property name="animation-damaged" type="class" propertytype="animation">
+   <properties>
+    <property name="isPermanent" type="bool" value="true"/>
+    <property name="startGID" type="int" value="32"/>
+    <property name="stopGID" type="int" value="37"/>
    </properties>
   </property>
   <property name="animation-death" type="class" propertytype="animation">
@@ -45,6 +53,7 @@
   </property>
   <property name="animation-jump" type="class" propertytype="animation">
    <properties>
+    <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="40"/>
     <property name="stopGID" type="int" value="47"/>
    </properties>

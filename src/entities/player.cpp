@@ -51,6 +51,13 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     switch (event.key.keysym.sym) {
         case SDLK_w: case SDLK_s: case SDLK_a: case SDLK_d:
             handleKeyboardMovementInput(); break;
+        case SDLK_SPACE:
+            initiateAttack(); break;
+        // Temporary simulation
+        case SDLK_j:
+            AbstractAnimatedDynamicEntity<Player>::onDamaged(); break;
+        case SDLK_k:
+            resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDeath); break;
     }
 }
 

@@ -148,6 +148,9 @@ class AbstractEntity {
          * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
         */
         SDL_RendererFlip flip;
+
+        SDL_Point kAttackInititateRange = {3, 3};
+        SDL_Point kAttackRegisterRange = {3, 3};
 };
 
 
@@ -164,7 +167,12 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         void updateAnimation();
         void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
+        virtual void initiateAttack();
+        virtual void onDamaged();
+        virtual void onDeath();
+
         tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
+        bool isAnimationAtFinalSprite;
 
     protected:
         AbstractAnimatedEntity();
@@ -182,7 +190,7 @@ template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
         using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
-        using AbstractAnimatedEntity<T>::currAnimationType;
+        using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite;
 
         virtual ~AbstractAnimatedDynamicEntity();
 

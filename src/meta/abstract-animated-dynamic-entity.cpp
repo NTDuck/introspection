@@ -127,7 +127,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
-    if (nextDestCoords != nullptr) return;   // A new move should not be initiated if another is present
+    if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
     nextDestCoords = new SDL_Point(destCoords + nextVelocity);
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 

@@ -169,7 +169,9 @@ template <class T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
     return {
         coords.x * globals::tileDestSize.x + globals::windowOffset.x
-        + utils::convertFloatToInt(destRectModifier.x * globals::tileDestSize.x) - (tilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x - utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        + utils::convertFloatToInt(destRectModifier.x * globals::tileDestSize.x)
+        - (tilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x
+        - utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
         coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::convertFloatToInt(destRectModifier.y * globals::tileDestSize.y) - (tilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
         utils::convertFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w),
         utils::convertFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h),
