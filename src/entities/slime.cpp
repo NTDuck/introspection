@@ -17,6 +17,7 @@ Slime::Slime() {
  * @note Use `<cstdlib>` instead of `<random>` for slight performance gains. (sacrifice crypt)
 */
 void Slime::calculateMove(const SDL_Point& playerDestCoords) {
+    AbstractAnimatedDynamicEntity<Slime>::initiateMove();
     auto distance = utils::calculateDistance(destCoords, playerDestCoords);
 
     if (destCoordsDetectRange.x < distance && destCoordsDetectRange.y < distance) {
@@ -25,7 +26,6 @@ void Slime::calculateMove(const SDL_Point& playerDestCoords) {
     }
 
     nextVelocity = (utils::generateRandomBinary() ? SDL_Point{(playerDestCoords.x > destCoords.x) * 2 - 1, 0} : SDL_Point{0, (playerDestCoords.y > destCoords.y) * 2 - 1});
-    AbstractAnimatedDynamicEntity<Slime>::initiateMove();
 }
 
 template <>

@@ -44,6 +44,10 @@ class Game {
         void handleEntitiesInteraction();
         template <class Active, class Passive>
         void onCollision(Active& active, Passive& passive);
+        template <class Active, class Passive>
+        void onAttackInitiated(Active& active, Passive& passive);
+        template <class Active, class Passive>
+        void onAttackRegistered(Active& active, Passive& passive);
 
         void handleWindowEvent(const SDL_Event& event);
         void handleMouseEvent(const SDL_Event& event);

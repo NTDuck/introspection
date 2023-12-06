@@ -51,7 +51,15 @@ Passive* utils::checkCollision(const Active& active, InteractionType interaction
 */
 template <class Active, class Passive>
 bool utils::checkAttack(const Active& active, const Passive& passive) {
-    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return false;
+    if (
+        active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack
+        || passive.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged
+    ) return false;
+
+    int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
+    if (distance > active.kAttackInitiateRange.x || distance > active.kAttackInitiateRange.y) return false;
+
+    return true;
 }
 
 /**
@@ -59,10 +67,24 @@ bool utils::checkAttack(const Active& active, const Passive& passive) {
 */
 template <class Active, class Passive>
 bool utils::checkDamaged(const Active& active, const Passive& passive) {
-    return false;
+    if (
+        active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged
+        || passive.currAnimationType != tile::AnimatedEntitiesTilesetData::AnimationType::kAttack
+        || !passive.isAnimationAtFinalSprite
+    ) return false;
+
+    int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
+    if (distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y) return false;
+
+    return true;
 }
 
 
 template Teleporter* utils::checkCollision<Player, Teleporter>(const Player& player, InteractionType interactionType);
 
 template Slime* utils::checkCollision<Player, Slime>(const Player& player, InteractionType interactionType);
+
+
+template bool utils::checkAttack<Slime, Player>(const Slime& slime, const Player& player);
+template bool utils::checkDamaged<Player, Slime>(const Player& player, const Slime& slime);
+template bool utils::checkDamaged<Slime, Player>(const Slime& slime, const Player& player);

@@ -40,6 +40,12 @@ bool level::EntityLevelData::Equality_Operator::operator()(const EntityLevelData
 
 bool level::EntityLevelData::Less_Than_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x); }
 
+tile::NextAnimationData::NextAnimationData(tile::AnimatedEntitiesTilesetData::AnimationType animationType) : animationType(animationType) {}
+
+void tile::NextAnimationData::update(tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType) {
+    if (animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged && pendingAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return;
+    animationType = pendingAnimationType;
+}
 
 /**
  * @brief Deallocate resources.

@@ -1,7 +1,7 @@
 #include <meta.hpp>
 
 #include <filesystem>
-#include <iostream>
+#include <type_traits>
 
 #include <SDL.h>
 #include <pugixml/pugixml.hpp>
@@ -27,19 +27,23 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
     if (currAnimationUpdateCount == tilesetData->animationUpdateRate) {
         currAnimationUpdateCount = 0;
         if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
-            if (isAnimationAtFinalSprite) isAnimationAtFinalSprite = false;
             currAnimationGID += tilesetData->animationSize.x;
             // Behold, heresy!
             if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);
         } else {
-            if (!isAnimationAtFinalSprite) isAnimationAtFinalSprite = true;
+            // Reset
+            delete nextAnimationData;
+            nextAnimationData = nullptr;
+
             if (tilesetData->animationMapping[currAnimationType].isPermanent) {
                 if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // The real permanent
                 resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);   // Might implement a temporary storage for most recent state to switch back to
-            }    
+            }
             currAnimationGID = tilesetData->animationMapping[currAnimationType].startGID;
         };
     }
+
+    isAnimationAtFinalSprite = (currAnimationGID == tilesetData->animationMapping[currAnimationType].stopGID);
 
     srcRect.x = currAnimationGID % tilesetData->srcCount.x * tilesetData->srcSize.x;
     srcRect.y = currAnimationGID / tilesetData->srcCount.x * tilesetData->srcSize.y;
@@ -71,15 +75,6 @@ template <class T>
 void AbstractAnimatedEntity<T>::onDamaged() {
     if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return;
     resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
-}
-
-/**
- * @brief Called when the entity should suffer lethal damage.
-*/
-template <class T>
-void AbstractAnimatedEntity<T>::onDeath() {
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;
-    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDeath);
 }
 
 

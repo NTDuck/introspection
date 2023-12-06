@@ -196,6 +196,16 @@ namespace tile {
         SDL_Point animationSize = {1, 1};
     };
 
+    /**
+     * @brief Contain data associated with the pending i.e. "next" animation.
+    */
+    struct NextAnimationData {
+        bool isExecuting = false;
+        AnimatedEntitiesTilesetData::AnimationType animationType;
+
+        NextAnimationData(AnimatedEntitiesTilesetData::AnimationType animationType);
+        void update(AnimatedEntitiesTilesetData::AnimationType pendingAnimationType);
+    };
 };
 
 /**

@@ -107,15 +107,20 @@ class AbstractEntity {
         */
         SDL_Point destCoords;
 
-    protected:
-        AbstractEntity();
-
-        static const std::filesystem::path kTilesetPath;
-
         /**
          * Contain data associated with the position of the entity relative to the window. In pixels.
         */
         SDL_Rect destRect;
+
+        SDL_Point kAttackInitiateRange;
+        SDL_Point kAttackRegisterRange;
+
+        tile::NextAnimationData* nextAnimationData = nullptr;
+        
+    protected:
+        AbstractEntity();
+
+        static const std::filesystem::path kTilesetPath;
 
         /**
          * Contain data associated with the position of the entity's sprite/animation relative to the tileset. In pixels.
@@ -148,9 +153,6 @@ class AbstractEntity {
          * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
         */
         SDL_RendererFlip flip;
-
-        SDL_Point kAttackInititateRange = {3, 3};
-        SDL_Point kAttackRegisterRange = {3, 3};
 };
 
 
@@ -160,7 +162,7 @@ class AbstractEntity {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
 
@@ -169,7 +171,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         virtual void initiateAttack();
         virtual void onDamaged();
-        virtual void onDeath();
 
         tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
         bool isAnimationAtFinalSprite;
@@ -189,7 +190,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
         using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite;
 
         virtual ~AbstractAnimatedDynamicEntity();
@@ -203,6 +204,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
+        virtual void onDamaged() override;
         /**
          * A pointer to the "next" `destCoords`.
          * @note Recommended implementation: this member should be set when the entity "moves" (implemented by derived classes). Upon successful validation, its stored value should be reassigned to `destCoords`. This member should then be nullified regardless.

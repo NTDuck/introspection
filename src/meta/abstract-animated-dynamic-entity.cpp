@@ -127,7 +127,20 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
-    if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
+    if (nextAnimationData != nullptr) {
+        switch (nextAnimationData->animationType) {
+            case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: AbstractAnimatedEntity<T>::initiateAttack(); return;
+            case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: onDamaged(); return;
+            default: break;
+        }
+    }
+
+    if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
+    if (nextVelocity == SDL_Point{0, 0}) {
+        onMoveEnd(MoveStatusFlag::kInvalidated);
+        return;
+    }
+
     nextDestCoords = new SDL_Point(destCoords + nextVelocity);
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 
@@ -204,6 +217,13 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
 
     if (flag == MoveStatusFlag::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle, flag);
+}
+
+template <class T>
+void AbstractAnimatedDynamicEntity<T>::onDamaged() {
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return;
+    destRect = AbstractAnimatedEntity<T>::getDestRectFromCoords(destCoords);
+    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
 }
 
 
