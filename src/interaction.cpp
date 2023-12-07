@@ -25,7 +25,7 @@ bool predicateRectCollision(const Active& active, const Passive& passive) {
  * @note Please do attempt to fix this mess.
 */
 template <class Active, class Passive>
-Passive* utils::checkCollision(const Active& active, InteractionType interactionType) {
+Passive* utils::checkEntityCollision(const Active& active, InteractionType interactionType) {
     static const std::unordered_map<InteractionType, std::function<bool(const Active&, Passive&)>> mapping = {
         {InteractionType::kCoords, &predicateCoordsCollision<Active, Passive>},
         {InteractionType::kRect, &predicateRectCollision<Active, Passive>},
@@ -47,44 +47,30 @@ Passive* utils::checkCollision(const Active& active, InteractionType interaction
 }
 
 /**
- * @brief Check whether the `active` entity is able to initiate an attack onto the `passive` entity.
+ * @brief Check whether the `active` entity is currently able to initiate an attack onto the `passive` entity.
 */
 template <class Active, class Passive>
-bool utils::checkAttack(const Active& active, const Passive& passive) {
-    if (
-        active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack
-        || passive.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged
-    ) return false;
+bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passive) {
+    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack || passive.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
-    if (distance > active.kAttackInitiateRange.x || distance > active.kAttackInitiateRange.y) return false;
-
-    return true;
+    return !(distance > active.kAttackInitiateRange.x || distance > active.kAttackInitiateRange.y);
 }
 
 /**
- * @brief Check whether the `active` entity is able to be damaged by the `passive` entity.
+ * @brief Check whether the `active` entity is currently able to be damaged by the `passive` entity.
 */
 template <class Active, class Passive>
-bool utils::checkDamaged(const Active& active, const Passive& passive) {
-    if (
-        active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged
-        || passive.currAnimationType != tile::AnimatedEntitiesTilesetData::AnimationType::kAttack
-        || !passive.isAnimationAtFinalSprite
-    ) return false;
+bool utils::checkEntityAttackRegister(const Active& active, const Passive& passive) {
+    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || passive.currAnimationType != tile::AnimatedEntitiesTilesetData::AnimationType::kAttack || !passive.isAnimationAtFinalSprite) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
-    if (distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y) return false;
-
-    return true;
+    return !(distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y);
 }
 
 
-template Teleporter* utils::checkCollision<Player, Teleporter>(const Player& player, InteractionType interactionType);
-
-template Slime* utils::checkCollision<Player, Slime>(const Player& player, InteractionType interactionType);
-
-
-template bool utils::checkAttack<Slime, Player>(const Slime& slime, const Player& player);
-template bool utils::checkDamaged<Player, Slime>(const Player& player, const Slime& slime);
-template bool utils::checkDamaged<Slime, Player>(const Slime& slime, const Player& player);
+template Teleporter* utils::checkEntityCollision<Player, Teleporter>(const Player& player, InteractionType interactionType);
+template Slime* utils::checkEntityCollision<Player, Slime>(const Player& player, InteractionType interactionType);
+template bool utils::checkEntityAttackInitiate<Slime, Player>(const Slime& slime, const Player& player);
+template bool utils::checkEntityAttackRegister<Player, Slime>(const Player& player, const Slime& slime);
+template bool utils::checkEntityAttackRegister<Slime, Player>(const Slime& slime, const Player& player);

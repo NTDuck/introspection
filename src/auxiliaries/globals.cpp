@@ -42,9 +42,21 @@ bool level::EntityLevelData::Less_Than_Operator::operator()(const EntityLevelDat
 
 tile::NextAnimationData::NextAnimationData(tile::AnimatedEntitiesTilesetData::AnimationType animationType) : animationType(animationType) {}
 
-void tile::NextAnimationData::update(tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType) {
-    if (animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged && pendingAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return;
-    animationType = pendingAnimationType;
+/**
+ * @brief Update `instance` based on `pendingAnimationType`.
+*/
+void tile::NextAnimationData::update(NextAnimationData*& instance, const tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType) {
+    if (instance == nullptr) {
+        instance = new tile::NextAnimationData(pendingAnimationType);
+        return;
+    }
+    
+    // if (instance->isExecuting) return;
+
+    // Update existing instance based on priority
+    // Current priority: `kDamaged` > `kAttack`
+    if (instance->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged && pendingAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return;
+    instance->animationType = pendingAnimationType;
 }
 
 /**

@@ -204,7 +204,7 @@ namespace tile {
         AnimatedEntitiesTilesetData::AnimationType animationType;
 
         NextAnimationData(AnimatedEntitiesTilesetData::AnimationType animationType);
-        void update(AnimatedEntitiesTilesetData::AnimationType pendingAnimationType);
+        static void update(NextAnimationData*& instance, const tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType);
     };
 };
 
@@ -349,7 +349,10 @@ namespace globals {
         constexpr int kDefaultPlayerMoveDelay = 0;
         constexpr int kDefaultSlimeMoveDelay = 32;
 
-        constexpr SDL_Point kDefaultSlimeDestCoordsDetectRange = {16, 16};
+        constexpr SDL_Point kDefaultSlimeMoveInitiateRange = {16, 16};
+        constexpr SDL_Point kDefaultPlayerAttackRegisterRange = {99, 99};
+        constexpr SDL_Point kDefaultSlimeAttackInitiateRange = {7, 7};
+        constexpr SDL_Point kDefaultSlimeAttackRegisterRange = {5, 5};
     };
 
     void deinitialize();

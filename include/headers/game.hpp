@@ -43,11 +43,9 @@ class Game {
         void handleEntitiesMovement();
         void handleEntitiesInteraction();
         template <class Active, class Passive>
-        void onCollision(Active& active, Passive& passive);
+        void onEntityCollision(Active& active, Passive& passive);
         template <class Active, class Passive>
-        void onAttackInitiated(Active& active, Passive& passive);
-        template <class Active, class Passive>
-        void onAttackRegistered(Active& active, Passive& passive);
+        void onEntityAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, Active& active, Passive& passive);
 
         void handleWindowEvent(const SDL_Event& event);
         void handleMouseEvent(const SDL_Event& event);
@@ -87,10 +85,10 @@ class Game {
 
 
 template <>
-void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporter);
+void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter);
 
 template <>
-void Game::onCollision<Player, Slime>(Player& player, Slime& slime);
+void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime);
 
 
 #endif

@@ -1,15 +1,51 @@
 #include <meta.hpp>
 
 #include <filesystem>
-#include <type_traits>
 
 #include <SDL.h>
-#include <pugixml/pugixml.hpp>
 
 #include <entities.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
+
+/**
+ * @brief Flow 1: Initialization of `nextAnimationData`
+ * ┌─────────────┐   ┌───────────────────────────┐
+ * │ interaction ├───┤ checkEntityAnimation(...) ├───┐
+ * └─────────────┘   └───────────────────────────┘   │
+ *                                                   │
+ * ┌─────────────┐   ┌────────────────────────┐      │
+ * │    Game     ├───┤ onEntityAnimation(...) ◄──────┘
+ * └─────────────┘   └────────────────────────┘
+*/
+
+/**
+ * @brief Flow 2: Retrieval & Modification of `nextAnimationData`
+ * ┌────────────────────────┐
+ * │ AbstractAnimatedEntity │
+ * └───┬────────────────────┘
+ *     │
+ *     │   ┌─────────────────────┐
+ *     ├───┤ initiateAnimation() ├────────┐
+ *     │   └─────────────────────┘        │
+ *     │                                  │
+ *     │       ┌──── conditional check ◄──┘
+ *     │       │
+ *     │       └───► priority overlap ────┬───┐
+ *     │                                  │   │
+ *     │       ┌──── isExecuting = false ◄┘   │
+ *     │       │                              │
+ *     │   ┌───▼───────────┐                  │
+ *     └───┤ onAnimation() ◄──────────────────┘
+ *         └───┬───────────┘
+ *             │
+ *             └───► isExecuting = true
+*/
+
+/**
+ * @note There is no Flow 3. For Deallocation of `nextAnimationData`, see `updateAnimation()`.
+*/
 
 template <class T>
 AbstractAnimatedEntity<T>::AbstractAnimatedEntity() : isAnimationAtFinalSprite(false) {
@@ -31,9 +67,11 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             // Behold, heresy!
             if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);
         } else {
-            // Reset
-            delete nextAnimationData;
-            nextAnimationData = nullptr;
+            // Deinitialize `nextAnimationData`
+            if (nextAnimationData != nullptr && nextAnimationData->isExecuting) {
+                delete nextAnimationData;
+                nextAnimationData = nullptr;
+            }
 
             if (tilesetData->animationMapping[currAnimationType].isPermanent) {
                 if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // The real permanent
@@ -59,21 +97,39 @@ void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTiles
     currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
 }
 
+
+/**
+ * @brief Initiate a new animation based on `nextAnimationData`.
+*/
+template <class T>
+void AbstractAnimatedEntity<T>::initiateAnimation() {
+    // Check for priority overlap
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack && nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) onAttackRegistered();
+
+    if (nextAnimationData == nullptr || nextAnimationData->isExecuting) return;
+
+    switch (nextAnimationData->animationType) {
+        case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: AbstractAnimatedEntity<T>::onAttackInitiated(); break;
+        case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: AbstractAnimatedEntity<T>::onAttackRegistered(); break;
+        default: return;
+    }
+
+    nextAnimationData->isExecuting = true;
+}
+
 /**
  * @brief Called when the entity should inititate an attack.
 */
 template <class T>
-void AbstractAnimatedEntity<T>::initiateAttack() {
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return;
+void AbstractAnimatedEntity<T>::onAttackInitiated() {
     resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kAttack);
 }
 
 /**
- * @brief Called when the entity is damaged.
+ * @brief Called when the entity should be damaged.
 */
 template <class T>
-void AbstractAnimatedEntity<T>::onDamaged() {
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return;
+void AbstractAnimatedEntity<T>::onAttackRegistered() {
     resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
 }
 

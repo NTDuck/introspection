@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <string>
-#include <iostream>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -148,21 +147,23 @@ void Game::handleEntities() {
  * @brief Handle all entities movements & animation updates.
 */
 void Game::handleEntitiesMovement() {
+    player->initiateAnimation();
     player->move();
     player->updateAnimation();
 
     Teleporter::callOnEach(&Teleporter::updateAnimation);
 
     Slime::callOnEach(&Slime::calculateMove, player->destCoords);
+    Slime::callOnEach(&Slime::initiateAnimation);
     Slime::callOnEach(&Slime::move);
     Slime::callOnEach(&Slime::updateAnimation);
 }
 
 template <class Active, class Passive>
-void Game::onCollision(Active& active, Passive& passive) {}
+void Game::onEntityCollision(Active& active, Passive& passive) {}
 
 template <>
-void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
+void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
     state = GameState::kIngamePaused;
     interface->changeLevel(teleporter.targetLevel);
     globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
@@ -171,49 +172,36 @@ void Game::onCollision<Player, Teleporter>(Player& player, Teleporter& teleporte
 }
 
 template <>
-void Game::onCollision<Player, Slime>(Player& player, Slime& slime) {
+void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime) {
     // state = GameState::kExit;
     // player.onDeath();
 }
 
+/**
+ * @brief Called when the `active` entity initiate an animation (possibly caused by the `passive` entity).
+*/
 template <class Active, class Passive>
-void Game::onAttackInitiated(Active& active, Passive& passive) {
-    if (active.nextAnimationData == nullptr) {
-        active.nextAnimationData = new tile::NextAnimationData(tile::AnimatedEntitiesTilesetData::AnimationType::kAttack);
-    } else {
-        active.nextAnimationData->update(tile::AnimatedEntitiesTilesetData::AnimationType::kAttack);
-    }
+void Game::onEntityAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, Active& active, Passive& passive) {
+    tile::NextAnimationData::update(active.nextAnimationData, animationType);
 }
 
-template void Game::onAttackInitiated<Slime, Player>(Slime& slime, Player& player);
-
-template <class Active, class Passive>
-void Game::onAttackRegistered(Active& active, Passive& passive) {
-    if (active.nextAnimationData == nullptr) {
-        active.nextAnimationData = new tile::NextAnimationData(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
-    } else {
-        active.nextAnimationData->update(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
-    }
-}
-
-template void Game::onAttackRegistered<Player, Slime>(Player& player, Slime& slime);
-template void Game::onAttackRegistered<Slime, Player>(Slime& slime, Player& player);
+template void Game::onEntityAnimation<Player, Slime>(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, Player& player, Slime& slime);
+template void Game::onEntityAnimation<Slime, Player>(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, Slime& slime, Player& player);
 
 /**
  * @brief Handle interactions between entities.
 */
 void Game::handleEntitiesInteraction() {
-    // Handle Player - Teleporter collision
-    auto collidedTeleporter = utils::checkCollision<Player, Teleporter>(*player, InteractionType::kCoords);
-    if (collidedTeleporter != nullptr) onCollision<Player, Teleporter>(*player, *collidedTeleporter);
+    auto collidedTeleporter = utils::checkEntityCollision<Player, Teleporter>(*player, InteractionType::kCoords);
+    if (collidedTeleporter != nullptr) onEntityCollision<Player, Teleporter>(*player, *collidedTeleporter);
 
-    auto collidedSlime = utils::checkCollision<Player, Slime>(*player, InteractionType::kRect);
-    if (collidedSlime != nullptr) onCollision<Player, Slime>(*player, *collidedSlime);
+    auto collidedSlime = utils::checkEntityCollision<Player, Slime>(*player, InteractionType::kRect);
+    if (collidedSlime != nullptr) onEntityCollision<Player, Slime>(*player, *collidedSlime);
 
     for (auto& slime : Slime::instances) {
-        if (utils::checkAttack<Slime, Player>(*slime, *player)) onAttackInitiated<Slime, Player>(*slime, *player);
-        if (utils::checkDamaged<Player, Slime>(*player, *slime)) onAttackRegistered<Player, Slime>(*player, *slime);
-        if (utils::checkDamaged<Slime, Player>(*slime, *player)) onAttackRegistered<Slime, Player>(*slime, *player);
+        if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *player)) onEntityAnimation<Slime, Player>(tile::AnimatedEntitiesTilesetData::AnimationType::kAttack, *slime, *player);
+        if (utils::checkEntityAttackRegister<Player, Slime>(*player, *slime)) onEntityAnimation<Player, Slime>(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged, *player, *slime);
+        if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *player)) onEntityAnimation<Slime, Player>(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged, *slime, *player);
     }
 }
 

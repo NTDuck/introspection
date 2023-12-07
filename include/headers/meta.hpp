@@ -112,9 +112,19 @@ class AbstractEntity {
         */
         SDL_Rect destRect;
 
+        /**
+         * The minimum range required for the entity to initiate an attack on a targetable entity.
+        */
         SDL_Point kAttackInitiateRange;
+
+        /**
+         * The minimum range required for the entity to register an attack on a targetable entity.
+        */
         SDL_Point kAttackRegisterRange;
 
+        /**
+         * Contain data associated with the pending i.e. "next" animation.
+        */
         tile::NextAnimationData* nextAnimationData = nullptr;
         
     protected:
@@ -169,8 +179,9 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         void updateAnimation();
         void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
-        virtual void initiateAttack();
-        virtual void onDamaged();
+        virtual void initiateAnimation();
+        virtual void onAttackInitiated();
+        virtual void onAttackRegistered();
 
         tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
         bool isAnimationAtFinalSprite;
@@ -204,7 +215,6 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
-        virtual void onDamaged() override;
         /**
          * A pointer to the "next" `destCoords`.
          * @note Recommended implementation: this member should be set when the entity "moves" (implemented by derived classes). Upon successful validation, its stored value should be reassigned to `destCoords`. This member should then be nullified regardless.
@@ -238,12 +248,14 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Point nextVelocity;
 
     private:
+        int counterMoveDelay;
+
         /**
          * Represent the current direction of the entity.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
         SDL_Point currVelocity;
-        int counterMoveDelay;
+
         SDL_FPoint counterFractionalVelocity;
         SDL_FPoint kFractionalVelocity;
         SDL_Point kIntegralVelocity;

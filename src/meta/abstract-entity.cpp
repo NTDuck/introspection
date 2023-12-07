@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <unordered_set>
-#include <type_traits>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -48,14 +47,6 @@ template <class T>
 AbstractEntity<T>::AbstractEntity()
     : destRectModifier(globals::config::kDefaultAbstractEntityDestRectModifier),
     angle(0), center(nullptr), flip(SDL_FLIP_NONE) {
-    
-    if constexpr(std::is_base_of_v<T, Player>) {
-        kAttackInitiateRange = {99, 99};
-        kAttackRegisterRange = {99, 99};
-    } else {
-        kAttackInitiateRange = {7, 7};
-        kAttackRegisterRange = {5, 5};
-    }
     srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
     srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
 }
@@ -169,6 +160,7 @@ void AbstractEntity<T>::onWindowChange() {
 template <class T>
 void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
     destCoords = entityLevelData.destCoords;
+    delete nextAnimationData; nextAnimationData = nullptr;
 }
 
 /**

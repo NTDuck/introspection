@@ -4,7 +4,6 @@
 #include <filesystem>
 
 #include <SDL.h>
-#include <pugixml/pugixml.hpp>
 
 #include <entities.hpp>
 #include <auxiliaries/utils.hpp>
@@ -12,7 +11,7 @@
 
 
 /**
- * @brief Flow 1: move handling
+ * @brief Flow: move handling
  * ┌───────────────┐
  * │    Derived    │
  * └───┬───────────┘
@@ -21,7 +20,7 @@
  *     └───┤ calculateMove(...) ├──────┐
  *         └───┬────────────────┘      │
  *             │                       │
- *             └───► currVelocity      │
+ *             └───► nextVelocity      │
  *                                     │
  * ┌───────────────────────────────┐   │
  * │ AbstractAnimatedDynamicEntity │   │
@@ -127,13 +126,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
-    if (nextAnimationData != nullptr) {
-        switch (nextAnimationData->animationType) {
-            case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: AbstractAnimatedEntity<T>::initiateAttack(); return;
-            case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: onDamaged(); return;
-            default: break;
-        }
-    }
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged)) return;   // Cannot move while damaged
 
     if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
     if (nextVelocity == SDL_Point{0, 0}) {
@@ -217,13 +210,6 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
 
     if (flag == MoveStatusFlag::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle, flag);
-}
-
-template <class T>
-void AbstractAnimatedDynamicEntity<T>::onDamaged() {
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return;
-    destRect = AbstractAnimatedEntity<T>::getDestRectFromCoords(destCoords);
-    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
 }
 
 

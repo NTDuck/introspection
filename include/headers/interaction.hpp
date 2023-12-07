@@ -6,13 +6,13 @@
 
 namespace utils {
     template <class Active, class Passive>
-    Passive* checkCollision(const Active& active, InteractionType interactionType);
+    Passive* checkEntityCollision(const Active& active, InteractionType interactionType);
 
     template <class Active, class Passive>
-    bool checkAttack(const Active& active, const Passive& passive);
+    bool checkEntityAttackInitiate(const Active& active, const Passive& passive);
 
     template <class Active, class Passive>
-    bool checkDamaged(const Active& active, const Passive& passive);
+    bool checkEntityAttackRegister(const Active& active, const Passive& passive);
 };
 
 

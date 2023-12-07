@@ -11,6 +11,7 @@
 */
 Player::Player() {
     destRectModifier = globals::config::kDefaultPlayerDestRectModifier;
+    kAttackRegisterRange = globals::config::kDefaultPlayerAttackRegisterRange;   // `kAttackInitiateRange` is unnecessary
 }
 
 /**
@@ -48,11 +49,14 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
         AbstractAnimatedDynamicEntity<Player>::initiateMove();
     };
 
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged)) return;
+
     switch (event.key.keysym.sym) {
         case SDLK_w: case SDLK_s: case SDLK_a: case SDLK_d:
             handleKeyboardMovementInput(); break;
         case SDLK_SPACE:
-            AbstractAnimatedDynamicEntity<Player>::initiateAttack(); break;
+            if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) break;
+            AbstractAnimatedDynamicEntity<Player>::onAttackInitiated(); break;
     }
 
 }
