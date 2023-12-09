@@ -56,17 +56,7 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
     AbstractEntity<T>::onWindowChange();
-
-    // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
-    kIntegralVelocity = {
-        utils::convertFloatToInt(globals::tileDestSize.x / kVelocity.x),
-        utils::convertFloatToInt(globals::tileDestSize.y / kVelocity.y),
-    };
-
-    kFractionalVelocity = {
-        globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
-        globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
-    };
+    calculateVelocityDependencies();
 }
 
 template <class T>
@@ -188,7 +178,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
 
     if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kWalk, flag);
+    AbstractAnimatedEntity<T>::resetAnimation((!isRunning ? tile::AnimatedEntitiesTilesetData::AnimationType::kWalk : tile::AnimatedEntitiesTilesetData::AnimationType::kRunning), flag);
 }
 
 /**
@@ -212,6 +202,44 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     if (flag == MoveStatusFlag::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle, flag);
 }
+
+/**
+ * @brief Called when the entity starts or stops running. Change `kVelocity` and its dependencies.
+ * @param onRunningStart governs whether this function is called to starts running or stops running.
+*/
+template <class T>
+void AbstractAnimatedDynamicEntity<T>::onRunningToggled(const bool onRunningStart) {
+    if (!(isRunning ^ onRunningStart)) return;
+
+    kVelocity.x *= (onRunningStart ? 1 / runModifier : runModifier);
+    kVelocity.y *= (onRunningStart ? 1 / runModifier : runModifier);
+    calculateVelocityDependencies();
+
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kWalk) AbstractAnimatedEntity<T>::resetAnimation(onRunningStart ? tile::AnimatedEntitiesTilesetData::AnimationType::kRunning : tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
+
+    isRunning = onRunningStart;
+}
+
+/**
+ * @brief Called should `kVelocity` changes.
+*/
+template <class T>
+void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
+    // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
+    kIntegralVelocity = {
+        utils::convertFloatToInt(globals::tileDestSize.x / kVelocity.x),
+        utils::convertFloatToInt(globals::tileDestSize.y / kVelocity.y),
+    };
+
+    kFractionalVelocity = {
+        globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
+        globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
+    }; 
+}
+
+
+template <class T>
+const double AbstractAnimatedDynamicEntity<T>::runModifier = globals::config::kDefaultEntityRunVelocityModifier;
 
 
 template class AbstractAnimatedDynamicEntity<Player>;

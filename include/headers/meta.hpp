@@ -175,7 +175,7 @@ class AbstractEntity {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
 
@@ -205,7 +205,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
         using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite;
 
         virtual ~AbstractAnimatedDynamicEntity();
@@ -218,6 +218,9 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual bool validateMove();
         virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
+        virtual void onRunningToggled(const bool onRunningStart);
+
+        bool isRunning = false;
 
         /**
          * A pointer to the "next" `destCoords`.
@@ -235,15 +238,20 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         AbstractAnimatedDynamicEntity() = default;
 
         /**
+         * Represent the multiplier applied to `kVelocity` should the entity switch to `kRunning` animation.
+        */
+        static const double runModifier;
+
+        /**
          * Represent the minimum number of frames of inaction, between 2 consecutive moves.
         */
-        static const int kMoveDelay;
+        static int kMoveDelay;
 
         /**
          * For dimension `i`, a number of `kVelocity.i` frames is required for the entity to make a full move i.e. `destRect.i` shifts by `globals::tileDestSize.i` pixels.
          * @note This constant and the "physical" speed of the entity are in an inverse ratio.
         */
-        static const SDL_FPoint kVelocity;
+        static SDL_FPoint kVelocity;
 
         /**
          * Represent the next direction of the entity. Might change every frame.
@@ -252,6 +260,8 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Point nextVelocity;
 
     private:
+        void calculateVelocityDependencies();
+        
         int counterMoveDelay;
 
         /**

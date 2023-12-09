@@ -58,8 +58,10 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
         case SDLK_SPACE:
             if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) break;
             AbstractAnimatedDynamicEntity<Player>::onAttackInitiated(); break;
+        case SDLK_LSHIFT: case SDLK_RSHIFT:
+            AbstractAnimatedDynamicEntity<Player>::onRunningToggled(event.type == SDL_KEYDOWN);
+            break;
     }
-
 }
 
 void Player::onLevelChange(const level::EntityLevelData& player) {
@@ -72,10 +74,10 @@ Player* Player::instance = nullptr;
 
 
 template <>
-const int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = globals::config::kDefaultPlayerMoveDelay;
+int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = globals::config::kDefaultPlayerMoveDelay;
 
 template <>
-const SDL_FPoint AbstractAnimatedDynamicEntity<Player>::kVelocity = globals::config::kDefaultPlayerVelocity;
+SDL_FPoint AbstractAnimatedDynamicEntity<Player>::kVelocity = globals::config::kDefaultPlayerVelocity;
 
 template <>
 const std::filesystem::path AbstractEntity<Player>::kTilesetPath = globals::config::kTilesetPathPlayer;

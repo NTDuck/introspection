@@ -31,10 +31,10 @@ void Slime::calculateMove(const SDL_Point& playerDestCoords) {
 }
 
 template <>
-const int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;
+int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;
 
 template <>
-const SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = globals::config::kDefaultSlimeVelocity;
+SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = globals::config::kDefaultSlimeVelocity;
 
 template <>
 const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = globals::config::kTilesetPathSlime;

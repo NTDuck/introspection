@@ -221,7 +221,7 @@ namespace tile {
             kDisappear,
             kDuck,
             kJump,
-            kRun,
+            kRunning,
             kWalk,
             kDamaged,
         };
@@ -393,7 +393,8 @@ namespace globals {
         const std::filesystem::path kTilesetPathSlime = kTilesetPath / "eg-slime-full.tsx";
         const std::filesystem::path kConfigPathLevel = kTiledAssetPath / "levels.json";
         
-        constexpr SDL_FRect kDefaultAbstractEntityDestRectModifier = {0, 0, 1, 1};
+        constexpr double kDefaultEntityRunVelocityModifier = 2;
+        constexpr SDL_FRect kDefaultEntityDestRectModifier = {0, 0, 1, 1};
         constexpr SDL_FRect kDefaultPlayerDestRectModifier = {0, -0.75, 2, 2};
         constexpr SDL_FRect kDefaultTeleporterDestRectModifier = {0, 0, 1, 1};
         constexpr SDL_FRect kDefaultSlimeDestRectModifier = {0, -1, 5, 5};
