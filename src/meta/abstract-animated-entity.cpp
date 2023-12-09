@@ -104,13 +104,15 @@ void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTiles
 template <class T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;
     if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack && nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) onAttackRegistered();
 
     if (nextAnimationData == nullptr || nextAnimationData->isExecuting) return;
 
     switch (nextAnimationData->animationType) {
-        case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: AbstractAnimatedEntity<T>::onAttackInitiated(); break;
-        case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: AbstractAnimatedEntity<T>::onAttackRegistered(); break;
+        case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: onAttackInitiated(); break;
+        case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: onAttackRegistered(); break;
+        case tile::AnimatedEntitiesTilesetData::AnimationType::kDeath: onDeath(); break;
         default: return;
     }
 
@@ -133,6 +135,13 @@ void AbstractAnimatedEntity<T>::onAttackRegistered() {
     resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
 }
 
+/**
+ * @brief Called when the entity's `secondaryStats.HP` should drop below zero.
+*/
+template <class T>
+void AbstractAnimatedEntity<T>::onDeath() {
+    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDeath);
+}
 
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;

@@ -45,7 +45,7 @@ class Game {
         template <class Active, class Passive>
         void onEntityCollision(Active& active, Passive& passive);
         template <class Active, class Passive>
-        void onEntityAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, Active& active, Passive& passive);
+        void onEntityAnimation(tile::AnimatedEntitiesTilesetData::AnimationType animationType, Active& active, Passive& passive);
 
         void handleWindowEvent(const SDL_Event& event);
         void handleMouseEvent(const SDL_Event& event);

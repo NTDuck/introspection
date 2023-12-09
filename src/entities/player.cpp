@@ -12,6 +12,7 @@
 Player::Player() {
     destRectModifier = globals::config::kDefaultPlayerDestRectModifier;
     kAttackRegisterRange = globals::config::kDefaultPlayerAttackRegisterRange;   // `kAttackInitiateRange` is unnecessary
+    primaryStats = globals::config::kDefaultPlayerPrimaryStats;
 }
 
 /**

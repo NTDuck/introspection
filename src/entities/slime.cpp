@@ -12,6 +12,7 @@ Slime::Slime() {
     kMoveInitiateRange = globals::config::kDefaultSlimeMoveInitiateRange;
     kAttackInitiateRange = globals::config::kDefaultSlimeAttackInitiateRange;
     kAttackRegisterRange = globals::config::kDefaultSlimeAttackRegisterRange;
+    primaryStats = globals::config::kDefaultSlimePrimaryStats;
 }
 
 /**

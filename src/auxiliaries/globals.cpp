@@ -6,6 +6,22 @@
 #include <pugixml/pugixml.hpp>
 
 
+void EntitySecondaryStats::initialize(const EntityPrimaryStats& entityPrimaryStats) {
+    HP = 10 + double(entityPrimaryStats.Vigor) / 3;
+    FP = 10 + double(entityPrimaryStats.Mind) / 3;
+    Stamina = 10 + double(entityPrimaryStats.Dexterity) / 10;
+    Poise = 50 + double(entityPrimaryStats.Dexterity) / 20;
+
+    PhysicalDefense = double(entityPrimaryStats.Endurance) / 200;
+    MagicDefense = double(entityPrimaryStats.Intelligence) / 200;
+    PhysicalDamage = 2 + double(entityPrimaryStats.Strength) / 10;
+    MagicDamage = 3 + double(entityPrimaryStats.Faith) / 10;
+
+    CriticalChance = double(entityPrimaryStats.Arcane) / 15;
+    if (CriticalChance > 1) CriticalChance = 1;
+    CriticalDamage = 3;
+}
+
 tile::BaseTilesetData::BaseTilesetData() : texture(nullptr), srcCount({0, 0}), srcSize({0, 0}), properties({}) {}   // Simulate `NULL` value
 
 void tile::BaseTilesetData::deinitialize() {

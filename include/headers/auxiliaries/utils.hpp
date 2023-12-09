@@ -17,7 +17,7 @@ SDL_Point operator-(const SDL_Point& first, const SDL_Point& second);
 
 namespace utils {
     int convertFloatToInt(float f);
-    int generateRandomBinary();
+    int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(const SDL_Point& first, const SDL_Point& second);
     std::string base64Decode(const std::string& s);
 

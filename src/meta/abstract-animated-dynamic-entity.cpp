@@ -126,6 +126,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
+    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;
     if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged)) return;   // Cannot move while damaged
 
     if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"

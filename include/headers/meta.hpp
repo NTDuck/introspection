@@ -112,6 +112,9 @@ class AbstractEntity {
         */
         SDL_Rect destRect;
 
+        EntityPrimaryStats primaryStats;
+        EntitySecondaryStats secondaryStats;
+
         /**
          * The minimum range required for the entity to initiate an attack on a targetable entity.
         */
@@ -182,6 +185,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual void initiateAnimation();
         virtual void onAttackInitiated();
         virtual void onAttackRegistered();
+        virtual void onDeath();
 
         tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
         bool isAnimationAtFinalSprite;

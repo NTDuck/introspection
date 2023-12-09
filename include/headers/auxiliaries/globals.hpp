@@ -40,6 +40,13 @@ enum class InteractionType {
 };
 
 /**
+ * @brief Provide flexible handling base on a move's status.
+*/
+enum class MoveStatusFlag {
+    kDefault, kInvalidated, kContinued,
+};
+
+/**
  * @brief Contain SDL flags and other configurations used in the initialization of SDL subsystems.
  * 
  * @param init any of the following: `SDL_INIT_TIMER` (timer subsystem), `SDL_INIT_AUDIO` (audio subsystem), `SDL_INIT_VIDEO` (video subsystem - automatically initializes the events subsystem), `SDL_INIT_JOYSTICK` (joystick subsystem - automatically initializes the events subsystem), `SDL_INIT_HAPTIC` (haptic i.e. force feedback subsystem), `SDL_INIT_GAMECONTROLLER` (controller subsystem - automatically initializes the joystick subsystem), `SDL_INIT_EVENTS` (events subsystem), `SDL_INIT_EVERYTHING` (all of the above subsystems), `SDL_INIT_NOPARACHUTE` (compatibility - will be ignored), or multiple OR'd together. Determines which SDL subsystem(s) to initialize. Used in `SDL_Init()`. @see https://wiki.libsdl.org/SDL2/SDL_Init
@@ -60,10 +67,58 @@ struct GameFlag {
 };
 
 /**
- * @brief Provide flexible handling base on a move's status.
+ * @brief Contain data associated with an entity's main stats i.e. attributes. Govern `EntitySecondaryStats`.
+ * @param Vigor attribute governing `HP`.
+ * @param Mind attribute governing `FP`.
+ * @param Endurance attribute governing `PhysicalDefense`.
+ * @param Strength attribute governing `PhysicalAttackDamage`.
+ * @param Dexterity attribute governing `Stamina` and `Poise`.
+ * @param Intelligence attribute governing `MagicDefense`.
+ * @param Faith attribute governing `MagicDamage`.
+ * @param Arcane attribute governing `CriticalChance`.
+ * @todo Implement proper attribute scaling.
 */
-enum class MoveStatusFlag {
-    kDefault, kInvalidated, kContinued,
+struct EntityPrimaryStats {
+    int Vigor;
+    int Mind;
+    int Endurance;
+    int Strength;
+    int Dexterity;
+    int Intelligence;
+    int Faith;
+    int Arcane;
+};
+
+/**
+ * @brief Contain data associated with an entity's secondary stats. Governed by `EntityPrimaryStats`.
+ * @param HP Hit Points. Serves as a measure of an entity's health and how much damage it could take before falling in combat. Governed by `Vigor`.
+ * @param FP Focus Points. Serves as an energy source consumed when casting Spells or using Skills. Works identically to "MP"/"Mana" in other titles. Governed by `Mind`.
+ * @param Stamina a resource consumed when sprinting, attacking, or casting spells. Governed by `Dexterity`.
+ * @param Poise the degree to which an entity could resist collapsing under incoming attacks. Governed by `Dexterity`.
+ * @param PhysicalDefense representative of an entity's defense power and damage negation against physical attacks. Governed by `Endurance`. In percent.
+ * @param MagicDefense representative of an entity's defense power and damage negation against magical attacks. Governed by `Intelligence`. In percent.
+ * @param PhysicalDamage representative of the amount of damage dealt in by physical attacks. Governed by `Strength`.
+ * @param MagicDamage representative of the amount of damage dealt by magical attacks. Governed by `Faith`.
+ * @param CriticalChance representative of the entity's chance of landing a critical attack. Governed by `Arcane`. In percent.
+ * @param CriticalDamage a multiplier; representative of the amount of damage increased by critical attack compared to the "normal" counterparts. In percent.
+*/
+struct EntitySecondaryStats {
+    int HP;
+    int FP;
+    int Stamina;
+    int Poise;
+
+    double PhysicalDefense;
+    double MagicDefense;
+    int PhysicalDamage;
+    int MagicDamage;
+
+    double CriticalChance;
+    double CriticalDamage;
+
+    void initialize(const EntityPrimaryStats& entityPrimaryStats);
+    static int calculateFinalizedPhysicalDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive);
+    static int calculateFinalizedMagicDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive);
 };
 
 
@@ -353,6 +408,9 @@ namespace globals {
         constexpr SDL_Point kDefaultPlayerAttackRegisterRange = {99, 99};
         constexpr SDL_Point kDefaultSlimeAttackInitiateRange = {7, 7};
         constexpr SDL_Point kDefaultSlimeAttackRegisterRange = {5, 5};
+
+        constexpr EntityPrimaryStats kDefaultPlayerPrimaryStats = {10, 10, 10, 10, 10, 10, 10, 10};
+        constexpr EntityPrimaryStats kDefaultSlimePrimaryStats = {10, 10, 10, 10, 10, 10, 10, 10};
     };
 
     void deinitialize();

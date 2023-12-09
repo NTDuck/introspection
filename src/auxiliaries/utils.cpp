@@ -43,13 +43,11 @@ int utils::convertFloatToInt(float f) { return static_cast<int>(std::lroundf(f))
  * @see https://en.wikipedia.org/wiki/Bernoulli_distribution
  * @see https://en.wikipedia.org/wiki/Mersenne_Twister
 */
-int utils::generateRandomBinary() {
+int utils::generateRandomBinary(const double probability) {
     std::random_device rd;
     std::mt19937 mt(rd());  // Mersenne Twister 19937 engine
 
-    double probability = 0.5;   // the probability of success i.e. getting `1`
-    std::bernoulli_distribution dist(probability);
-    
+    std::bernoulli_distribution dist(probability);   // Bernoulli trial
     return dist(mt);
 }
 
@@ -517,4 +515,20 @@ void level::LevelData::deinitialize() {
     backgroundColor = globals::config::kDefaultBackgroundColor;
     teleportersLevelData.clear();
     slimesLevelData.clear();
+}
+
+/**
+ * @brief Calculate the finalized physical damage dealt to entity `passive` by entity `active`.
+ * @note Defined here to prevent circular dependencies.
+*/
+int EntitySecondaryStats::calculateFinalizedPhysicalDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive) {
+    return std::round(active.PhysicalDamage * (1 - passive.PhysicalDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
+}
+
+/**
+ * @brief Calculate the finalized magic damage dealt to entity `passive` by entity `active`.
+ * @note Defined here to prevent circular dependencies.
+*/
+int EntitySecondaryStats::calculateFinalizedMagicDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive) {
+    return std::round(active.MagicDamage * (1 - passive.MagicDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
 }
