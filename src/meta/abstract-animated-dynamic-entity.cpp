@@ -55,13 +55,13 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
 
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
-    AbstractEntity<T>::onWindowChange();
+    AbstractAnimatedEntity<T>::onWindowChange();
     calculateVelocityDependencies();
 }
 
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
-    AbstractEntity<T>::onLevelChange(entityLevelData);
+    AbstractAnimatedEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
 }
 
@@ -116,10 +116,10 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged)) return;   // Cannot move while damaged
+    if (currAnimationType == AnimationType::kDeath) return;
+    if (currAnimationType == AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == AnimationType::kDamaged)) return;   // Cannot move while damaged
 
-    if (nextDestCoords != nullptr || currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
+    if (nextDestCoords != nullptr || currAnimationType == AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
     if (nextVelocity == SDL_Point{0, 0}) {
         onMoveEnd(MoveStatusFlag::kInvalidated);
         return;
@@ -178,7 +178,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
 
     if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    AbstractAnimatedEntity<T>::resetAnimation((!isRunning ? tile::AnimatedEntitiesTilesetData::AnimationType::kWalk : tile::AnimatedEntitiesTilesetData::AnimationType::kRunning), flag);
+    AbstractAnimatedEntity<T>::resetAnimation((!isRunning ? AnimationType::kWalk : AnimationType::kRunning), flag);
 }
 
 /**
@@ -200,7 +200,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     counterFractionalVelocity = {0, 0};
 
     if (flag == MoveStatusFlag::kContinued) return;
-    AbstractAnimatedEntity<T>::resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle, flag);
+    AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kIdle, flag);
 }
 
 /**
@@ -209,13 +209,14 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
 */
 template <class T>
 void AbstractAnimatedDynamicEntity<T>::onRunningToggled(const bool onRunningStart) {
-    if (!(isRunning ^ onRunningStart)) return;
+    if (!isRunning ^ onRunningStart) return;
 
     kVelocity.x *= (onRunningStart ? 1 / runModifier : runModifier);
     kVelocity.y *= (onRunningStart ? 1 / runModifier : runModifier);
     calculateVelocityDependencies();
 
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kWalk) AbstractAnimatedEntity<T>::resetAnimation(onRunningStart ? tile::AnimatedEntitiesTilesetData::AnimationType::kRunning : tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
+    if (currAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRunning);
+    else if (currAnimationType == AnimationType::kRunning && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
 
     isRunning = onRunningStart;
 }

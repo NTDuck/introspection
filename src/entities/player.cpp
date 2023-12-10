@@ -1,6 +1,7 @@
 #include <entities.hpp>
 
 #include <filesystem>
+#include <unordered_map>
 
 #include <meta.hpp>
 #include <auxiliaries/utils.hpp>
@@ -37,16 +38,22 @@ void Player::deinitialize() {
 */
 void Player::handleKeyboardEvent(const SDL_Event& event) {
     auto handleKeyboardMovementInput = [&]() {
+        static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
+            { SDLK_w, {0, -1} },
+            { SDLK_s, {0, 1} },
+            { SDLK_a, {-1, 0} },
+            { SDLK_d, {1, 0} },
+        };
+
+        auto it = mapping.find(event.key.keysym.sym);
+        if (it == mapping.end()) return;
+
         if (event.type == SDL_KEYUP) {
             nextVelocity = {0, 0};
             return;
         }
-        switch (event.key.keysym.sym) {
-            case SDLK_w: nextVelocity = {0, -1}; break;
-            case SDLK_s: nextVelocity = {0, 1}; break;
-            case SDLK_a: nextVelocity = {-1, 0}; break;
-            case SDLK_d: nextVelocity = {1, 0}; break;
-        }
+
+        nextVelocity = it->second;
         AbstractAnimatedDynamicEntity<Player>::initiateMove();
     };
 

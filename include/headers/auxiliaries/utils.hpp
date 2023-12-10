@@ -11,6 +11,7 @@
 
 
 bool operator==(const SDL_Point& first, const SDL_Point& second);
+bool operator!=(const SDL_Point& first, const SDL_Point& second);
 bool operator<(const SDL_Point& first, const SDL_Point& second);
 SDL_Point operator+(const SDL_Point& first, const SDL_Point& second);
 SDL_Point operator-(const SDL_Point& first, const SDL_Point& second);

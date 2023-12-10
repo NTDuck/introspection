@@ -19,6 +19,10 @@ bool operator==(const SDL_Point& first, const SDL_Point& second) {
     return first.x == second.x && first.y == second.y;
 }
 
+bool operator!=(const SDL_Point& first, const SDL_Point& second) {
+    return !(first == second);
+}
+
 bool operator<(const SDL_Point& first, const SDL_Point& second) {
     return (first.y < second.y) || (first.y == second.y && first.x < second.x);
 }

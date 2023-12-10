@@ -56,7 +56,7 @@ bool level::EntityLevelData::Equality_Operator::operator()(const EntityLevelData
 
 bool level::EntityLevelData::Less_Than_Operator::operator()(const EntityLevelData& first, const EntityLevelData& second) const { return (first.destCoords.y < second.destCoords.y) || (first.destCoords.y == second.destCoords.y && first.destCoords.x < second.destCoords.x); }
 
-tile::NextAnimationData::NextAnimationData(tile::AnimatedEntitiesTilesetData::AnimationType animationType) : animationType(animationType) {}
+tile::NextAnimationData::NextAnimationData(AnimationType animationType) : animationType(animationType) {}
 
 /**
  * @brief Update `instance` based on `pendingAnimationType`.
@@ -71,7 +71,7 @@ void tile::NextAnimationData::update(NextAnimationData*& instance, const tile::A
 
     // Update existing instance based on priority
     // Current priority: `kDamaged` > `kAttack`
-    if (instance->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged && pendingAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) return;
+    if (instance->animationType == AnimationType::kDamaged && pendingAnimationType == AnimationType::kAttack) return;
     instance->animationType = pendingAnimationType;
 }
 

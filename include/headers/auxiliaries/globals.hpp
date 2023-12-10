@@ -359,6 +359,10 @@ namespace level {
     };
 };
 
+
+using AnimationType = tile::AnimatedEntitiesTilesetData::AnimationType;
+
+
 /**
  * @brief Group components that are accessible at public scope to all other components.
 */

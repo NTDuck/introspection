@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
@@ -51,7 +52,7 @@ Passive* utils::checkEntityCollision(const Active& active, InteractionType inter
 */
 template <class Active, class Passive>
 bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passive) {
-    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack || passive.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) return false;
+    if (active.currAnimationType == AnimationType::kAttack || passive.currAnimationType == AnimationType::kDamaged) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
     return !(distance > active.kAttackInitiateRange.x || distance > active.kAttackInitiateRange.y);
@@ -62,7 +63,7 @@ bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passi
 */
 template <class Active, class Passive>
 bool utils::checkEntityAttackRegister(const Active& active, const Passive& passive) {
-    if (active.currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || passive.currAnimationType != tile::AnimatedEntitiesTilesetData::AnimationType::kAttack || !passive.isAnimationAtFinalSprite) return false;
+    if (active.currAnimationType == AnimationType::kDamaged || passive.currAnimationType != AnimationType::kAttack || !passive.isAnimationAtFinalSprite) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
     return !(distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y);

@@ -162,7 +162,6 @@ template <class T>
 void AbstractEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
     secondaryStats.initialize(primaryStats);   // Prevent resetting secondary stats on player entity
     destCoords = entityLevelData.destCoords;
-    delete nextAnimationData; nextAnimationData = nullptr;
 }
 
 /**

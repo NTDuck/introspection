@@ -114,21 +114,6 @@ class AbstractEntity {
 
         EntityPrimaryStats primaryStats;
         EntitySecondaryStats secondaryStats;
-
-        /**
-         * The minimum range required for the entity to initiate an attack on a targetable entity.
-        */
-        SDL_Point kAttackInitiateRange;
-
-        /**
-         * The minimum range required for the entity to register an attack on a targetable entity.
-        */
-        SDL_Point kAttackRegisterRange;
-
-        /**
-         * Contain data associated with the pending i.e. "next" animation.
-        */
-        tile::NextAnimationData* nextAnimationData = nullptr;
         
     protected:
         AbstractEntity();
@@ -175,20 +160,36 @@ class AbstractEntity {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
+        void onLevelChange(const level::EntityLevelData& entityLevelData) override;
 
         void updateAnimation();
-        void resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
+        void resetAnimation(const AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
 
         virtual void initiateAnimation();
         virtual void onAttackInitiated();
         virtual void onAttackRegistered();
         virtual void onDeath();
 
-        tile::AnimatedEntitiesTilesetData::AnimationType currAnimationType;
+        AnimationType currAnimationType;
         bool isAnimationAtFinalSprite;
+
+        /**
+         * The minimum range required for the entity to initiate an attack on a targetable entity.
+        */
+        SDL_Point kAttackInitiateRange;
+
+        /**
+         * The minimum range required for the entity to register an attack on a targetable entity.
+        */
+        SDL_Point kAttackRegisterRange;
+
+        /**
+         * Contain data associated with the pending i.e. "next" animation.
+        */
+        tile::NextAnimationData* nextAnimationData = nullptr;
 
     protected:
         AbstractAnimatedEntity();
@@ -205,8 +206,8 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::kAttackInitiateRange, AbstractEntity<T>::kAttackRegisterRange, AbstractEntity<T>::nextAnimationData, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
-        using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite;
+        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
 
         virtual ~AbstractAnimatedDynamicEntity();
 

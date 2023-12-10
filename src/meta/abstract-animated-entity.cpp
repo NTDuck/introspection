@@ -49,7 +49,18 @@
 
 template <class T>
 AbstractAnimatedEntity<T>::AbstractAnimatedEntity() : isAnimationAtFinalSprite(false) {
-    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);
+    resetAnimation(AnimationType::kIdle);
+}
+
+/**
+ * @brief Update relevant data members on entering new level.
+ * @note Recommended implementation: this method should be defined by derived classes.
+*/
+template <class T>
+void AbstractAnimatedEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
+    delete nextAnimationData;
+    nextAnimationData = nullptr;
+    AbstractEntity<T>::onLevelChange(entityLevelData);
 }
 
 /**
@@ -74,8 +85,8 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             }
 
             if (tilesetData->animationMapping[currAnimationType].isPermanent) {
-                if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;   // The real permanent
-                resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kIdle);   // Might implement a temporary storage for most recent state to switch back to
+                if (currAnimationType == AnimationType::kDeath) return;   // The real permanent
+                resetAnimation(AnimationType::kIdle);   // Might implement a temporary storage for most recent state to switch back to
             }
             currAnimationGID = tilesetData->animationMapping[currAnimationType].startGID;
         };
@@ -91,7 +102,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <class T>
-void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTilesetData::AnimationType animationType, const MoveStatusFlag flag) {
+void AbstractAnimatedEntity<T>::resetAnimation(const AnimationType animationType, const MoveStatusFlag flag) {
     currAnimationType = animationType;
     if (flag == MoveStatusFlag::kContinued) return;
     currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
@@ -104,15 +115,15 @@ void AbstractAnimatedEntity<T>::resetAnimation(const tile::AnimatedEntitiesTiles
 template <class T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDeath) return;
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack && nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged) onAttackRegistered();
+    if (currAnimationType == AnimationType::kDeath) return;
+    if (currAnimationType == AnimationType::kAttack && nextAnimationData != nullptr && nextAnimationData->animationType == AnimationType::kDamaged) onAttackRegistered();
 
     if (nextAnimationData == nullptr || nextAnimationData->isExecuting) return;
 
     switch (nextAnimationData->animationType) {
-        case tile::AnimatedEntitiesTilesetData::AnimationType::kAttack: onAttackInitiated(); break;
-        case tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged: onAttackRegistered(); break;
-        case tile::AnimatedEntitiesTilesetData::AnimationType::kDeath: onDeath(); break;
+        case AnimationType::kAttack: onAttackInitiated(); break;
+        case AnimationType::kDamaged: onAttackRegistered(); break;
+        case AnimationType::kDeath: onDeath(); break;
         default: return;
     }
 
@@ -124,7 +135,7 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 */
 template <class T>
 void AbstractAnimatedEntity<T>::onAttackInitiated() {
-    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kAttack);
+    resetAnimation(AnimationType::kAttack);
 }
 
 /**
@@ -132,7 +143,7 @@ void AbstractAnimatedEntity<T>::onAttackInitiated() {
 */
 template <class T>
 void AbstractAnimatedEntity<T>::onAttackRegistered() {
-    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged);
+    resetAnimation(AnimationType::kDamaged);
 }
 
 /**
@@ -140,8 +151,9 @@ void AbstractAnimatedEntity<T>::onAttackRegistered() {
 */
 template <class T>
 void AbstractAnimatedEntity<T>::onDeath() {
-    resetAnimation(tile::AnimatedEntitiesTilesetData::AnimationType::kDeath);
+    resetAnimation(AnimationType::kDeath);
 }
+
 
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;
