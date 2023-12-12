@@ -76,7 +76,7 @@ void AbstractEntity<T>::initialize() {
 
 template <class T>
 void AbstractEntity<T>::deinitialize() {
-    for (auto& instance : instances) delete instance;
+    // for (auto& instance : instances) delete instance;
     instances.clear();
     tilesetData->deinitialize();
     tilesetData = nullptr;
@@ -128,7 +128,7 @@ void AbstractEntity<T>::setRGBA(SDL_Color& color) {
 template <class T>
 template <typename LevelData>
 void AbstractEntity<T>::callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection) {
-    for (auto& instance : instances) delete instance;
+    // for (auto& instance : instances) delete instance;
     instances.clear();
 
     for (const auto& entityLevelData : entityLevelDataCollection) {

@@ -11,14 +11,16 @@ a RPG made without a game engine.
 ## Features
 
 #### System:
-- UI not available
 - `RCLICK` / `LCLICK` to enter the game or reset player position
 
 #### Player:
 - Move with `W` `A` `S` `D`
+- Toggle run with `Shift`
+- Attack with `Space`
 
-#### Enemies:
-- Slime. Approach with caution.
+#### Entities:
+- Cat. Teleports you to somewhere fun.
+- Slime. Approach with caution (will hurt you).
 
 #### Map:
 - Equilibrium
@@ -40,7 +42,28 @@ a RPG made without a game engine.
 git clone https://github.com/NTDuck/8964 && cd 8964
 .\compile.bat
 ```
-    
+
+### Ubuntu
+
+**Prerequisites**:
+```
+sudo apt-get update
+sudo apt-get install g++ make libsdl2-dev libsdl2-image-dev zlib1g-dev
+```
+
+```
+make
+chmod +x ./build/8964
+./build/8964
+```
+
+Alternatively, in case of weird segmentation fault:
+```
+gdb ./build/8964
+run
+backtrace
+```
+
 ### Others:
 
 Official os-specific releases are not available, and compatibility layers (e.g. [wine](https://www.winehq.org/)) are not tested.
