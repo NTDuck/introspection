@@ -16,15 +16,15 @@ Player::Player() {
     primaryStats = globals::config::kDefaultPlayerPrimaryStats;
 }
 
-/**
- * @brief Creates an instance of this class, accessible as a static member.
- * @note Only one instance should exist at a time.
- * @todo Check for conflict with base class.
-*/
-Player* Player::instantiate() {
-    if (instance == nullptr) instance = new Player;
-    return instance;
-}
+// /**
+//  * @brief Creates an instance of this class, accessible as a static member.
+//  * @note Only one instance should exist at a time.
+//  * @todo Check for conflict with base class.
+// */
+// Player* Player::instantiate() {
+//     if (instance == nullptr) instance = new Player;
+//     return instance;
+// }
 
 void Player::deinitialize() {
     tilesetData->deinitialize();
@@ -77,7 +77,7 @@ void Player::onLevelChange(const level::EntityLevelData& player) {
 }
 
 
-Player* Player::instance = nullptr;
+// Player* Player::instance = nullptr;
 
 
 template <>

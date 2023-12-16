@@ -15,11 +15,6 @@ IngameInterface::~IngameInterface() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
 }
 
-IngameInterface* IngameInterface::instantiate(const level::LevelName levelName) {
-    if (instance == nullptr) instance = new IngameInterface(levelName);
-    return instance;
-}
-
 void IngameInterface::initialize() {
     if (!std::filesystem::exists(globals::config::kConfigPathLevel)) return;
     utils::loadLevelsData(levelMapping);
@@ -143,5 +138,4 @@ void IngameInterface::renderLevelTiles() {
 }
 
 
-IngameInterface* IngameInterface::instance = nullptr;
 level::LevelMapping IngameInterface::levelMapping;

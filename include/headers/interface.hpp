@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 
+#include <meta.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
@@ -12,14 +13,11 @@
 /**
  * @brief Represent the in-game interface.
 */
-class IngameInterface {
+class IngameInterface : public Singleton<IngameInterface> {
+    friend Singleton<IngameInterface>;
     public:
-        static IngameInterface* instantiate(const level::LevelName levelName);
+        using Singleton<IngameInterface>::instantiate;
 
-        IngameInterface(const IngameInterface&) = delete;   // copy constructor
-        IngameInterface& operator=(IngameInterface const&) = delete;   // copy assignment constructor
-        IngameInterface(IngameInterface&&) = delete;   // move constructor
-        IngameInterface& operator=(IngameInterface&&) = delete;   // move assignment constructor
         ~IngameInterface();
 
         static void initialize();
@@ -51,8 +49,6 @@ class IngameInterface {
          * @note Needs optimization to perfect relative positions of props to entities.
         */
         SDL_Texture* texture;
-
-        static IngameInterface* instance;
 };
 
 

@@ -15,32 +15,78 @@
 #include <auxiliaries/globals.hpp>
 
 
-/*
- * ┌────────────────┐
- * │ AbstractEntity │
- * └───┬────────────┘
- *     │
- *     │
- * ┌───▼────────────────────┐
- * │ AbstractAnimatedEntity │
- * └───┬───────┬────────────┘
- *     │       │
- *     │       │
- *     │       │
- *     │   ┌───▼────────┐
- *     │   │ Teleporter │
- *     │   └────────────┘
- *     │
- * ┌───▼───────────────────────────┐
- * │ AbstractAnimatedDynamicEntity │
- * └───────────┬───────────────────┘
- *             │
- *             ├──────────┐
- *             │          │
- *         ┌───▼────┐ ┌───▼───┐
- *         │ Player │ │ Slime │
- *         └────────┘ └───────┘
+/**
+ * Flow 1: Abstract Hierarchy
+ * ┌────────────────────┐
+ * │ PolymorphicBase<T> │
+ * └───┬────────────────┘
+ *     │                        ┌─────────────────┐
+ *     │   ┌──────────────┐  ┌──► IngameInterface │
+ *     ├───► Singleton<T> ├──┤  └─────────────────┘
+ *     │   └──────────────┘  │
+ *     │                     └───────────────────────────┐
+ *     │                                                 │
+ *     │   ┌───────────────────────────────────────┐     │
+ *     ├───► Multiton<T, Hasher, EqualityOperator> │     │
+ *     │   └───────────────────────────────────────┘     │
+ *     │                                                 │
+ *     │                                                 │
+ * ┌───▼───────────────┐                                 │
+ * │ AbstractEntity<T> │                                 │
+ * └───┬───────────────┘                                 │
+ *     │                                                 │
+ * ┌───▼───────────────────────┐   ┌────────────┐        │
+ * │ AbstractAnimatedEntity<T> ├───► Teleporter │        │
+ * └───┬───────────────────────┘   └────────────┘        │
+ *     │                                                 │
+ *     │                                    ┌────────┐   │
+ *     │                                 ┌──► Player ◄───┘
+ * ┌───▼──────────────────────────────┐  │  └────────┘
+ * │ AbstractAnimatedDynamicEntity<T> ├──┤
+ * └──────────────────────────────────┘  │  ┌───────┐
+ *                                       └──► Slime │
+ *                                          └───────┘
 */
+
+
+template <class T>
+class PolymorphicBase {
+    public:
+        PolymorphicBase(PolymorphicBase const&) = delete;
+        PolymorphicBase& operator=(PolymorphicBase const&) = delete;
+        PolymorphicBase(PolymorphicBase&&) = delete;
+        PolymorphicBase& operator=(PolymorphicBase&&) = delete;
+
+    protected:
+        PolymorphicBase() = default;
+        virtual ~PolymorphicBase() = default;
+};
+
+template <class T>
+class Singleton : virtual public PolymorphicBase<T> {
+    public:
+        template <typename... Args>
+        inline static T* instantiate(Args&&... args) {
+            if (instance == nullptr) instance = new T(std::forward<Args>(args)...);
+            return instance;
+        }
+
+    protected:
+        static T* instance;
+};
+
+template <class T, class Hasher, class EqualityOperator>
+class Multiton : virtual public PolymorphicBase<T> {
+    public:
+        template <typename... Args>
+        inline static T* instantiate(Args&&... args) {
+            auto instance = new T(std::forward<Args>(args)...);
+            instances.emplace(instance);
+            return instance;
+        }
+
+        static std::unordered_set<T*, Hasher, EqualityOperator> instances;
+};
 
 
 /**
@@ -54,7 +100,7 @@
  * @see https://google.github.io/styleguide/cppguide.html#Declaration_Order
 */
 template <class T>
-class AbstractEntity {
+class AbstractEntity : public PolymorphicBase<T> {
     public:
         struct PointerHasher {
             std::size_t operator()(const T* pointer) const;
@@ -65,10 +111,12 @@ class AbstractEntity {
         };
 
         static T* instantiate(SDL_Point destCoords);
-        AbstractEntity(AbstractEntity const&) = delete;   // copy constructor
-        AbstractEntity& operator=(const AbstractEntity&) = delete;   // copy assignment constructor
-        AbstractEntity(AbstractEntity&&) = delete;   // move constructor
-        AbstractEntity& operator=(AbstractEntity&&) = delete;   // move assignment constructor
+
+        // AbstractEntity(AbstractEntity const&) = delete;   // copy constructor
+        // AbstractEntity& operator=(const AbstractEntity&) = delete;   // copy assignment constructor
+        // AbstractEntity(AbstractEntity&&) = delete;   // move constructor
+        // AbstractEntity& operator=(AbstractEntity&&) = delete;   // move assignment constructor
+        
         bool operator==(const AbstractEntity<T>& other) const;
         bool operator<(const AbstractEntity<T>& other) const;
         virtual ~AbstractEntity();

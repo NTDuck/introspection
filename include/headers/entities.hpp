@@ -14,10 +14,11 @@
  * @brief A singleton class representing one instance of the player entity.
  * @note Only one instance should exist at a time.
 */
-class Player final : public AbstractAnimatedDynamicEntity<Player> {
+class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
     friend AbstractAnimatedDynamicEntity<Player>;
     public:
-        static Player* instantiate();
+        using Singleton<Player>::instantiate, Singleton<Player>::instance;
+
         Player();
         ~Player() = default;
 
@@ -25,9 +26,6 @@ class Player final : public AbstractAnimatedDynamicEntity<Player> {
         
         void onLevelChange(const level::EntityLevelData& player) override;
         void handleKeyboardEvent(const SDL_Event& event);
-
-    private:
-        static Player* instance;
 };
 
 
@@ -35,8 +33,10 @@ class Player final : public AbstractAnimatedDynamicEntity<Player> {
  * @brief A multiton class representing controlled instances of teleporter entities.
 */
 class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
-    friend AbstractAnimatedEntity<Teleporter>;
+    friend AbstractAnimatedDynamicEntity<Teleporter>;
     public:
+        using AbstractEntity<Teleporter>::instantiate;
+
         Teleporter();
         ~Teleporter() = default;
 
@@ -60,6 +60,8 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
 class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
     friend AbstractAnimatedDynamicEntity<Slime>;
     public:
+        using AbstractEntity<Slime>::instantiate;
+
         Slime();
         ~Slime() = default;
 

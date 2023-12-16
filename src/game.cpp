@@ -29,11 +29,6 @@ Game::~Game() {
     SDL_Quit();
 }
 
-Game* Game::instantiate(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) {
-    if (instance == nullptr) instance = new Game(flags, windowDimension, frameRate, title);
-    return instance;
-}
-
 /**
  * @brief The only non-static method accessible at public scope.
  * @note Call this exactly once.

@@ -8,6 +8,7 @@
 
 #include <interface.hpp>
 #include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
@@ -15,21 +16,18 @@
 /**
  * @brief A singleton class that controls are ingame operations.
 */
-class Game {
+class Game : public Singleton<Game> {
+    friend Singleton<Game>;
     public:
-        static Game* instantiate(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
+        using Singleton<Game>::instantiate;
 
-        Game(const Game&) = delete;   // copy constructor
-        Game& operator=(Game const&) = delete;   // copy assignment constructor
-        Game(Game&&) = delete;   // move constructor
-        Game& operator=(Game&&) = delete;   // move assignment constructor
         ~Game();
 
         void start();
 
     private:
         explicit Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
-        
+
         void initialize();
         void startGameLoop();
 
@@ -82,13 +80,6 @@ class Game {
 
         static Game* instance;
 };
-
-
-template <>
-void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter);
-
-template <>
-void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime);
 
 
 #endif
