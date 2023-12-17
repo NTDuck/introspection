@@ -9,6 +9,7 @@
 #include <interaction.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
+#include <auxiliaries/utils.hpp>
 #include <auxiliaries/globals.hpp>
 
 
@@ -155,7 +156,10 @@ void Game::handleEntitiesMovement() {
 }
 
 template <class Active, class Passive>
-void Game::onEntityCollision(Active& active, Passive& passive) {}
+void Game::onEntityCollision(Active& active, Passive& passive) {
+    utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
+}
 
 template <>
 void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
@@ -177,6 +181,9 @@ void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime) {
 */
 template <class Active, class Passive>
 void Game::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) {
+    utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
+
     // Handle `kDamaged` case differently
     if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);

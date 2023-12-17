@@ -23,24 +23,13 @@ bool AbstractEntity<T>::operator<(const AbstractEntity<T>& other) const {
     return destCoords < other.destCoords;
 }
 
-template <class T>
-std::size_t AbstractEntity<T>::PointerHasher::operator()(const T* pointer) const {
-    return std::hash<int>()(pointer->destCoords.x) ^ std::hash<int>()(pointer->destCoords.y);
-}
-
-template <class T>
-bool AbstractEntity<T>::PointerEqualityOperator::operator()(const T* first, const T* second) const {
-    return *first == *second;
-}
-
 /**
  * @brief Create an instance of derived class `T` and register to `instanceMapping`.
 */
 template <class T>
 T* AbstractEntity<T>::instantiate(SDL_Point destCoords) {
-    auto instance = new T;
+    auto instance = Multiton<T>::instantiate();
     instance->destCoords = destCoords;
-    instances.emplace(instance);   // `if constexpr(requires{ instance->destCoords; })`
     return instance;
 }
 
@@ -182,11 +171,6 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
     };
 }
 
-/**
- * Store pointers of instances of derived class `T`. Based on `destCoords`. Useful for determining interactions between different instances of different derived classes e.g. entity collision.
-*/
-template <class T>
-std::unordered_set<T*, typename AbstractEntity<T>::PointerHasher, typename AbstractEntity<T>::PointerEqualityOperator> AbstractEntity<T>::instances;
 
 template <class T>
 tile::AnimatedEntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;

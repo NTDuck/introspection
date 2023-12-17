@@ -4,7 +4,6 @@
 #include <filesystem>
 #include <string>
 #include <vector>
-#include <type_traits>
 #include <unordered_set>
 #include <utility> 
 #include <iostream>
@@ -16,7 +15,7 @@
 
 
 /**
- * Flow 1: Abstract Hierarchy
+ * @brief Flow 1: Abstract Hierarchy
  * ┌────────────────────┐
  * │ PolymorphicBase<T> │
  * └───┬────────────────┘
@@ -25,13 +24,12 @@
  *     ├───► Singleton<T> ├──┤  └─────────────────┘
  *     │   └──────────────┘  │
  *     │                     └───────────────────────────┐
- *     │                                                 │
- *     │   ┌───────────────────────────────────────┐     │
- *     ├───► Multiton<T, Hasher, EqualityOperator> │     │
- *     │   └───────────────────────────────────────┘     │
- *     │                                                 │
- *     │                                                 │
- * ┌───▼───────────────┐                                 │
+ *     │   ┌─────────────┐                               │
+ *     └───► Multiton<T> │                               │
+ *         └───┬─────────┘                               │
+ *             │                                         │
+ *             │                                         │
+ * ┌───────────▼───────┐                                 │
  * │ AbstractEntity<T> │                                 │
  * └───┬───────────────┘                                 │
  *     │                                                 │
@@ -49,6 +47,9 @@
 */
 
 
+/**
+ * @brief An abstract base with certain operators deleted. Required for implementation of derived classes `Singleton<T>` and `Multiton<T>`.
+*/
 template <class T>
 class PolymorphicBase {
     public:
@@ -62,6 +63,9 @@ class PolymorphicBase {
         virtual ~PolymorphicBase() = default;
 };
 
+/**
+ * @brief A standard Singleton template class.
+*/
 template <class T>
 class Singleton : virtual public PolymorphicBase<T> {
     public:
@@ -75,8 +79,19 @@ class Singleton : virtual public PolymorphicBase<T> {
         static T* instance;
 };
 
-template <class T, class Hasher, class EqualityOperator>
+/**
+ * @brief An adapted Multiton template class that governs instances via a `std::unordered_set` instead of a `std::unordered_map`.
+*/
+template <class T>
 class Multiton : virtual public PolymorphicBase<T> {
+    struct Hasher {
+        std::size_t operator()(const T* pointer) const;
+    };
+
+    struct EqualityOperator {
+        bool operator()(const T* first, const T* second) const;
+    };
+
     public:
         template <typename... Args>
         inline static T* instantiate(Args&&... args) {
@@ -100,22 +115,11 @@ class Multiton : virtual public PolymorphicBase<T> {
  * @see https://google.github.io/styleguide/cppguide.html#Declaration_Order
 */
 template <class T>
-class AbstractEntity : public PolymorphicBase<T> {
+class AbstractEntity : public Multiton<T> {
     public:
-        struct PointerHasher {
-            std::size_t operator()(const T* pointer) const;
-        };
-
-        struct PointerEqualityOperator {
-            bool operator()(const T* first, const T* second) const;
-        };
+        using Multiton<T>::instances;
 
         static T* instantiate(SDL_Point destCoords);
-
-        // AbstractEntity(AbstractEntity const&) = delete;   // copy constructor
-        // AbstractEntity& operator=(const AbstractEntity&) = delete;   // copy assignment constructor
-        // AbstractEntity(AbstractEntity&&) = delete;   // move constructor
-        // AbstractEntity& operator=(AbstractEntity&&) = delete;   // move assignment constructor
         
         bool operator==(const AbstractEntity<T>& other) const;
         bool operator<(const AbstractEntity<T>& other) const;
@@ -146,7 +150,6 @@ class AbstractEntity : public PolymorphicBase<T> {
 
         SDL_Rect getDestRectFromCoords(const SDL_Point& coords);
 
-        static std::unordered_set<T*, typename AbstractEntity<T>::PointerHasher, typename AbstractEntity<T>::PointerEqualityOperator> instances;
         static tile::AnimatedEntitiesTilesetData* tilesetData;
 
         /**
@@ -208,7 +211,8 @@ class AbstractEntity : public PolymorphicBase<T> {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using Multiton<T>::instances;
+        using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
         void onLevelChange(const level::EntityLevelData& entityLevelData) override;
@@ -254,7 +258,8 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using AbstractEntity<T>::instances, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        using Multiton<T>::instances;
+        using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
         using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
 
         virtual ~AbstractAnimatedDynamicEntity();

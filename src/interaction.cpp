@@ -12,11 +12,17 @@
 
 template <class Active, class Passive>
 bool predicateCoordsCollision(const Active& active, const Passive& passive) {
+    utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractEntity<Passive>, Passive>();
+
     return passive.destCoords.x == active.nextDestCoords->x && passive.destCoords.y == active.nextDestCoords->y;
 }
 
 template <class Active, class Passive>
 bool predicateRectCollision(const Active& active, const Passive& passive) {
+    utils::isDerivedFrom<AbstractEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractEntity<Passive>, Passive>();
+
     return (active.destRect.x < passive.destRect.x ? passive.destRect.x < active.destRect.x + active.destRect.w : active.destRect.x < passive.destRect.x + passive.destRect.w) && (active.destRect.y < passive.destRect.y ? passive.destRect.y < active.destRect.y + active.destRect.h : active.destRect.y < passive.destRect.y + passive.destRect.h);   // Standard bounding box collision detection
 }
 
@@ -52,6 +58,9 @@ Passive* utils::checkEntityCollision(const Active& active, InteractionType inter
 */
 template <class Active, class Passive>
 bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passive) {
+    utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
+
     if (active.currAnimationType == AnimationType::kAttack || passive.currAnimationType == AnimationType::kDamaged) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
@@ -63,6 +72,9 @@ bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passi
 */
 template <class Active, class Passive>
 bool utils::checkEntityAttackRegister(const Active& active, const Passive& passive) {
+    utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
+    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
+    
     if (active.currAnimationType == AnimationType::kDamaged || passive.currAnimationType != AnimationType::kAttack || !passive.isAnimationAtFinalSprite) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);

@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <string>
 #include <vector>
+#include <type_traits>
 
 #include <SDL.h>
 
@@ -17,6 +18,11 @@ SDL_Point operator+(const SDL_Point& first, const SDL_Point& second);
 SDL_Point operator-(const SDL_Point& first, const SDL_Point& second);
 
 namespace utils {
+    template <class Base, class Derived>
+    struct isDerivedFrom {
+        static_assert(std::is_base_of<Base, Derived>::value, "`Derived` must derive from `Base`");
+    };
+
     int convertFloatToInt(float f);
     int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(const SDL_Point& first, const SDL_Point& second);
