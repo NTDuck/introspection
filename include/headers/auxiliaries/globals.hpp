@@ -172,7 +172,6 @@ namespace tile {
      * @note `initialize()` method of this and derived classes are implemented in elsewhere - `<utils.h>`'s source file.
     */
     struct BaseTilesetData {
-        BaseTilesetData();
         void initialize(pugi::xml_document& document, SDL_Renderer* renderer);
         void deinitialize();
 
@@ -196,10 +195,9 @@ namespace tile {
         */
         using Collection = std::vector<TilelayerTilesetData>;
 
-        TilelayerTilesetData();
         void initialize(const json& tileset, SDL_Renderer* renderer);
 
-        int firstGID;
+        int firstGID = 0;
     };
 
     /**
@@ -209,7 +207,7 @@ namespace tile {
      * @param animationUpdateRate the number of frames a sprite should last before switching to the next. Should be treated as a constant.
      * @param animationSize represents the ratio between the size of one single animation/sprite and the size of a `Tile` on the tileset, per dimension. Should be implemented alongside `globals::tileDestSize`.
     */
-    struct AnimatedEntitiesTilesetData : public BaseTilesetData {
+    struct EntitiesTilesetData : public BaseTilesetData {
         /**
          * Register animation types as enumeration constants for maintainability.
         */
@@ -256,10 +254,10 @@ namespace tile {
     */
     struct NextAnimationData {
         bool isExecuting = false;
-        AnimatedEntitiesTilesetData::AnimationType animationType;
+        EntitiesTilesetData::AnimationType animationType;
 
-        NextAnimationData(AnimatedEntitiesTilesetData::AnimationType animationType);
-        static void update(NextAnimationData*& instance, const tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType);
+        NextAnimationData(EntitiesTilesetData::AnimationType animationType);
+        static void update(NextAnimationData*& instance, const tile::EntitiesTilesetData::AnimationType pendingAnimationType);
     };
 };
 
@@ -360,7 +358,7 @@ namespace level {
 };
 
 
-using AnimationType = tile::AnimatedEntitiesTilesetData::AnimationType;
+using AnimationType = tile::EntitiesTilesetData::AnimationType;
 
 
 /**

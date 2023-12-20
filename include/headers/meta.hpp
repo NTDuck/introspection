@@ -18,32 +18,35 @@
  * @brief Flow 1: Abstract Hierarchy
  * ┌────────────────────┐
  * │ PolymorphicBase<T> │
- * └───┬────────────────┘
- *     │                        ┌─────────────────┐
- *     │   ┌──────────────┐  ┌──► IngameInterface │
- *     ├───► Singleton<T> ├──┤  └─────────────────┘
- *     │   └──────────────┘  │
- *     │                     └───────────────────────────┐
- *     │   ┌─────────────┐                               │
- *     └───► Multiton<T> │                               │
- *         └───┬─────────┘                               │
- *             │                                         │
- *             │                                         │
- * ┌───────────▼───────┐                                 │
- * │ AbstractEntity<T> │                                 │
- * └───┬───────────────┘                                 │
- *     │                                                 │
- * ┌───▼───────────────────────┐   ┌────────────┐        │
- * │ AbstractAnimatedEntity<T> ├───► Teleporter │        │
- * └───┬───────────────────────┘   └────────────┘        │
- *     │                                                 │
- *     │                                    ┌────────┐   │
- *     │                                 ┌──► Player ◄───┘
- * ┌───▼──────────────────────────────┐  │  └────────┘
- * │ AbstractAnimatedDynamicEntity<T> ├──┤
- * └──────────────────────────────────┘  │  ┌───────┐
- *                                       └──► Slime │
- *                                          └───────┘
+ * └┬───────────────────┘
+ *  │
+ *  │ ┌──────────────┐
+ *  ├─► Singleton<T> ├───────────────────────────────────────────┐
+ *  │ └┬─────────────┘                                           │
+ *  │  │                                                         │
+ *  │  │ ┌──────────────────────┐ ┌─────────────────┐            │
+ *  │  └─► AbstractInterface<T> ├─► IngameInterface │            │
+ *  │    └──────────────────────┘ └─────────────────┘            │
+ *  │                                                            │
+ *  │ ┌─────────────┐                                            │
+ *  └─► Multiton<T> │                                            │
+ *    └┬────────────┘                                            │
+ *     │                                                         │
+ *     │ ┌───────────────────┐                                   │
+ *     └─► AbstractEntity<T> │                                   │
+ *       └┬──────────────────┘                                   │
+ *        │                                                      │
+ *        │ ┌───────────────────────────┐ ┌────────────┐         │
+ *        └─► AbstractAnimatedEntity<T> ├─► Teleporter │         │
+ *          └┬──────────────────────────┘ └────────────┘         │
+ *           │                                                   │
+ *           │ ┌──────────────────────────────────┐   ┌────────┐ │
+ *           └─► AbstractAnimatedDynamicEntity<T> ├─┬─► Player ◄─┘
+ *             └──────────────────────────────────┘ │ └────────┘
+ *                                                  │
+ *                                                  │ ┌───────┐
+ *                                                  └─► Slime │
+ *                                                    └───────┘
 */
 
 
@@ -59,7 +62,8 @@ class PolymorphicBase {
         PolymorphicBase& operator=(PolymorphicBase&&) = delete;
 
     protected:
-        PolymorphicBase() = default;
+        template <typename... Args>
+        inline PolymorphicBase(Args&&... args) {}
         virtual ~PolymorphicBase() = default;
 };
 
@@ -70,10 +74,12 @@ template <class T>
 class Singleton : virtual public PolymorphicBase<T> {
     public:
         template <typename... Args>
-        inline static T* instantiate(Args&&... args) {
+        static T* instantiate(Args&&... args) {
             if (instance == nullptr) instance = new T(std::forward<Args>(args)...);
             return instance;
         }
+
+        static void deinitialize();
 
     protected:
         static T* instance;
@@ -83,7 +89,7 @@ class Singleton : virtual public PolymorphicBase<T> {
  * @brief An adapted Multiton template class that governs instances via a `std::unordered_set` instead of a `std::unordered_map`.
 */
 template <class T>
-class Multiton : virtual public PolymorphicBase<T> {
+class Multiton : virtual public PolymorphicBase<T> { 
     struct Hasher {
         std::size_t operator()(const T* pointer) const;
     };
@@ -92,15 +98,46 @@ class Multiton : virtual public PolymorphicBase<T> {
         bool operator()(const T* first, const T* second) const;
     };
 
-    public:
+    public:      
         template <typename... Args>
-        inline static T* instantiate(Args&&... args) {
+        static T* instantiate(Args&&... args) {
             auto instance = new T(std::forward<Args>(args)...);
             instances.emplace(instance);
             return instance;
         }
 
+        // template <typename... Args>
+        // static void instantiateEx(Args&&... args) {
+        //     const std::size_t size = std::min({args.size()...});
+        //     for (std::size_t ind = 0; ind < size; ++ind) T::instantiate(args[ind]...);
+        // }
+
+        static void deinitialize();
+
+        /**
+         * @brief Variadically call `method` on each instance of derived class `T` with the same parameters `args`.
+         * @note Defined here to avoid lengthy explicit template instantiation.
+        */
+        template <typename ClassMethod, typename... Args>
+        static void callOnEach(ClassMethod&& method, Args&&... args) {
+            for (auto& instance : instances) (instance->*method)(std::forward<Args>(args)...);
+        }
+
+        // /**
+        //  * @brief Variadically call `method` on each instance of derived class `T` with parameters deduced from `args`.
+        //  * @note Recommended implementation: `instances.size()` must be equivalent to the length of each container in `args`; any exceptions to which might result in undefined behavior. For example, with `method` `func(int, char)` and `args` being `std::vector<int>{0, 1, 2}, std::string("foo")`, given that `instances` currently houses `first`, `second`, `third`, this function will yield `first.func(0, 'f')`, `second.func(1, 'o')`, `third.func(2, 'o')`.
+        // */
+        // template <typename ClassMethod, typename... Args>
+        // static void callOnEachEx(ClassMethod&& method, Args&&... args) {
+        //     const std::size_t size = std::min({args.size()...});
+        //     auto it = instances.begin();
+        //     for (std::size_t ind = 0; ind < size && it != instances.end(); ++ind, ++it) (*it->*method)(args[ind]...);   // `std::forward` fails - requires a reference to the iterable, not the iterated element
+        // }
+
         static std::unordered_set<T*, Hasher, EqualityOperator> instances;
+
+    protected:
+        virtual ~Multiton() override;
 };
 
 
@@ -117,13 +154,12 @@ class Multiton : virtual public PolymorphicBase<T> {
 template <class T>
 class AbstractEntity : public Multiton<T> {
     public:
-        using Multiton<T>::instances;
+        using Multiton<T>::instances, Multiton<T>::callOnEach;
 
         static T* instantiate(SDL_Point destCoords);
         
         bool operator==(const AbstractEntity<T>& other) const;
         bool operator<(const AbstractEntity<T>& other) const;
-        virtual ~AbstractEntity();
 
         static void initialize();
         static void deinitialize();
@@ -133,15 +169,6 @@ class AbstractEntity : public Multiton<T> {
         static void setAlpha(Uint8 alpha);
         static void setRGBA(SDL_Color& color);
 
-        /**
-         * @brief Variadically call `method` on each instance of derived class `T` with the same parameters `Args...`.
-         * @note `inline` could solve GCC's `undefined reference`. Sometimes.
-        */
-        template <typename ClassMethod, typename... Args>
-        inline static void callOnEach(ClassMethod&& method, Args&&... args) {
-            for (auto& instance : instances) (instance->*method)(std::forward<Args>(args)...);
-        }
-
         template <typename LevelData> static void callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection);
 
         virtual void render() const;
@@ -150,7 +177,7 @@ class AbstractEntity : public Multiton<T> {
 
         SDL_Rect getDestRectFromCoords(const SDL_Point& coords);
 
-        static tile::AnimatedEntitiesTilesetData* tilesetData;
+        static tile::EntitiesTilesetData* tilesetData;
 
         /**
          * The non-negative coordinates of the entity relative to a 2-dimensional standardized Cartesian coordinate system. (origin at top-left corner)
@@ -211,7 +238,7 @@ class AbstractEntity : public Multiton<T> {
 template <class T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using Multiton<T>::instances;
+        using Multiton<T>::instances, Multiton<T>::callOnEach;
         using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
@@ -258,7 +285,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <class T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using Multiton<T>::instances;
+        using Multiton<T>::instances, Multiton<T>::callOnEach;
         using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
         using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
 
@@ -327,6 +354,26 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_FPoint counterFractionalVelocity;
         SDL_FPoint kFractionalVelocity;
         SDL_Point kIntegralVelocity;
+};
+
+
+template <class T>
+class AbstractInterface : public Singleton<T> {
+    friend Singleton<T>;
+    public:
+        using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
+
+        void render();
+        void onWindowChange();
+
+    protected:
+        ~AbstractInterface();
+
+        /**
+         * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
+         * @note Needs optimization to perfect relative positions of props to entities.
+        */
+        SDL_Texture* texture = nullptr;
 };
 
 

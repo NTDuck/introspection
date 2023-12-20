@@ -9,28 +9,11 @@
 #include <auxiliaries/globals.hpp>
 
 
-IngameInterface::IngameInterface(const level::LevelName levelName) : levelName(levelName), texture(nullptr) {}
-
-IngameInterface::~IngameInterface() {
-    if (texture != nullptr) SDL_DestroyTexture(texture);
-}
+IngameInterface::IngameInterface(const level::LevelName levelName) : levelName(levelName) {}
 
 void IngameInterface::initialize() {
     if (!std::filesystem::exists(globals::config::kConfigPathLevel)) return;
     utils::loadLevelsData(levelMapping);
-}
-
-void IngameInterface::deinitialize() {
-    delete instance;
-    instance = nullptr;
-}
-
-/**
- * @brief Render the texture to the window.
- * @note Overlapping is allowed.
-*/
-void IngameInterface::render() {
-    SDL_RenderCopy(globals::renderer, texture, nullptr, nullptr);
 }
 
 /**
@@ -57,11 +40,7 @@ void IngameInterface::onLevelChange() {
 }
 
 void IngameInterface::onWindowChange() {
-    // NOT a good way of resizing things
-    if (texture != nullptr) SDL_DestroyTexture(texture);
-    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);
-
-    // Last resort
+    AbstractInterface<IngameInterface>::onWindowChange();
     onLevelChange();
 }
 
@@ -70,10 +49,10 @@ void IngameInterface::onWindowChange() {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameInterface::loadLevel() {
-    std::filesystem::path LEVEL_PATH = globals::config::kTiledAssetPath / levelMapping[levelName];
-    if (!std::filesystem::exists(LEVEL_PATH)) return;
+    std::filesystem::path kLevelPath = globals::config::kTiledAssetPath / levelMapping[levelName];
+    if (!std::filesystem::exists(kLevelPath)) return;
     json data;
-    utils::readJSON(LEVEL_PATH.string(), data);
+    utils::readJSON(kLevelPath.string(), data);
 
     // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
     utils::loadLevelData(globals::currentLevelData, data);
@@ -109,17 +88,19 @@ void IngameInterface::renderLevelTiles() {
             for (const auto& gid : globals::currentLevelData.tileCollection[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
-                tile::TilelayerTilesetData tilesetData;
+                auto tilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                tilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
+                if (tilesetData == nullptr) continue;
 
-                data.textures.emplace_back(tilesetData.properties["norender"] == "true" ? nullptr : tilesetData.texture);
+                auto it = tilesetData->properties.find("norender");
+                data.textures.emplace_back(it != tilesetData->properties.end() && it->second == "true" ? nullptr : tilesetData->texture);
+
                 data.srcRects.push_back({
-                    ((gid - tilesetData.firstGID) % tilesetData.srcCount.x) * tilesetData.srcSize.x,
-                    ((gid - tilesetData.firstGID) / tilesetData.srcCount.x) * tilesetData.srcSize.y,
-                    tilesetData.srcSize.x,
-                    tilesetData.srcSize.y,
+                    ((gid - tilesetData->firstGID) % tilesetData->srcCount.x) * tilesetData->srcSize.x,
+                    ((gid - tilesetData->firstGID) / tilesetData->srcCount.x) * tilesetData->srcSize.y,
+                    tilesetData->srcSize.x,
+                    tilesetData->srcSize.y,
                 });
             }
         }

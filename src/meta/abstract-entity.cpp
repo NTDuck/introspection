@@ -1,5 +1,6 @@
 #include <meta.hpp>
 
+#include <algorithm>
 #include <filesystem>
 #include <unordered_set>
 #include <type_traits>
@@ -42,14 +43,6 @@ AbstractEntity<T>::AbstractEntity()
 }
 
 /**
- * @brief Delete an instance of derived class `T` and remove from `instanceMapping`.
-*/
-template <class T>
-AbstractEntity<T>::~AbstractEntity() {
-    instances.erase(static_cast<T*>(this));
-}
-
-/**
  * @see <utils.h> utils::loadTilesetsData
 */
 template <class T>
@@ -59,14 +52,13 @@ void AbstractEntity<T>::initialize() {
     // delete tilesetPath;
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
     
-    tilesetData = new tile::AnimatedEntitiesTilesetData;
+    tilesetData = new tile::EntitiesTilesetData;
     tilesetData->initialize(document, globals::renderer);
 }
 
 template <class T>
 void AbstractEntity<T>::deinitialize() {
-    // for (auto& instance : instances) delete instance;
-    instances.clear();
+    Multiton<T>::deinitialize();
     tilesetData->deinitialize();
     tilesetData = nullptr;
 }
@@ -117,9 +109,13 @@ void AbstractEntity<T>::setRGBA(SDL_Color& color) {
 template <class T>
 template <typename LevelData>
 void AbstractEntity<T>::callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection) {
-    // for (auto& instance : instances) delete instance;
-    instances.clear();
+    Multiton<T>::deinitialize();
 
+    // std::vector<SDL_Point> entityLevelDataDestCoordsCollection;
+    // std::transform(entityLevelDataCollection.begin(), entityLevelDataCollection.end(), std::back_inserter(entityLevelDataDestCoordsCollection), [](const auto& entityLevelData) { return entityLevelData.destCoords; });
+
+    // Multiton<T>::instantiateEx(entityLevelDataDestCoordsCollection);
+    // Multiton<T>::callOnEachEx(&T::onLevelChange, entityLevelDataCollection);
     for (const auto& entityLevelData : entityLevelDataCollection) {
         auto instance = instantiate(entityLevelData.destCoords);
         instance->onLevelChange(entityLevelData);
@@ -173,7 +169,7 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(const SDL_Point& coords) {
 
 
 template <class T>
-tile::AnimatedEntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
+tile::EntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
 
 
 /**

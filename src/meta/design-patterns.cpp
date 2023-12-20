@@ -8,11 +8,17 @@
 
 
 template <class T>
+void Singleton<T>::deinitialize() {
+    delete instance;
+    instance = nullptr;
+}
+
+template <class T>
 T* Singleton<T>::instance = nullptr;
 
 template class Singleton<IngameInterface>;
-template class Singleton<Game>;
 template class Singleton<Player>;
+template class Singleton<Game>;
 
 
 template <class T>
@@ -26,7 +32,21 @@ bool Multiton<T>::EqualityOperator::operator()(const T* first, const T* second) 
 }
 
 /**
- * @note This static member should be made public.
+ * @brief Delete an instance of derived class `T` and remove from `instanceMapping`.
+*/
+template <class T>
+Multiton<T>::~Multiton() {
+    instances.erase(static_cast<T*>(this));
+}
+
+template <class T>
+void Multiton<T>::deinitialize() {
+    for (auto& instance : instances) delete instance;
+    instances.clear();
+}
+
+/**
+ * @note This static member should be exposed at public scope.
 */
 template <class T>
 std::unordered_set<T*, typename Multiton<T>::Hasher, typename Multiton<T>::EqualityOperator> Multiton<T>::instances;

@@ -17,12 +17,16 @@ bool operator<(const SDL_Point& first, const SDL_Point& second);
 SDL_Point operator+(const SDL_Point& first, const SDL_Point& second);
 SDL_Point operator-(const SDL_Point& first, const SDL_Point& second);
 
+
 namespace utils {
     template <class Base, class Derived>
     struct isDerivedFrom {
         static_assert(std::is_base_of<Base, Derived>::value, "`Derived` must derive from `Base`");
     };
 
+    template <typename Iterable, typename Function, typename... Args>
+    void iterate(const Iterable& iterable, Function&& function, Args&&... args);
+    
     int convertFloatToInt(float f);
     int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(const SDL_Point& first, const SDL_Point& second);
@@ -39,7 +43,7 @@ namespace utils {
     void loadLevelData(level::LevelData& currentLevelData, const json& JSONLevelData);
     void loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, const json& jsonData);
 
-    tile::TilelayerTilesetData getTilesetData(tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid);
+    const tile::TilelayerTilesetData* getTilesetData(const tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid);
 };
 
 

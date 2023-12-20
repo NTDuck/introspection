@@ -22,16 +22,11 @@ void EntitySecondaryStats::initialize(const EntityPrimaryStats& entityPrimarySta
     CriticalDamage = 3;
 }
 
-tile::BaseTilesetData::BaseTilesetData() : texture(nullptr), srcCount({0, 0}), srcSize({0, 0}), properties({}) {}   // Simulate `NULL` value
-
 void tile::BaseTilesetData::deinitialize() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
-    *this = BaseTilesetData();
 }
 
-tile::TilelayerTilesetData::TilelayerTilesetData() : BaseTilesetData::BaseTilesetData(), firstGID(0) {}
-
-const std::unordered_map<std::string, tile::AnimatedEntitiesTilesetData::AnimationType> tile::AnimatedEntitiesTilesetData::kAnimationTypeConversionMapping = {
+const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> tile::EntitiesTilesetData::kAnimationTypeConversionMapping = {
     {"animation-idle", AnimationType::kIdle},
     {"animation-attack", AnimationType::kAttack},
     {"animation-blink", AnimationType::kBlink},
@@ -61,7 +56,7 @@ tile::NextAnimationData::NextAnimationData(AnimationType animationType) : animat
 /**
  * @brief Update `instance` based on `pendingAnimationType`.
 */
-void tile::NextAnimationData::update(NextAnimationData*& instance, const tile::AnimatedEntitiesTilesetData::AnimationType pendingAnimationType) {
+void tile::NextAnimationData::update(NextAnimationData*& instance, const tile::EntitiesTilesetData::AnimationType pendingAnimationType) {
     if (instance == nullptr) {
         instance = new tile::NextAnimationData(pendingAnimationType);
         return;

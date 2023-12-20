@@ -2,10 +2,11 @@
 
 #include <algorithm>
 #include <cmath>
-#include <random>
+#include <functional>
 #include <fstream>
 #include <vector>
 #include <string>
+#include <random>
 #include <unordered_map>
 
 #include <SDL.h>
@@ -35,6 +36,11 @@ SDL_Point operator-(const SDL_Point& first, const SDL_Point& second) {
     return {first.x - second.x, first.y - second.y};
 }
 
+
+template <typename Iterable, typename Function, typename... Args>
+void utils::iterate(const Iterable& iterable, Function&& function, Args&&... args) {
+    for (const auto& element : iterable) std::invoke(std::forward<Function>(function), element, std::forward<Args>(args)...);
+}
 
 /**
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
@@ -300,11 +306,12 @@ void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData:
  * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
  * @todo Optimization should be made to reduce time complexity. Try binary search.
 */
-tile::TilelayerTilesetData utils::getTilesetData(tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
-    for (const auto& tilesetData : tilesetDataCollection) if (tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y) return tilesetData;
-    return tile::TilelayerTilesetData();
+const tile::TilelayerTilesetData* utils::getTilesetData(const tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
+    auto it = std::find_if(tilesetDataCollection.begin(), tilesetDataCollection.end(), [&](const auto tilesetData) {
+        return tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y;
+    });
+    return it != tilesetDataCollection.end() ? &*it : nullptr;
 }
-
 
 /**
  * @brief Read data associated with a tileset from loaded XML data.
@@ -383,7 +390,7 @@ void tile::TilelayerTilesetData::initialize(const json& tileset, SDL_Renderer* r
  * @brief Read data associated with a tileset used for an entity or an animated object from loaded XML data.
  * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
 */
-void tile::AnimatedEntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
+void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
     BaseTilesetData::initialize(document, renderer);
 
     pugi::xml_node propertiesNode = document.child("tileset").child("properties");
@@ -412,10 +419,10 @@ void tile::AnimatedEntitiesTilesetData::initialize(pugi::xml_document& document,
             pugi::xml_node animationsNode = propertyNode.child("properties");
             if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
 
-            auto animationType = AnimatedEntitiesTilesetData::kAnimationTypeConversionMapping.find(name.as_string());
-            if (animationType == AnimatedEntitiesTilesetData::kAnimationTypeConversionMapping.end()) continue;
+            auto animationType = EntitiesTilesetData::kAnimationTypeConversionMapping.find(name.as_string());
+            if (animationType == EntitiesTilesetData::kAnimationTypeConversionMapping.end()) continue;
 
-            AnimatedEntitiesTilesetData::Animation animation;
+            EntitiesTilesetData::Animation animation;
 
             for (pugi::xml_node animationNode = animationsNode.child("property"); animationNode; animationNode = animationNode.next_sibling("property")) {
                 if (animationNode.empty()) continue;
@@ -438,7 +445,6 @@ void tile::AnimatedEntitiesTilesetData::initialize(pugi::xml_document& document,
         }
     }
 }
-
 
 /**
  * @brief An alternative to the constructor. Populate data members based on JSON data.

@@ -13,25 +13,21 @@
 /**
  * @brief Represent the in-game interface.
 */
-class IngameInterface : public Singleton<IngameInterface> {
-    friend Singleton<IngameInterface>;
+class IngameInterface final : public AbstractInterface<IngameInterface> {
+    friend AbstractInterface<IngameInterface>;
     public:
-        using Singleton<IngameInterface>::instantiate;
+        using AbstractInterface<IngameInterface>::render, AbstractInterface<IngameInterface>::texture;
 
-        ~IngameInterface();
+        IngameInterface(const level::LevelName levelName);
+        ~IngameInterface() = default;
 
         static void initialize();
-        static void deinitialize();
         
-        void render();
-
         void changeLevel(const level::LevelName levelName);
         void onLevelChange();
         void onWindowChange();
 
     private:
-        IngameInterface(const level::LevelName levelName);
-
         void loadLevel();
         void renderBackground();
         void renderLevelTiles();
@@ -43,12 +39,6 @@ class IngameInterface : public Singleton<IngameInterface> {
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
         static level::LevelMapping levelMapping;
-
-        /**
-         * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
-         * @note Needs optimization to perfect relative positions of props to entities.
-        */
-        SDL_Texture* texture;
 };
 
 

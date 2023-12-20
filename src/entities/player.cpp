@@ -16,16 +16,6 @@ Player::Player() {
     primaryStats = globals::config::kDefaultPlayerPrimaryStats;
 }
 
-// /**
-//  * @brief Creates an instance of this class, accessible as a static member.
-//  * @note Only one instance should exist at a time.
-//  * @todo Check for conflict with base class.
-// */
-// Player* Player::instantiate() {
-//     if (instance == nullptr) instance = new Player;
-//     return instance;
-// }
-
 void Player::deinitialize() {
     tilesetData->deinitialize();
     delete instance;
@@ -57,13 +47,13 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
         AbstractAnimatedDynamicEntity<Player>::initiateMove();
     };
 
-    if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::AnimatedEntitiesTilesetData::AnimationType::kDamaged)) return;
+    if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::EntitiesTilesetData::AnimationType::kDamaged)) return;
 
     switch (event.key.keysym.sym) {
         case SDLK_w: case SDLK_s: case SDLK_a: case SDLK_d:
             handleKeyboardMovementInput(); break;
         case SDLK_SPACE:
-            if (currAnimationType == tile::AnimatedEntitiesTilesetData::AnimationType::kAttack) break;
+            if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kAttack) break;
             AbstractAnimatedDynamicEntity<Player>::onAttackInitiated(); break;
         case SDLK_LSHIFT: case SDLK_RSHIFT:
             AbstractAnimatedDynamicEntity<Player>::onRunningToggled(event.type == SDL_KEYDOWN);
@@ -75,9 +65,6 @@ void Player::onLevelChange(const level::EntityLevelData& player) {
     auto data = dynamic_cast<const level::PlayerLevelData*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
 }
-
-
-// Player* Player::instance = nullptr;
 
 
 template <>
