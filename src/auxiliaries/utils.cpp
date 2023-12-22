@@ -46,7 +46,7 @@ void utils::iterate(const Iterable& iterable, Function&& function, Args&&... arg
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
  * @note Susceptible to data loss.
 */
-int utils::convertFloatToInt(float f) { return static_cast<int>(std::lroundf(f)); }
+int utils::castFloatToInt(float f) { return static_cast<int>(std::lroundf(f)); }
 
 /**
  * @brief Retrieve a binary outcome. Models a Bernoulli distribution.
@@ -69,38 +69,27 @@ double utils::calculateDistance(const SDL_Point& first, const SDL_Point& second)
     return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
 }
 
+/**
+ * @brief Convert a string representing a hex color value to `SDL_Color`.
+*/
+SDL_Color utils::SDL_ColorFromHexString(const std::string& hexString) {
+    // Convert hexadecimal string to unsigned integer
+    uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);
+
+    // Isolate each component (8 bits) then mask out redundancies (via bitwise AND, to ensure valid range 0 - 255)
+    uint8_t alpha = (ARGB >> 24) & 0xff;
+    uint8_t red = (ARGB >> 16) & 0xff;
+    uint8_t green = (ARGB >> 8) & 0xff;
+    uint8_t blue = ARGB & 0xff;
+
+    return {red, green, blue, alpha};
+}
 
 /**
- * @brief Decrypt a base64-encrypted string.
- * @param s the base-64 encrypted string.
+ * @brief Allow `SDL_Color` to be passed into `SDL_SetRendererDrawColor()` instead of `uint8_t`.
 */
-std::string utils::base64Decode(const std::string& s) {
-    const std::string b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";   // Characters used in base64 encoding alphabet
-
-    // Map each base64 character to its corresponding index
-    std::vector<int> reverseMapping(256, -1);
-    for (int i = 0; i < 64; ++i) reverseMapping[b64chars[i]] = i;
-
-    std::string output;
-    int bits = 0;
-    int bitCount = 0;
-    int value = 0;
-
-    // Process each character in `s`
-    for (const auto& c : s) {
-        if (reverseMapping[c] == -1) continue;   // Skip non-base64 characters
-
-        value = (value << 6) | reverseMapping[c];   // Retrieve the base64 character's index (representing a 6-bit value) from `reverseMapping`, then "appended" to `value` (shifting existing bits left by 6 and add the newfound 6-bit value)
-        bitCount += 6;
-        bits <<= 6;   // Accomodate new bits
-
-        while (bitCount >= 8) {   // Enough bits to form a byte
-            output += char((value >> (bitCount - 8)) & 0xFF);   // Extract the most significant byte i.e. 8 bits from `value`, then append to `output`
-            bitCount -= 8;
-        }
-    }
-
-    return output;
+void utils::setRendererDrawColor(SDL_Renderer* renderer, const SDL_Color& color) {
+    SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 }
 
 /**
@@ -153,6 +142,39 @@ std::vector<T> utils::zlibDecompress(const std::string& s) {
 }
 
 /**
+ * @brief Decrypt a base64-encrypted string.
+ * @param s the base-64 encrypted string.
+*/
+std::string utils::base64Decode(const std::string& s) {
+    const std::string b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";   // Characters used in base64 encoding alphabet
+
+    // Map each base64 character to its corresponding index
+    std::vector<int> reverseMapping(256, -1);
+    for (int i = 0; i < 64; ++i) reverseMapping[b64chars[i]] = i;
+
+    std::string output;
+    int bits = 0;
+    int bitCount = 0;
+    int value = 0;
+
+    // Process each character in `s`
+    for (const auto& c : s) {
+        if (reverseMapping[c] == -1) continue;   // Skip non-base64 characters
+
+        value = (value << 6) | reverseMapping[c];   // Retrieve the base64 character's index (representing a 6-bit value) from `reverseMapping`, then "appended" to `value` (shifting existing bits left by 6 and add the newfound 6-bit value)
+        bitCount += 6;
+        bits <<= 6;   // Accomodate new bits
+
+        while (bitCount >= 8) {   // Enough bits to form a byte
+            output += char((value >> (bitCount - 8)) & 0xFF);   // Extract the most significant byte i.e. 8 bits from `value`, then append to `output`
+            bitCount -= 8;
+        }
+    }
+
+    return output;
+}
+
+/**
  * @brief Read a JSON file.
 */
 void utils::readJSON(const std::filesystem::path& path, json& data) {
@@ -178,22 +200,6 @@ void utils::cleanRelativePath(std::filesystem::path& path) {
     }
 
     path = s;
-}
-
-/**
- * @brief Convert a string representing a hex color value to `SDL_Color`.
-*/
-SDL_Color utils::SDL_ColorFromHexString(const std::string& hexString) {
-    // Convert hexadecimal string to unsigned integer
-    uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);
-
-    // Isolate each component (8 bits) then mask out redundancies (via bitwise AND, to ensure valid range 0 - 255)
-    uint8_t alpha = (ARGB >> 24) & 0xff;
-    uint8_t red = (ARGB >> 16) & 0xff;
-    uint8_t green = (ARGB >> 8) & 0xff;
-    uint8_t blue = ARGB & 0xff;
-
-    return {red, green, blue, alpha};
 }
 
 /**

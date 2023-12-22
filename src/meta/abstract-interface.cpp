@@ -24,3 +24,4 @@ void AbstractInterface<T>::onWindowChange() {
 }
 
 template class AbstractInterface<IngameInterface>;
+template class AbstractInterface<MenuInterface>;

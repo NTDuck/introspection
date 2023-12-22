@@ -388,12 +388,16 @@ namespace globals {
         constexpr level::LevelName kDefaultLevelName = level::LevelName::kLevelEquilibrium;
 
         const std::filesystem::path kAssetPath = "assets";
-        const std::filesystem::path kTiledAssetPath = kAssetPath / ".tiled";
-        const std::filesystem::path kTilesetPath = kTiledAssetPath / ".tsx";
-        const std::filesystem::path kTilesetPathPlayer = kTilesetPath / "hp-player.tsx";
-        const std::filesystem::path kTilesetPathTeleporter = kTilesetPath / "mi-a-cat.tsx";
-        const std::filesystem::path kTilesetPathSlime = kTilesetPath / "eg-slime-full.tsx";
-        const std::filesystem::path kConfigPathLevel = kTiledAssetPath / "levels.json";
+        const std::filesystem::path kTiledAssetPath = "assets/.tiled";
+        const std::filesystem::path kTilesetPathPlayer = "assets/.tiled/.tsx/hp-player.tsx";
+        const std::filesystem::path kTilesetPathTeleporter = "assets/.tiled/.tsx/mi-a-cat.tsx";
+        const std::filesystem::path kTilesetPathSlime = "assets/.tiled/.tsx/eg-slime-full.tsx";
+        const std::filesystem::path kConfigPathLevel = "assets/.tiled/levels.json";
+        const std::filesystem::path kOmoriFontFirstPath = "assets/fonts/omori-game-1.ttf";
+        const std::filesystem::path kOmoriFontSecondPath = "assets/fonts/omori-game-2.ttf";
+
+        constexpr SDL_Color kDefaultWhiteColor = SDL_Color{0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE};
+        constexpr SDL_Color kDefaultBlackColor = SDL_Color{0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE};
         
         constexpr double kDefaultEntityRunVelocityModifier = 2;
         constexpr SDL_FRect kDefaultEntityDestRectModifier = {0, 0, 1, 1};

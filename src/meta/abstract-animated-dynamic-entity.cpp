@@ -231,8 +231,8 @@ template <class T>
 void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
     // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
     kIntegralVelocity = {
-        utils::convertFloatToInt(globals::tileDestSize.x / kVelocity.x),
-        utils::convertFloatToInt(globals::tileDestSize.y / kVelocity.y),
+        utils::castFloatToInt(globals::tileDestSize.x / kVelocity.x),
+        utils::castFloatToInt(globals::tileDestSize.y / kVelocity.y),
     };
 
     kFractionalVelocity = {

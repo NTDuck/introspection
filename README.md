@@ -48,7 +48,7 @@ git clone https://github.com/NTDuck/8964 && cd 8964
 **Prerequisites**:
 ```
 sudo apt-get update
-sudo apt-get install g++ make libsdl2-dev libsdl2-image-dev zlib1g-dev
+sudo apt-get install g++ make libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev zlib1g-dev
 ```
 
 ```

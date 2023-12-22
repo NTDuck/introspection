@@ -2,6 +2,7 @@
 #define META_H
 
 #include <filesystem>
+#include <functional>
 #include <string>
 #include <vector>
 #include <unordered_set>
@@ -120,7 +121,7 @@ class Multiton : virtual public PolymorphicBase<T> {
         */
         template <typename ClassMethod, typename... Args>
         static void callOnEach(ClassMethod&& method, Args&&... args) {
-            for (auto& instance : instances) (instance->*method)(std::forward<Args>(args)...);
+            for (auto& instance : instances) std::invoke(std::forward<ClassMethod>(method), *instance, std::forward<Args>(args)...);
         }
 
         // /**
@@ -363,8 +364,8 @@ class AbstractInterface : public Singleton<T> {
     public:
         using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
 
-        void render();
-        void onWindowChange();
+        virtual void render();
+        virtual void onWindowChange();
 
     protected:
         ~AbstractInterface();

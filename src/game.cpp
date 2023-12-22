@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 
 #include <interaction.hpp>
 #include <interface.hpp>
@@ -13,14 +14,17 @@
 #include <auxiliaries/globals.hpp>
 
 
-Game::Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : window(nullptr), windowSurface(nullptr), interface(nullptr), player(nullptr), flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
+Game::Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : window(nullptr), windowSurface(nullptr), ingameInterface(nullptr), player(nullptr), flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
 
 Game::~Game() {
     if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
     if (window != nullptr) SDL_DestroyWindow(window);
 
     globals::deinitialize();
+
     IngameInterface::deinitialize();
+    MenuInterface::deinitialize();
+
     Player::deinitialize();
     Teleporter::deinitialize();
     Slime::deinitialize();
@@ -28,6 +32,7 @@ Game::~Game() {
     // Quit SDL subsystems
     IMG_Quit();
     SDL_Quit();
+    TTF_Quit();
 }
 
 /**
@@ -44,9 +49,10 @@ void Game::start() {
  * @note Any `initialize()` methods should be placed here.
 */
 void Game::initialize() {
-    // Initialize SDL subsystems.
+    // Initialize SDL subsystems
     SDL_Init(flags.init);
     IMG_Init(flags.image);
+    TTF_Init();
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
     window = SDL_CreateWindow(title.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
@@ -57,11 +63,14 @@ void Game::initialize() {
     state = GameState::kMenu;
 
     IngameInterface::initialize();
+    MenuInterface::initialize();
+
     Player::initialize();
     Teleporter::initialize();
     Slime::initialize();
 
-    interface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
+    ingameInterface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
+    menuInterface = MenuInterface::instantiate();
     player = Player::instantiate();
 }
 
@@ -90,11 +99,19 @@ void Game::startGameLoop() {
 void Game::render() {
     SDL_RenderClear(globals::renderer);
 
-    if (state == GameState::kIngamePlaying) {
-        interface->render();
-        Teleporter::callOnEach(&Teleporter::render);
-        Slime::callOnEach(&Slime::render);
-        player->render();
+    switch (state) {
+        case GameState::kIngamePlaying:
+            ingameInterface->render();
+            Teleporter::callOnEach(&Teleporter::render);
+            Slime::callOnEach(&Slime::render);
+            player->render();
+            break;
+
+        case GameState::kMenu:
+            menuInterface->render();
+            break;
+
+        default: break;
     }
 
     SDL_RenderPresent(globals::renderer);
@@ -105,7 +122,7 @@ void Game::render() {
 */
 void Game::onLevelChange() {
     // Populate `globals::currentLevelData` members
-    interface->onLevelChange();
+    ingameInterface->onLevelChange();
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
@@ -121,7 +138,9 @@ void Game::onWindowChange() {
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
     // Dependencies that rely on certain dimension-related global variables
-    interface->onWindowChange();
+    ingameInterface->onWindowChange();
+    menuInterface->onWindowChange();
+
     player->onWindowChange();
     Teleporter::callOnEach(&Teleporter::onWindowChange);
     Slime::callOnEach(&Slime::onWindowChange);
@@ -133,10 +152,9 @@ void Game::onWindowChange() {
  * @brief Handle everything about entities.
 */
 void Game::handleEntities() {
-    if (state == GameState::kIngamePlaying) {
-        handleEntitiesMovement();
-        handleEntitiesInteraction();
-    }
+    if (state != GameState::kIngamePlaying) return;
+    handleEntitiesMovement();
+    handleEntitiesInteraction();
 }
 
 /**
@@ -164,7 +182,7 @@ void Game::onEntityCollision(Active& active, Passive& passive) {
 template <>
 void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
     state = GameState::kIngamePaused;
-    interface->changeLevel(teleporter.targetLevel);
+    ingameInterface->changeLevel(teleporter.targetLevel);
     globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
     onLevelChange(); onWindowChange();
     state = GameState::kIngamePlaying;

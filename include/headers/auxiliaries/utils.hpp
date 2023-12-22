@@ -27,17 +27,18 @@ namespace utils {
     template <typename Iterable, typename Function, typename... Args>
     void iterate(const Iterable& iterable, Function&& function, Args&&... args);
     
-    int convertFloatToInt(float f);
+    int castFloatToInt(float f);
     int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(const SDL_Point& first, const SDL_Point& second);
-    std::string base64Decode(const std::string& s);
+    SDL_Color SDL_ColorFromHexString(const std::string& hexString);
+    void setRendererDrawColor(SDL_Renderer* renderer, const SDL_Color& color);
 
     template <typename T>
     std::vector<T> zlibDecompress(const std::string& s);
+    std::string base64Decode(const std::string& s);
 
     void readJSON(const std::filesystem::path& path, json& data);
     void cleanRelativePath(std::filesystem::path& path);
-    SDL_Color SDL_ColorFromHexString(const std::string& hexString);
 
     void loadLevelsData(level::LevelMapping& mapping);
     void loadLevelData(level::LevelData& currentLevelData, const json& JSONLevelData);

@@ -17,6 +17,7 @@ template <class T>
 T* Singleton<T>::instance = nullptr;
 
 template class Singleton<IngameInterface>;
+template class Singleton<MenuInterface>;
 template class Singleton<Player>;
 template class Singleton<Game>;
 
@@ -44,6 +45,7 @@ void Multiton<T>::deinitialize() {
     for (auto& instance : instances) delete instance;
     instances.clear();
 }
+
 
 /**
  * @note This static member should be exposed at public scope.

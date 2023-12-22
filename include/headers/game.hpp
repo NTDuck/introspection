@@ -16,13 +16,12 @@
 /**
  * @brief A singleton class that controls are ingame operations.
 */
-class Game : public Singleton<Game> {
+class Game final : public Singleton<Game> {
     friend Singleton<Game>;
     public:
         using Singleton<Game>::instantiate;
 
         ~Game();
-
         void start();
 
     private:
@@ -62,7 +61,8 @@ class Game : public Singleton<Game> {
         */
         Uint32 windowID;
 
-        IngameInterface* interface;
+        IngameInterface* ingameInterface;
+        MenuInterface* menuInterface;
         Player* player;
 
         /**

@@ -5,7 +5,7 @@
             "includePath": [
                 "${workspaceFolder}/**",
                 "${workspaceFolder}/include/headers",
-                "${workspaceFolder}/include/headers"
+                "${workspaceFolder}/include/sdl2"
             ],
             "defines": [],
             "compilerPath": "/usr/bin/gcc",

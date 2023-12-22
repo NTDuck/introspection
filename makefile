@@ -4,7 +4,7 @@ cxxflags = -Wall -I"include" -I"include/sdl2" -I"include/headers"
 
 # libs
 libpath = -L/usr/lib
-libs = -lSDL2 -lSDL2_image -lz
+libs = -lSDL2 -lSDL2_image -lSDL2_ttf -lz
 
 # src & output
 src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
