@@ -7,12 +7,10 @@
 #include <vector>
 #include <unordered_set>
 #include <utility> 
-#include <iostream>
 
 #include <SDL.h>
 
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -51,10 +49,12 @@
 */
 
 
+/* Abstract-Abstract Template Classes */
+
 /**
  * @brief An abstract base with certain operators deleted. Required for implementation of derived classes `Singleton<T>` and `Multiton<T>`.
 */
-template <class T>
+template <typename T>
 class PolymorphicBase {
     public:
         PolymorphicBase(PolymorphicBase const&) = delete;
@@ -71,7 +71,7 @@ class PolymorphicBase {
 /**
  * @brief A standard Singleton template class.
 */
-template <class T>
+template <typename T>
 class Singleton : virtual public PolymorphicBase<T> {
     public:
         template <typename... Args>
@@ -80,7 +80,10 @@ class Singleton : virtual public PolymorphicBase<T> {
             return instance;
         }
 
-        static void deinitialize();
+        static void deinitialize() {
+            delete instance;
+            instance = nullptr;
+        }
 
     protected:
         static T* instance;
@@ -89,16 +92,8 @@ class Singleton : virtual public PolymorphicBase<T> {
 /**
  * @brief An adapted Multiton template class that governs instances via a `std::unordered_set` instead of a `std::unordered_map`.
 */
-template <class T>
-class Multiton : virtual public PolymorphicBase<T> { 
-    struct Hasher {
-        std::size_t operator()(const T* pointer) const;
-    };
-
-    struct EqualityOperator {
-        bool operator()(const T* first, const T* second) const;
-    };
-
+template <typename T>
+class Multiton : virtual public PolymorphicBase<T> {
     public:      
         template <typename... Args>
         static T* instantiate(Args&&... args) {
@@ -113,15 +108,20 @@ class Multiton : virtual public PolymorphicBase<T> {
         //     for (std::size_t ind = 0; ind < size; ++ind) T::instantiate(args[ind]...);
         // }
 
-        static void deinitialize();
+        static void deinitialize() {
+            // Somehow this yields weird segfaults. Consider switching to smart pointers?
+            // Also, why is this read-only?
+            // for (auto& instance : instances) if (instance) utils::dealloc(instance);
+            instances.clear();
+        }
 
         /**
          * @brief Variadically call `method` on each instance of derived class `T` with the same parameters `args`.
          * @note Defined here to avoid lengthy explicit template instantiation.
         */
-        template <typename ClassMethod, typename... Args>
-        static void callOnEach(ClassMethod&& method, Args&&... args) {
-            for (auto& instance : instances) std::invoke(std::forward<ClassMethod>(method), *instance, std::forward<Args>(args)...);
+        template <typename Callable, typename... Args>
+        static void callOnEach(Callable&& callable, Args&&... args) {
+            for (auto& instance : instances) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
 
         // /**
@@ -135,11 +135,20 @@ class Multiton : virtual public PolymorphicBase<T> {
         //     for (std::size_t ind = 0; ind < size && it != instances.end(); ++ind, ++it) (*it->*method)(args[ind]...);   // `std::forward` fails - requires a reference to the iterable, not the iterated element
         // }
 
-        static std::unordered_set<T*, Hasher, EqualityOperator> instances;
+        static std::unordered_set<T*> instances;
 
     protected:
-        virtual ~Multiton() override;
+        virtual ~Multiton() override {
+            instances.erase(static_cast<T*>(this));   // remove from `instances`
+        }
 };
+
+/* Internal initialization of static members */
+template <typename T>
+T* Singleton<T>::instance = nullptr;
+
+template <typename T>
+std::unordered_set<T*> Multiton<T>::instances;
 
 
 /**
@@ -152,31 +161,22 @@ class Multiton : virtual public PolymorphicBase<T> {
  * @see https://stackoverflow.com/questions/26950274/implementing-crtp-and-issue-with-undefined-reference
  * @see https://google.github.io/styleguide/cppguide.html#Declaration_Order
 */
-template <class T>
+template <typename T>
 class AbstractEntity : public Multiton<T> {
     public:
         using Multiton<T>::instances, Multiton<T>::callOnEach;
 
         static T* instantiate(SDL_Point destCoords);
-        
-        bool operator==(const AbstractEntity<T>& other) const;
-        bool operator<(const AbstractEntity<T>& other) const;
 
         static void initialize();
         static void deinitialize();
 
-        static void setRGB(Uint8 r, Uint8 g, Uint8 b);
-        static void setBlending(SDL_BlendMode blendMode = SDL_BLENDMODE_BLEND);
-        static void setAlpha(Uint8 alpha);
-        static void setRGBA(SDL_Color& color);
-
-        template <typename LevelData> static void callOnEach_onLevelChange(const typename level::EntityLevelData::Collection<LevelData>& entityLevelDataCollection);
+        template <typename LevelData>
+        static void callOnEach_onLevelChange(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection);
 
         virtual void render() const;
         virtual void onWindowChange();
-        virtual void onLevelChange(const level::EntityLevelData& entityLevelData);
-
-        SDL_Rect getDestRectFromCoords(const SDL_Point& coords);
+        virtual void onLevelChange(level::EntityLevelData const& entityLevelData);
 
         static tile::EntitiesTilesetData* tilesetData;
 
@@ -196,6 +196,7 @@ class AbstractEntity : public Multiton<T> {
         
     protected:
         AbstractEntity();
+        SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
 
         static const std::filesystem::path kTilesetPath;
 
@@ -218,32 +219,47 @@ class AbstractEntity : public Multiton<T> {
         /**
          * Indicate the rotation (clockwise) applied to the entity. In degrees.
         */
-        double angle;
+        double angle = 0;
 
         /**
          * A pointer to the point relative to the window, around which the entity would be rotated.
         */
-        SDL_Point* center;
+        SDL_Point* center = nullptr;
 
         /**
          * An `SDL_RendererFlip` enumeration constant indicating the flipping method to be used on the entity.
          * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
         */
-        SDL_RendererFlip flip;
+        SDL_RendererFlip flip = SDL_FLIP_NONE;
 };
 
+namespace std {
+    template <typename T>
+    struct hash<AbstractEntity<T>> {
+        std::size_t operator()(AbstractEntity<T> const*& instance) const {
+            return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_Point>(instance->destCoords);
+        }
+    };
+
+    template <typename T>
+    struct equal_to<AbstractEntity<T>> {
+        bool operator()(AbstractEntity<T> const*& first, AbstractEntity<T> const*& second) const {
+            return (first == nullptr && second == nullptr) || (first && second && first->destCoords == second->destCoords);
+        }
+    };
+};
 
 /**
  * @brief An abstract class combining CRTP and adapted Multiton pattern. Represents an entity that updates animation.
 */
-template <class T>
+template <typename T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
         using Multiton<T>::instances, Multiton<T>::callOnEach;
         using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
         virtual ~AbstractAnimatedEntity() = default;
-        void onLevelChange(const level::EntityLevelData& entityLevelData) override;
+        void onLevelChange(level::EntityLevelData const& entityLevelData) override;
 
         void updateAnimation();
         void resetAnimation(const AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
@@ -283,7 +299,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 /**
  * @brief An abstract class combining CRTP and adapted Multiton pattern. Represents an entity that updates animation and changes position.
 */
-template <class T>
+template <typename T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
         using Multiton<T>::instances, Multiton<T>::callOnEach;
@@ -293,11 +309,11 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual ~AbstractAnimatedDynamicEntity();
 
         void onWindowChange() override;
-        void onLevelChange(const level::EntityLevelData& entityLevelData) override;
+        void onLevelChange(level::EntityLevelData const& entityLevelData) override;
 
         virtual void move();
         virtual void initiateMove(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
-        virtual bool validateMove();
+        virtual bool validateMove() const;
         virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
         virtual void onRunningToggled(const bool onRunningStart);
@@ -358,13 +374,13 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 };
 
 
-template <class T>
+template <typename T>
 class AbstractInterface : public Singleton<T> {
     friend Singleton<T>;
     public:
         using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
 
-        virtual void render();
+        virtual void render() const;
         virtual void onWindowChange();
 
     protected:

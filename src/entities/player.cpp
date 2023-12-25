@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 #include <meta.hpp>
-#include <auxiliaries/utils.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -18,8 +18,8 @@ Player::Player() {
 
 void Player::deinitialize() {
     tilesetData->deinitialize();
-    delete instance;
-    instance = nullptr;
+    tilesetData = nullptr;
+    Singleton<Player>::deinitialize();
 }
 
 /**

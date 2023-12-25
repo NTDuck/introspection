@@ -6,8 +6,7 @@
 #include <SDL.h>
 
 #include <meta.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -24,8 +23,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         static void deinitialize();
         
-        void onLevelChange(const level::EntityLevelData& player) override;
-        void handleKeyboardEvent(const SDL_Event& event);
+        void onLevelChange(level::EntityLevelData const& player) override;
+        void handleKeyboardEvent(SDL_Event const& event);
 };
 
 
@@ -40,7 +39,7 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
         Teleporter();
         ~Teleporter() = default;
 
-        void onLevelChange(const level::EntityLevelData& teleporterData) override;
+        void onLevelChange(level::EntityLevelData const& teleporterData) override;
 
         /**
          * The new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
@@ -65,7 +64,7 @@ class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
         Slime();
         ~Slime() = default;
 
-        void calculateMove(const SDL_Point& playerDestCoords);
+        void calculateMove(SDL_Point const& playerDestCoords);
 
     private:
         /**

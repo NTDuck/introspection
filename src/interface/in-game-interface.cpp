@@ -5,15 +5,14 @@
 
 #include <SDL.h>
 
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 IngameInterface::IngameInterface(const level::LevelName levelName) : levelName(levelName) {}
 
 void IngameInterface::initialize() {
     if (!std::filesystem::exists(globals::config::kConfigPathLevel)) return;
-    utils::loadLevelsData(levelMapping);
+    utils::loadLevelsData(kLevelMapping);
 }
 
 /**
@@ -49,7 +48,7 @@ void IngameInterface::onWindowChange() {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameInterface::loadLevel() {
-    std::filesystem::path kLevelPath = globals::config::kTiledAssetPath / levelMapping[levelName];
+    std::filesystem::path kLevelPath = globals::config::kTiledAssetPath / kLevelMapping[levelName];
     if (!std::filesystem::exists(kLevelPath)) return;
     json data;
     utils::readJSON(kLevelPath.string(), data);
@@ -64,7 +63,7 @@ void IngameInterface::loadLevel() {
 /**
  * @brief Fill the window with the tileset's black to achieve a seamless feel.
 */
-void IngameInterface::renderBackground() {
+void IngameInterface::renderBackground() const {
     utils::setRendererDrawColor(globals::renderer, globals::currentLevelData.backgroundColor);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
@@ -72,7 +71,7 @@ void IngameInterface::renderBackground() {
 /**
  * @brief Render the static portions of a level to `texture`.
 */
-void IngameInterface::renderLevelTiles() {
+void IngameInterface::renderLevelTiles() const {
     tile::TilelayerRenderData::Collection tileRenderDataCollection(globals::tileDestCount.y, std::vector<tile::TilelayerRenderData>(globals::tileDestCount.x));
 
     // Populate render data 
@@ -119,4 +118,4 @@ void IngameInterface::renderLevelTiles() {
 }
 
 
-level::LevelMapping IngameInterface::levelMapping;
+level::LevelMapping IngameInterface::kLevelMapping;

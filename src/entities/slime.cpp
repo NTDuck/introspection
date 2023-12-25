@@ -3,8 +3,7 @@
 #include <SDL.h>
 
 #include <meta.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 Slime::Slime() {

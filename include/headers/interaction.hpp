@@ -1,17 +1,17 @@
 #ifndef INTERACTION_H
 #define INTERACTION_H
 
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 namespace utils {
-    template <class Active, class Passive>
+    template <typename Active, typename Passive>
     Passive* checkEntityCollision(const Active& active, InteractionType interactionType);
 
-    template <class Active, class Passive>
+    template <typename Active, typename Passive>
     bool checkEntityAttackInitiate(const Active& active, const Passive& passive);
 
-    template <class Active, class Passive>
+    template <typename Active, typename Passive>
     bool checkEntityAttackRegister(const Active& active, const Passive& passive);
 };
 

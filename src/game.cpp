@@ -10,15 +10,20 @@
 #include <interaction.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
-Game::Game(const GameFlag& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : window(nullptr), windowSurface(nullptr), ingameInterface(nullptr), player(nullptr), flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
+Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
 
 Game::~Game() {
-    if (windowSurface != nullptr) SDL_FreeSurface(windowSurface);
-    if (window != nullptr) SDL_DestroyWindow(window);
+    if (windowSurface != nullptr) {
+        SDL_FreeSurface(windowSurface);
+        windowSurface = nullptr;
+    }
+    if (window != nullptr) {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    }
 
     globals::deinitialize();
 
@@ -50,17 +55,15 @@ void Game::start() {
 */
 void Game::initialize() {
     // Initialize SDL subsystems
-    SDL_Init(flags.init);
-    IMG_Init(flags.image);
+    SDL_Init(flags.lSDL);
+    IMG_Init(flags.lIMG);
     TTF_Init();
+
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
     window = SDL_CreateWindow(title.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
     windowID = SDL_GetWindowID(window);
-
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
-
-    state = GameState::kMenu;
 
     IngameInterface::initialize();
     MenuInterface::initialize();
@@ -181,11 +184,11 @@ void Game::onEntityCollision(Active& active, Passive& passive) {
 
 template <>
 void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
-    state = GameState::kIngamePaused;
+    // state = GameState::kIngamePaused;
     ingameInterface->changeLevel(teleporter.targetLevel);
     globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
     onLevelChange(); onWindowChange();
-    state = GameState::kIngamePlaying;
+    // state = GameState::kIngamePlaying;
 }
 
 template <>
@@ -207,6 +210,7 @@ void Game::onEntityAnimation(AnimationType animationType, Active& active, Passiv
         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
         if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
     }
+
     tile::NextAnimationData::update(active.nextAnimationData, animationType);
 }
 

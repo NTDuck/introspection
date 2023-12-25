@@ -1,5 +1,5 @@
 #include <game.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -39,7 +39,7 @@
 
 
 int main(int argc, char* args[]) {
-    auto game = Game::instantiate(globals::config::kGameFlags, globals::config::kWindowDimension, globals::config::kFrameRate, "8964");
+    auto game = Game::instantiate(globals::config::kGameInitFlags, globals::config::kWindowDimension, globals::config::kFrameRate, "8964");
     game->start();
 
     return 0;

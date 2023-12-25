@@ -1,11 +1,13 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
+#ifndef AUXILIARIES_H
+#define AUXILIARIES_H
 
 #include <filesystem>
+#include <functional>
 #include <string>
 #include <vector>
 #include <unordered_set>
 #include <unordered_map>
+#include <type_traits>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -18,6 +20,8 @@
 */
 using json = nlohmann::json;
 
+
+/* Enumerations & Structs */
 
 /**
  * Contain possible game states. Should be used closely with the main control flow.
@@ -49,20 +53,21 @@ enum class MoveStatusFlag {
 /**
  * @brief Contain SDL flags and other configurations used in the initialization of SDL subsystems.
  * 
- * @param init any of the following: `SDL_INIT_TIMER` (timer subsystem), `SDL_INIT_AUDIO` (audio subsystem), `SDL_INIT_VIDEO` (video subsystem - automatically initializes the events subsystem), `SDL_INIT_JOYSTICK` (joystick subsystem - automatically initializes the events subsystem), `SDL_INIT_HAPTIC` (haptic i.e. force feedback subsystem), `SDL_INIT_GAMECONTROLLER` (controller subsystem - automatically initializes the joystick subsystem), `SDL_INIT_EVENTS` (events subsystem), `SDL_INIT_EVERYTHING` (all of the above subsystems), `SDL_INIT_NOPARACHUTE` (compatibility - will be ignored), or multiple OR'd together. Determines which SDL subsystem(s) to initialize. Used in `SDL_Init()`. @see https://wiki.libsdl.org/SDL2/SDL_Init
+ * @param lSDL any of the following: `SDL_INIT_TIMER` (timer subsystem), `SDL_INIT_AUDIO` (audio subsystem), `SDL_INIT_VIDEO` (video subsystem - automatically initializes the events subsystem), `SDL_INIT_JOYSTICK` (joystick subsystem - automatically initializes the events subsystem), `SDL_INIT_HAPTIC` (haptic i.e. force feedback subsystem), `SDL_INIT_GAMECONTROLLER` (controller subsystem - automatically initializes the joystick subsystem), `SDL_INIT_EVENTS` (events subsystem), `SDL_INIT_EVERYTHING` (all of the above subsystems), `SDL_INIT_NOPARACHUTE` (compatibility - will be ignored), or multiple OR'd together. Determines which SDL subsystem(s) to initialize. Used in `SDL_Init()`. @see https://wiki.libsdl.org/SDL2/SDL_Init
+ * @param lIMG an enumeration constant of `IMG_InitFlags` or multiple OR'd together. Determines which image format(s) to be used in the scope of this project. @see https://wiki.libsdl.org/SDL2_image/IMG_Init
  * @param window an enumeration constant of `SDL_WindowFlags` or multiple OR'd together. Determintes initial window properties.  @see https://wiki.libsdl.org/SDL2/SDL_WindowFlags
- * @param image an enumeration constant of `IMG_InitFlags` or multiple OR'd together. Determines which image format(s) to be used in the scope of this project. @see https://wiki.libsdl.org/SDL2_image/IMG_Init
  * @param renderer an enumeration constant of `SDL_RendererFlags` or multiple OR'd together. Determines the rendering context. @see https://wiki.libsdl.org/SDL2/SDL_RendererFlags
  * @param hints maps a hint with an associated value. Used in `SDL_SetHint()` and `SDL_SetHintWithPriority()`.
  * 
  * @note Multiple flags are combinable via bitwise OR `|`.
  * @see <game.h> Game::Game()
 */
-struct GameFlag {
-    Uint32 init;
+struct GameInitFlag {
+    Uint32 lSDL;
+    int lIMG;
+
     Uint32 window;
     Uint32 renderer;
-    int image;
     std::unordered_map<std::string, std::string> hints;
 };
 
@@ -116,9 +121,9 @@ struct EntitySecondaryStats {
     double CriticalChance;
     double CriticalDamage;
 
-    void initialize(const EntityPrimaryStats& entityPrimaryStats);
-    static int calculateFinalizedPhysicalDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive);
-    static int calculateFinalizedMagicDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive);
+    void initialize(EntityPrimaryStats const& entityPrimaryStats);
+    static int calculateFinalizedPhysicalDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive);
+    static int calculateFinalizedMagicDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive);
 };
 
 
@@ -195,7 +200,7 @@ namespace tile {
         */
         using Collection = std::vector<TilelayerTilesetData>;
 
-        void initialize(const json& tileset, SDL_Renderer* renderer);
+        void initialize(json const& tileset, SDL_Renderer* renderer);
 
         int firstGID = 0;
     };
@@ -261,6 +266,7 @@ namespace tile {
     };
 };
 
+
 /**
  * @brief Group components that are associated to level and level-loading.
 */
@@ -291,29 +297,24 @@ namespace level {
     */
     struct EntityLevelData {
         struct Hasher {
-            std::size_t operator()(const EntityLevelData& obj) const;
+            std::size_t operator()(EntityLevelData const& instance) const;
         };
 
-        struct Equality_Operator {
-            bool operator()(const EntityLevelData& first, const EntityLevelData& second) const;
+        struct EqualityOperator {
+            bool operator()(EntityLevelData const& first, EntityLevelData const& second) const;
         };
 
-        struct Less_Than_Operator {
-            bool operator()(const EntityLevelData& first, const EntityLevelData& second) const;
-        };
-        
         /**
          * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
         */
         template <typename T>
-        using Collection = std::unordered_set<T, EntityLevelData::Hasher, EntityLevelData::Equality_Operator>;
+        using Collection = std::unordered_set<T, Hasher, EqualityOperator>;
 
-        virtual void initialize(const json& entityJSONLevelData);
+        virtual void initialize(json const& entityJSONLevelData);
         virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
         
         SDL_Point destCoords;
     };
-
 
     /**
      * @brief Contain data associated with a player entity, used in level-loading.
@@ -326,7 +327,7 @@ namespace level {
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
     struct TeleporterLevelData : public EntityLevelData {
-        void initialize(const json& entityJSONLevelData) override;
+        void initialize(json const& entityJSONLevelData) override;
 
         SDL_Point targetDestCoords;
         level::LevelName targetLevel;
@@ -349,10 +350,10 @@ namespace level {
         tile::TileCollection tileCollection;
         SDL_Color backgroundColor;
         level::PlayerLevelData playerLevelData;
-        level::EntityLevelData::Collection<TeleporterLevelData> teleportersLevelData;
-        level::EntityLevelData::Collection<SlimeLevelData> slimesLevelData;
+        level::EntityLevelData::Collection<level::TeleporterLevelData> teleportersLevelData;
+        level::EntityLevelData::Collection<level::SlimeLevelData> slimesLevelData;
 
-        void initialize(const json& JSONLayerData);
+        void initialize(json const& JSONLayerData);
         void deinitialize();
     };
 };
@@ -370,11 +371,11 @@ namespace globals {
      * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
     */
     namespace config {
-        const GameFlag kGameFlags = {
+        const GameInitFlag kGameInitFlags = {
             SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
+            IMG_INIT_PNG,
             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
             SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
-            IMG_INIT_PNG,
             {
                 {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
             }
@@ -458,6 +459,83 @@ namespace globals {
      * Contain data associated with the current level.
     */
     extern level::LevelData currentLevelData;
+};
+
+
+bool operator==(SDL_Point const& first, SDL_Point const& second);
+bool operator!=(SDL_Point const& first, SDL_Point const& second);
+bool operator<(SDL_Point const& first, SDL_Point const& second);
+SDL_Point operator+(SDL_Point const& first, SDL_Point const& second);
+SDL_Point operator-(SDL_Point const& first, SDL_Point const& second);
+bool operator==(SDL_FPoint const& first, SDL_FPoint const& second);
+
+namespace std {
+    template <>
+    struct hash<SDL_Point> {
+        std::size_t operator()(SDL_Point const& instance) const;
+    };
+};
+
+
+namespace utils {
+    template <typename Base, typename Derived>
+    struct isDerivedFrom {
+        static_assert(std::is_base_of_v<Base, Derived>, "`Derived` must derive from `Base`");
+    };
+
+    template <typename Iterable, typename Callable, typename... Args>
+    void iterate(Iterable const& iterable, Callable&& callable, Args&&... args) {
+        for (const auto& element : iterable) std::invoke(std::forward<Callable>(callable), element, std::forward<Args>(args)...);
+    }
+
+    // /**
+    //  * @see https://stackoverflow.com/questions/4325154/delete-objects-of-incomplete-type
+    // */
+    // template <typename T>
+    // inline void dealloc(T*& instance) {
+    //     // typedef char __type__[sizeof(T) ? 1 : -1]; (void) sizeof(__type__);
+    //     if (instance == nullptr) return;
+    //     delete instance;
+    //     instance = nullptr;
+    // }
+
+    // template <typename T, typename Callable, typename... Args>
+    // inline void dealloc(T*& instance, Callable&& callable, Args&&... args) {
+    //     // typedef char __type__[sizeof(T) ? 1 : -1]; (void) sizeof(__type__);
+    //     if (instance == nullptr) return;
+    //     std::invoke(std::forward<Callable>(callable), std::forward<Args>(args)...);
+    //     instance = nullptr;
+    // }
+
+    // template <typename T, typename U, typename Callable, typename... Args>
+    // inline void dealloc(T*& instance, U& src, Callable&& callable, Args&&... args) {
+    //     // typedef char __type__[sizeof(T) ? 1 : -1]; (void) sizeof(__type__);
+    //     if (instance == nullptr) return;
+    //     std::invoke(std::forward<Callable>(callable), src, std::forward<Args>(args)...);
+    //     instance = nullptr;
+    // }
+    
+    int castFloatToInt(const float f);
+    int generateRandomBinary(const double probability = 0.5);
+    double calculateDistance(SDL_Point const& first, SDL_Point const& second);
+    SDL_Color SDL_ColorFromHexString(std::string const& hexString);
+    void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
+
+    template <typename T>
+    std::vector<T> zlibDecompress(std::string const& s);
+    std::string base64Decode(std::string const& s);
+
+    void readJSON(std::filesystem::path const& path, json& data);
+    void cleanRelativePath(std::filesystem::path& path);
+
+    void loadLevelsData(level::LevelMapping& mapping);
+    void loadLevelData(level::LevelData& currentLevelData, json const& JSONLevelData);
+    void loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, json const& jsonData);
+
+    tile::TilelayerTilesetData const* getTilesetData(tile::TilelayerTilesetData::Collection const& tilesetDataCollection, int gid);
+
+    void setTextureRGB(SDL_Texture*& texture, SDL_Color const& color);
+    void setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color);  
 };
 
 

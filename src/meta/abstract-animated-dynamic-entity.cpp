@@ -6,8 +6,7 @@
 #include <SDL.h>
 
 #include <entities.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -49,8 +48,14 @@
 
 template <class T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
-    delete nextDestCoords;
-    delete nextDestRect;
+    if (nextDestCoords != nullptr) {
+        delete nextDestCoords;
+        nextDestCoords = nullptr;
+    }
+    if (nextDestRect != nullptr) {
+        delete nextDestRect;
+        nextDestRect = nullptr;
+    }
 }
 
 template <class T>
@@ -60,7 +65,7 @@ void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
 }
 
 template <class T>
-void AbstractAnimatedDynamicEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
+void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
     AbstractAnimatedEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
 }
@@ -137,7 +142,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
  * @todo Check overlap between entities of different types.
 */
 template <class T>
-bool AbstractAnimatedDynamicEntity<T>::validateMove() {
+bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
     if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Prevent `destCoords` overlap
@@ -193,6 +198,9 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != MoveStatusFlag::kInvalidated) {
         destCoords = *nextDestCoords;
         destRect = *nextDestRect;
+
+        // delete nextDestCoords;
+        // delete nextDestRect;
     }
 
     nextDestCoords = nullptr;

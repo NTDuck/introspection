@@ -6,19 +6,18 @@
 
 #include <entities.hpp>
 #include <meta.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 bool predicateCoordsCollision(const Active& active, const Passive& passive) {
     utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractEntity<Passive>, Passive>();
 
-    return passive.destCoords.x == active.nextDestCoords->x && passive.destCoords.y == active.nextDestCoords->y;
+    return passive.destCoords == *active.nextDestCoords;
 }
 
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 bool predicateRectCollision(const Active& active, const Passive& passive) {
     utils::isDerivedFrom<AbstractEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractEntity<Passive>, Passive>();
@@ -27,11 +26,11 @@ bool predicateRectCollision(const Active& active, const Passive& passive) {
 }
 
 /**
- * @brief Check for collision between the entity `active` and an entity of class `Passive`.
- * @note Assume that no more than one entity of class `Passive` could collide with the entity `active` simutaneously.
+ * @brief Check for collision between the entity `active` and an entity of typename `Passive`.
+ * @note Assume that no more than one entity of typename `Passive` could collide with the entity `active` simutaneously.
  * @note Please do attempt to fix this mess.
 */
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 Passive* utils::checkEntityCollision(const Active& active, InteractionType interactionType) {
     static const std::unordered_map<InteractionType, std::function<bool(const Active&, Passive&)>> mapping = {
         {InteractionType::kCoords, &predicateCoordsCollision<Active, Passive>},
@@ -56,7 +55,7 @@ Passive* utils::checkEntityCollision(const Active& active, InteractionType inter
 /**
  * @brief Check whether the `active` entity is currently able to initiate an attack onto the `passive` entity.
 */
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passive) {
     utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
@@ -70,7 +69,7 @@ bool utils::checkEntityAttackInitiate(const Active& active, const Passive& passi
 /**
  * @brief Check whether the `active` entity is currently able to be damaged by the `passive` entity.
 */
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 bool utils::checkEntityAttackRegister(const Active& active, const Passive& passive) {
     utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();

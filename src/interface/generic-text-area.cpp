@@ -6,57 +6,38 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <meta.hpp>
+#include <auxiliaries.hpp>
 
 
-/**
- * @brief The hasher functor. Use `kCenter`.
- * @see https://stackoverflow.com/questions/4238122/hash-function-for-floats
- * @see https://en.wikipedia.org/wiki/MurmurHash
-*/
-std::size_t Division::Hasher::operator()(const Division* pointer) const {
-    // auto murmur = [](float f) {
-    //     f ^= f >> 13;
-    //     f *= 0x5bd1e995;
-    //     return f ^ (f >> 15);
-    // }
+template <typename T>
+GenericTextArea<T>::GenericTextArea(std::string const& content, SDL_FPoint const& center) : content(content), kCenter(center) {}
 
-    auto hash = [](float f) {
-        std::size_t s;
-        std::memcpy(&s, &f, sizeof(float));
-        return s & 0xfffff000;
-    };
-
-    return hash(pointer->kCenter.x) ^ (hash(pointer->kCenter.y) << 1);
-}
-
-/**
- * @brief The equality operator. Use `kCenter`.
-*/
-bool Division::EqualityOperator::operator()(const Division* first, const Division* second) const {
-    return first->kCenter.x == second->kCenter.x && first->kCenter.y == second->kCenter.y;
-}
-
-Division::Division(const std::string& content, const SDL_FPoint& center) : content(content), kCenter(center) {}
-
-Division::~Division() {
+template <typename T>
+GenericTextArea<T>::~GenericTextArea() {
     SDL_DestroyTexture(outerTexture);
     SDL_DestroyTexture(innerTexture);
     outerTexture = innerTexture = nullptr;
 }
 
-void Division::initialize() {
+template <typename T>
+void GenericTextArea<T>::initialize() {
     font = TTF_OpenFont(globals::config::kOmoriFontSecondPath.c_str(), size);
     // if (font == nullptr) TTF_GetError();
 }
 
-void Division::deinitialize() {
+template <typename T>
+void GenericTextArea<T>::deinitialize() {
+    Multiton<T>::deinitialize();
     TTF_CloseFont(font);
     font = nullptr;
 }
 
-void Division::render() {
+/**
+ * @brief Render the entire text area to the screen.
+*/
+template <typename T>
+void GenericTextArea<T>::render() const {
     SDL_RenderCopy(globals::renderer, outerTexture, nullptr, &outerDestRect);
     SDL_RenderCopy(globals::renderer, innerTexture, nullptr, &innerDestRect);
 }
@@ -64,22 +45,25 @@ void Division::render() {
 /**
  * @brief Reset all `SDL_Texture*` and their corresponding `SDL_Rect`.
 */
-void Division::onWindowChange() {
+template <typename T>
+void GenericTextArea<T>::onWindowChange() {
     if (outerTexture != nullptr) SDL_DestroyTexture(outerTexture);
     if (innerTexture != nullptr) SDL_DestroyTexture(innerTexture);
     loadOuterTexture();
     loadInnerTexture();
 }
 
-void Division::editContent(const std::string& nextContent) {
+template <typename T>
+void GenericTextArea<T>::editContent(std::string const& nextContent) {
     content = nextContent;
     loadInnerTexture();
 }
 
 /**
- * @note Attempt to recreate OMORI buttons.
+ * @brief Populate the "outer" part of the text area.
 */
-void Division::loadOuterTexture() {
+template <typename T>
+void GenericTextArea<T>::loadOuterTexture() {
     constexpr static float kUnit = 2.0f / 32.0f;
 
     auto modifyRect = [](SDL_Rect& rect, float ratio) {
@@ -115,7 +99,11 @@ void Division::loadOuterTexture() {
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
 
-void Division::loadInnerTexture() {
+/**
+ * @brief Populate the "text" part of the text area.
+*/
+template <typename T>
+void GenericTextArea<T>::loadInnerTexture() {
     // Render text at high quality
     SDL_Surface* innerSurface = TTF_RenderUTF8_Blended(font, content.c_str(), globals::config::kDefaultWhiteColor);
     if (innerSurface == nullptr) return;
@@ -132,4 +120,11 @@ void Division::loadInnerTexture() {
 }
 
 
-TTF_Font* Division::font = nullptr;
+/**
+ * The global font in the scope of this project.
+*/
+template <typename T>
+TTF_Font* GenericTextArea<T>::font = nullptr;
+
+
+template class GenericTextArea<GenericButton>;

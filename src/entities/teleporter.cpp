@@ -5,7 +5,7 @@
 #include <SDL.h>
 
 #include <meta.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 Teleporter::Teleporter() {

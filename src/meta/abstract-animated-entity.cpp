@@ -5,8 +5,7 @@
 #include <SDL.h>
 
 #include <entities.hpp>
-#include <auxiliaries/utils.hpp>
-#include <auxiliaries/globals.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
@@ -57,9 +56,12 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity() : isAnimationAtFinalSprite(f
  * @note Recommended implementation: this method should be defined by derived classes.
 */
 template <class T>
-void AbstractAnimatedEntity<T>::onLevelChange(const level::EntityLevelData& entityLevelData) {
-    delete nextAnimationData;
-    nextAnimationData = nullptr;
+void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
+    if (nextAnimationData != nullptr) {
+        delete nextAnimationData;
+        nextAnimationData = nullptr;
+    }
+    
     AbstractEntity<T>::onLevelChange(entityLevelData);
 }
 

@@ -1,5 +1,6 @@
 #include <interface.hpp>
 
+#include <unordered_map>
 #include <unordered_set>
 
 #include <meta.hpp>
@@ -10,21 +11,24 @@
  * @note Might move to `globals::config` instead.
 */
 MenuInterface::MenuInterface() {
-    buttons.insert(new Division("NEW GAME", { 1.0f / 3.0f, 7.0f / 9.0f }));
-    buttons.insert(new Division("CONTINUE", { 1.0f / 3.0f, 8.0f / 9.0f }));
-    buttons.insert(new Division("SETTINGS", { 2.0f / 3.0f, 7.0f / 9.0f }));
-    buttons.insert(new Division("ABOUT", { 2.0f / 3.0f, 8.0f / 9.0f }));
+    static const std::unordered_map<std::string, SDL_FPoint> initializer = {
+        { "NEW GAME", { 1.0f / 3.0f, 7.0f / 9.0f } },
+        { "CONTINUE", { 1.0f / 3.0f, 8.0f / 9.0f } },
+        { "SETTINGS", { 2.0f / 3.0f, 7.0f / 9.0f } },
+        { "ABOUT", { 2.0f / 3.0f, 8.0f / 9.0f } },
+    };
+    for (const auto& pair : initializer) GenericButton::instances.insert(new GenericButton(pair.first, pair.second));
 }
 
 void MenuInterface::initialize() {
-    Division::initialize();
+    GenericButton::initialize();
 }
 
 void MenuInterface::deinitialize() {
-    Division::deinitialize();
+    GenericButton::deinitialize();
 }
 
-void MenuInterface::render() {
+void MenuInterface::render() const {
     renderBackground();
     renderComponents();
 }
@@ -32,15 +36,15 @@ void MenuInterface::render() {
 /**
  * @note In future commits, this method will take advantage of `texture`.
 */
-void MenuInterface::renderBackground() {
+void MenuInterface::renderBackground() const {
     utils::setRendererDrawColor(globals::renderer, globals::config::kDefaultBackgroundColor);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
-void MenuInterface::renderComponents() {
-    for (auto& button : buttons) button->render();
+void MenuInterface::renderComponents() const {
+    GenericButton::callOnEach(&GenericButton::render);
 }
 
 void MenuInterface::onWindowChange() {
-    for (auto& button : buttons) button->onWindowChange();
+    GenericButton::callOnEach(&GenericButton::onWindowChange);
 }

@@ -1,4 +1,4 @@
-#include <auxiliaries/utils.hpp>
+#include <auxiliaries.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -13,40 +13,41 @@
 #include <pugixml/pugixml.hpp>
 #include <zlib/zlib.h>
 
-#include <auxiliaries/globals.hpp>
 
-
-bool operator==(const SDL_Point& first, const SDL_Point& second) {
+bool operator==(SDL_Point const& first, SDL_Point const& second) {
     return first.x == second.x && first.y == second.y;
 }
 
-bool operator!=(const SDL_Point& first, const SDL_Point& second) {
+bool operator!=(SDL_Point const& first, SDL_Point const& second) {
     return !(first == second);
 }
 
-bool operator<(const SDL_Point& first, const SDL_Point& second) {
+bool operator<(SDL_Point const& first, SDL_Point const& second) {
     return (first.y < second.y) || (first.y == second.y && first.x < second.x);
 }
 
-SDL_Point operator+(const SDL_Point& first, const SDL_Point& second) {
+SDL_Point operator+(SDL_Point const& first, SDL_Point const& second) {
     return {first.x + second.x, first.y + second.y};
 }
 
-SDL_Point operator-(const SDL_Point& first, const SDL_Point& second) {
+SDL_Point operator-(SDL_Point const& first, SDL_Point const& second) {
     return {first.x - second.x, first.y - second.y};
 }
 
-
-template <typename Iterable, typename Function, typename... Args>
-void utils::iterate(const Iterable& iterable, Function&& function, Args&&... args) {
-    for (const auto& element : iterable) std::invoke(std::forward<Function>(function), element, std::forward<Args>(args)...);
+bool operator==(SDL_FPoint const& first, SDL_FPoint const& second) {
+    return first.x == second.x && first.y == second.y;
 }
+
+std::size_t std::hash<SDL_Point>::operator()(SDL_Point const& instance) const {
+    return std::hash<int>{}(instance.x) ^ (std::hash<int>{}(instance.y) << 1);
+}
+
 
 /**
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
  * @note Susceptible to data loss.
 */
-int utils::castFloatToInt(float f) { return static_cast<int>(std::lroundf(f)); }
+int utils::castFloatToInt(const float f) { return static_cast<int>(std::lroundf(f)); }
 
 /**
  * @brief Retrieve a binary outcome. Models a Bernoulli distribution.
@@ -64,7 +65,7 @@ int utils::generateRandomBinary(const double probability) {
 /**
  * @brief Calculate the distance between two `SDL_Point`.
 */
-double utils::calculateDistance(const SDL_Point& first, const SDL_Point& second) {
+double utils::calculateDistance(SDL_Point const& first, SDL_Point const& second) {
     auto sub = first - second;
     return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
 }
@@ -72,7 +73,7 @@ double utils::calculateDistance(const SDL_Point& first, const SDL_Point& second)
 /**
  * @brief Convert a string representing a hex color value to `SDL_Color`.
 */
-SDL_Color utils::SDL_ColorFromHexString(const std::string& hexString) {
+SDL_Color utils::SDL_ColorFromHexString(std::string const& hexString) {
     // Convert hexadecimal string to unsigned integer
     uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);
 
@@ -88,7 +89,7 @@ SDL_Color utils::SDL_ColorFromHexString(const std::string& hexString) {
 /**
  * @brief Allow `SDL_Color` to be passed into `SDL_SetRendererDrawColor()` instead of `uint8_t`.
 */
-void utils::setRendererDrawColor(SDL_Renderer* renderer, const SDL_Color& color) {
+void utils::setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color) {
     SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 }
 
@@ -99,7 +100,7 @@ void utils::setRendererDrawColor(SDL_Renderer* renderer, const SDL_Color& color)
  * @note Conversion to `std::string` can be done as follows: `std::vector<char> vec = utils::zlibDecompress(compressed); `std::string decompressed(vec.data(), vec.size());`
 */
 template <typename T>
-std::vector<T> utils::zlibDecompress(const std::string& s) {
+std::vector<T> utils::zlibDecompress(std::string const& s) {
     std::vector<T> decompressed;   // Avoid guessing decompressed data size
     unsigned char buffer[sizeof(T)];   // Temporarily hold decompressed data in bytes
 
@@ -145,7 +146,7 @@ std::vector<T> utils::zlibDecompress(const std::string& s) {
  * @brief Decrypt a base64-encrypted string.
  * @param s the base-64 encrypted string.
 */
-std::string utils::base64Decode(const std::string& s) {
+std::string utils::base64Decode(std::string const& s) {
     const std::string b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";   // Characters used in base64 encoding alphabet
 
     // Map each base64 character to its corresponding index
@@ -177,7 +178,7 @@ std::string utils::base64Decode(const std::string& s) {
 /**
  * @brief Read a JSON file.
 */
-void utils::readJSON(const std::filesystem::path& path, json& data) {
+void utils::readJSON(std::filesystem::path const& path, json& data) {
     std::ifstream file;
     file.open(path);
     if (!file.is_open()) return;
@@ -232,7 +233,7 @@ void utils::loadLevelsData(level::LevelMapping& mapping) {
  * @note Only `csv` and `zlib-compressed base64` are supported.
  * @todo Reimplementation should be made to adhere to SoC. (this is a true mess)
 */
-void utils::loadLevelData(level::LevelData& currentLevelData, const json& JSONLevelData) {
+void utils::loadLevelData(level::LevelData& currentLevelData, json const& JSONLevelData) {
     // Clear current level data
     currentLevelData.deinitialize();
 
@@ -294,7 +295,7 @@ void utils::loadLevelData(level::LevelData& currentLevelData, const json& JSONLe
 /**
  * @brief Initialize all tilelayer tilesets associated with the current level.
 */
-void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, const json& data) {
+void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, json const& data) {
     for (auto& tilesetData : tilesetDataCollection) tilesetData.deinitialize();   // Prevent memory leak
     tilesetDataCollection.clear();
 
@@ -312,7 +313,7 @@ void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData:
  * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
  * @todo Optimization should be made to reduce time complexity. Try binary search.
 */
-const tile::TilelayerTilesetData* utils::getTilesetData(const tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
+tile::TilelayerTilesetData const* utils::getTilesetData(const tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
     auto it = std::find_if(tilesetDataCollection.begin(), tilesetDataCollection.end(), [&](const auto tilesetData) {
         return tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y;
     });
@@ -320,231 +321,18 @@ const tile::TilelayerTilesetData* utils::getTilesetData(const tile::TilelayerTil
 }
 
 /**
- * @brief Read data associated with a tileset from loaded XML data.
- * @note Also loads the `texture`.
- * @note Requires `document` to be successfully loaded from a XML file.
+ * @brief Set color modulation on the texture of derived class `T`.
 */
-void tile::BaseTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
-    // Parse nodes
-    pugi::xml_node tilesetNode = document.child("tileset");
-    pugi::xml_node imageNode = tilesetNode.child("image");
-
-    if (tilesetNode.empty() || imageNode.empty()) return;   // A tileset can have no properties
-
-    // Dimensions
-    auto srcCountX = tilesetNode.attribute("columns");
-    auto srcCountSum = tilesetNode.attribute("tilecount");
-    auto srcSizeX = tilesetNode.attribute("tilewidth");
-    auto srcSizeY = tilesetNode.attribute("tileheight");
-
-    if (srcCountX == nullptr || srcCountSum == nullptr || srcSizeX == nullptr || srcSizeY == nullptr) return;
-
-    srcCount = {srcCountX.as_int(), srcCountSum.as_int() / srcCountX.as_int()};
-    srcSize = {srcSizeX.as_int(), srcSizeY.as_int()};
-
-    // Load texture
-    auto src = imageNode.attribute("source");
-    if (src == nullptr) return;
-
-    std::filesystem::path path(src.as_string());
-    utils::cleanRelativePath(path);
-    texture = IMG_LoadTexture(renderer, (globals::config::kAssetPath / path).string().c_str());   // Should also check whether path exists
+void utils::setTextureRGB(SDL_Texture*& texture, SDL_Color const& color) {
+    SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
 }
 
 /**
- * @brief Read data associated with a tilelayer tileset from loaded JSON data.
- * @note Also loads the `texture` and populate `firstGID`.
- * @note `firstGID` is contained only in Tiled Map JSON files.
+ * @brief Set both color modulation and alpha modulation on the texture of derived class `T`.
+ * @param col represents a standard RGBA value.
 */
-void tile::TilelayerTilesetData::initialize(const json& tileset, SDL_Renderer* renderer) {
-    auto firstGID_ = tileset.find("firstgid");
-    if (firstGID_ == tileset.end() || !firstGID_.value().is_number_integer()) return;
-    firstGID = firstGID_.value();
-
-    auto src = tileset.find("source");
-    if (src == tileset.end() || !src.value().is_string()) return;
-    std::filesystem::path xmlPath(src.value());
-    utils::cleanRelativePath(xmlPath);
-
-    pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file((globals::config::kTiledAssetPath / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
-    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
-
-    BaseTilesetData::initialize(document, renderer);
-
-    // Properties
-    pugi::xml_node propertiesNode = document.child("tileset").child("properties");
-    if (propertiesNode.empty()) return;
-
-    for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
-        if (propertyNode.empty()) continue;
-
-        auto name = propertyNode.attribute("name");
-        auto type = propertyNode.attribute("type");
-
-        if (name == nullptr) continue;
-
-        if (type == nullptr || std::strcmp(type.as_string(), "class")) {
-            auto value = propertyNode.attribute("value");
-            if (value == nullptr) continue;
-            properties.insert(std::make_pair(name.as_string(), value.as_string()));
-        }
-    }
-}
-
-/**
- * @brief Read data associated with a tileset used for an entity or an animated object from loaded XML data.
- * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
-*/
-void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
-    BaseTilesetData::initialize(document, renderer);
-
-    pugi::xml_node propertiesNode = document.child("tileset").child("properties");
-    if (propertiesNode.empty()) return;
-
-    for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
-        if (propertyNode.empty()) continue;
-
-        auto name = propertyNode.attribute("name");
-        auto type = propertyNode.attribute("type");
-
-        if (name == nullptr) continue;
-        
-        if (type == nullptr || std::strcmp(type.as_string(), "class")) {
-            auto value = propertyNode.attribute("value");
-            if (value == nullptr) continue;
-            if (!std::strcmp(name.as_string(), "animation-update-rate")) {
-                animationUpdateRate = value.as_int();
-            } else if (!std::strcmp(name.as_string(), "animation-width")) {
-                animationSize.x = value.as_int();
-            } else if (!std::strcmp(name.as_string(), "animation-height")) {
-                animationSize.y = value.as_int();
-            }
-        } else {
-            auto propertytype = propertyNode.attribute("propertytype");
-            pugi::xml_node animationsNode = propertyNode.child("properties");
-            if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
-
-            auto animationType = EntitiesTilesetData::kAnimationTypeConversionMapping.find(name.as_string());
-            if (animationType == EntitiesTilesetData::kAnimationTypeConversionMapping.end()) continue;
-
-            EntitiesTilesetData::Animation animation;
-
-            for (pugi::xml_node animationNode = animationsNode.child("property"); animationNode; animationNode = animationNode.next_sibling("property")) {
-                if (animationNode.empty()) continue;
-
-                auto name_ = animationNode.attribute("name");
-                auto value_ = animationNode.attribute("value");
-                if (name_ == nullptr || value_ == nullptr) continue;
-                
-                if (!std::strcmp(name_.as_string(), "startGID")) {
-                    animation.startGID = value_.as_int();
-                } else if (!std::strcmp(name_.as_string(), "stopGID")) {
-                    animation.stopGID = value_.as_int();
-                } else if (!std::strcmp(name_.as_string(), "isPermanent")) {
-                    animation.isPermanent = value_.as_bool();
-                }
-            }
-
-            // Does this need to be inserted instead?
-            animationMapping.emplace(std::make_pair(animationType->second, animation));
-        }
-    }
-}
-
-/**
- * @brief An alternative to the constructor. Populate data members based on JSON data.
- * @note Requires JSON data to be in proper format before being called.
-*/
-void level::EntityLevelData::initialize(const json& entityJSONLeveData) {
-    auto destCoordsX = entityJSONLeveData.find("x");
-    auto destCoordsY = entityJSONLeveData.find("y");
-    auto destSizeWidth = entityJSONLeveData.find("width");
-    auto destSizeHeight = entityJSONLeveData.find("height");
-
-    // Also check for division by zero
-    if (destCoordsX == entityJSONLeveData.end() || destCoordsY == entityJSONLeveData.end() || destSizeWidth == entityJSONLeveData.end() || destSizeHeight == entityJSONLeveData.end() || !destCoordsX.value().is_number_integer() || !destCoordsY.value().is_number_integer() || !destSizeWidth.value().is_number_integer() || !destSizeHeight.value().is_number_integer()) return;
-
-    destCoords = {
-        int(destCoordsX.value()) / int(destSizeWidth.value()),
-        int(destCoordsY.value()) / int(destSizeHeight.value()),
-    };
-}
-
-void level::TeleporterLevelData::initialize(const json& entityJSONLevelData) {
-    EntityLevelData::initialize(entityJSONLevelData);
-
-    auto teleporterProperties = entityJSONLevelData.find("properties");
-    if (teleporterProperties == entityJSONLevelData.end() || !teleporterProperties.value().is_array()) return;
-
-    for (const auto& property : teleporterProperties.value()) {
-        auto name = property.find("name");
-        auto value = property.find("value");
-
-        if (name == property.end() || value == property.end() || !value.value().is_string()) continue;
-
-        if (name.value() == "target-dest-coords") {
-            auto& value_ = value.value();
-            if (!value_.is_object()) continue;
-
-            auto targetDestCoordsX = value_.find("x");
-            auto targetDestCoordsY = value_.find("y");
-            if (targetDestCoordsX == value_.end() || targetDestCoordsY == value_.end() || !targetDestCoordsX.value().is_number() || !targetDestCoordsY.value().is_number()) continue;
-
-            targetDestCoords = {targetDestCoordsX.value(), targetDestCoordsY.value()};
-
-        } else if (name.value() == "target-level") {
-            if (!value.value().is_string()) continue;
-            auto result = level::kLevelNameConversionMapping.find(value.value());
-            if (result == level::kLevelNameConversionMapping.end()) continue;
-            targetLevel = result->second;
-        }
-    }
-}
-
-void level::LevelData::initialize(const json& JSONLayerData) {
-    auto objects = JSONLayerData.find("objects");
-    if (objects == JSONLayerData.end() || !objects.value().is_array()) return;
-    
-    for (const auto& object : objects.value()) {
-        auto type = object.find("type");
-        if (type == object.end() || !type.value().is_string()) continue;
-
-        if (type.value() == "player") {
-            level::PlayerLevelData data;
-            data.initialize(object);
-            playerLevelData = data;
-        } else if (type.value() == "teleporter") {
-            level::TeleporterLevelData data;
-            data.initialize(object);
-            teleportersLevelData.insert(data);
-        } else if (type.value() == "slime") {
-            level::SlimeLevelData data;
-            data.initialize(object);
-            slimesLevelData.insert(data);
-        }
-    }
-}
-
-void level::LevelData::deinitialize() {
-    for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
-    backgroundColor = globals::config::kDefaultBackgroundColor;
-    teleportersLevelData.clear();
-    slimesLevelData.clear();
-}
-
-/**
- * @brief Calculate the finalized physical damage dealt to entity `passive` by entity `active`.
- * @note Defined here to prevent circular dependencies.
-*/
-int EntitySecondaryStats::calculateFinalizedPhysicalDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive) {
-    return std::round(active.PhysicalDamage * (1 - passive.PhysicalDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
-}
-
-/**
- * @brief Calculate the finalized magic damage dealt to entity `passive` by entity `active`.
- * @note Defined here to prevent circular dependencies.
-*/
-int EntitySecondaryStats::calculateFinalizedMagicDamage(EntitySecondaryStats& active, EntitySecondaryStats& passive) {
-    return std::round(active.MagicDamage * (1 - passive.MagicDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
+void utils::setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color) {
+    utils::setTextureRGB(texture, color);
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(texture, color.a);
 }
