@@ -46,7 +46,10 @@
 */
 
 
-template <class T>
+template <typename T>
+AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {}
+
+template <typename T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     if (nextDestCoords != nullptr) {
         delete nextDestCoords;
@@ -58,13 +61,13 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
     }
 }
 
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
     AbstractAnimatedEntity<T>::onWindowChange();
     calculateVelocityDependencies();
 }
 
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
     AbstractAnimatedEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
@@ -73,7 +76,7 @@ void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::EntityLevelData cons
 /**
  * @brief Handle the movement of the entity from the current `Tile` to the next.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::move() {
     if (nextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
 
@@ -119,7 +122,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
  * @brief Initiate the movement of the entity from the current `Tile` to the next.
  * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
     if (currAnimationType == AnimationType::kDeath) return;
     if (currAnimationType == AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == AnimationType::kDamaged)) return;   // Cannot move while damaged
@@ -141,7 +144,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
  * @note The sixth commandment: If a function be advertised to return an error code in the event of difficulties, thou shalt check for that code, yea, even though the checks triple the size of thy code and produce aches in thy typing fingers, for if thou thinkest `it cannot happen to me`, the gods shall surely punish thee for thy arrogance.
  * @todo Check overlap between entities of different types.
 */
-template <class T>
+template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
     if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
 
@@ -180,7 +183,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 /**
  * @note Called when a move is initiated after successful validation.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
     currVelocity = nextVelocity;
 
@@ -192,7 +195,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
 /**
  * @note Called when a validated move is finalized, or when a move is invalidated.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     // Terminate movement when reached new `Tile`
     if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != MoveStatusFlag::kInvalidated) {
@@ -218,7 +221,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
  * @brief Called when the entity starts or stops running. Change `kVelocity` and its dependencies.
  * @param onRunningStart governs whether this function is called to starts running or stops running.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onRunningToggled(const bool onRunningStart) {
     if (!isRunning ^ onRunningStart) return;
 
@@ -235,7 +238,7 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(const bool onRunningStar
 /**
  * @brief Called should `kVelocity` changes.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
     // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
     kIntegralVelocity = {
@@ -250,7 +253,7 @@ void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
 }
 
 
-template <class T>
+template <typename T>
 const double AbstractAnimatedDynamicEntity<T>::runModifier = globals::config::kDefaultEntityRunVelocityModifier;
 
 

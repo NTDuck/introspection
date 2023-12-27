@@ -6,7 +6,7 @@
 #include <auxiliaries.hpp>
 
 
-template <class T>
+template <typename T>
 AbstractInterface<T>::~AbstractInterface() {
     if (texture != nullptr) {
         SDL_DestroyTexture(texture);
@@ -14,12 +14,12 @@ AbstractInterface<T>::~AbstractInterface() {
     }
 }
 
-template <class T>
+template <typename T>
 void AbstractInterface<T>::render() const {
     SDL_RenderCopy(globals::renderer, texture, nullptr, nullptr);
 }
 
-template <class T>
+template <typename T>
 void AbstractInterface<T>::onWindowChange() {
     if (texture != nullptr) SDL_DestroyTexture(texture);
     texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);

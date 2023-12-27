@@ -6,7 +6,7 @@
 #include <auxiliaries.hpp>
 
 
-Slime::Slime() {
+Slime::Slime(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Slime>(destCoords) {
     destRectModifier = globals::config::kDefaultSlimeDestRectModifier;
     kMoveInitiateRange = globals::config::kDefaultSlimeMoveInitiateRange;
     kAttackInitiateRange = globals::config::kDefaultSlimeAttackInitiateRange;
@@ -18,7 +18,7 @@ Slime::Slime() {
  * @brief Calculate the movement of an instance based on the position of the player entity.
  * @note Use `<cstdlib>` instead of `<random>` for slight performance gains. (sacrifice crypt)
 */
-void Slime::calculateMove(const SDL_Point& playerDestCoords) {
+void Slime::calculateMove(SDL_Point const& playerDestCoords) {
     auto distance = utils::calculateDistance(destCoords, playerDestCoords);
     if (kMoveInitiateRange.x < distance && kMoveInitiateRange.y < distance) {
         nextVelocity = {0, 0};

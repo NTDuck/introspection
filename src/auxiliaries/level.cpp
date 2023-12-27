@@ -1,11 +1,11 @@
 #include <auxiliaries.hpp>
 
 
-std::size_t level::EntityLevelData::Hasher::operator()(level::EntityLevelData const& instance) const {
+std::size_t level::EntityLevelData::hash::operator()(level::EntityLevelData const& instance) const {
     return std::hash<SDL_Point>{}(instance.destCoords);
 }
 
-bool level::EntityLevelData::EqualityOperator::operator()(level::EntityLevelData const& first, level::EntityLevelData const& second) const {
+bool level::EntityLevelData::equal_to::operator()(level::EntityLevelData const& first, level::EntityLevelData const& second) const {
     return first.destCoords == second.destCoords;
 }
 

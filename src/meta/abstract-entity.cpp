@@ -13,18 +13,8 @@
 #include <auxiliaries.hpp>
 
 
-/**
- * @brief Create an instance of derived class `T` and register to `instanceMapping`.
-*/
-template <class T>
-T* AbstractEntity<T>::instantiate(SDL_Point destCoords) {
-    auto instance = Multiton<T>::instantiate();
-    instance->destCoords = destCoords;
-    return instance;
-}
-
-template <class T>
-AbstractEntity<T>::AbstractEntity() : destRectModifier(globals::config::kDefaultEntityDestRectModifier) {
+template <typename T>
+AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : destCoords(destCoords), destRectModifier(globals::config::kDefaultEntityDestRectModifier) {
     srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
     srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
 }
@@ -32,7 +22,7 @@ AbstractEntity<T>::AbstractEntity() : destRectModifier(globals::config::kDefault
 /**
  * @see <utils.h> utils::loadTilesetsData
 */
-template <class T>
+template <typename T>
 void AbstractEntity<T>::initialize() {
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file(kTilesetPath.c_str());
@@ -42,7 +32,7 @@ void AbstractEntity<T>::initialize() {
     tilesetData->initialize(document, globals::renderer);
 }
 
-template <class T>
+template <typename T>
 void AbstractEntity<T>::deinitialize() {
     Multiton<T>::deinitialize();
     if (tilesetData != nullptr) {
@@ -55,16 +45,11 @@ void AbstractEntity<T>::deinitialize() {
  * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
  * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
 */
-template <class T>
+template <typename T>
 template <typename LevelData>
-void AbstractEntity<T>::callOnEach_onLevelChange(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection) {
+void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection) {
     Multiton<T>::deinitialize();
 
-    // std::vector<SDL_Point> entityLevelDataDestCoordsCollection;
-    // std::transform(entityLevelDataCollection.begin(), entityLevelDataCollection.end(), std::back_inserter(entityLevelDataDestCoordsCollection), [](const auto& entityLevelData) { return entityLevelData.destCoords; });
-
-    // Multiton<T>::instantiateEx(entityLevelDataDestCoordsCollection);
-    // Multiton<T>::callOnEachEx(&T::onLevelChange, entityLevelDataCollection);
     for (const auto& entityLevelData : entityLevelDataCollection) {
         auto instance = instantiate(entityLevelData.destCoords);
         instance->onLevelChange(entityLevelData);
@@ -75,7 +60,7 @@ void AbstractEntity<T>::callOnEach_onLevelChange(typename level::EntityLevelData
  * @brief Render the current sprite to the window.
  * @note Recommended implementation: this method requires `destRect` and `srcRect` to be set properly prior to being called.
 */
-template <class T>
+template <typename T>
 void AbstractEntity<T>::render() const {
     SDL_RenderCopyEx(globals::renderer, tilesetData->texture, &srcRect, &destRect, angle, center, flip);
 }
@@ -83,7 +68,7 @@ void AbstractEntity<T>::render() const {
 /**
  * @brief Update data members that depend on window dimensions.
 */
-template <class T>
+template <typename T>
 void AbstractEntity<T>::onWindowChange() {
     destRect = getDestRectFromCoords(destCoords);
 }
@@ -92,7 +77,7 @@ void AbstractEntity<T>::onWindowChange() {
  * @brief Update relevant data members on entering new level.
  * @note Recommended implementation: this method should be defined by derived classes.
 */
-template <class T>
+template <typename T>
 void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
     secondaryStats.initialize(primaryStats);   // Prevent resetting secondary stats on player entity
     destCoords = entityLevelData.destCoords;
@@ -103,7 +88,7 @@ void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelD
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
  * @see https://stackoverflow.com/questions/3127962/c-float-to-int
 */
-template <class T>
+template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
         coords.x * globals::tileDestSize.x + globals::windowOffset.x
@@ -116,8 +101,18 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const
     };
 }
 
+template <typename T>
+std::size_t std::hash<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& instance) const {
+    return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_Point>(instance->destCoords);
+}
 
-template <class T>
+template <typename T>
+bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& first, AbstractEntity<T> const*& second) const {
+    return (first == nullptr && second == nullptr) || (first && second && first->destCoords == second->destCoords);
+}
+
+
+template <typename T>
 tile::EntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
 
 
@@ -130,5 +125,5 @@ template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
 template class AbstractEntity<Slime>;
 
-template void AbstractEntity<Teleporter>::callOnEach_onLevelChange<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
-template void AbstractEntity<Slime>::callOnEach_onLevelChange<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
+template void AbstractEntity<Slime>::onLevelChangeAll<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);

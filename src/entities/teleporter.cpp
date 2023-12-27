@@ -8,11 +8,11 @@
 #include <auxiliaries.hpp>
 
 
-Teleporter::Teleporter() {
+Teleporter::Teleporter(SDL_Point const& destCoords) : AbstractAnimatedEntity<Teleporter>(destCoords) {
     destRectModifier = globals::config::kDefaultTeleporterDestRectModifier;
 }
 
-void Teleporter::onLevelChange(const level::EntityLevelData& teleporterData) {
+void Teleporter::onLevelChange(level::EntityLevelData const& teleporterData) {
     auto data = dynamic_cast<const level::TeleporterLevelData*>(&teleporterData);
     AbstractAnimatedEntity<Teleporter>::onLevelChange(*data);
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <unordered_map>
+#include <type_traits>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -16,9 +17,8 @@
  * @brief Represent the in-game interface.
 */
 class IngameInterface final : public AbstractInterface<IngameInterface> {
-    friend AbstractInterface<IngameInterface>;
     public:
-        using AbstractInterface<IngameInterface>::render, AbstractInterface<IngameInterface>::texture;
+        INCL_ABSTRACT_INTERFACE(IngameInterface)
 
         IngameInterface(const level::LevelName levelName);
         ~IngameInterface() = default;
@@ -49,7 +49,8 @@ class IngameInterface final : public AbstractInterface<IngameInterface> {
 template <typename T>
 class GenericTextArea : public Multiton<T> {
     public:
-        using Multiton<T>::instantiate, Multiton<T>::instances;
+        INCL_MULTITON(T)
+
         virtual ~GenericTextArea();
 
         static void initialize();
@@ -63,57 +64,75 @@ class GenericTextArea : public Multiton<T> {
     protected:
         GenericTextArea(std::string const& content, SDL_FPoint const& center);
 
+        static void loadFont();
         void loadOuterTexture();
         void loadInnerTexture();
 
-        static const int size = 32;   // might get reassigned in `onWindowChange()`?
+        TextAreaPreset preset = globals::config::kButtonOnMouseOutPreset;
+        static int size;
         static TTF_Font* font;
 
         SDL_Texture* outerTexture = nullptr;   // outer box
         SDL_Texture* innerTexture = nullptr;   // text content
 
-        std::string content;
-        const SDL_FPoint kCenter;   // ratio
-        SDL_Rect innerDestRect;
         SDL_Rect outerDestRect;
+        SDL_Rect innerDestRect;
+
+        std::string content;
+
+        /**
+         * Determine the position of the text area relative to the window.
+        */
+        const SDL_FPoint kCenter;   // ratio
+
+    private:
+        static constexpr SDL_Point kOuterDestRectRatio = { 10, 2 };
 };
+
+#define INCL_GENERIC_TEXT_AREA(T) using GenericTextArea<T>::initialize, GenericTextArea<T>::deinitialize, GenericTextArea<T>::render, GenericTextArea<T>::onWindowChange, GenericTextArea<T>::editContent, GenericTextArea<T>::loadOuterTexture, GenericTextArea<T>::loadInnerTexture, GenericTextArea<T>::preset, GenericTextArea<T>::size, GenericTextArea<T>::font, GenericTextArea<T>::outerTexture, GenericTextArea<T>::innerTexture, GenericTextArea<T>::content, GenericTextArea<T>::kCenter, GenericTextArea<T>::outerDestRect, GenericTextArea<T>::innerDestRect;
 
 namespace std {
     template <typename T>
     struct hash<GenericTextArea<T>> {
-        std::size_t operator()(GenericTextArea<T> const*& instance) const {
-            return std::hash<float>{}(instance->kCenter.x) ^ (std::hash<float>{}(instance->kCenter.y) << 1);
-        }
+        std::size_t operator()(GenericTextArea<T> const*& instance) const;
     };
 
     template <typename T>
     struct equal_to<GenericTextArea<T>> {
-        bool operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const {
-            return (first == nullptr && second == nullptr) || (first && second && first->kCenter == second->kCenter);
-        }
+        bool operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const;
     };
 }
+
 
 /**
  * @brief Represent a mouse-interactible `TextArea`.
 */
 class GenericButton : public GenericTextArea<GenericButton> {
-    friend GenericTextArea<GenericButton>;
     public:
-        using Multiton<GenericButton>::instances, Multiton<GenericButton>::instantiate, Multiton<GenericButton>::callOnEach;
-        using GenericTextArea<GenericButton>::size, GenericTextArea<GenericButton>::font, GenericTextArea<GenericButton>::outerTexture, GenericTextArea<GenericButton>::innerTexture, GenericTextArea<GenericButton>::content, GenericTextArea<GenericButton>::kCenter, GenericTextArea<GenericButton>::innerDestRect, GenericTextArea<GenericButton>::outerDestRect;
+        INCL_GENERIC_TEXT_AREA(GenericButton)
 
-        GenericButton(std::string const& content, SDL_FPoint const& center);
-    // onMouseOut, onMouseOver, onClick
+        GenericButton(GameState* destState, std::string const& content, SDL_FPoint const& center);
+
+        void handleMouseEvent(SDL_Event const& event);
+
+    protected:
+        void onMouseOut();
+        void onMouseOver();
+        virtual void onClick();
+
+        GameState* destState = nullptr;
+
+    private:
+        bool isMouseOut = true;
 };
+
 
 /**
  * @brief Represent the menu interface.
 */
 class MenuInterface final : public AbstractInterface<MenuInterface> {
-    friend AbstractInterface<MenuInterface>;
     public:
-        using AbstractInterface<MenuInterface>::texture;
+        INCL_ABSTRACT_INTERFACE(MenuInterface)
 
         MenuInterface();
         ~MenuInterface() = default;
@@ -124,11 +143,14 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
         void render() const override;
         void onWindowChange() override;
 
-    private:
+        void handleMouseEvent(SDL_Event const& event);
+
+  private:
         void renderBackground() const;
         void renderComponents() const;
 };
 
 
-
 #endif
+
+

@@ -16,15 +16,15 @@
  * @brief A singleton class that controls are ingame operations.
 */
 class Game final : public Singleton<Game> {
-    friend Singleton<Game>;
+    friend Singleton<Game>;   // Required for private constructor
     public:
-        using Singleton<Game>::instantiate;
+        INCL_SINGLETON(Game)
 
         ~Game();
         void start();
 
     private:
-        explicit Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
+        Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
 
         void initialize();
         void startGameLoop();
@@ -38,9 +38,9 @@ class Game final : public Singleton<Game> {
 
         void handleEntitiesMovement();
         void handleEntitiesInteraction();
-        template <class Active, class Passive>
+        template <typename Active, typename Passive>
         void onEntityCollision(Active& active, Passive& passive);
-        template <class Active, class Passive>
+        template <typename Active, typename Passive>
         void onEntityAnimation(AnimationType animationType, Active& active, Passive& passive);
 
         void handleWindowEvent(SDL_Event const& event);
@@ -70,13 +70,6 @@ class Game final : public Singleton<Game> {
         SDL_Rect windowDimension;
         const int frameRate;
         const std::string title;
-
-        /**
-         * The current game state. Is strictly bound to the main control flow.
-        */
-        GameState state = GameState::kMenu;
-
-        static Game* instance;
 };
 
 

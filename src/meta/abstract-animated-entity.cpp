@@ -46,8 +46,8 @@
  * @note There is no Flow 3. For Deallocation of `nextAnimationData`, see `updateAnimation()`.
 */
 
-template <class T>
-AbstractAnimatedEntity<T>::AbstractAnimatedEntity() : isAnimationAtFinalSprite(false) {
+template <typename T>
+AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords), isAnimationAtFinalSprite(false) {
     resetAnimation(AnimationType::kIdle);
 }
 
@@ -55,7 +55,7 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity() : isAnimationAtFinalSprite(f
  * @brief Update relevant data members on entering new level.
  * @note Recommended implementation: this method should be defined by derived classes.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
     if (nextAnimationData != nullptr) {
         delete nextAnimationData;
@@ -69,7 +69,7 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& enti
  * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
  * @see <interface.h> Interface::renderLevelTiles()
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++currAnimationUpdateCount;
     
@@ -103,7 +103,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
 /**
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(const AnimationType animationType, const MoveStatusFlag flag) {
     currAnimationType = animationType;
     if (flag == MoveStatusFlag::kContinued) return;
@@ -114,7 +114,7 @@ void AbstractAnimatedEntity<T>::resetAnimation(const AnimationType animationType
 /**
  * @brief Initiate a new animation based on `nextAnimationData`.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
     if (currAnimationType == AnimationType::kDeath) return;
@@ -135,7 +135,7 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 /**
  * @brief Called when the entity should inititate an attack.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::onAttackInitiated() {
     resetAnimation(AnimationType::kAttack);
 }
@@ -143,7 +143,7 @@ void AbstractAnimatedEntity<T>::onAttackInitiated() {
 /**
  * @brief Called when the entity should be damaged.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::onAttackRegistered() {
     resetAnimation(AnimationType::kDamaged);
 }
@@ -151,7 +151,7 @@ void AbstractAnimatedEntity<T>::onAttackRegistered() {
 /**
  * @brief Called when the entity's `secondaryStats.HP` should drop below zero.
 */
-template <class T>
+template <typename T>
 void AbstractAnimatedEntity<T>::onDeath() {
     resetAnimation(AnimationType::kDeath);
 }

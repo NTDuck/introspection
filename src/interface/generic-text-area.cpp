@@ -22,7 +22,7 @@ GenericTextArea<T>::~GenericTextArea() {
 
 template <typename T>
 void GenericTextArea<T>::initialize() {
-    font = TTF_OpenFont(globals::config::kOmoriFontSecondPath.c_str(), size);
+    loadFont();
     // if (font == nullptr) TTF_GetError();
 }
 
@@ -42,13 +42,14 @@ void GenericTextArea<T>::render() const {
     SDL_RenderCopy(globals::renderer, innerTexture, nullptr, &innerDestRect);
 }
 
-/**
- * @brief Reset all `SDL_Texture*` and their corresponding `SDL_Rect`.
-*/
 template <typename T>
 void GenericTextArea<T>::onWindowChange() {
-    if (outerTexture != nullptr) SDL_DestroyTexture(outerTexture);
-    if (innerTexture != nullptr) SDL_DestroyTexture(innerTexture);
+    // Call `loadFont()` "once"
+    static std::size_t counter = 0;
+    if (!counter) loadFont();
+    ++counter;
+    if (counter == instances.size()) counter = 0;
+
     loadOuterTexture();
     loadInnerTexture();
 }
@@ -59,23 +60,22 @@ void GenericTextArea<T>::editContent(std::string const& nextContent) {
     loadInnerTexture();
 }
 
+template <typename T>
+void GenericTextArea<T>::loadFont() {
+    if (font != nullptr) TTF_CloseFont(font);
+    size = std::min(globals::windowSize.x / kOuterDestRectRatio.x, globals::windowSize.y / kOuterDestRectRatio.y) >> 2;   // The closest power of 2
+    font = TTF_OpenFont(globals::config::kOmoriFontSecondPath.c_str(), size);
+}
+
 /**
  * @brief Populate the "outer" part of the text area.
 */
 template <typename T>
 void GenericTextArea<T>::loadOuterTexture() {
-    constexpr static float kUnit = 2.0f / 32.0f;
-
-    auto modifyRect = [](SDL_Rect& rect, float ratio) {
-        int delta = utils::castFloatToInt(std::min(rect.w, rect.h) / 2 * ratio);
-        rect.x += delta;
-        rect.y += delta;
-        rect.w -= delta * 2;
-        rect.h -= delta * 2;
-    };
-
-    outerDestRect.w = size * 10;
-    outerDestRect.h = size * 2;
+    if (outerTexture != nullptr) SDL_DestroyTexture(outerTexture);
+    
+    outerDestRect.w = size * kOuterDestRectRatio.x;
+    outerDestRect.h = size * kOuterDestRectRatio.y;
     outerDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - outerDestRect.w / 2);
     outerDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - outerDestRect.h / 2);
 
@@ -86,15 +86,23 @@ void GenericTextArea<T>::loadOuterTexture() {
     SDL_Rect arbitraryRect = outerDestRect;
     arbitraryRect.x = arbitraryRect.y = 0;
 
-    auto fillRect = [&](float multiplier, const SDL_Color& color) {
-        modifyRect(arbitraryRect, kUnit * multiplier);
+    auto modifyRect = [](SDL_Rect& rect, float ratio) {
+        int delta = utils::castFloatToInt(std::min(rect.w, rect.h) / 2 * ratio);
+        rect.x += delta;
+        rect.y += delta;
+        rect.w -= delta * 2;
+        rect.h -= delta * 2;
+    };
+    
+    auto fillRect = [&](float multiplier, SDL_Color const& color) {
+        modifyRect(arbitraryRect, multiplier);
         utils::setRendererDrawColor(globals::renderer, color);
         SDL_RenderFillRect(globals::renderer, &arbitraryRect);
     };
 
-    fillRect(0.0f, globals::config::kDefaultBlackColor);
-    fillRect(0.5f, globals::config::kDefaultWhiteColor);
-    fillRect(2.0f, globals::config::kDefaultBlackColor);
+    fillRect(0, preset.backgroundColor);
+    fillRect(preset.lineOffset, preset.lineColor);
+    fillRect(preset.lineWidth, preset.backgroundColor);
 
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
@@ -104,8 +112,10 @@ void GenericTextArea<T>::loadOuterTexture() {
 */
 template <typename T>
 void GenericTextArea<T>::loadInnerTexture() {
+    if (innerTexture != nullptr) SDL_DestroyTexture(innerTexture);
+
     // Render text at high quality
-    SDL_Surface* innerSurface = TTF_RenderUTF8_Blended(font, content.c_str(), globals::config::kDefaultWhiteColor);
+    SDL_Surface* innerSurface = TTF_RenderUTF8_Blended(font, content.c_str(), preset.textColor);
     if (innerSurface == nullptr) return;
 
     innerTexture = SDL_CreateTextureFromSurface(globals::renderer, innerSurface);
@@ -119,6 +129,22 @@ void GenericTextArea<T>::loadInnerTexture() {
     SDL_FreeSurface(innerSurface);
 }
 
+template <typename T>
+std::size_t std::hash<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& instance) const {
+    return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_FPoint>(instance->kCenter);
+}
+
+template <typename T>
+bool std::equal_to<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const {
+    return (first == nullptr && second == nullptr) || (first && second && first->kCenter == second->kCenter);
+}
+
+
+/**
+ * Determine the physical size of the text area.
+*/
+template <typename T>
+int GenericTextArea<T>::size;
 
 /**
  * The global font in the scope of this project.

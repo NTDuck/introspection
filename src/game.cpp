@@ -20,6 +20,7 @@ Game::~Game() {
         SDL_FreeSurface(windowSurface);
         windowSurface = nullptr;
     }
+    
     if (window != nullptr) {
         SDL_DestroyWindow(window);
         window = nullptr;
@@ -74,7 +75,7 @@ void Game::initialize() {
 
     ingameInterface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
     menuInterface = MenuInterface::instantiate();
-    player = Player::instantiate();
+    player = Player::instantiate(SDL_Point{ 0, 0 });
 }
 
 /**
@@ -86,7 +87,7 @@ void Game::startGameLoop() {
     onLevelChange();
     onWindowChange();
 
-    while (state != GameState::kExit) {
+    while (globals::state != GameState::kExit) {
         handleEntities();
         handleEvents();
         render();
@@ -102,7 +103,7 @@ void Game::startGameLoop() {
 void Game::render() {
     SDL_RenderClear(globals::renderer);
 
-    switch (state) {
+    switch (globals::state) {
         case GameState::kIngamePlaying:
             ingameInterface->render();
             Teleporter::callOnEach(&Teleporter::render);
@@ -129,8 +130,8 @@ void Game::onLevelChange() {
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     player->onLevelChange(globals::currentLevelData.playerLevelData);
-    Teleporter::callOnEach_onLevelChange<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
-    Slime::callOnEach_onLevelChange<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
+    Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
+    Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
 }
 
 /**
@@ -155,7 +156,7 @@ void Game::onWindowChange() {
  * @brief Handle everything about entities.
 */
 void Game::handleEntities() {
-    if (state != GameState::kIngamePlaying) return;
+    if (globals::state != GameState::kIngamePlaying) return;
     handleEntitiesMovement();
     handleEntitiesInteraction();
 }
@@ -176,7 +177,7 @@ void Game::handleEntitiesMovement() {
     Slime::callOnEach(&Slime::updateAnimation);
 }
 
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 void Game::onEntityCollision(Active& active, Passive& passive) {
     utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
@@ -200,7 +201,7 @@ void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime) {
 /**
  * @brief Called when the `active` entity initiate an animation (possibly caused by the `passive` entity).
 */
-template <class Active, class Passive>
+template <typename Active, typename Passive>
 void Game::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) {
     utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
@@ -242,7 +243,7 @@ void Game::handleEvents() {
 
     switch (event->type) {
         case SDL_QUIT:
-            state = GameState::kExit;
+            globals::state = GameState::kExit;
             delete instance;   // ?
             break;
         
@@ -283,10 +284,10 @@ void Game::handleWindowEvent(const SDL_Event& event) {
  * @note Scancode denotes physical location and keycode denotes actual meaning (different if remapped)
 */
 void Game::handleKeyBoardEvent(const SDL_Event& event) {
-    switch (state) {
+    switch (globals::state) {
         case GameState::kIngamePlaying:
             if (event.key.keysym.sym == SDLK_ESCAPE) {
-                state = GameState::kExit;
+                globals::state = GameState::kExit;
                 break;
             }
             player->handleKeyboardEvent(event);
@@ -299,16 +300,17 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
  * @brief Handle a mouse event.
 */
 void Game::handleMouseEvent(const SDL_Event& event) {
-    switch (state) {
-        case GameState::kMenu: case GameState::kIngamePlaying:
+    SDL_GetMouseState(&globals::mouseState.x, &globals::mouseState.y);
+    switch (globals::state) {
+        case GameState::kMenu:
+            menuInterface->handleMouseEvent(event);
+            break;
+
+        case GameState::kIngamePlaying:
             if (event.type != SDL_MOUSEBUTTONDOWN) break;
             onLevelChange(); onWindowChange();
-            state = GameState::kIngamePlaying;
             break;
 
         default: break;
     }
 }
-
-
-Game* Game::instance = nullptr;

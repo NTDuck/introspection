@@ -14,11 +14,11 @@
  * @note Only one instance should exist at a time.
 */
 class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
-    friend AbstractAnimatedDynamicEntity<Player>;
     public:
-        using Singleton<Player>::instantiate, Singleton<Player>::instance;
+        INCL_SINGLETON(Player)
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Player)
 
-        Player();
+        Player(SDL_Point const& destCoords);
         ~Player() = default;
 
         static void deinitialize();
@@ -32,11 +32,10 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
  * @brief A multiton class representing controlled instances of teleporter entities.
 */
 class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
-    friend AbstractAnimatedDynamicEntity<Teleporter>;
     public:
-        using AbstractEntity<Teleporter>::instantiate;
+        INCL_ABSTRACT_ANIMATED_ENTITY(Teleporter)
 
-        Teleporter();
+        Teleporter(SDL_Point const& destCoords);
         ~Teleporter() = default;
 
         void onLevelChange(level::EntityLevelData const& teleporterData) override;
@@ -57,11 +56,10 @@ class Teleporter final : public AbstractAnimatedEntity<Teleporter> {
  * @brief A multiton class representing controlled instances of slime entities.
 */
 class Slime final : public AbstractAnimatedDynamicEntity<Slime> {
-    friend AbstractAnimatedDynamicEntity<Slime>;
     public:
-        using AbstractEntity<Slime>::instantiate;
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Slime)
 
-        Slime();
+        Slime(SDL_Point const& destCoords);
         ~Slime() = default;
 
         void calculateMove(SDL_Point const& playerDestCoords);

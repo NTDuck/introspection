@@ -5,21 +5,21 @@
 
 
 const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> tile::EntitiesTilesetData::kAnimationTypeConversionMapping = {
-    {"animation-idle", AnimationType::kIdle},
-    {"animation-attack", AnimationType::kAttack},
-    {"animation-blink", AnimationType::kBlink},
-    {"animation-death", AnimationType::kDeath},
-    {"animation-disappear", AnimationType::kDisappear},
-    {"animation-duck", AnimationType::kDuck},
-    {"animation-jump", AnimationType::kJump},
-    {"animation-run", AnimationType::kRunning},
-    {"animation-walk", AnimationType::kWalk},
-    {"animation-damaged", AnimationType::kDamaged},
+    { "animation-idle", AnimationType::kIdle },
+    { "animation-attack", AnimationType::kAttack },
+    { "animation-blink", AnimationType::kBlink },
+    { "animation-death", AnimationType::kDeath },
+    { "animation-disappear", AnimationType::kDisappear },
+    { "animation-duck", AnimationType::kDuck },
+    { "animation-jump", AnimationType::kJump },
+    { "animation-run", AnimationType::kRunning },
+    { "animation-walk", AnimationType::kWalk },
+    { "animation-damaged", AnimationType::kDamaged },
 };
 
 const std::unordered_map<std::string, level::LevelName> level::kLevelNameConversionMapping = {
-    {"level-equilibrium", LevelName::kLevelEquilibrium},
-    {"level-valley-of-despair", LevelName::kLevelValleyOfDespair},
+    { "level-equilibrium", LevelName::kLevelEquilibrium },
+    { "level-valley-of-despair", LevelName::kLevelValleyOfDespair },
 };
 
 
@@ -28,8 +28,10 @@ SDL_Point globals::windowSize;
 SDL_Point globals::tileDestSize;
 SDL_Point globals::tileDestCount;
 SDL_Point globals::windowOffset;
+SDL_Point globals::mouseState;
 tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
 level::LevelData globals::currentLevelData;
+GameState globals::state = GameState::kMenu;
 
 
 /**
@@ -37,7 +39,10 @@ level::LevelData globals::currentLevelData;
  * @note Should be called when the program terminates.
 */
 void globals::deinitialize() {
-    if (globals::renderer != nullptr) SDL_DestroyRenderer(globals::renderer);
+    if (globals::renderer != nullptr) {
+        SDL_DestroyRenderer(globals::renderer);
+        globals::renderer = nullptr;
+    }
     
     for (auto& tilesetData : globals::tilelayerTilesetDataCollection) tilesetData.deinitialize();
 }

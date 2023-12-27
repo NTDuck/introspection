@@ -68,6 +68,7 @@ class PolymorphicBase {
         virtual ~PolymorphicBase() = default;
 };
 
+
 /**
  * @brief A standard Singleton template class.
 */
@@ -89,6 +90,9 @@ class Singleton : virtual public PolymorphicBase<T> {
         static T* instance;
 };
 
+#define INCL_SINGLETON(T) using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
+
+
 /**
  * @brief An adapted Multiton template class that governs instances via a `std::unordered_set` instead of a `std::unordered_map`.
 */
@@ -101,12 +105,6 @@ class Multiton : virtual public PolymorphicBase<T> {
             instances.emplace(instance);
             return instance;
         }
-
-        // template <typename... Args>
-        // static void instantiateEx(Args&&... args) {
-        //     const std::size_t size = std::min({args.size()...});
-        //     for (std::size_t ind = 0; ind < size; ++ind) T::instantiate(args[ind]...);
-        // }
 
         static void deinitialize() {
             // Somehow this yields weird segfaults. Consider switching to smart pointers?
@@ -123,25 +121,16 @@ class Multiton : virtual public PolymorphicBase<T> {
         static void callOnEach(Callable&& callable, Args&&... args) {
             for (auto& instance : instances) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
-
-        // /**
-        //  * @brief Variadically call `method` on each instance of derived class `T` with parameters deduced from `args`.
-        //  * @note Recommended implementation: `instances.size()` must be equivalent to the length of each container in `args`; any exceptions to which might result in undefined behavior. For example, with `method` `func(int, char)` and `args` being `std::vector<int>{0, 1, 2}, std::string("foo")`, given that `instances` currently houses `first`, `second`, `third`, this function will yield `first.func(0, 'f')`, `second.func(1, 'o')`, `third.func(2, 'o')`.
-        // */
-        // template <typename ClassMethod, typename... Args>
-        // static void callOnEachEx(ClassMethod&& method, Args&&... args) {
-        //     const std::size_t size = std::min({args.size()...});
-        //     auto it = instances.begin();
-        //     for (std::size_t ind = 0; ind < size && it != instances.end(); ++ind, ++it) (*it->*method)(args[ind]...);   // `std::forward` fails - requires a reference to the iterable, not the iterated element
-        // }
-
         static std::unordered_set<T*> instances;
 
     protected:
         virtual ~Multiton() override {
             instances.erase(static_cast<T*>(this));   // remove from `instances`
         }
+
 };
+
+#define INCL_MULTITON(T) using Multiton<T>::instantiate, Multiton<T>::deinitialize, Multiton<T>::callOnEach, Multiton<T>::instances;
 
 /* Internal initialization of static members */
 template <typename T>
@@ -164,15 +153,13 @@ std::unordered_set<T*> Multiton<T>::instances;
 template <typename T>
 class AbstractEntity : public Multiton<T> {
     public:
-        using Multiton<T>::instances, Multiton<T>::callOnEach;
-
-        static T* instantiate(SDL_Point destCoords);
+        INCL_MULTITON(T)
 
         static void initialize();
         static void deinitialize();
 
         template <typename LevelData>
-        static void callOnEach_onLevelChange(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection);
+        static void onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection);
 
         virtual void render() const;
         virtual void onWindowChange();
@@ -195,7 +182,7 @@ class AbstractEntity : public Multiton<T> {
         EntitySecondaryStats secondaryStats;
         
     protected:
-        AbstractEntity();
+        AbstractEntity(SDL_Point const& destCoords);
         SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
 
         static const std::filesystem::path kTilesetPath;
@@ -236,18 +223,17 @@ class AbstractEntity : public Multiton<T> {
 namespace std {
     template <typename T>
     struct hash<AbstractEntity<T>> {
-        std::size_t operator()(AbstractEntity<T> const*& instance) const {
-            return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_Point>(instance->destCoords);
-        }
+        std::size_t operator()(AbstractEntity<T> const*& instance) const;
     };
 
     template <typename T>
     struct equal_to<AbstractEntity<T>> {
-        bool operator()(AbstractEntity<T> const*& first, AbstractEntity<T> const*& second) const {
-            return (first == nullptr && second == nullptr) || (first && second && first->destCoords == second->destCoords);
-        }
+        bool operator()(AbstractEntity<T> const*& first, AbstractEntity<T> const*& second) const;
     };
 };
+
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+
 
 /**
  * @brief An abstract class combining CRTP and adapted Multiton pattern. Represents an entity that updates animation.
@@ -255,8 +241,8 @@ namespace std {
 template <typename T>
 class AbstractAnimatedEntity : public AbstractEntity<T> {
     public:
-        using Multiton<T>::instances, Multiton<T>::callOnEach;
-        using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+        INCL_MULTITON(T)
+        INCL_ABSTRACT_ENTITY(T)
 
         virtual ~AbstractAnimatedEntity() = default;
         void onLevelChange(level::EntityLevelData const& entityLevelData) override;
@@ -288,12 +274,14 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         tile::NextAnimationData* nextAnimationData = nullptr;
 
     protected:
-        AbstractAnimatedEntity();
+        AbstractAnimatedEntity(SDL_Point const& destCoords);
 
     private:
         int currAnimationUpdateCount = 0;
         int currAnimationGID;
 };
+
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::onAttackInitiated, AbstractAnimatedEntity<T>::onAttackRegistered, AbstractAnimatedEntity<T>::onDeath, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
 
 
 /**
@@ -302,9 +290,9 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 template <typename T>
 class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     public:
-        using Multiton<T>::instances, Multiton<T>::callOnEach;
-        using AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
-        using AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
+        INCL_MULTITON(T)
+        INCL_ABSTRACT_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)
 
         virtual ~AbstractAnimatedDynamicEntity();
 
@@ -333,7 +321,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Rect* nextDestRect = nullptr;
 
     protected:
-        AbstractAnimatedDynamicEntity() = default;
+        AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
 
         /**
          * Represent the multiplier applied to `kVelocity` should the entity switch to `kRunning` animation.
@@ -373,12 +361,13 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Point kIntegralVelocity;
 };
 
+#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::isRunning, AbstractAnimatedDynamicEntity<T>::nextDestCoords, AbstractAnimatedDynamicEntity<T>::nextDestRect, AbstractAnimatedDynamicEntity<T>::runModifier, AbstractAnimatedDynamicEntity<T>::kMoveDelay, AbstractAnimatedDynamicEntity<T>::kVelocity, AbstractAnimatedDynamicEntity<T>::nextVelocity;
+
 
 template <typename T>
 class AbstractInterface : public Singleton<T> {
-    friend Singleton<T>;
     public:
-        using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
+        INCL_SINGLETON(T)
 
         virtual void render() const;
         virtual void onWindowChange();
@@ -392,6 +381,8 @@ class AbstractInterface : public Singleton<T> {
         */
         SDL_Texture* texture = nullptr;
 };
+
+#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::texture;
 
 
 #endif

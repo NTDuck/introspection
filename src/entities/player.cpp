@@ -10,7 +10,7 @@
 /**
  * @note Constructor initializer list is unusable.
 */
-Player::Player() {
+Player::Player(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Player>(destCoords) {
     destRectModifier = globals::config::kDefaultPlayerDestRectModifier;
     kAttackRegisterRange = globals::config::kDefaultPlayerAttackRegisterRange;   // `kAttackInitiateRange` is unnecessary
     primaryStats = globals::config::kDefaultPlayerPrimaryStats;
@@ -26,7 +26,7 @@ void Player::deinitialize() {
  * @brief Calculate player movement based on keyboard input.
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
-void Player::handleKeyboardEvent(const SDL_Event& event) {
+void Player::handleKeyboardEvent(SDL_Event const& event) {
     auto handleKeyboardMovementInput = [&]() {
         static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
             { SDLK_w, {0, -1} },
@@ -61,7 +61,7 @@ void Player::handleKeyboardEvent(const SDL_Event& event) {
     }
 }
 
-void Player::onLevelChange(const level::EntityLevelData& player) {
+void Player::onLevelChange(level::EntityLevelData const& player) {
     auto data = dynamic_cast<const level::PlayerLevelData*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
 }

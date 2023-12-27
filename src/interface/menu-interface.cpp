@@ -1,8 +1,5 @@
 #include <interface.hpp>
 
-#include <unordered_map>
-#include <unordered_set>
-
 #include <meta.hpp>
 
 
@@ -11,13 +8,10 @@
  * @note Might move to `globals::config` instead.
 */
 MenuInterface::MenuInterface() {
-    static const std::unordered_map<std::string, SDL_FPoint> initializer = {
-        { "NEW GAME", { 1.0f / 3.0f, 7.0f / 9.0f } },
-        { "CONTINUE", { 1.0f / 3.0f, 8.0f / 9.0f } },
-        { "SETTINGS", { 2.0f / 3.0f, 7.0f / 9.0f } },
-        { "ABOUT", { 2.0f / 3.0f, 8.0f / 9.0f } },
-    };
-    for (const auto& pair : initializer) GenericButton::instances.insert(new GenericButton(pair.first, pair.second));
+    GenericButton::instances.insert(new GenericButton(new GameState(GameState::kIngamePlaying), "NEW GAME", { 1.0f / 3.0f, 7.0f / 9.0f }));
+    GenericButton::instances.insert(new GenericButton(nullptr, "CONTINUE", { 1.0f / 3.0f, 8.0f / 9.0f }));
+    GenericButton::instances.insert(new GenericButton(nullptr, "SETTINGS", { 2.0f / 3.0f, 7.0f / 9.0f }));
+    GenericButton::instances.insert(new GenericButton(nullptr, "ABOUT", { 2.0f / 3.0f, 8.0f / 9.0f }));
 }
 
 void MenuInterface::initialize() {
@@ -47,4 +41,8 @@ void MenuInterface::renderComponents() const {
 
 void MenuInterface::onWindowChange() {
     GenericButton::callOnEach(&GenericButton::onWindowChange);
+}
+
+void MenuInterface::handleMouseEvent(SDL_Event const& event) {
+    GenericButton::callOnEach(&GenericButton::handleMouseEvent, event);
 }

@@ -42,6 +42,9 @@ std::size_t std::hash<SDL_Point>::operator()(SDL_Point const& instance) const {
     return std::hash<int>{}(instance.x) ^ (std::hash<int>{}(instance.y) << 1);
 }
 
+std::size_t std::hash<SDL_FPoint>::operator()(SDL_FPoint const& instance) const {
+    return std::hash<float>{}(instance.x) ^ (std::hash<float>{}(instance.y) << 1);
+}
 
 /**
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.

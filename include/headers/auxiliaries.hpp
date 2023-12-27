@@ -126,6 +126,17 @@ struct EntitySecondaryStats {
     static int calculateFinalizedMagicDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive);
 };
 
+/**
+ * @brief Contain data associated with a text area's configurations.
+*/
+struct TextAreaPreset {
+    SDL_Color backgroundColor;
+    SDL_Color lineColor;
+    SDL_Color textColor;
+
+    float lineOffset;
+    float lineWidth;
+};
 
 /**
  * @brief Group components that are associated with tiles.
@@ -296,11 +307,11 @@ namespace level {
      * @param destCoords the new `destCoords` of the entity upon entering new level.
     */
     struct EntityLevelData {
-        struct Hasher {
+        struct hash {
             std::size_t operator()(EntityLevelData const& instance) const;
         };
 
-        struct EqualityOperator {
+        struct equal_to {
             bool operator()(EntityLevelData const& first, EntityLevelData const& second) const;
         };
 
@@ -308,7 +319,7 @@ namespace level {
          * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
         */
         template <typename T>
-        using Collection = std::unordered_set<T, Hasher, EqualityOperator>;
+        using Collection = std::unordered_set<T, hash, equal_to>;
 
         virtual void initialize(json const& entityJSONLevelData);
         virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
@@ -377,7 +388,7 @@ namespace globals {
             SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
             SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
             {
-                {SDL_HINT_RENDER_SCALE_QUALITY, "1"},
+                { SDL_HINT_RENDER_SCALE_QUALITY, "1" },
             }
         };
         constexpr SDL_Rect kWindowDimension = {
@@ -385,7 +396,7 @@ namespace globals {
             1280, 720,
         };
         constexpr int kFrameRate = 120;
-        constexpr SDL_Color kDefaultBackgroundColor = {0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE};
+        constexpr SDL_Color kDefaultBackgroundColor = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
         constexpr level::LevelName kDefaultLevelName = level::LevelName::kLevelEquilibrium;
 
         const std::filesystem::path kAssetPath = "assets";
@@ -397,28 +408,34 @@ namespace globals {
         const std::filesystem::path kOmoriFontFirstPath = "assets/fonts/omori-game-1.ttf";
         const std::filesystem::path kOmoriFontSecondPath = "assets/fonts/omori-game-2.ttf";
 
-        constexpr SDL_Color kDefaultWhiteColor = SDL_Color{0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE};
-        constexpr SDL_Color kDefaultBlackColor = SDL_Color{0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE};
+        constexpr SDL_Color kDefaultWhiteColor = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color kDefaultBlackColor = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr TextAreaPreset kButtonOnMouseOutPreset = {
+            kDefaultWhiteColor, kDefaultBlackColor, kDefaultBlackColor, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
+        constexpr TextAreaPreset kButtonOnMouseOverPreset = {
+            kDefaultBlackColor, kDefaultWhiteColor, kDefaultWhiteColor, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
         
         constexpr double kDefaultEntityRunVelocityModifier = 2;
-        constexpr SDL_FRect kDefaultEntityDestRectModifier = {0, 0, 1, 1};
-        constexpr SDL_FRect kDefaultPlayerDestRectModifier = {0, -0.75, 2, 2};
-        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = {0, 0, 1, 1};
-        constexpr SDL_FRect kDefaultSlimeDestRectModifier = {0, -1, 5, 5};
+        constexpr SDL_FRect kDefaultEntityDestRectModifier = { 0, 0, 1, 1 };
+        constexpr SDL_FRect kDefaultPlayerDestRectModifier = { 0, -0.75, 2, 2 };
+        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = { 0, 0, 1, 1 };
+        constexpr SDL_FRect kDefaultSlimeDestRectModifier = { 0, -1, 5, 5 };
 
-        constexpr SDL_FPoint kDefaultPlayerVelocity = {32, 32};
-        constexpr SDL_FPoint kDefaultSlimeVelocity = {128, 128};
+        constexpr SDL_FPoint kDefaultPlayerVelocity = { 32, 32 };
+        constexpr SDL_FPoint kDefaultSlimeVelocity = { 128, 128 };
 
         constexpr int kDefaultPlayerMoveDelay = 0;
         constexpr int kDefaultSlimeMoveDelay = 32;
 
-        constexpr SDL_Point kDefaultSlimeMoveInitiateRange = {16, 16};
-        constexpr SDL_Point kDefaultPlayerAttackRegisterRange = {99, 99};
-        constexpr SDL_Point kDefaultSlimeAttackInitiateRange = {7, 7};
-        constexpr SDL_Point kDefaultSlimeAttackRegisterRange = {5, 5};
+        constexpr SDL_Point kDefaultSlimeMoveInitiateRange = { 16, 16 };
+        constexpr SDL_Point kDefaultPlayerAttackRegisterRange = { 99, 99 };
+        constexpr SDL_Point kDefaultSlimeAttackInitiateRange = { 7, 7 };
+        constexpr SDL_Point kDefaultSlimeAttackRegisterRange = { 5, 5 };
 
-        constexpr EntityPrimaryStats kDefaultPlayerPrimaryStats = {10, 10, 10, 10, 10, 10, 10, 10};
-        constexpr EntityPrimaryStats kDefaultSlimePrimaryStats = {10, 10, 10, 10, 10, 10, 10, 10};
+        constexpr EntityPrimaryStats kDefaultPlayerPrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+        constexpr EntityPrimaryStats kDefaultSlimePrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
     };
 
     void deinitialize();
@@ -451,6 +468,11 @@ namespace globals {
     extern SDL_Point windowOffset;
 
     /**
+     * The current position of the mouse relative to the window.
+    */
+    extern SDL_Point mouseState;
+
+    /**
      * Store data associated with tilelayer tilesets of the current level.
     */
     extern tile::TilelayerTilesetData::Collection tilelayerTilesetDataCollection;
@@ -459,6 +481,11 @@ namespace globals {
      * Contain data associated with the current level.
     */
     extern level::LevelData currentLevelData;
+
+    /**
+     * The current game state. Is strictly bound to the main control flow.
+    */
+    extern GameState state;
 };
 
 
@@ -473,6 +500,11 @@ namespace std {
     template <>
     struct hash<SDL_Point> {
         std::size_t operator()(SDL_Point const& instance) const;
+    };
+
+    template <>
+    struct hash<SDL_FPoint> {
+        std::size_t operator()(SDL_FPoint const& instance) const;
     };
 };
 
