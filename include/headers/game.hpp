@@ -2,6 +2,7 @@
 #define GAME_H
 
 #include <string>
+#include <unordered_set>
 #include <unordered_map>
 
 #include <SDL.h>
@@ -64,7 +65,10 @@ class Game final : public Singleton<Game> {
 
         IngameInterface* ingameInterface = nullptr;
         MenuInterface* menuInterface = nullptr;
+
         Player* player = nullptr;
+        std::unordered_set<Teleporter*>& teleporters = Teleporter::instances;
+        std::unordered_set<Slime*>& slimes = Slime::instances;
 
         const GameInitFlag flags;
         SDL_Rect windowDimension;

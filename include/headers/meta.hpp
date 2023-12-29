@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <functional>
 #include <string>
+#include <tuple>
 #include <vector>
 #include <unordered_set>
 #include <utility> 
@@ -65,6 +66,7 @@ class PolymorphicBase {
     protected:
         template <typename... Args>
         inline PolymorphicBase(Args&&... args) {}
+        
         virtual ~PolymorphicBase() = default;
 };
 
@@ -81,6 +83,12 @@ class Singleton : virtual public PolymorphicBase<T> {
             return instance;
         }
 
+        template <typename... Args>
+        static T* instantiate(std::tuple<Args...> const& tuple) {
+            if (instance == nullptr) instance = fromTuple(tuple, std::index_sequence_for<Args...>());
+            return instance;
+        }
+
         static void deinitialize() {
             delete instance;
             instance = nullptr;
@@ -88,6 +96,12 @@ class Singleton : virtual public PolymorphicBase<T> {
 
     protected:
         static T* instance;
+
+    private:
+        template <std::size_t... Indices, typename Tuple>
+        static T* fromTuple(Tuple const& tuple, std::index_sequence<Indices...>) {
+            return new T(std::get<Indices>(tuple)...);
+        }
 };
 
 #define INCL_SINGLETON(T) using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
@@ -106,10 +120,22 @@ class Multiton : virtual public PolymorphicBase<T> {
             return instance;
         }
 
+        template <typename... Args>
+        static T* instantiate(std::tuple<Args...> const& tuple) {
+            auto instance = fromTuple(tuple, std::index_sequence_for<Args...>());
+            instances.emplace(instance);
+            return instance;
+        }
+
+        template <size_t N, typename... Args>
+        static void instantiate(std::array<std::tuple<Args...>, N> const& container) {
+            for (const auto& args : container) T::instantiate(args);
+        }
+
         static void deinitialize() {
             // Somehow this yields weird segfaults. Consider switching to smart pointers?
             // Also, why is this read-only?
-            // for (auto& instance : instances) if (instance) utils::dealloc(instance);
+            // for (auto& instance : instances) if (instance != nullptr) delete instance;
             instances.clear();
         }
 
@@ -121,6 +147,7 @@ class Multiton : virtual public PolymorphicBase<T> {
         static void callOnEach(Callable&& callable, Args&&... args) {
             for (auto& instance : instances) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
+
         static std::unordered_set<T*> instances;
 
     protected:
@@ -128,6 +155,11 @@ class Multiton : virtual public PolymorphicBase<T> {
             instances.erase(static_cast<T*>(this));   // remove from `instances`
         }
 
+    private:
+        template <std::size_t... Indices, typename Tuple>
+        static T* fromTuple(Tuple const& tuple, std::index_sequence<Indices...>) {
+            return new T(std::get<Indices>(tuple)...);
+        }
 };
 
 #define INCL_MULTITON(T) using Multiton<T>::instantiate, Multiton<T>::deinitialize, Multiton<T>::callOnEach, Multiton<T>::instances;

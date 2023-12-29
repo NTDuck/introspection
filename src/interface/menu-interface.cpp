@@ -1,5 +1,12 @@
 #include <interface.hpp>
 
+#include <memory>
+#include <tuple>
+#include <array>
+
+#include <SDL.h>
+
+#include <components.hpp>
 #include <meta.hpp>
 
 
@@ -8,18 +15,18 @@
  * @note Might move to `globals::config` instead.
 */
 MenuInterface::MenuInterface() {
-    GenericButton::instances.insert(new GenericButton(new GameState(GameState::kIngamePlaying), "NEW GAME", { 1.0f / 3.0f, 7.0f / 9.0f }));
-    GenericButton::instances.insert(new GenericButton(nullptr, "CONTINUE", { 1.0f / 3.0f, 8.0f / 9.0f }));
-    GenericButton::instances.insert(new GenericButton(nullptr, "SETTINGS", { 2.0f / 3.0f, 7.0f / 9.0f }));
-    GenericButton::instances.insert(new GenericButton(nullptr, "ABOUT", { 2.0f / 3.0f, 8.0f / 9.0f }));
+    Button::instantiate(globals::config::kMenuButtonInitializer);
+    title = Title::instantiate(globals::config::kTitleInitializer);
 }
 
 void MenuInterface::initialize() {
-    GenericButton::initialize();
+    Button::initialize();
+    Title::initialize();
 }
 
 void MenuInterface::deinitialize() {
-    GenericButton::deinitialize();
+    Button::deinitialize();
+    Title::deinitialize();
 }
 
 void MenuInterface::render() const {
@@ -36,13 +43,15 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
-    GenericButton::callOnEach(&GenericButton::render);
+    Button::callOnEach(&Button::render);
+    title->render();
 }
 
 void MenuInterface::onWindowChange() {
-    GenericButton::callOnEach(&GenericButton::onWindowChange);
+    Button::callOnEach(&Button::onWindowChange);
+    title->onWindowChange();
 }
 
 void MenuInterface::handleMouseEvent(SDL_Event const& event) {
-    GenericButton::callOnEach(&GenericButton::handleMouseEvent, event);
+    Button::callOnEach(&Button::handleMouseEvent, event);
 }

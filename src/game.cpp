@@ -225,7 +225,7 @@ void Game::handleEntitiesInteraction() {
     auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*player, InteractionType::kCoords); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*player, *teleporter);
     auto slime = utils::checkEntityCollision<Player, Slime>(*player, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*player, *slime);
 
-    for (auto& slime : Slime::instances) {
+    for (auto& slime : slimes) {
         if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
         if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *player)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *player);
         if (utils::checkEntityAttackRegister<Player, Slime>(*player, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *player, *slime);

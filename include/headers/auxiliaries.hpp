@@ -1,13 +1,15 @@
 #ifndef AUXILIARIES_H
 #define AUXILIARIES_H
 
+#include <array>
 #include <filesystem>
 #include <functional>
 #include <string>
-#include <vector>
+#include <tuple>
+#include <type_traits>
 #include <unordered_set>
 #include <unordered_map>
-#include <type_traits>
+#include <vector>
 
 #include <SDL.h>
 #include <SDL_image.h>
@@ -373,6 +375,26 @@ namespace level {
 using AnimationType = tile::EntitiesTilesetData::AnimationType;
 
 
+/*
+namespace config {
+    namespace path {
+        
+    }
+
+    namespace color {
+
+    }
+
+    namespace preset {
+
+    }
+
+    namespace initializers {
+
+    }
+}
+*/
+
 /**
  * @brief Group components that are accessible at public scope to all other components.
 */
@@ -408,13 +430,18 @@ namespace globals {
         const std::filesystem::path kOmoriFontFirstPath = "assets/fonts/omori-game-1.ttf";
         const std::filesystem::path kOmoriFontSecondPath = "assets/fonts/omori-game-2.ttf";
 
-        constexpr SDL_Color kDefaultWhiteColor = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color kDefaultBlackColor = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color kColorOffWhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color kColorBlack = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color kColorTransparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
+
         constexpr TextAreaPreset kButtonOnMouseOutPreset = {
-            kDefaultWhiteColor, kDefaultBlackColor, kDefaultBlackColor, 1.0f / 32.0f, 4.0f / 32.0f,
+            kColorOffWhite, kColorBlack, kColorBlack, 1.0f / 32.0f, 4.0f / 32.0f,
         };
         constexpr TextAreaPreset kButtonOnMouseOverPreset = {
-            kDefaultBlackColor, kDefaultWhiteColor, kDefaultWhiteColor, 1.0f / 32.0f, 4.0f / 32.0f,
+            kColorBlack, kColorOffWhite, kColorOffWhite, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
+        constexpr TextAreaPreset kTitlePreset = {
+            kColorTransparent, kColorTransparent, kColorOffWhite, 0, 0,
         };
         
         constexpr double kDefaultEntityRunVelocityModifier = 2;
@@ -436,6 +463,17 @@ namespace globals {
 
         constexpr EntityPrimaryStats kDefaultPlayerPrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
         constexpr EntityPrimaryStats kDefaultSlimePrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+
+        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> kMenuButtonInitializer = {
+            std::make_tuple(new GameState(GameState::kIngamePlaying), "NEW GAME", SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
+            std::make_tuple(nullptr, "CONTINUE", SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
+            std::make_tuple(nullptr, "SETTINGS", SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
+            std::make_tuple(nullptr, "ABOUT", SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
+        };
+
+        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> kTitleInitializer = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, globals::config::kTitlePreset);
+
+        const double kTitleDestSizeMultiplier = 3;
     };
 
     void deinitialize();

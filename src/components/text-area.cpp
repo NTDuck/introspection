@@ -1,4 +1,4 @@
-#include <interface.hpp>
+#include <components.hpp>
 
 #include <cstring>
 #include <functional>
@@ -11,23 +11,23 @@
 
 
 template <typename T>
-GenericTextArea<T>::GenericTextArea(std::string const& content, SDL_FPoint const& center) : content(content), kCenter(center) {}
+TextArea<T>::TextArea(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset) : content(content), kCenter(center), kPreset(preset) {}
 
 template <typename T>
-GenericTextArea<T>::~GenericTextArea() {
+TextArea<T>::~TextArea() {
     SDL_DestroyTexture(outerTexture);
     SDL_DestroyTexture(innerTexture);
     outerTexture = innerTexture = nullptr;
 }
 
 template <typename T>
-void GenericTextArea<T>::initialize() {
+void TextArea<T>::initialize() {
     loadFont();
     // if (font == nullptr) TTF_GetError();
 }
 
 template <typename T>
-void GenericTextArea<T>::deinitialize() {
+void TextArea<T>::deinitialize() {
     Multiton<T>::deinitialize();
     TTF_CloseFont(font);
     font = nullptr;
@@ -37,52 +37,53 @@ void GenericTextArea<T>::deinitialize() {
  * @brief Render the entire text area to the screen.
 */
 template <typename T>
-void GenericTextArea<T>::render() const {
+void TextArea<T>::render() const {
     SDL_RenderCopy(globals::renderer, outerTexture, nullptr, &outerDestRect);
     SDL_RenderCopy(globals::renderer, innerTexture, nullptr, &innerDestRect);
 }
 
 template <typename T>
-void GenericTextArea<T>::onWindowChange() {
+void TextArea<T>::onWindowChange() {
     // Call `loadFont()` "once"
     static std::size_t counter = 0;
     if (!counter) loadFont();
     ++counter;
     if (counter == instances.size()) counter = 0;
 
-    loadOuterTexture();
-    loadInnerTexture();
+    loadOuterTexture(outerTexture, kPreset);
+    loadInnerTexture(innerTexture, kPreset);
 }
 
 template <typename T>
-void GenericTextArea<T>::editContent(std::string const& nextContent) {
+void TextArea<T>::editContent(std::string const& nextContent) {
     content = nextContent;
-    loadInnerTexture();
+    loadInnerTexture(innerTexture, kPreset);
 }
 
 template <typename T>
-void GenericTextArea<T>::loadFont() {
+void TextArea<T>::loadFont() {
     if (font != nullptr) TTF_CloseFont(font);
-    size = std::min(globals::windowSize.x / kOuterDestRectRatio.x, globals::windowSize.y / kOuterDestRectRatio.y) >> 2;   // The closest power of 2
-    font = TTF_OpenFont(globals::config::kOmoriFontSecondPath.c_str(), size);
+    destSize = std::min(globals::windowSize.x / kOuterDestRectRatio.x, globals::windowSize.y / kOuterDestRectRatio.y) >> 2;   // The closest power of 2
+    destSize *= kDestSizeMultiplier;
+    font = TTF_OpenFont(fontPath.c_str(), destSize);
 }
 
 /**
  * @brief Populate the "outer" part of the text area.
 */
 template <typename T>
-void GenericTextArea<T>::loadOuterTexture() {
-    if (outerTexture != nullptr) SDL_DestroyTexture(outerTexture);
+void TextArea<T>::loadOuterTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
+    if (texture != nullptr) SDL_DestroyTexture(texture);
     
-    outerDestRect.w = size * kOuterDestRectRatio.x;
-    outerDestRect.h = size * kOuterDestRectRatio.y;
+    outerDestRect.w = destSize * kOuterDestRectRatio.x;
+    outerDestRect.h = destSize * kOuterDestRectRatio.y;
     outerDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - outerDestRect.w / 2);
     outerDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - outerDestRect.h / 2);
 
-    outerTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, 
+    texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, 
     SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, outerDestRect.w, outerDestRect.h);
 
-    SDL_SetRenderTarget(globals::renderer, outerTexture);
+    SDL_SetRenderTarget(globals::renderer, texture);
     SDL_Rect arbitraryRect = outerDestRect;
     arbitraryRect.x = arbitraryRect.y = 0;
 
@@ -93,7 +94,7 @@ void GenericTextArea<T>::loadOuterTexture() {
         rect.w -= delta * 2;
         rect.h -= delta * 2;
     };
-    
+
     auto fillRect = [&](float multiplier, SDL_Color const& color) {
         modifyRect(arbitraryRect, multiplier);
         utils::setRendererDrawColor(globals::renderer, color);
@@ -111,31 +112,31 @@ void GenericTextArea<T>::loadOuterTexture() {
  * @brief Populate the "text" part of the text area.
 */
 template <typename T>
-void GenericTextArea<T>::loadInnerTexture() {
-    if (innerTexture != nullptr) SDL_DestroyTexture(innerTexture);
+void TextArea<T>::loadInnerTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
+    if (texture != nullptr) SDL_DestroyTexture(texture);
 
     // Render text at high quality
-    SDL_Surface* innerSurface = TTF_RenderUTF8_Blended(font, content.c_str(), preset.textColor);
-    if (innerSurface == nullptr) return;
+    SDL_Surface* surface = TTF_RenderUTF8_Blended(font, content.c_str(), preset.textColor);
+    if (surface == nullptr) return;
 
-    innerTexture = SDL_CreateTextureFromSurface(globals::renderer, innerSurface);
+    texture = SDL_CreateTextureFromSurface(globals::renderer, surface);
     
     // Register `innerSurface` dimensions to `innerDestRect`
-    innerDestRect.w = innerSurface->w;
-    innerDestRect.h = innerSurface->h;
+    innerDestRect.w = surface->w;
+    innerDestRect.h = surface->h;
     innerDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - innerDestRect.w / 2);
     innerDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - innerDestRect.h / 2);
 
-    SDL_FreeSurface(innerSurface);
+    SDL_FreeSurface(surface);
 }
 
 template <typename T>
-std::size_t std::hash<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& instance) const {
+std::size_t std::hash<TextArea<T>>::operator()(TextArea<T> const*& instance) const {
     return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_FPoint>(instance->kCenter);
 }
 
 template <typename T>
-bool std::equal_to<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const {
+bool std::equal_to<TextArea<T>>::operator()(TextArea<T> const*& first, TextArea<T> const*& second) const {
     return (first == nullptr && second == nullptr) || (first && second && first->kCenter == second->kCenter);
 }
 
@@ -144,13 +145,14 @@ bool std::equal_to<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& fi
  * Determine the physical size of the text area.
 */
 template <typename T>
-int GenericTextArea<T>::size;
+int TextArea<T>::destSize;
 
 /**
  * The global font in the scope of this project.
 */
 template <typename T>
-TTF_Font* GenericTextArea<T>::font = nullptr;
+TTF_Font* TextArea<T>::font = nullptr;
 
 
-template class GenericTextArea<GenericButton>;
+template class TextArea<Button>;
+template class TextArea<Title>;
