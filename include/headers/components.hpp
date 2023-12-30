@@ -83,10 +83,10 @@ namespace std {
 /**
  * @brief Represent the big, chunky game title in the menu.
 */
-class Title : public Singleton<Title>, public TextArea<Title> {
+class Title : public TextArea<Title>, public Singleton<Title> {
     public:
-        INCL_SINGLETON(Title)
         INCL_GENERIC_TEXT_AREA(Title)
+        INCL_SINGLETON(Title)
 
         Title(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
         ~Title() = default;
@@ -104,6 +104,7 @@ class Button : public TextArea<Button> {
         INCL_GENERIC_TEXT_AREA(Button)
 
         Button(GameState* destState, std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset, TextAreaPreset const& presetOnMouseOver);
+        ~Button() = default;
 
         void render() const override;
         void onWindowChange() override;

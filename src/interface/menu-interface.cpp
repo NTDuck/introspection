@@ -11,11 +11,11 @@
 
 
 /**
- * @brief Populate protected member `buttons`.
+ * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
     Button::instantiate(config::button::initializer);
-    title = Title::instantiate(config::title::initializer);
+    Title::instantiate(config::title::initializer);
 }
 
 void MenuInterface::initialize() {
@@ -42,15 +42,15 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
-    Button::callOnEach(&Button::render);
-    title->render();
+    Button::invoke(&Button::render);
+    Title::invoke(&Title::render);
 }
 
 void MenuInterface::onWindowChange() {
-    Button::callOnEach(&Button::onWindowChange);
-    title->onWindowChange();
+    Button::invoke(&Button::onWindowChange);
+    Title::invoke(&Title::onWindowChange);
 }
 
 void MenuInterface::handleMouseEvent(SDL_Event const& event) {
-    Button::callOnEach(&Button::handleMouseEvent, event);
+    Button::invoke(&Button::handleMouseEvent, event);
 }

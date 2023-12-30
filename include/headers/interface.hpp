@@ -60,9 +60,6 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
     private:
         void renderBackground() const;
         void renderComponents() const;
-
-        std::unordered_set<Button*>& buttons = Button::instances;
-        Title* title = nullptr;
 };
 
 

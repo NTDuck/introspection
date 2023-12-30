@@ -15,8 +15,8 @@
 */
 class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
     public:
-        INCL_SINGLETON(Player)
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Player)
+        INCL_SINGLETON(Player)
 
         Player(SDL_Point const& destCoords);
         ~Player() = default;

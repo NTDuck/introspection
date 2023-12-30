@@ -63,13 +63,6 @@ class Game final : public Singleton<Game> {
         */
         Uint32 windowID;
 
-        IngameInterface* ingameInterface = nullptr;
-        MenuInterface* menuInterface = nullptr;
-
-        Player* player = nullptr;
-        std::unordered_set<Teleporter*>& teleporters = Teleporter::instances;
-        std::unordered_set<Slime*>& slimes = Slime::instances;
-
         const GameInitFlag flags;
         SDL_Rect windowDimension;
         const int frameRate;

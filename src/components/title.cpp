@@ -12,6 +12,7 @@ Title::Title(std::string const& content, SDL_FPoint const& center, TextAreaPrese
 
 void Title::deinitialize() {
     Singleton<Title>::deinitialize();
+    if (font == nullptr) return;
     TTF_CloseFont(font);
     font = nullptr;
 }

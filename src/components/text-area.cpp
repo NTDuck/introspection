@@ -29,6 +29,7 @@ void TextArea<T>::initialize() {
 template <typename T>
 void TextArea<T>::deinitialize() {
     Multiton<T>::deinitialize();
+    if (font == nullptr) return;
     TTF_CloseFont(font);
     font = nullptr;
 }

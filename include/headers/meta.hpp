@@ -94,6 +94,12 @@ class Singleton : virtual public PolymorphicBase<T> {
             instance = nullptr;
         }
 
+        template <typename Callable, typename... Args>
+        static void invoke(Callable&& callable, Args&&... args) {
+            if (instance == nullptr) return;
+            std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
+        }
+
     protected:
         static T* instance;
 
@@ -104,7 +110,7 @@ class Singleton : virtual public PolymorphicBase<T> {
         }
 };
 
-#define INCL_SINGLETON(T) using Singleton<T>::instantiate, Singleton<T>::deinitialize, Singleton<T>::instance;
+#define INCL_SINGLETON(T) using Singleton<T>::instantiate, Singleton<T>::invoke, Singleton<T>::deinitialize, Singleton<T>::instance;
 
 
 /**
@@ -144,8 +150,8 @@ class Multiton : virtual public PolymorphicBase<T> {
          * @note Defined here to avoid lengthy explicit template instantiation.
         */
         template <typename Callable, typename... Args>
-        static void callOnEach(Callable&& callable, Args&&... args) {
-            for (auto& instance : instances) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
+        static void invoke(Callable&& callable, Args&&... args) {
+            for (auto& instance : instances) if (instance != nullptr) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
 
         static std::unordered_set<T*> instances;
@@ -162,7 +168,7 @@ class Multiton : virtual public PolymorphicBase<T> {
         }
 };
 
-#define INCL_MULTITON(T) using Multiton<T>::instantiate, Multiton<T>::deinitialize, Multiton<T>::callOnEach, Multiton<T>::instances;
+#define INCL_MULTITON(T) using Multiton<T>::instantiate, Multiton<T>::deinitialize, Multiton<T>::invoke, Multiton<T>::instances;
 
 /* Internal initialization of static members */
 template <typename T>
