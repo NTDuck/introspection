@@ -16,7 +16,7 @@ void Button::render() const {
 void Button::onWindowChange() {
     TextArea<Button>::onWindowChange();
     loadOuterTexture(outerTextureOnMouseOver, kPresetOnMouseOver);
-    loadInnerTexture(innerTextureOnMouseOver, globals::config::kButtonOnMouseOverPreset);
+    loadInnerTexture(innerTextureOnMouseOver, kPresetOnMouseOver);
 }
 
 void Button::handleMouseEvent(SDL_Event const& event) {
@@ -34,4 +34,4 @@ template <>
 const double TextArea<Button>::kDestSizeMultiplier = 1;
 
 template <>
-const std::filesystem::path TextArea<Button>::fontPath = globals::config::kOmoriFontSecondPath;
+const std::filesystem::path TextArea<Button>::fontPath = config::path::fontOmoriHarmonic;

@@ -12,11 +12,10 @@
 
 /**
  * @brief Populate protected member `buttons`.
- * @note Might move to `globals::config` instead.
 */
 MenuInterface::MenuInterface() {
-    Button::instantiate(globals::config::kMenuButtonInitializer);
-    title = Title::instantiate(globals::config::kTitleInitializer);
+    Button::instantiate(config::button::initializer);
+    title = Title::instantiate(config::title::initializer);
 }
 
 void MenuInterface::initialize() {
@@ -38,7 +37,7 @@ void MenuInterface::render() const {
  * @note In future commits, this method will take advantage of `texture`.
 */
 void MenuInterface::renderBackground() const {
-    utils::setRendererDrawColor(globals::renderer, globals::config::kDefaultBackgroundColor);
+    utils::setRendererDrawColor(globals::renderer, config::color::offblack);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 

@@ -277,7 +277,7 @@ namespace tile {
         NextAnimationData(EntitiesTilesetData::AnimationType animationType);
         static void update(NextAnimationData*& instance, const tile::EntitiesTilesetData::AnimationType pendingAnimationType);
     };
-};
+}
 
 
 /**
@@ -369,10 +369,110 @@ namespace level {
         void initialize(json const& JSONLayerData);
         void deinitialize();
     };
-};
+}
 
 
 using AnimationType = tile::EntitiesTilesetData::AnimationType;
+
+
+/**
+ * @brief Group components that are used for configuration.
+ * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
+ * @note All namespace members, even without Google's recommended `"k"` prefix, are `const`/`constexpr`.
+*/
+namespace config {
+    namespace path {
+        const std::filesystem::path asset = "assets";
+        const std::filesystem::path assetTiled = asset / ".tiled";
+        const std::filesystem::path fontOmoriChaotic = asset / "fonts/omori-game-1.ttf";
+        const std::filesystem::path fontOmoriHarmonic = asset / "fonts/omori-game-2.ttf";
+    }
+
+    namespace color {
+        constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color black = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color transparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
+    }
+
+    namespace preset {
+        constexpr TextAreaPreset lightButton = {
+            config::color::offwhite, config::color::black, config::color::black, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
+        constexpr TextAreaPreset darkButton = {
+            config::color::black, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
+        constexpr TextAreaPreset title = {
+            config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
+        };
+    }
+
+    namespace game {
+        const std::tuple<GameInitFlag, SDL_Rect, int, std::string> initializer = {
+            {
+                SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
+                IMG_INIT_PNG,
+                SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
+                SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
+                {
+                    { SDL_HINT_RENDER_SCALE_QUALITY, "1" },
+                }
+            },
+            { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720 },
+            120,
+            "8964",
+        };
+    }
+
+    namespace interface {
+        const std::filesystem::path path = "assets/.tiled/levels.json";
+        constexpr level::LevelName levelName = level::LevelName::kLevelEquilibrium;
+    }
+
+    namespace entity {
+        constexpr double runVelocityModifier = 2;
+        constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+    }
+
+    namespace player {
+        const std::filesystem::path path = "assets/.tiled/.tsx/hp-player.tsx";
+        constexpr SDL_FRect destRectModifier = { 0, -0.75f, 2, 2 };
+        constexpr SDL_FPoint velocity = { 32, 32 };
+        constexpr int moveDelay = 0;
+        constexpr SDL_Point attackRegisterRange = { 99, 99 };
+        constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+    }
+
+    namespace teleporter {
+        const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
+        constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+    }
+
+    namespace slime {
+        const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
+        constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
+        constexpr SDL_FPoint velocity = { 128, 128 };
+        constexpr int moveDelay = 32;
+        constexpr SDL_Point moveInitiateRange = { 16, 16 };
+        constexpr SDL_Point attackInitiateRange = { 7, 7 };
+        constexpr SDL_Point attackRegisterRange = { 5, 5 };
+        constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+    }
+
+    namespace title {
+        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> initializer = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, config::preset::title);
+        constexpr double destSizeMultiplier = 5.5;
+    }
+
+    namespace button {
+        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> initializer = {
+            std::make_tuple(new GameState(GameState::kIngamePlaying), "NEW GAME", SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
+            std::make_tuple(nullptr, "CONTINUE", SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
+            std::make_tuple(nullptr, "SETTINGS", SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
+            std::make_tuple(nullptr, "ABOUT", SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
+        };
+    }
+}
 
 
 /*
@@ -399,83 +499,6 @@ namespace config {
  * @brief Group components that are accessible at public scope to all other components.
 */
 namespace globals {
-    /**
-     * @brief Group components that are used for configuration.
-     * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
-    */
-    namespace config {
-        const GameInitFlag kGameInitFlags = {
-            SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
-            IMG_INIT_PNG,
-            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
-            SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
-            {
-                { SDL_HINT_RENDER_SCALE_QUALITY, "1" },
-            }
-        };
-        constexpr SDL_Rect kWindowDimension = {
-            SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-            1280, 720,
-        };
-        constexpr int kFrameRate = 120;
-        constexpr SDL_Color kDefaultBackgroundColor = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
-        constexpr level::LevelName kDefaultLevelName = level::LevelName::kLevelEquilibrium;
-
-        const std::filesystem::path kAssetPath = "assets";
-        const std::filesystem::path kTiledAssetPath = "assets/.tiled";
-        const std::filesystem::path kTilesetPathPlayer = "assets/.tiled/.tsx/hp-player.tsx";
-        const std::filesystem::path kTilesetPathTeleporter = "assets/.tiled/.tsx/mi-a-cat.tsx";
-        const std::filesystem::path kTilesetPathSlime = "assets/.tiled/.tsx/eg-slime-full.tsx";
-        const std::filesystem::path kConfigPathLevel = "assets/.tiled/levels.json";
-        const std::filesystem::path kOmoriFontFirstPath = "assets/fonts/omori-game-1.ttf";
-        const std::filesystem::path kOmoriFontSecondPath = "assets/fonts/omori-game-2.ttf";
-
-        constexpr SDL_Color kColorOffWhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color kColorBlack = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color kColorTransparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
-
-        constexpr TextAreaPreset kButtonOnMouseOutPreset = {
-            kColorOffWhite, kColorBlack, kColorBlack, 1.0f / 32.0f, 4.0f / 32.0f,
-        };
-        constexpr TextAreaPreset kButtonOnMouseOverPreset = {
-            kColorBlack, kColorOffWhite, kColorOffWhite, 1.0f / 32.0f, 4.0f / 32.0f,
-        };
-        constexpr TextAreaPreset kTitlePreset = {
-            kColorTransparent, kColorTransparent, kColorOffWhite, 0, 0,
-        };
-        
-        constexpr double kDefaultEntityRunVelocityModifier = 2;
-        constexpr SDL_FRect kDefaultEntityDestRectModifier = { 0, 0, 1, 1 };
-        constexpr SDL_FRect kDefaultPlayerDestRectModifier = { 0, -0.75, 2, 2 };
-        constexpr SDL_FRect kDefaultTeleporterDestRectModifier = { 0, 0, 1, 1 };
-        constexpr SDL_FRect kDefaultSlimeDestRectModifier = { 0, -1, 5, 5 };
-
-        constexpr SDL_FPoint kDefaultPlayerVelocity = { 32, 32 };
-        constexpr SDL_FPoint kDefaultSlimeVelocity = { 128, 128 };
-
-        constexpr int kDefaultPlayerMoveDelay = 0;
-        constexpr int kDefaultSlimeMoveDelay = 32;
-
-        constexpr SDL_Point kDefaultSlimeMoveInitiateRange = { 16, 16 };
-        constexpr SDL_Point kDefaultPlayerAttackRegisterRange = { 99, 99 };
-        constexpr SDL_Point kDefaultSlimeAttackInitiateRange = { 7, 7 };
-        constexpr SDL_Point kDefaultSlimeAttackRegisterRange = { 5, 5 };
-
-        constexpr EntityPrimaryStats kDefaultPlayerPrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-        constexpr EntityPrimaryStats kDefaultSlimePrimaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-
-        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> kMenuButtonInitializer = {
-            std::make_tuple(new GameState(GameState::kIngamePlaying), "NEW GAME", SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
-            std::make_tuple(nullptr, "CONTINUE", SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
-            std::make_tuple(nullptr, "SETTINGS", SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
-            std::make_tuple(nullptr, "ABOUT", SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, globals::config::kButtonOnMouseOutPreset, globals::config::kButtonOnMouseOverPreset),
-        };
-
-        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> kTitleInitializer = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, globals::config::kTitlePreset);
-
-        const double kTitleDestSizeMultiplier = 3;
-    };
-
     void deinitialize();
 
     /**
@@ -524,7 +547,7 @@ namespace globals {
      * The current game state. Is strictly bound to the main control flow.
     */
     extern GameState state;
-};
+}
 
 
 bool operator==(SDL_Point const& first, SDL_Point const& second);
@@ -544,7 +567,7 @@ namespace std {
     struct hash<SDL_FPoint> {
         std::size_t operator()(SDL_FPoint const& instance) const;
     };
-};
+}
 
 
 namespace utils {
@@ -606,7 +629,7 @@ namespace utils {
 
     void setTextureRGB(SDL_Texture*& texture, SDL_Color const& color);
     void setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color);  
-};
+}
 
 
 #endif

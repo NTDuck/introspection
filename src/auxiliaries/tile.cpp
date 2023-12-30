@@ -61,7 +61,7 @@ void tile::BaseTilesetData::initialize(pugi::xml_document& document, SDL_Rendere
 
     std::filesystem::path path(src.as_string());
     utils::cleanRelativePath(path);
-    texture = IMG_LoadTexture(renderer, (globals::config::kAssetPath / path).string().c_str());   // Should also check whether path exists
+    texture = IMG_LoadTexture(renderer, (config::path::asset / path).string().c_str());   // Should also check whether path exists
 }
 
 /**
@@ -80,7 +80,7 @@ void tile::TilelayerTilesetData::initialize(json const& tileset, SDL_Renderer* r
     utils::cleanRelativePath(xmlPath);
 
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file((globals::config::kTiledAssetPath / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+    pugi::xml_parse_result result = document.load_file((config::path::assetTiled / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
     BaseTilesetData::initialize(document, renderer);

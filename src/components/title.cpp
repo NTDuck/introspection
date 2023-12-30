@@ -25,4 +25,4 @@ template <>
 const double TextArea<Title>::kDestSizeMultiplier = 5.5;
 
 template <>
-const std::filesystem::path TextArea<Title>::fontPath = globals::config::kOmoriFontSecondPath;
+const std::filesystem::path TextArea<Title>::fontPath = config::path::fontOmoriHarmonic;

@@ -212,7 +212,7 @@ void utils::cleanRelativePath(std::filesystem::path& path) {
 */
 void utils::loadLevelsData(level::LevelMapping& mapping) {
     json data;
-    utils::readJSON(globals::config::kConfigPathLevel.string(), data);
+    utils::readJSON(config::interface::path.string(), data);
 
     auto levels = data.find("levels");
     if (levels == data.end() || !levels.value().is_array()) return;
@@ -254,7 +254,7 @@ void utils::loadLevelData(level::LevelData& currentLevelData, json const& JSONLe
 
     auto backgroundColor = JSONLevelData.find("backgroundcolor");
     if (backgroundColor != JSONLevelData.end() && !backgroundColor.value().is_string()) return;
-    currentLevelData.backgroundColor = (backgroundColor != JSONLevelData.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : globals::config::kDefaultBackgroundColor);
+    currentLevelData.backgroundColor = (backgroundColor != JSONLevelData.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : config::color::offblack);
 
     // Emplace gids into `tileCollection`. Executed per layer.
     currentLevelData.tileCollection.resize(globals::tileDestCount.y);

@@ -9,7 +9,7 @@
 
 
 Teleporter::Teleporter(SDL_Point const& destCoords) : AbstractAnimatedEntity<Teleporter>(destCoords) {
-    destRectModifier = globals::config::kDefaultTeleporterDestRectModifier;
+    destRectModifier = config::teleporter::destRectModifier;
 }
 
 void Teleporter::onLevelChange(level::EntityLevelData const& teleporterData) {
@@ -22,4 +22,4 @@ void Teleporter::onLevelChange(level::EntityLevelData const& teleporterData) {
 
 
 template <>
-const std::filesystem::path AbstractEntity<Teleporter>::kTilesetPath = globals::config::kTilesetPathTeleporter;
+const std::filesystem::path AbstractEntity<Teleporter>::kTilesetPath = config::teleporter::path;

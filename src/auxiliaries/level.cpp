@@ -85,7 +85,7 @@ void level::LevelData::initialize(json const& JSONLayerData) {
 
 void level::LevelData::deinitialize() {
     for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
-    backgroundColor = globals::config::kDefaultBackgroundColor;
+    backgroundColor = config::color::offblack;
     teleportersLevelData.clear();
     slimesLevelData.clear();
 }

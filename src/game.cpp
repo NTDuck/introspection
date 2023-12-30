@@ -73,7 +73,7 @@ void Game::initialize() {
     Teleporter::initialize();
     Slime::initialize();
 
-    ingameInterface = IngameInterface::instantiate(globals::config::kDefaultLevelName);
+    ingameInterface = IngameInterface::instantiate(config::interface::levelName);
     menuInterface = MenuInterface::instantiate();
     player = Player::instantiate(SDL_Point{ 0, 0 });
 }

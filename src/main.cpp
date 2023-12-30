@@ -39,7 +39,7 @@
 
 
 int main(int argc, char* args[]) {
-    auto game = Game::instantiate(globals::config::kGameInitFlags, globals::config::kWindowDimension, globals::config::kFrameRate, "8964");
+    auto game = Game::instantiate(config::game::initializer);
     game->start();
 
     return 0;

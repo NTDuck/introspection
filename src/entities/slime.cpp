@@ -7,11 +7,11 @@
 
 
 Slime::Slime(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Slime>(destCoords) {
-    destRectModifier = globals::config::kDefaultSlimeDestRectModifier;
-    kMoveInitiateRange = globals::config::kDefaultSlimeMoveInitiateRange;
-    kAttackInitiateRange = globals::config::kDefaultSlimeAttackInitiateRange;
-    kAttackRegisterRange = globals::config::kDefaultSlimeAttackRegisterRange;
-    primaryStats = globals::config::kDefaultSlimePrimaryStats;
+    destRectModifier = config::slime::destRectModifier;
+    kMoveInitiateRange = config::slime::moveInitiateRange;
+    kAttackInitiateRange = config::slime::attackInitiateRange;
+    kAttackRegisterRange = config::slime::attackRegisterRange;
+    primaryStats = config::slime::primaryStats;
 }
 
 /**
@@ -30,10 +30,10 @@ void Slime::calculateMove(SDL_Point const& playerDestCoords) {
 }
 
 template <>
-int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = globals::config::kDefaultSlimeMoveDelay;
+int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = config::slime::moveDelay;
 
 template <>
-SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = globals::config::kDefaultSlimeVelocity;
+SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = config::slime::velocity;
 
 template <>
-const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = globals::config::kTilesetPathSlime;
+const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = config::slime::path;

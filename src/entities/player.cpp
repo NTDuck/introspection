@@ -11,9 +11,9 @@
  * @note Constructor initializer list is unusable.
 */
 Player::Player(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Player>(destCoords) {
-    destRectModifier = globals::config::kDefaultPlayerDestRectModifier;
-    kAttackRegisterRange = globals::config::kDefaultPlayerAttackRegisterRange;   // `kAttackInitiateRange` is unnecessary
-    primaryStats = globals::config::kDefaultPlayerPrimaryStats;
+    destRectModifier = config::player::destRectModifier;
+    kAttackRegisterRange = config::player::attackRegisterRange;   // `kAttackInitiateRange` is unnecessary
+    primaryStats = config::player::primaryStats;
 }
 
 void Player::deinitialize() {
@@ -68,10 +68,10 @@ void Player::onLevelChange(level::EntityLevelData const& player) {
 
 
 template <>
-int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = globals::config::kDefaultPlayerMoveDelay;
+int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = config::player::moveDelay;
 
 template <>
-SDL_FPoint AbstractAnimatedDynamicEntity<Player>::kVelocity = globals::config::kDefaultPlayerVelocity;
+SDL_FPoint AbstractAnimatedDynamicEntity<Player>::kVelocity = config::player::velocity;
 
 template <>
-const std::filesystem::path AbstractEntity<Player>::kTilesetPath = globals::config::kTilesetPathPlayer;
+const std::filesystem::path AbstractEntity<Player>::kTilesetPath = config::player::path;

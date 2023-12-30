@@ -11,7 +11,7 @@
 IngameInterface::IngameInterface(const level::LevelName levelName) : levelName(levelName) {}
 
 void IngameInterface::initialize() {
-    if (!std::filesystem::exists(globals::config::kConfigPathLevel)) return;
+    if (!std::filesystem::exists(config::interface::path)) return;
     utils::loadLevelsData(kLevelMapping);
 }
 
@@ -48,7 +48,7 @@ void IngameInterface::onWindowChange() {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameInterface::loadLevel() {
-    std::filesystem::path kLevelPath = globals::config::kTiledAssetPath / kLevelMapping[levelName];
+    std::filesystem::path kLevelPath = config::path::assetTiled / kLevelMapping[levelName];
     if (!std::filesystem::exists(kLevelPath)) return;
     json data;
     utils::readJSON(kLevelPath.string(), data);
