@@ -7,6 +7,7 @@
 #include <SDL.h>
 
 #include <components.hpp>
+#include <entities.hpp>
 #include <meta.hpp>
 
 
@@ -14,6 +15,7 @@
  * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
+    Avatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
     Button::instantiate(config::button::initializer);
     Title::instantiate(config::title::initializer);
 }
@@ -24,6 +26,7 @@ void MenuInterface::initialize() {
 }
 
 void MenuInterface::deinitialize() {
+    Avatar::deinitialize();
     Button::deinitialize();
     Title::deinitialize();
 }
@@ -42,11 +45,13 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
+    Avatar::invoke(&Avatar::render);
     Button::invoke(&Button::render);
     Title::invoke(&Title::render);
 }
 
 void MenuInterface::onWindowChange() {
+    Avatar::invoke(&Avatar::onWindowChange);
     Button::invoke(&Button::onWindowChange);
     Title::invoke(&Title::onWindowChange);
 }

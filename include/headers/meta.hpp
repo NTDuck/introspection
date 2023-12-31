@@ -223,12 +223,12 @@ class AbstractEntity : public Multiton<T> {
         AbstractEntity(SDL_Point const& destCoords);
         SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
 
-        static const std::filesystem::path kTilesetPath;
-
         /**
          * Contain data associated with the position of the entity's sprite/animation relative to the tileset. In pixels.
         */
         SDL_Rect srcRect;
+
+        static const std::filesystem::path kTilesetPath;
 
         /**
          * Modify `destRect`.

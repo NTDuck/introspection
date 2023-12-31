@@ -125,4 +125,22 @@ class Button : public TextArea<Button> {
 };
 
 
+class Avatar final : public Singleton<Avatar> {
+    public:
+        INCL_SINGLETON(Avatar)
+
+        Avatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
+        ~Avatar() = default;
+
+        void render() const;
+        void onWindowChange();
+
+    private:
+        SDL_Texture*& texture;
+        const SDL_Rect srcRect;
+        SDL_Rect destRect;
+        const double destRectModifier;
+};
+
+
 #endif

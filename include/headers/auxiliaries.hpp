@@ -472,28 +472,13 @@ namespace config {
             std::make_tuple(nullptr, "ABOUT", SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
         };
     }
-}
 
-
-/*
-namespace config {
-    namespace path {
-        
-    }
-
-    namespace color {
-
-    }
-
-    namespace preset {
-
-    }
-
-    namespace initializers {
-
+    namespace avatar {
+        constexpr double destRectModifier = 0.125;
+        // const std::tuple<double> initializer = std::make_tuple(destRectModifier);
     }
 }
-*/
+
 
 /**
  * @brief Group components that are accessible at public scope to all other components.
