@@ -16,7 +16,7 @@
  * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
-    AnimatedBackground::instantiate(IngameInterface::instance->texture, globals::windowSize);
+    AnimatedBackground::instantiate(IngameInterface::instance->texture);
     Avatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
     Button::instantiate(config::button::initializer);
     Title::instantiate(config::title::initializer);
@@ -56,7 +56,7 @@ void MenuInterface::renderComponents() const {
 }
 
 void MenuInterface::onWindowChange() {
-    AnimatedBackground::invoke(&AnimatedBackground::onWindowChange, globals::windowSize);
+    AnimatedBackground::invoke(&AnimatedBackground::onWindowChange);
     Avatar::invoke(&Avatar::onWindowChange);
     Button::invoke(&Button::onWindowChange);
     Title::invoke(&Title::onWindowChange);

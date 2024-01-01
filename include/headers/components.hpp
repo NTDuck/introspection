@@ -147,20 +147,22 @@ class AnimatedBackground final : public Singleton<AnimatedBackground> {
     public:
         INCL_SINGLETON(AnimatedBackground)
 
-        AnimatedBackground(SDL_Texture*& texture, SDL_Point const& srcSize);
+        AnimatedBackground(SDL_Texture*& texture);
         ~AnimatedBackground() = default;
 
         void updateAnimation();
         void render() const;
-        void onWindowChange(SDL_Point const& nextSrcSize);
+        void onWindowChange();
 
     private:
         static constexpr double animationUpdateRateLimit = 1;
 
         SDL_Texture*& texture;
         SDL_Point srcSize;
+        SDL_Point& destSize = globals::windowSize;
+        std::pair<SDL_Rect, SDL_Rect> srcRects, destRects;
 
-        double currAnimationUpdateCount = 0;
+        double currAnimationUpdateCount;
         const double kAnimationUpdateRate = config::animated_background::animationUpdateRate;
 };
 

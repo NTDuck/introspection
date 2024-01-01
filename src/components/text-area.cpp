@@ -46,10 +46,11 @@ void TextArea<T>::render() const {
 template <typename T>
 void TextArea<T>::onWindowChange() {
     // Call `loadFont()` "once"
-    static std::size_t counter = 0;
-    if (!counter) loadFont();
-    ++counter;
-    if (counter == instances.size()) counter = 0;
+    // static std::size_t counter = 0;
+    // if (!counter) loadFont();
+    // ++counter;
+    // if (counter == instances.size()) counter = 0;
+    loadFont();   // Requires revision
 
     loadOuterTexture(outerTexture, kPreset);
     loadInnerTexture(innerTexture, kPreset);
