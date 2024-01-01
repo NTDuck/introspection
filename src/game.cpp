@@ -75,7 +75,7 @@ void Game::initialize() {
 
     Player::instantiate(SDL_Point{ 0, 0 });
     IngameInterface::instantiate(config::interface::levelName);
-    MenuInterface::instantiate();   // Requires instantiation of `Player`
+    MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameInterface`
 }
 
 /**

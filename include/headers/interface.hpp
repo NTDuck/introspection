@@ -22,7 +22,7 @@ class IngameInterface final : public AbstractInterface<IngameInterface> {
         
         void changeLevel(const level::LevelName levelName);
         void onLevelChange();
-        void onWindowChange();
+        void onWindowChange() override;
 
     private:
         void loadLevel();
@@ -64,5 +64,3 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
 
 
 #endif
-
-

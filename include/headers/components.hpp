@@ -143,4 +143,26 @@ class Avatar final : public Singleton<Avatar> {
 };
 
 
+class AnimatedBackground final : public Singleton<AnimatedBackground> {
+    public:
+        INCL_SINGLETON(AnimatedBackground)
+
+        AnimatedBackground(SDL_Texture*& texture, SDL_Point const& srcSize);
+        ~AnimatedBackground() = default;
+
+        void updateAnimation();
+        void render() const;
+        void onWindowChange(SDL_Point const& nextSrcSize);
+
+    private:
+        static constexpr double animationUpdateRateLimit = 1;
+
+        SDL_Texture*& texture;
+        SDL_Point srcSize;
+
+        double currAnimationUpdateCount = 0;
+        const double kAnimationUpdateRate = config::animated_background::animationUpdateRate;
+};
+
+
 #endif

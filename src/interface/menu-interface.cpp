@@ -9,12 +9,14 @@
 #include <components.hpp>
 #include <entities.hpp>
 #include <meta.hpp>
+#include <auxiliaries.hpp>
 
 
 /**
  * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
+    AnimatedBackground::instantiate(IngameInterface::instance->texture, globals::windowSize);
     Avatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
     Button::instantiate(config::button::initializer);
     Title::instantiate(config::title::initializer);
@@ -26,6 +28,7 @@ void MenuInterface::initialize() {
 }
 
 void MenuInterface::deinitialize() {
+    AnimatedBackground::deinitialize();
     Avatar::deinitialize();
     Button::deinitialize();
     Title::deinitialize();
@@ -45,12 +48,15 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
+    AnimatedBackground::invoke(&AnimatedBackground::updateAnimation);
+    AnimatedBackground::invoke(&AnimatedBackground::render);
     Avatar::invoke(&Avatar::render);
     Button::invoke(&Button::render);
     Title::invoke(&Title::render);
 }
 
 void MenuInterface::onWindowChange() {
+    AnimatedBackground::invoke(&AnimatedBackground::onWindowChange, globals::windowSize);
     Avatar::invoke(&Avatar::onWindowChange);
     Button::invoke(&Button::onWindowChange);
     Title::invoke(&Title::onWindowChange);

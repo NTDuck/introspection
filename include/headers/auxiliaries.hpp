@@ -475,7 +475,10 @@ namespace config {
 
     namespace avatar {
         constexpr double destRectModifier = 0.125;
-        // const std::tuple<double> initializer = std::make_tuple(destRectModifier);
+    }
+
+    namespace animated_background {
+        constexpr double animationUpdateRate = 0.001;
     }
 }
 
