@@ -242,7 +242,7 @@ void Game::handleEvents() {
     switch (event->type) {
         case SDL_QUIT:
             globals::state = GameState::kExit;
-            delete instance;   // ?
+            // delete instance;   // ?
             break;
         
         case SDL_WINDOWEVENT:
@@ -285,7 +285,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
     switch (globals::state) {
         case GameState::kIngamePlaying:
             if (event.key.keysym.sym == SDLK_ESCAPE) {
-                globals::state = GameState::kExit;
+                globals::state = GameState::kMenu;
                 break;
             }
             Player::invoke(&Player::handleKeyboardEvent, event);

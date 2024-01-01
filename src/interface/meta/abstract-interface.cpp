@@ -1,8 +1,8 @@
-#include <meta.hpp>
+#include <interface.hpp>
 
 #include <SDL.h>
 
-#include <interface.hpp>
+#include <meta.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -28,3 +28,4 @@ void AbstractInterface<T>::onWindowChange() {
 
 template class AbstractInterface<IngameInterface>;
 template class AbstractInterface<MenuInterface>;
+template class AbstractInterface<LoadingInterface>;

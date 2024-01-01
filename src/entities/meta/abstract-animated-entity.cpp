@@ -1,10 +1,10 @@
-#include <meta.hpp>
+#include <entities.hpp>
 
 #include <filesystem>
 
 #include <SDL.h>
 
-#include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries.hpp>
 
 

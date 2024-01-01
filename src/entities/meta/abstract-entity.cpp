@@ -1,4 +1,4 @@
-#include <meta.hpp>
+#include <entities.hpp>
 
 #include <algorithm>
 #include <filesystem>
@@ -9,7 +9,7 @@
 #include <SDL_image.h>
 #include <pugixml/pugixml.hpp>
 
-#include <entities.hpp>
+#include <meta.hpp>
 #include <auxiliaries.hpp>
 
 

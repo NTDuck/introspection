@@ -15,15 +15,17 @@
 #include <auxiliaries.hpp>
 
 
+/* Abstract templates */
+
 /**
  * @brief Represent a "div" i.e. a text container.
 */
 template <typename T>
-class TextArea : public Multiton<T> {
+class GenericTextArea : public Multiton<T> {
     public:
         INCL_MULTITON(T)
 
-        virtual ~TextArea();
+        virtual ~GenericTextArea();
 
         static void initialize();
         static void deinitialize();
@@ -34,7 +36,7 @@ class TextArea : public Multiton<T> {
         void editContent(std::string const& nextContent);
 
     protected:
-        TextArea(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
+        GenericTextArea(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
 
         static void loadFont();
         void loadOuterTexture(SDL_Texture*& texture, TextAreaPreset const& preset);
@@ -65,46 +67,48 @@ class TextArea : public Multiton<T> {
         static constexpr SDL_Point kOuterDestRectRatio = { 10, 2 };
 };
 
-#define INCL_GENERIC_TEXT_AREA(T) using TextArea<T>::initialize, TextArea<T>::deinitialize, TextArea<T>::render, TextArea<T>::onWindowChange, TextArea<T>::editContent, TextArea<T>::loadOuterTexture, TextArea<T>::loadInnerTexture, TextArea<T>::destSize, TextArea<T>::kDestSizeMultiplier, TextArea<T>::font, TextArea<T>::fontPath, TextArea<T>::outerTexture, TextArea<T>::innerTexture, TextArea<T>::content, TextArea<T>::kCenter, TextArea<T>::kPreset, TextArea<T>::outerDestRect, TextArea<T>::innerDestRect;
+#define INCL_GENERIC_TEXT_AREA(T) using GenericTextArea<T>::initialize, GenericTextArea<T>::deinitialize, GenericTextArea<T>::render, GenericTextArea<T>::onWindowChange, GenericTextArea<T>::editContent, GenericTextArea<T>::loadOuterTexture, GenericTextArea<T>::loadInnerTexture, GenericTextArea<T>::destSize, GenericTextArea<T>::kDestSizeMultiplier, GenericTextArea<T>::font, GenericTextArea<T>::fontPath, GenericTextArea<T>::outerTexture, GenericTextArea<T>::innerTexture, GenericTextArea<T>::content, GenericTextArea<T>::kCenter, GenericTextArea<T>::kPreset, GenericTextArea<T>::outerDestRect, GenericTextArea<T>::innerDestRect;
 
 namespace std {
     template <typename T>
-    struct hash<TextArea<T>> {
-        std::size_t operator()(TextArea<T> const*& instance) const;
+    struct hash<GenericTextArea<T>> {
+        std::size_t operator()(GenericTextArea<T> const*& instance) const;
     };
 
     template <typename T>
-    struct equal_to<TextArea<T>> {
-        bool operator()(TextArea<T> const*& first, TextArea<T> const*& second) const;
+    struct equal_to<GenericTextArea<T>> {
+        bool operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const;
     };
 }
 
 
 /**
- * @brief Represent the big, chunky game title in the menu.
+ * @brief Represent a text area with no background.
 */
-class Title : public TextArea<Title>, public Singleton<Title> {
+template <typename T>
+class GenericTitle : public GenericTextArea<T> {
     public:
-        INCL_GENERIC_TEXT_AREA(Title)
-        INCL_SINGLETON(Title)
+        INCL_GENERIC_TEXT_AREA(T)
 
-        Title(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
-        ~Title() = default;
+        GenericTitle(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
+        ~GenericTitle() = default;
 
-        static void deinitialize();
         void render() const override;
 };
+
+#define INCL_GENERIC_TITLE(T) using GenericTitle<T>::render;
 
 
 /**
  * @brief Represent a mouse-interactible `TextArea`.
 */
-class Button : public TextArea<Button> {
+template <typename T>
+class GenericButton : public GenericTextArea<T> {
     public:
-        INCL_GENERIC_TEXT_AREA(Button)
+        INCL_GENERIC_TEXT_AREA(T)
 
-        Button(GameState* destState, std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset, TextAreaPreset const& presetOnMouseOver);
-        ~Button() = default;
+        GenericButton(GameState* destState, std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset, TextAreaPreset const& presetOnMouseOver);
+        ~GenericButton() = default;
 
         void render() const override;
         void onWindowChange() override;
@@ -124,13 +128,17 @@ class Button : public TextArea<Button> {
         bool isMouseOut = true;
 };
 
+#define INCL_GENERIC_BUTTON(T) using GenericButton<T>::render, GenericButton<T>::onWindowChange, GenericButton<T>::handleMouseEvent, GenericButton<T>::onClick, GenericButton<T>::kDestState, GenericButton<T>::outerTextureOnMouseOver, GenericButton<T>::innerTextureOnMouseOver, GenericButton<T>::kPresetOnMouseOver;
 
-class Avatar final : public Singleton<Avatar> {
+
+/* Derived implementations */
+
+class MenuAvatar final : public Singleton<MenuAvatar> {
     public:
-        INCL_SINGLETON(Avatar)
+        INCL_SINGLETON(MenuAvatar)
 
-        Avatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
-        ~Avatar() = default;
+        MenuAvatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
+        ~MenuAvatar() = default;
 
         void render() const;
         void onWindowChange();
@@ -143,12 +151,12 @@ class Avatar final : public Singleton<Avatar> {
 };
 
 
-class AnimatedBackground final : public Singleton<AnimatedBackground> {
+class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
     public:
-        INCL_SINGLETON(AnimatedBackground)
+        INCL_SINGLETON(MenuAnimatedBackground)
 
-        AnimatedBackground(SDL_Texture*& texture);
-        ~AnimatedBackground() = default;
+        MenuAnimatedBackground(SDL_Texture*& texture);
+        ~MenuAnimatedBackground() = default;
 
         void updateAnimation();
         void render() const;
@@ -164,6 +172,24 @@ class AnimatedBackground final : public Singleton<AnimatedBackground> {
 
         double currAnimationUpdateCount;
         const double kAnimationUpdateRate = config::animated_background::animationUpdateRate;
+};
+
+
+class MenuButton final : public GenericButton<MenuButton> {
+    public:
+        INCL_GENERIC_BUTTON(MenuButton)
+
+        MenuButton(GameState* destState, std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset, TextAreaPreset const& presetOnMouseOver);
+        ~MenuButton() = default;
+};
+
+
+class MenuTitle final : public GenericTitle<MenuTitle> {
+    public:
+        INCL_GENERIC_TITLE(MenuTitle)
+
+        MenuTitle(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset);
+        ~MenuTitle() = default;
 };
 
 

@@ -16,22 +16,22 @@
  * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
-    AnimatedBackground::instantiate(IngameInterface::instance->texture);
-    Avatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
-    Button::instantiate(config::button::initializer);
-    Title::instantiate(config::title::initializer);
+    MenuAnimatedBackground::instantiate(IngameInterface::instance->texture);
+    MenuAvatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
+    MenuButton::instantiate(config::button::initializer_menu);
+    MenuTitle::instantiate(config::title::initializer_menu);
 }
 
 void MenuInterface::initialize() {
-    Button::initialize();
-    Title::initialize();
+    MenuButton::initialize();
+    MenuTitle::initialize();
 }
 
 void MenuInterface::deinitialize() {
-    AnimatedBackground::deinitialize();
-    Avatar::deinitialize();
-    Button::deinitialize();
-    Title::deinitialize();
+    MenuAnimatedBackground::deinitialize();
+    MenuAvatar::deinitialize();
+    MenuButton::deinitialize();
+    MenuTitle::deinitialize();
 }
 
 void MenuInterface::render() const {
@@ -48,20 +48,20 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
-    AnimatedBackground::invoke(&AnimatedBackground::updateAnimation);
-    AnimatedBackground::invoke(&AnimatedBackground::render);
-    Avatar::invoke(&Avatar::render);
-    Button::invoke(&Button::render);
-    Title::invoke(&Title::render);
+    MenuAnimatedBackground::invoke(&MenuAnimatedBackground::updateAnimation);
+    MenuAnimatedBackground::invoke(&MenuAnimatedBackground::render);
+    MenuAvatar::invoke(&MenuAvatar::render);
+    MenuButton::invoke(&MenuButton::render);
+    MenuTitle::invoke(&MenuTitle::render);
 }
 
 void MenuInterface::onWindowChange() {
-    AnimatedBackground::invoke(&AnimatedBackground::onWindowChange);
-    Avatar::invoke(&Avatar::onWindowChange);
-    Button::invoke(&Button::onWindowChange);
-    Title::invoke(&Title::onWindowChange);
+    MenuAnimatedBackground::invoke(&MenuAnimatedBackground::onWindowChange);
+    MenuAvatar::invoke(&MenuAvatar::onWindowChange);
+    MenuButton::invoke(&MenuButton::onWindowChange);
+    MenuTitle::invoke(&MenuTitle::onWindowChange);
 }
 
 void MenuInterface::handleMouseEvent(SDL_Event const& event) {
-    Button::invoke(&Button::handleMouseEvent, event);
+    MenuButton::invoke(&MenuButton::handleMouseEvent, event);
 }

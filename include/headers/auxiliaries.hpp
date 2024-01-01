@@ -30,10 +30,11 @@ using json = nlohmann::json;
 */
 enum class GameState {
     kMenu,
+    kLoading,
     kIngamePlaying,
-    kIngamePaused,
-    kIngameDialogue,
-    kIngameCutscene,
+    // kIngamePaused,
+    // kIngameDialogue,
+    // kIngameCutscene,
     kExit,
 };
 
@@ -460,12 +461,12 @@ namespace config {
     }
 
     namespace title {
-        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> initializer = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, config::preset::title);
+        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> initializer_menu = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, config::preset::title);
         constexpr double destSizeMultiplier = 5.5;
     }
 
     namespace button {
-        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> initializer = {
+        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> initializer_menu = {
             std::make_tuple(new GameState(GameState::kIngamePlaying), "NEW GAME", SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
             std::make_tuple(nullptr, "CONTINUE", SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
             std::make_tuple(nullptr, "SETTINGS", SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),

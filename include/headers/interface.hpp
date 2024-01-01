@@ -8,6 +8,31 @@
 #include <auxiliaries.hpp>
 
 
+/* Abstract templates */
+
+template <typename T>
+class AbstractInterface : public Singleton<T> {
+    public:
+        INCL_SINGLETON(T)
+
+        virtual void render() const;
+        virtual void onWindowChange();
+
+    protected:
+        ~AbstractInterface();
+
+        /**
+         * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
+         * @note Needs optimization to perfect relative positions of props to entities.
+        */
+        SDL_Texture* texture = nullptr;
+};
+
+#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::texture;
+
+
+/* Derived implementations */
+
 /**
  * @brief Represent the in-game interface.
 */
@@ -60,6 +85,28 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
     private:
         void renderBackground() const;
         void renderComponents() const;
+};
+
+
+class LoadingInterface final : public AbstractInterface<LoadingInterface> {
+    public:
+        INCL_ABSTRACT_INTERFACE(LoadingInterface)
+
+        LoadingInterface();
+        ~LoadingInterface() = default;
+
+        static void initialize();
+        static void deinitialize();
+
+        void render() const override;
+        void onWindowChange() override;
+
+        void transition(GameState const& gameState);
+
+    private:
+        void transition();
+
+        GameState* nextGameState = nullptr;
 };
 
 

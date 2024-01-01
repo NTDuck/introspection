@@ -7,7 +7,7 @@ libpath = -L/usr/lib
 libs = -lSDL2 -lSDL2_image -lSDL2_ttf -lz
 
 # src & output
-src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp)
+src = $(wildcard src/*.cpp) $(wildcard src/*/*.cpp) $(wildcard src/*/*/*.cpp)
 output = build/8964
 
 all: $(output)

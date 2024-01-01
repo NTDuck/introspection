@@ -11,23 +11,23 @@
 
 
 template <typename T>
-TextArea<T>::TextArea(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset) : content(content), kCenter(center), kPreset(preset) {}
+GenericTextArea<T>::GenericTextArea(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset) : content(content), kCenter(center), kPreset(preset) {}
 
 template <typename T>
-TextArea<T>::~TextArea() {
+GenericTextArea<T>::~GenericTextArea() {
     SDL_DestroyTexture(outerTexture);
     SDL_DestroyTexture(innerTexture);
     outerTexture = innerTexture = nullptr;
 }
 
 template <typename T>
-void TextArea<T>::initialize() {
+void GenericTextArea<T>::initialize() {
     loadFont();
     // if (font == nullptr) TTF_GetError();
 }
 
 template <typename T>
-void TextArea<T>::deinitialize() {
+void GenericTextArea<T>::deinitialize() {
     Multiton<T>::deinitialize();
     if (font == nullptr) return;
     TTF_CloseFont(font);
@@ -38,26 +38,26 @@ void TextArea<T>::deinitialize() {
  * @brief Render the entire text area to the screen.
 */
 template <typename T>
-void TextArea<T>::render() const {
+void GenericTextArea<T>::render() const {
     SDL_RenderCopy(globals::renderer, outerTexture, nullptr, &outerDestRect);
     SDL_RenderCopy(globals::renderer, innerTexture, nullptr, &innerDestRect);
 }
 
 template <typename T>
-void TextArea<T>::onWindowChange() {
+void GenericTextArea<T>::onWindowChange() {
     loadFont();
     loadOuterTexture(outerTexture, kPreset);
     loadInnerTexture(innerTexture, kPreset);
 }
 
 template <typename T>
-void TextArea<T>::editContent(std::string const& nextContent) {
+void GenericTextArea<T>::editContent(std::string const& nextContent) {
     content = nextContent;
     loadInnerTexture(innerTexture, kPreset);
 }
 
 template <typename T>
-void TextArea<T>::loadFont() {
+void GenericTextArea<T>::loadFont() {
     destSize = std::min(globals::windowSize.x / kOuterDestRectRatio.x, globals::windowSize.y / kOuterDestRectRatio.y) >> 2;   // The closest power of 2
     destSize *= kDestSizeMultiplier;
 
@@ -66,14 +66,14 @@ void TextArea<T>::loadFont() {
         TTF_CloseFont(font);
     }
 
-    font = TTF_OpenFont(fontPath.c_str(), destSize);
+    font = TTF_OpenFont(T::fontPath.c_str(), destSize);
 }
 
 /**
  * @brief Populate the "outer" part of the text area.
 */
 template <typename T>
-void TextArea<T>::loadOuterTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
+void GenericTextArea<T>::loadOuterTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
     if (texture != nullptr) SDL_DestroyTexture(texture);
     
     outerDestRect.w = destSize * kOuterDestRectRatio.x;
@@ -113,7 +113,7 @@ void TextArea<T>::loadOuterTexture(SDL_Texture*& texture, TextAreaPreset const& 
  * @brief Populate the "text" part of the text area.
 */
 template <typename T>
-void TextArea<T>::loadInnerTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
+void GenericTextArea<T>::loadInnerTexture(SDL_Texture*& texture, TextAreaPreset const& preset) {
     if (texture != nullptr) SDL_DestroyTexture(texture);
 
     // Render text at high quality
@@ -132,12 +132,12 @@ void TextArea<T>::loadInnerTexture(SDL_Texture*& texture, TextAreaPreset const& 
 }
 
 template <typename T>
-std::size_t std::hash<TextArea<T>>::operator()(TextArea<T> const*& instance) const {
+std::size_t std::hash<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& instance) const {
     return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_FPoint>(instance->kCenter);
 }
 
 template <typename T>
-bool std::equal_to<TextArea<T>>::operator()(TextArea<T> const*& first, TextArea<T> const*& second) const {
+bool std::equal_to<GenericTextArea<T>>::operator()(GenericTextArea<T> const*& first, GenericTextArea<T> const*& second) const {
     return (first == nullptr && second == nullptr) || (first && second && first->kCenter == second->kCenter);
 }
 
@@ -146,14 +146,14 @@ bool std::equal_to<TextArea<T>>::operator()(TextArea<T> const*& first, TextArea<
  * Determine the physical size of the text area.
 */
 template <typename T>
-int TextArea<T>::destSize;
+int GenericTextArea<T>::destSize;
 
 /**
  * The global font in the scope of this project.
 */
 template <typename T>
-TTF_Font* TextArea<T>::font = nullptr;
+TTF_Font* GenericTextArea<T>::font = nullptr;
 
 
-template class TextArea<Button>;
-template class TextArea<Title>;
+template class GenericTextArea<MenuButton>;
+template class GenericTextArea<MenuTitle>;
