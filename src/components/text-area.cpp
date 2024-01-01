@@ -45,13 +45,7 @@ void TextArea<T>::render() const {
 
 template <typename T>
 void TextArea<T>::onWindowChange() {
-    // Call `loadFont()` "once"
-    // static std::size_t counter = 0;
-    // if (!counter) loadFont();
-    // ++counter;
-    // if (counter == instances.size()) counter = 0;
-    loadFont();   // Requires revision
-
+    loadFont();
     loadOuterTexture(outerTexture, kPreset);
     loadInnerTexture(innerTexture, kPreset);
 }
@@ -64,9 +58,14 @@ void TextArea<T>::editContent(std::string const& nextContent) {
 
 template <typename T>
 void TextArea<T>::loadFont() {
-    if (font != nullptr) TTF_CloseFont(font);
     destSize = std::min(globals::windowSize.x / kOuterDestRectRatio.x, globals::windowSize.y / kOuterDestRectRatio.y) >> 2;   // The closest power of 2
     destSize *= kDestSizeMultiplier;
+
+    if (font != nullptr) {
+        if (TTF_FontHeight(font) == destSize) return;
+        TTF_CloseFont(font);
+    }
+
     font = TTF_OpenFont(fontPath.c_str(), destSize);
 }
 
