@@ -6,11 +6,11 @@
 #include <auxiliaries.hpp>
 
 
-MenuTitle::MenuTitle(std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset) : GenericTitle<MenuTitle>(content, center, preset) {}
+MenuTitle::MenuTitle(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content) : GenericComponent<MenuTitle>(center, preset), GenericTextComponent<MenuTitle>(center, preset, content) {}
 
 
 template <>
-const double GenericTextArea<MenuTitle>::kDestSizeMultiplier = config::title::destSizeMultiplier;
+const double GenericComponent<MenuTitle>::kDestSizeModifier = config::title::destSizeModifier;
 
 template <>
-const std::filesystem::path GenericTextArea<MenuTitle>::fontPath = config::path::fontOmoriHarmonic;
+const std::filesystem::path GenericTextComponent<MenuTitle>::fontPath = config::path::fontOmoriHarmonic;

@@ -7,6 +7,9 @@ MenuAnimatedBackground::MenuAnimatedBackground(SDL_Texture*& texture) : texture(
     srcRects.first.x = srcRects.first.y = srcRects.second.y = destRects.first.y = destRects.second.x = destRects.second.y = 0;
 }
 
+/**
+ * @brief Update `srcRects` and `destRects` based on `currAnimationUpdateCount`.
+*/
 void MenuAnimatedBackground::updateAnimation() {
     currAnimationUpdateCount += kAnimationUpdateRate;
     if (currAnimationUpdateCount > animationUpdateRateLimit) currAnimationUpdateCount = 0;

@@ -132,7 +132,7 @@ struct EntitySecondaryStats {
 /**
  * @brief Contain data associated with a text area's configurations.
 */
-struct TextAreaPreset {
+struct ComponentPreset {
     SDL_Color backgroundColor;
     SDL_Color lineColor;
     SDL_Color textColor;
@@ -397,13 +397,13 @@ namespace config {
     }
 
     namespace preset {
-        constexpr TextAreaPreset lightButton = {
+        constexpr ComponentPreset lightButton = {
             config::color::offwhite, config::color::black, config::color::black, 1.0f / 32.0f, 4.0f / 32.0f,
         };
-        constexpr TextAreaPreset darkButton = {
+        constexpr ComponentPreset darkButton = {
             config::color::black, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
         };
-        constexpr TextAreaPreset title = {
+        constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
         };
     }
@@ -461,16 +461,16 @@ namespace config {
     }
 
     namespace title {
-        const std::tuple<std::string, SDL_FPoint, TextAreaPreset> initializer_menu = std::make_tuple("8964", SDL_FPoint{ 0.5f, 0.2f }, config::preset::title);
-        constexpr double destSizeMultiplier = 5.5;
+        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerMenuTitle = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
+        constexpr double destSizeModifier = 5.5;
     }
 
     namespace button {
-        const std::array<std::tuple<GameState*, std::string, SDL_FPoint, TextAreaPreset, TextAreaPreset>, 4> initializer_menu = {
-            std::make_tuple(new GameState(GameState::kIngamePlaying), "NEW GAME", SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
-            std::make_tuple(nullptr, "CONTINUE", SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
-            std::make_tuple(nullptr, "SETTINGS", SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
-            std::make_tuple(nullptr, "ABOUT", SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton),
+        const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializerMenuButton = {
+            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kIngamePlaying)),
+            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
+            std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
+            std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
         };
     }
 

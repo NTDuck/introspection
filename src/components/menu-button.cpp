@@ -6,11 +6,11 @@
 #include <auxiliaries.hpp>
 
 
-MenuButton::MenuButton(GameState* destState, std::string const& content, SDL_FPoint const& center, TextAreaPreset const& preset, TextAreaPreset const& presetOnMouseOver) : GenericButton<MenuButton>(destState, content, center, preset, presetOnMouseOver) {}
+MenuButton::MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState) : GenericComponent<MenuButton>(center, onMouseOutPreset), GenericButtonComponent<MenuButton>(center, onMouseOutPreset, onMouseOverPreset, content, destState) {}
 
 
 template <>
-const double GenericTextArea<MenuButton>::kDestSizeMultiplier = 1;
+const double GenericComponent<MenuButton>::kDestSizeModifier = 1;
 
 template <>
-const std::filesystem::path GenericTextArea<MenuButton>::fontPath = config::path::fontOmoriHarmonic;
+const std::filesystem::path GenericTextComponent<MenuButton>::fontPath = config::path::fontOmoriHarmonic;

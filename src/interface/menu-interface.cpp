@@ -18,13 +18,13 @@
 MenuInterface::MenuInterface() {
     MenuAnimatedBackground::instantiate(IngameInterface::instance->texture);
     MenuAvatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
-    MenuButton::instantiate(config::button::initializer_menu);
-    MenuTitle::instantiate(config::title::initializer_menu);
+    MenuButton::instantiate(config::button::initializerMenuButton);
+    MenuTitle::instantiate(config::title::initializerMenuTitle);
 }
 
 void MenuInterface::initialize() {
-    MenuButton::initialize();
-    MenuTitle::initialize();
+    // MenuButton::initialize();
+    // MenuTitle::initialize();
 }
 
 void MenuInterface::deinitialize() {

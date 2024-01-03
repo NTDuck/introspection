@@ -19,17 +19,17 @@
  *  ├─► Singleton<T> ├───────────────────────────────────────────┐
  *  │ └┬─────────────┘                                           │
  *  │  │                                                         │
- *  │  │ ┌──────────────────────┐   ┌─────────────────┐          │
- *  │  ├─► AbstractInterface<T> ├─┬─► IngameInterface │          │
- *  │  │ └──────────────────────┘ │ └─────────────────┘          │
+ *  │  │ ┌──────┐                   ┌─────────────────┐          │
+ *  │  ├─► Game │                 ┌─► IngameInterface │          │
+ *  │  │ └──────┘                 │ └─────────────────┘          │
  *  │  │                          │                              │
- *  │  │ ┌────────────┐           │ ┌───────────────┐            │
- *  │  ├─► MenuAvatar │           ├─► MenuInterface │            │
- *  │  │ └────────────┘           │ └───────────────┘            │
+ *  │  │ ┌──────────────────────┐ │ ┌───────────────┐            │
+ *  │  ├─► AbstractInterface<T> ├─┼─► MenuInterface │            │
+ *  │  │ └──────────────────────┘ │ └───────────────┘            │
  *  │  │                          │                              │
- *  │  │                          │ ┌──────────────────┐         │
- *  │  │                          └─► LoadingInterface │         │
- *  │  │                            └──────────────────┘         │
+ *  │  │ ┌────────────┐           │ ┌──────────────────┐         │
+ *  │  ├─► MenuAvatar │           └─► LoadingInterface │         │
+ *  │  │ └────────────┘             └──────────────────┘         │
  *  │  │                                                         │
  *  │  │ ┌────────────────────────┐                              │
  *  │  └─► MenuAnimatedBackground │                              │
@@ -51,17 +51,29 @@
  *     │     └─► AbstractAnimatedDynamicEntity<T> ├─┬─► Player ◄─┘
  *     │       └──────────────────────────────────┘ │ └────────┘
  *     │                                            │
- *     │ ┌────────────────────┐                     │ ┌───────┐
- *     └─► GenericTextArea<T> │                     └─► Slime │
- *       └┬───────────────────┘                       └───────┘
+ *     │ ┌─────────────────────┐                    │ ┌───────┐
+ *     └─► GenericComponent<T> │                    └─► Slime │
+ *       └┬────────────────────┘                      └───────┘
  *        │
- *        │ ┌─────────────────┐  ┌───────────┐
- *        ├─► GenericTitle<T> ├──► MenuTitle │
- *        │ └─────────────────┘  └───────────┘
- *        │
- *        │ ┌────────────────────┐  ┌────────────┐
- *        └─► GenericTextArea<T> ├──► MenuButton │
- *          └────────────────────┘  └────────────┘
+ *        │ ┌─────────────────────────┐
+ *        ├─► GenericTextComponent<T> ├───────┐
+ *        │ └┬────────────────────────┘       │
+ *        │  │                                │
+ *        │  │ ┌───────────┐                  │
+ *        │  └─► MenuTitle │                  │
+ *        │    └───────────┘                  │
+ *        │                                   │
+ *        │ ┌────────────────────────┐        │
+ *        └─► GenericBoxComponent<T> ├────────┤
+ *          └────────────────────────┘        │
+ *                                            │
+ *             ┌────────────────────────────┐ │
+ *             │ GenericTextBoxComponent<T> ◄─┘
+ *             └┬───────────────────────────┘
+ *              │
+ *              │ ┌───────────────────────────┐ ┌────────────┐
+ *              └─► GenericButtonComponent<T> ├─► MenuButton │
+ *                └───────────────────────────┘ └────────────┘
 */
 
 
@@ -77,9 +89,7 @@ class PolymorphicBase {
         PolymorphicBase& operator=(PolymorphicBase&&) = delete;
 
     protected:
-        template <typename... Args>
-        inline PolymorphicBase(Args&&... args) {}
-        
+        explicit PolymorphicBase() = default;
         virtual ~PolymorphicBase() = default;
 };
 
@@ -151,10 +161,13 @@ class Multiton : virtual public PolymorphicBase<T> {
             for (const auto& args : container) T::instantiate(args);
         }
 
+        /**
+         * @bug Somehow this yields weird segmentation faults. Might consider switching to smart pointers.
+         * @note Segmentation faults are, weirdly, unencountered as of this commit. Perhaps due to the transitioning to `dynamic_cast`?
+        */
         static void deinitialize() {
             // Somehow this yields weird segfaults. Consider switching to smart pointers?
-            // Also, why is this read-only?
-            // for (auto& instance : instances) if (instance != nullptr) delete instance;
+            for (auto& instance : instances) if (instance != nullptr) delete instance;
             instances.clear();
         }
 
@@ -170,8 +183,13 @@ class Multiton : virtual public PolymorphicBase<T> {
         static std::unordered_set<T*> instances;
 
     protected:
+        /**
+         * @see https://stackoverflow.com/questions/3747066/c-cannot-convert-from-base-a-to-derived-type-b-via-virtual-base-a
+         * @remark You can't use `static_cast` in this situation because the compiler doesn't know the offset of B relative to A at compile time. The offset must be calculated at run-time based on the exact type of the most derived object. Therefore you must use `dynamic_cast`.
+         * @note Compile-time `static_cast` yields "error: cannot convert from pointer to base class `Multiton<T>` to pointer to derived class `T` because the base is virtual". Therefore run-time `dynamic_cast` must be used instead.
+        */
         virtual ~Multiton() override {
-            instances.erase(static_cast<T*>(this));   // remove from `instances`
+            instances.erase(dynamic_cast<T*>(this));   // remove from `instances`
         }
 
     private:
