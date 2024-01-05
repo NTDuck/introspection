@@ -43,8 +43,6 @@ void MenuInterface::renderBackground() const {
 }
 
 void MenuInterface::renderComponents() const {
-    MenuAnimatedBackground::invoke(&MenuAnimatedBackground::updateAnimation);
-    
     MenuAnimatedBackground::invoke(&MenuAnimatedBackground::render);
     MenuAvatar::invoke(&MenuAvatar::render);
     MenuButton::invoke(&MenuButton::render);
@@ -56,6 +54,10 @@ void MenuInterface::onWindowChange() {
     MenuAvatar::invoke(&MenuAvatar::onWindowChange);
     MenuButton::invoke(&MenuButton::onWindowChange);
     MenuTitle::invoke(&MenuTitle::onWindowChange);
+}
+
+void MenuInterface::updateAnimation() {
+    MenuAnimatedBackground::invoke(&MenuAnimatedBackground::updateAnimation);
 }
 
 void MenuInterface::handleMouseEvent(SDL_Event const& event) {

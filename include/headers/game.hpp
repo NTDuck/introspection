@@ -32,11 +32,14 @@ class Game final : public Singleton<Game> {
 
         void handleDependencies();
         void handleEvents();
-        void render();
+        void render() const;
 
         void onLevelChange();
         void onWindowChange();
 
+        void handleInterfaces();
+
+        void handleEntities();
         void handleEntitiesMovement();
         void handleEntitiesInteraction();
         template <typename Active, typename Passive>

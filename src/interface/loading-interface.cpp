@@ -15,11 +15,16 @@ void LoadingInterface::deinitialize() {
 }
 
 void LoadingInterface::render() const {
+    renderBackground();
+    renderComponents();
+}
+
+void LoadingInterface::renderBackground() const {
     utils::setRendererDrawColor(globals::renderer, config::color::offblack);
     SDL_RenderFillRect(globals::renderer, nullptr);
+}
 
-    LoadingProgressBar::invoke(&LoadingProgressBar::updateAnimation);
-
+void LoadingInterface::renderComponents() const {
     LoadingMessage::invoke(&LoadingMessage::render);
     LoadingProgressBar::invoke(&LoadingProgressBar::render);
 }
@@ -27,6 +32,10 @@ void LoadingInterface::render() const {
 void LoadingInterface::onWindowChange() {
     LoadingMessage::invoke(&LoadingMessage::onWindowChange);
     LoadingProgressBar::invoke(&LoadingProgressBar::onWindowChange);
+}
+
+void LoadingInterface::updateAnimation() {
+    LoadingProgressBar::invoke(&LoadingProgressBar::updateAnimation);
 }
 
 void LoadingInterface::initiateTransition(GameState const& gameState) {

@@ -101,7 +101,7 @@ void Game::startGameLoop() {
  * @note The order should be as follows: `interface` i.e. environments -> interactables -> entities -> player
  * @note Any `render()` methods should be placed here.
 */
-void Game::render() {
+void Game::render() const {
     SDL_RenderClear(globals::renderer);
 
     switch (globals::state) {
@@ -162,22 +162,35 @@ void Game::onWindowChange() {
  * @brief Handle everything about entities.
 */
 void Game::handleDependencies() {
+    handleInterfaces();
+    handleEntities();
+}
+
+void Game::handleInterfaces() {
     switch (globals::state) {
-        case GameState::kIngamePlaying:
-            handleEntitiesMovement();
-            handleEntitiesInteraction();
+        case GameState::kMenu:
+            MenuInterface::invoke(&MenuInterface::updateAnimation);
             break;
 
         case (GameState::kLoading | GameState::kIngamePlaying):
             LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
+            onLevelChange();
+            onWindowChange();
             break;
 
         case GameState::kLoading:
+            LoadingInterface::invoke(&LoadingInterface::updateAnimation);
             LoadingInterface::invoke(&LoadingInterface::handleTransition);
             break;
 
         default: break;
     }
+}
+
+void Game::handleEntities() {
+    if (globals::state != GameState::kIngamePlaying) return;
+    handleEntitiesMovement();
+    handleEntitiesInteraction();
 }
 
 /**
@@ -206,7 +219,8 @@ template <>
 void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
     IngameInterface::invoke(&IngameInterface::changeLevel, teleporter.targetLevel);
     globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
-    onLevelChange(); onWindowChange();
+
+    globals::state = GameState::kLoading | GameState::kIngamePlaying;
 }
 
 template <>

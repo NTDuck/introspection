@@ -78,6 +78,7 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
 
         void render() const override;
         void onWindowChange() override;
+        void updateAnimation();
 
         void handleMouseEvent(SDL_Event const& event);
 
@@ -102,10 +103,14 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
         void render() const override;
         void onWindowChange() override;
 
+        void updateAnimation();
         void initiateTransition(GameState const& gameState);
         void handleTransition();
 
     private:
+        void renderBackground() const;
+        void renderComponents() const;
+
         static constexpr int kIdleFramesLimit = config::interface::idleFrames;
         int currIdleFrames = 0;
 
