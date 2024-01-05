@@ -16,11 +16,6 @@ GenericBoxComponent<T>::~GenericBoxComponent() {
 }
 
 template <typename T>
-void GenericBoxComponent<T>::deinitialize() {
-    Multiton<T>::deinitialize();
-}
-
-template <typename T>
 void GenericBoxComponent<T>::render() const {
     SDL_RenderCopy(globals::renderer, boxTexture, nullptr, &boxDestRect);
 }
@@ -29,6 +24,15 @@ template <typename T>
 void GenericBoxComponent<T>::onWindowChange() {
     GenericComponent<T>::onWindowChange();
     loadBoxTexture(boxTexture, kPreset);
+}
+
+template <typename T>
+void GenericBoxComponent<T>::shrinkRect(SDL_Rect& rect, const float ratio) {
+    int delta = utils::castFloatToInt(std::min(rect.w, rect.h) / 2 * ratio);
+    rect.x += delta;
+    rect.y += delta;
+    rect.w -= delta * 2;
+    rect.h -= delta * 2;
 }
 
 template <typename T>
@@ -47,16 +51,8 @@ void GenericBoxComponent<T>::loadBoxTexture(SDL_Texture*& texture, ComponentPres
     SDL_Rect arbitraryRect = boxDestRect;
     arbitraryRect.x = arbitraryRect.y = 0;
 
-    auto modifyRect = [](SDL_Rect& rect, float ratio) {
-        int delta = utils::castFloatToInt(std::min(rect.w, rect.h) / 2 * ratio);
-        rect.x += delta;
-        rect.y += delta;
-        rect.w -= delta * 2;
-        rect.h -= delta * 2;
-    };
-
     auto fillRect = [&](float multiplier, SDL_Color const& color) {
-        modifyRect(arbitraryRect, multiplier);
+        shrinkRect(arbitraryRect, multiplier);
         utils::setRendererDrawColor(globals::renderer, color);
         SDL_RenderFillRect(globals::renderer, &arbitraryRect);
     };
@@ -70,3 +66,4 @@ void GenericBoxComponent<T>::loadBoxTexture(SDL_Texture*& texture, ComponentPres
 
 
 template class GenericBoxComponent<MenuButton>;
+template class GenericBoxComponent<LoadingProgressBar>;

@@ -30,7 +30,7 @@ class Game final : public Singleton<Game> {
         void initialize();
         void startGameLoop();
 
-        void handleEntities();
+        void handleDependencies();
         void handleEvents();
         void render();
 

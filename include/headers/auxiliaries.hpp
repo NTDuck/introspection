@@ -29,14 +29,19 @@ using json = nlohmann::json;
  * Contain possible game states. Should be used closely with the main control flow.
 */
 enum class GameState {
-    kMenu,
-    kLoading,
-    kIngamePlaying,
+    kExit = 1,
+    kMenu = 2,
+    kLoading = 4,
+    kIngamePlaying = 8,
     // kIngamePaused,
     // kIngameDialogue,
     // kIngameCutscene,
-    kExit,
+    k12 = 12,   // Prevent warnings
 };
+
+constexpr GameState operator|(GameState const& first, GameState const& second) {
+    return static_cast<GameState>(static_cast<int>(first) | static_cast<int>(second));   // Must be defined here
+}
 
 /**
  * Contain registered interaction types.
@@ -406,6 +411,7 @@ namespace config {
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
         };
+        constexpr ComponentPreset loadingMesasge = title;
     }
 
     namespace game {
@@ -428,6 +434,7 @@ namespace config {
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
         constexpr level::LevelName levelName = level::LevelName::kLevelEquilibrium;
+        constexpr int idleFrames = 16;
     }
 
     namespace entity {
@@ -460,14 +467,16 @@ namespace config {
         constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
     }
 
-    namespace title {
+    namespace text {
         const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerMenuTitle = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
-        constexpr double destSizeModifier = 5.5;
+        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerLoadingMessage = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::title, "loading");
+        constexpr double destSizeModifierMenuTitle = 5.5;
+        constexpr double destSizeModifierLoadingMessage = 2.0;
     }
 
     namespace button {
         const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializerMenuButton = {
-            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kIngamePlaying)),
+            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
             std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
             std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
             std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
@@ -480,6 +489,11 @@ namespace config {
 
     namespace animated_background {
         constexpr double animationUpdateRate = 0.001;
+    }
+
+    namespace progress_bar {
+        const std::tuple<SDL_FPoint, ComponentPreset> intiializerLoadingProgressBar = std::make_tuple(SDL_FPoint{ 0.5f, 5.0f / 9.0f }, config::preset::lightButton);
+        constexpr double animationUpdateRate = 0.02;
     }
 }
 

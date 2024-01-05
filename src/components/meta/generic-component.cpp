@@ -30,3 +30,5 @@ int GenericComponent<T>::destSize;
 
 template class GenericComponent<MenuButton>;
 template class GenericComponent<MenuTitle>;
+template class GenericComponent<LoadingMessage>;
+template class GenericComponent<LoadingProgressBar>;

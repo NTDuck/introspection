@@ -30,6 +30,7 @@ Game::~Game() {
 
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
+    LoadingInterface::deinitialize();
 
     Player::deinitialize();
     Teleporter::deinitialize();
@@ -67,7 +68,6 @@ void Game::initialize() {
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
 
     IngameInterface::initialize();
-    MenuInterface::initialize();
 
     Player::initialize();
     Teleporter::initialize();
@@ -76,6 +76,7 @@ void Game::initialize() {
     Player::instantiate(SDL_Point{ 0, 0 });
     IngameInterface::instantiate(config::interface::levelName);
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameInterface`
+    LoadingInterface::instantiate();
 }
 
 /**
@@ -88,7 +89,7 @@ void Game::startGameLoop() {
     onWindowChange();
 
     while (globals::state != GameState::kExit) {
-        handleEntities();
+        handleDependencies();
         handleEvents();
         render();
     }
@@ -113,6 +114,10 @@ void Game::render() {
 
         case GameState::kMenu:
             MenuInterface::invoke(&MenuInterface::render);
+            break;
+
+        case GameState::kLoading:
+            LoadingInterface::invoke(&LoadingInterface::render);
             break;
 
         default: break;
@@ -144,6 +149,7 @@ void Game::onWindowChange() {
     // Dependencies that rely on certain dimension-related global variables
     IngameInterface::invoke(&IngameInterface::onWindowChange);
     MenuInterface::invoke(&MenuInterface::onWindowChange);
+    LoadingInterface::invoke(&LoadingInterface::onWindowChange);
 
     Player::invoke(&Player::onWindowChange);
     Teleporter::invoke(&Teleporter::onWindowChange);
@@ -155,10 +161,23 @@ void Game::onWindowChange() {
 /**
  * @brief Handle everything about entities.
 */
-void Game::handleEntities() {
-    if (globals::state != GameState::kIngamePlaying) return;
-    handleEntitiesMovement();
-    handleEntitiesInteraction();
+void Game::handleDependencies() {
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            handleEntitiesMovement();
+            handleEntitiesInteraction();
+            break;
+
+        case (GameState::kLoading | GameState::kIngamePlaying):
+            LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
+            break;
+
+        case GameState::kLoading:
+            LoadingInterface::invoke(&LoadingInterface::handleTransition);
+            break;
+
+        default: break;
+    }
 }
 
 /**

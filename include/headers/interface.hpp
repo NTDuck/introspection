@@ -74,7 +74,6 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
         MenuInterface();
         ~MenuInterface() = default;
 
-        static void initialize();
         static void deinitialize();
 
         void render() const override;
@@ -88,6 +87,9 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
 };
 
 
+/**
+ * @brief Represent the loading screen.
+*/
 class LoadingInterface final : public AbstractInterface<LoadingInterface> {
     public:
         INCL_ABSTRACT_INTERFACE(LoadingInterface)
@@ -95,18 +97,19 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
         LoadingInterface();
         ~LoadingInterface() = default;
 
-        static void initialize();
         static void deinitialize();
 
         void render() const override;
         void onWindowChange() override;
 
-        void transition(GameState const& gameState);
+        void initiateTransition(GameState const& gameState);
+        void handleTransition();
 
     private:
-        void transition();
+        static constexpr int kIdleFramesLimit = config::interface::idleFrames;
+        int currIdleFrames = 0;
 
-        GameState* nextGameState = nullptr;
+        GameState nextGameState;
 };
 
 

@@ -10,7 +10,6 @@
 #include <SDL.h>
 #include <SDL_ttf.h>
 
-#include <components.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -23,7 +22,7 @@
  * @see https://stackoverflow.com/questions/1193138/virtual-base-class-data-members/1193516#1193516
 */
 template <typename T>
-class GenericComponent : virtual public Multiton<T> {
+class GenericComponent : public Multiton<T> {
     public:
         INCL_MULTITON(T)
         
@@ -57,7 +56,7 @@ namespace std {
 
 
 /**
- * @brief Represent a generic box component with `OMORI`-styled line.
+ * @brief Represent a generic box component with `OMORI`-styled outline.
 */
 template <typename T>
 class GenericBoxComponent : virtual public GenericComponent<T> {
@@ -67,21 +66,20 @@ class GenericBoxComponent : virtual public GenericComponent<T> {
 
         virtual ~GenericBoxComponent();
 
-        static void deinitialize();
-
         virtual void render() const;
         void onWindowChange() override;
 
     protected:
         GenericBoxComponent(SDL_FPoint const& center, ComponentPreset const& preset);
 
+        static void shrinkRect(SDL_Rect& rect, const float ratio);
         void loadBoxTexture(SDL_Texture*& texture, ComponentPreset const& preset);
 
         SDL_Texture* boxTexture = nullptr;
         SDL_Rect boxDestRect;
 };
 
-#define INCL_GENERIC_BOX_COMPONENT(T) using GenericBoxComponent<T>::deinitialize, GenericBoxComponent<T>::render, GenericBoxComponent<T>::onWindowChange, GenericBoxComponent<T>::loadBoxTexture, GenericBoxComponent<T>::boxTexture, GenericBoxComponent<T>::boxDestRect;
+#define INCL_GENERIC_BOX_COMPONENT(T) using GenericBoxComponent<T>::render, GenericBoxComponent<T>::onWindowChange, GenericBoxComponent<T>::shrinkRect, GenericBoxComponent<T>::loadBoxTexture, GenericBoxComponent<T>::boxTexture, GenericBoxComponent<T>::boxDestRect;
 
 
 /**
@@ -158,7 +156,7 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
 
         virtual ~GenericButtonComponent() = default;
 
-        void render() const;   // `override` ?
+        void render() const override;
         void onWindowChange() override;
 
         void handleMouseEvent(SDL_Event const& event);
@@ -179,6 +177,45 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
 };
 
 #define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::onMouseOverTextTexture, GenericButtonComponent<T>::onMouseOverBoxTexture, GenericButtonComponent<T>::kDestState;
+
+
+template <typename T>
+class GenericProgressBarComponent : public GenericBoxComponent<T> {
+    public:
+        INCL_MULTITON(T)
+        INCL_GENERIC_COMPONENT(T)
+        INCL_GENERIC_BOX_COMPONENT(T)
+
+        virtual ~GenericProgressBarComponent() = default;
+
+        void render() const override;
+        void onWindowChange() override;
+        void updateAnimation();
+        void resetProgress();
+
+        bool isActivated = false;
+        bool isFinished = false;
+
+    protected:
+        GenericProgressBarComponent(SDL_FPoint const& center, ComponentPreset const& preset);
+
+    private:
+        static constexpr double kProgressUpdateRateLimit = 1;
+        static constexpr double kProgressUpdateRate = config::progress_bar::animationUpdateRate;
+        
+        double currProgress = 0;
+        /**
+         * The "partially constant" `SDL_Rect` to generate `progressDestRects`.
+        */
+        SDL_Rect shrinkedBoxDestRect;
+
+        /**
+         * These `SDL_Rect`, when combined, occupy the same space as `shrinkedBoxDestRect`.
+        */
+        std::pair<SDL_Rect, SDL_Rect> progressDestRects;
+};
+
+#define INCL_GENERIC_PROGRESS_BAR_COMPONENT(T) using GenericProgressBarComponent<T>::render, GenericProgressBarComponent<T>::onWindowChange, GenericProgressBarComponent<T>::updateAnimation, GenericProgressBarComponent<T>::resetProgress, GenericProgressBarComponent<T>::isActivated, GenericProgressBarComponent<T>::isFinished;
 
 
 /* Derived implementations */
@@ -235,7 +272,6 @@ class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
  * @brief Represent the button components on the menu.
 */
 class MenuButton final : public GenericButtonComponent<MenuButton> {
-    friend GenericButtonComponent<MenuButton>;
     public:
         INCL_GENERIC_BUTTON_COMPONENT(MenuButton)
 
@@ -245,15 +281,47 @@ class MenuButton final : public GenericButtonComponent<MenuButton> {
 
 
 /**
- * @brief Represent the big bug not-so-chunky title on the menu.
+ * @brief Represent the big but not-so-chunky title on the menu.
 */
-class MenuTitle final : public GenericTextComponent<MenuTitle> {
-    friend GenericTextComponent<MenuTitle>;
+class MenuTitle final : public Singleton<MenuTitle>, public GenericTextComponent<MenuTitle> {
     public:
         INCL_GENERIC_TEXT_COMPONENT(MenuTitle)
+        INCL_SINGLETON(MenuTitle)
 
         MenuTitle(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
         ~MenuTitle() = default;
+
+        static void deinitialize();
+};
+
+
+/**
+ * @brief Represent the message on the loading screen.
+*/
+class LoadingMessage final : public Singleton<LoadingMessage>, public GenericTextComponent<LoadingMessage> {
+    public:
+        INCL_GENERIC_TEXT_COMPONENT(LoadingMessage)
+        INCL_SINGLETON(LoadingMessage)
+
+        LoadingMessage(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
+        ~LoadingMessage() = default;
+
+        static void deinitialize();
+};
+
+
+/**
+ * @brief Represent the progress bar on the loading screen.
+*/
+class LoadingProgressBar final : public Singleton<LoadingProgressBar>, public GenericProgressBarComponent<LoadingProgressBar> {
+    public:
+        INCL_GENERIC_PROGRESS_BAR_COMPONENT(LoadingProgressBar)
+        INCL_SINGLETON(LoadingProgressBar)
+
+        LoadingProgressBar(SDL_FPoint const& center, ComponentPreset const& preset);
+        ~LoadingProgressBar() = default;
+
+        static void deinitialize();
 };
 
 
