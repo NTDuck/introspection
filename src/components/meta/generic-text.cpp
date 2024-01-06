@@ -37,7 +37,7 @@ void GenericTextComponent<T>::onWindowChange() {
             TTF_CloseFont(font);
         }
 
-        font = TTF_OpenFont(fontPath.c_str(), destSize);
+        font = TTF_OpenFont(fontPath.generic_string().c_str(), destSize);   // Prevent `error: cannot convert 'const std::filesystem::__cxx11::path::value_type*' {aka 'const wchar_t*'} to 'const char*'`
     };
 
     GenericComponent<T>::onWindowChange();
