@@ -81,6 +81,7 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 **Third-party tools:**
 - [Tiled](https://www.mapeditor.org/) 1.10.2 for level generation
+- [KRMisha's Makefile](https://github.com/KRMisha/Makefile) for cross-platform compilation
 
 **Compiler:** [MinGW GCC](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0) 13.2.0
 
@@ -108,4 +109,3 @@ This project is licensed under the [BSD-3-Clause license](LICENSE).
 ## Support
 
 For support, please email nguyentuduck@gmail.com.
-
