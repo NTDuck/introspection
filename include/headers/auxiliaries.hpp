@@ -419,6 +419,7 @@ namespace config {
     }
 
     namespace game {
+        constexpr int frameRate = 60;
         const std::tuple<GameInitFlag, SDL_Rect, int, std::string> initializer = {
             {
                 SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
@@ -430,7 +431,7 @@ namespace config {
                 }
             },
             { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720 },
-            120,
+            frameRate,
             "8964",
         };
     }

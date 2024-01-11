@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 
+#include <timers.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
 #include <meta.hpp>
@@ -70,9 +71,6 @@ class Game final : public Singleton<Game> {
         SDL_Rect windowDimension;
         const int frameRate;
         const std::string title;
-
-        float averageFPS;
-        unsigned int accumulativeFPS;
 };
 
 

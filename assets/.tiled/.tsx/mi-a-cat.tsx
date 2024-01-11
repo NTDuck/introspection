@@ -7,7 +7,7 @@
     <property name="stopGID" type="int" value="33"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="128"/>
+  <property name="animation-update-rate" type="int" value="48"/>
   <property name="animation-width" type="int" value="3"/>
  </properties>
  <image source="../../graphics/sprites/entities/mi-a-cat.png" width="1152" height="32"/>

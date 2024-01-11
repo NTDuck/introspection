@@ -1,4 +1,4 @@
-#include <timer.hpp>
+#include <timers.hpp>
 
 #include <SDL_timer.h>
 
@@ -6,7 +6,8 @@
 /**
  * @note This method can also be used to restart the timer.
 */
-void Timer::start() {
+template <typename T>
+void GenericTimer<T>::start() {
     isStarted_ = true;
     isPaused_ = false;
 
@@ -14,7 +15,8 @@ void Timer::start() {
     pausedTicks = 0;
 }
 
-void Timer::stop() {
+template <typename T>
+void GenericTimer<T>::stop() {
     isStarted_ = false;
     isPaused_ = true;
 
@@ -22,7 +24,8 @@ void Timer::stop() {
     pausedTicks = 0;
 }
 
-void Timer::pause() {
+template <typename T>
+void GenericTimer<T>::pause() {
     if (!isStarted_ || isPaused_) return;
 
     isPaused_ = true;
@@ -30,7 +33,8 @@ void Timer::pause() {
     startTicks = 0;
 }
 
-void Timer::unpause() {
+template <typename T>
+void GenericTimer<T>::unpause() {
     if (!isStarted_ || !isPaused_) return;
 
     isPaused_ = false;
@@ -38,14 +42,21 @@ void Timer::unpause() {
     pausedTicks = 0;
 }
 
-uint32_t Timer::getTicks() {
+template <typename T>
+uint32_t GenericTimer<T>::getTicks() {
     return isStarted_ ? (isPaused_ ? pausedTicks : SDL_GetTicks() - startTicks) : 0;
 }
 
-bool Timer::isStarted() {
+template <typename T>
+bool GenericTimer<T>::isStarted() {
     return isStarted_;
 }
 
-bool Timer::isPaused() {
+template <typename T>
+bool GenericTimer<T>::isPaused() {
     return isPaused_ && isStarted_;
 }
+
+
+template class GenericTimer<FPSDisplayTimer>;
+template class GenericTimer<FPSControlTimer>;

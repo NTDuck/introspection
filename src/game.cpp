@@ -9,7 +9,7 @@
 #include <SDL_ttf.h>
 
 #include <interaction.hpp>
-#include <timer.hpp>
+#include <timers.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
 #include <auxiliaries.hpp>
@@ -29,7 +29,9 @@ Game::~Game() {
     }
 
     globals::deinitialize();
-    Timer::deinitialize();
+    FPSDisplayTimer::deinitialize();
+    FPSControlTimer::deinitialize();
+    FrameRateOverlay::deinitialize();
 
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
@@ -78,7 +80,8 @@ void Game::initialize() {
     Teleporter::initialize();
     Slime::initialize();
 
-    Timer::instantiate();
+    FPSDisplayTimer::instantiate();
+    FPSControlTimer::instantiate();
     FrameRateOverlay::instantiate(config::button::initializerFrameRateOverlay);
 
     Player::instantiate(SDL_Point{ 0, 0 });
@@ -96,19 +99,22 @@ void Game::startGameLoop() {
     onLevelChange();
     onWindowChange();
 
-    accumulativeFPS = 0;
-    Timer::invoke(&Timer::start);
+    FPSDisplayTimer::invoke(&FPSDisplayTimer::start);
 
     while (globals::state != GameState::kExit) {
-        // Handle frame rate
-        averageFPS = accumulativeFPS / (Timer::instance->getTicks() / 1000.0f);
-        if (accumulativeFPS % FrameRateOverlay::animationUpdateRate == 0) FrameRateOverlay::invoke(&FrameRateOverlay::editContent, std::to_string(averageFPS));
-        if (accumulativeFPS >= std::numeric_limits<unsigned long long int>::max()) accumulativeFPS = 0;
-        ++accumulativeFPS;
+        // Control frame rate
+        FPSControlTimer::invoke(&FPSControlTimer::start);
+
+        // Calculate frame rate
+        FPSDisplayTimer::invoke(&FPSDisplayTimer::calculateFPS);
+        if (FPSDisplayTimer::instance->accumulatedFrames % FrameRateOverlay::animationUpdateRate == 0) FrameRateOverlay::invoke(&FrameRateOverlay::editContent, std::to_string(FPSDisplayTimer::instance->averageFPS));
 
         handleDependencies();
         handleEvents();
         render();
+
+        // Control frame rate
+        FPSControlTimer::invoke(&FPSControlTimer::controlFPS);
     }
 }
 

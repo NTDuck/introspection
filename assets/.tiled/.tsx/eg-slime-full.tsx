@@ -35,7 +35,7 @@
     <property name="stopGID" type="int" value="15"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="32"/>
+  <property name="animation-update-rate" type="int" value="12"/>
   <property name="animation-walk" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="4"/>
