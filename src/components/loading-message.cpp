@@ -18,10 +18,10 @@ void LoadingMessage::deinitialize() {
 
 
 template <>
-const double GenericComponent<LoadingMessage>::kDestSizeModifier = config::text::destSizeModifierLoadingMessage;
+const double GenericComponent<LoadingMessage>::kDestSizeModifier = config::components::loading_message::destSizeModifier;
 
 template <>
-const SDL_Point GenericComponent<LoadingMessage>::kDestRectRatio = config::button::defaultDestRectRatio;
+const SDL_Point GenericComponent<LoadingMessage>::kDestRectRatio = config::components::loading_message::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<LoadingMessage>::fontPath = config::path::fontOmoriHarmonic;
+const std::filesystem::path GenericTextComponent<LoadingMessage>::fontPath = config::components::loading_message::fontPath;

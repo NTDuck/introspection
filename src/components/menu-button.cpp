@@ -10,10 +10,10 @@ MenuButton::MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseO
 
 
 template <>
-const double GenericComponent<MenuButton>::kDestSizeModifier = 1;
+const double GenericComponent<MenuButton>::kDestSizeModifier = config::components::menu_button::destSizeModifier;
 
 template <>
-const SDL_Point GenericComponent<MenuButton>::kDestRectRatio = config::button::menuButtonDestRectRatio;
+const SDL_Point GenericComponent<MenuButton>::kDestRectRatio = config::components::menu_button::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<MenuButton>::fontPath = config::path::fontOmoriHarmonic;
+const std::filesystem::path GenericTextComponent<MenuButton>::fontPath = config::components::menu_button::fontPath;

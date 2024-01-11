@@ -254,7 +254,7 @@ void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
 
 
 template <typename T>
-const double AbstractAnimatedDynamicEntity<T>::runModifier = config::entity::runVelocityModifier;
+const double AbstractAnimatedDynamicEntity<T>::runModifier = config::entities::runVelocityModifier;
 
 
 template class AbstractAnimatedDynamicEntity<Player>;

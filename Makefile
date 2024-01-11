@@ -22,7 +22,7 @@ CPPFLAGS = $(INCLUDES) -MMD -MP
 
 # C++ compiler settings
 CXX = g++
-CXXFLAGS = -std=c++17
+CXXFLAGS = -std=c++17 -fprofile-generate -flto
 WARNINGS = -Wall
 
 # Linker flags
@@ -32,6 +32,7 @@ LDFLAGS =
 LDLIBS = -l"SDL2" -l"SDL2_image" -l"SDL2_ttf" -l"z"
 
 # Debug (default) and release modes settings
+# https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
 ifeq ($(release),1)
 	# BUILD_DIR := $(BUILD_DIR)/release
 	# BIN_DIR := $(BIN_DIR)/release
@@ -40,7 +41,7 @@ ifeq ($(release),1)
 else
 	# BUILD_DIR := $(BUILD_DIR)/debug
 	# BIN_DIR := $(BIN_DIR)/debug
-	CXXFLAGS += -O0 -g
+	CXXFLAGS += -Ofast -march=native -mfpmath=sse -freorder-blocks -fpredictive-commoning -fno-threadsafe-statics -ffloat-store -ffast-math -fno-rounding-math -fno-signaling-nans -fcx-limited-range -fno-math-errno -funsafe-math-optimizations -fassociative-math -freciprocal-math -ffinite-math-only -fno-signed-zeros -fno-trapping-math -frounding-math -fsingle-precision-constant -fcx-fortran-rules
 endif
 
 # Target OS detection

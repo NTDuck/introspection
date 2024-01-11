@@ -5,8 +5,8 @@
 
 
 LoadingInterface::LoadingInterface() {
-    LoadingMessage::instantiate(config::text::initializerLoadingMessage);
-    LoadingProgressBar::instantiate(config::progress_bar::intiializerLoadingProgressBar);
+    LoadingMessage::instantiate(config::components::loading_message::initializer);
+    LoadingProgressBar::instantiate(config::components::loading_progress_bar::intializer);
 }
 
 void LoadingInterface::initialize() {}

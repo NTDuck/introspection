@@ -209,8 +209,8 @@ class GenericProgressBarComponent : public GenericBoxComponent<T> {
         GenericProgressBarComponent(SDL_FPoint const& center, ComponentPreset const& preset);
 
     private:
-        static constexpr double kProgressUpdateRateLimit = 1;
-        static constexpr double kProgressUpdateRate = config::progress_bar::animationUpdateRate;
+        static const double kProgressUpdateRateLimit;
+        static const double kProgressUpdateRate;
         
         double currProgress = 0;
         /**
@@ -232,17 +232,17 @@ class GenericProgressBarComponent : public GenericBoxComponent<T> {
 /**
  * @brief Represent the FPS displayed at all times.
 */
-class FrameRateOverlay final : public Singleton<FrameRateOverlay>, public GenericTextBoxComponent<FrameRateOverlay> {
+class FPSOverlay final : public Singleton<FPSOverlay>, public GenericTextBoxComponent<FPSOverlay> {
     public:
-        INCL_GENERIC_TEXTBOX_COMPONENT(FrameRateOverlay)
-        INCL_SINGLETON(FrameRateOverlay)
+        INCL_GENERIC_TEXTBOX_COMPONENT(FPSOverlay)
+        INCL_SINGLETON(FPSOverlay)
 
-        FrameRateOverlay(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
-        ~FrameRateOverlay() = default;
+        FPSOverlay(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
+        ~FPSOverlay() = default;
 
         static void deinitialize();
 
-        static constexpr int animationUpdateRate = config::text::frameRateOverlayUpdateRate;
+        static constexpr int animationUpdateRate = config::components::fps_overlay::updateRate;
 };
 
 
@@ -290,7 +290,7 @@ class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
         std::pair<SDL_Rect, SDL_Rect> srcRects, destRects;
 
         double currAnimationUpdateCount;
-        const double kAnimationUpdateRate = config::animated_background::animationUpdateRate;
+        const double kAnimationUpdateRate = config::components::menu_animated_background::animationUpdateRate;
 };
 
 

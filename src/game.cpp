@@ -31,7 +31,7 @@ Game::~Game() {
     globals::deinitialize();
     FPSDisplayTimer::deinitialize();
     FPSControlTimer::deinitialize();
-    FrameRateOverlay::deinitialize();
+    FPSOverlay::deinitialize();
 
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
@@ -82,7 +82,7 @@ void Game::initialize() {
 
     FPSDisplayTimer::instantiate();
     FPSControlTimer::instantiate();
-    FrameRateOverlay::instantiate(config::button::initializerFrameRateOverlay);
+    FPSOverlay::instantiate(config::components::fps_overlay::initializer);
 
     Player::instantiate(SDL_Point{ 0, 0 });
     IngameInterface::instantiate(config::interface::levelName);
@@ -107,8 +107,9 @@ void Game::startGameLoop() {
 
         // Calculate frame rate
         FPSDisplayTimer::invoke(&FPSDisplayTimer::calculateFPS);
-        if (FPSDisplayTimer::instance->accumulatedFrames % FrameRateOverlay::animationUpdateRate == 0) FrameRateOverlay::invoke(&FrameRateOverlay::editContent, std::to_string(FPSDisplayTimer::instance->averageFPS));
+        if (FPSDisplayTimer::instance->accumulatedFrames % FPSOverlay::animationUpdateRate == 0) FPSOverlay::invoke(&FPSOverlay::editContent, std::to_string(FPSDisplayTimer::instance->averageFPS));
 
+        // Main flow
         handleDependencies();
         handleEvents();
         render();
@@ -146,7 +147,7 @@ void Game::render() const {
         default: break;
     }
 
-    FrameRateOverlay::invoke(&FrameRateOverlay::render);
+    FPSOverlay::invoke(&FPSOverlay::render);
 
     SDL_RenderPresent(globals::renderer);
 }
@@ -171,7 +172,7 @@ void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
-    FrameRateOverlay::invoke(&FrameRateOverlay::onWindowChange);
+    FPSOverlay::invoke(&FPSOverlay::onWindowChange);
 
     // Dependencies that rely on certain dimension-related global variables
     IngameInterface::invoke(&IngameInterface::onWindowChange);

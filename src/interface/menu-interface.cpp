@@ -17,9 +17,9 @@
 */
 MenuInterface::MenuInterface() {
     MenuAnimatedBackground::instantiate(IngameInterface::instance->texture);
-    MenuAvatar::instantiate(*Teleporter::tilesetData, config::avatar::destRectModifier);
-    MenuButton::instantiate(config::button::initializerMenuButton);
-    MenuTitle::instantiate(config::text::initializerMenuTitle);
+    MenuAvatar::instantiate(*Teleporter::tilesetData, config::components::menu_avatar::destRectModifier);
+    MenuButton::instantiate(config::components::menu_button::initializer);
+    MenuTitle::instantiate(config::components::menu_title::initializer);
 }
 
 void MenuInterface::initialize() {

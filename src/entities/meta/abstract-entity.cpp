@@ -14,7 +14,7 @@
 
 
 template <typename T>
-AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : destCoords(destCoords), destRectModifier(config::entity::destRectModifier) {
+AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : destCoords(destCoords), destRectModifier(config::entities::destRectModifier) {
     srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
     srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
 }

@@ -18,10 +18,10 @@ void MenuTitle::deinitialize() {
 
 
 template <>
-const double GenericComponent<MenuTitle>::kDestSizeModifier = config::text::destSizeModifierMenuTitle;
+const double GenericComponent<MenuTitle>::kDestSizeModifier = config::components::menu_title::destSizeModifier;
 
 template <>
-const SDL_Point GenericComponent<MenuTitle>::kDestRectRatio = config::button::defaultDestRectRatio;
+const SDL_Point GenericComponent<MenuTitle>::kDestRectRatio = config::components::menu_title::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<MenuTitle>::fontPath = config::path::fontOmoriHarmonic;
+const std::filesystem::path GenericTextComponent<MenuTitle>::fontPath = config::components::menu_title::fontPath;

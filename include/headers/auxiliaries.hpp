@@ -442,73 +442,88 @@ namespace config {
         constexpr int idleFrames = 16;
     }
 
-    namespace entity {
+    namespace entities {
         constexpr double runVelocityModifier = 2;
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+        
+        namespace player {
+            const std::filesystem::path path = "assets/.tiled/.tsx/hp-player.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -0.75f, 2, 2 };
+            constexpr SDL_FPoint velocity = { 32, 32 };
+            constexpr int moveDelay = 0;
+            constexpr SDL_Point attackRegisterRange = { 99, 99 };
+            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+        }
+
+        namespace teleporter {
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+        }
+
+        namespace slime {
+            const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
+            constexpr SDL_FPoint velocity = { 128, 128 };
+            constexpr int moveDelay = 32;
+            constexpr SDL_Point moveInitiateRange = { 16, 16 };
+            constexpr SDL_Point attackInitiateRange = { 7, 7 };
+            constexpr SDL_Point attackRegisterRange = { 5, 5 };
+            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+        }
     }
 
-    namespace player {
-        const std::filesystem::path path = "assets/.tiled/.tsx/hp-player.tsx";
-        constexpr SDL_FRect destRectModifier = { 0, -0.75f, 2, 2 };
-        constexpr SDL_FPoint velocity = { 32, 32 };
-        constexpr int moveDelay = 0;
-        constexpr SDL_Point attackRegisterRange = { 99, 99 };
-        constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-    }
+    namespace components {
+        constexpr SDL_Point destRectRatio = { 10, 2 };
 
-    namespace teleporter {
-        const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
-        constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
-    }
+        namespace fps_overlay {
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
+            constexpr double destSizeModifier = 0.5;
+            constexpr SDL_Point destRectRatio = { 6, 2 };
+            const std::filesystem::path fontPath = config::path::fontOmoriHarmonic;
+            constexpr int updateRate = 30;
+        }
 
-    namespace slime {
-        const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
-        constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
-        constexpr SDL_FPoint velocity = { 128, 128 };
-        constexpr int moveDelay = 32;
-        constexpr SDL_Point moveInitiateRange = { 16, 16 };
-        constexpr SDL_Point attackInitiateRange = { 7, 7 };
-        constexpr SDL_Point attackRegisterRange = { 5, 5 };
-        constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-    }
+        namespace menu_avatar {
+            constexpr double destRectModifier = 0.125;
+        }
 
-    namespace text {
-        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerMenuTitle = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
-        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerLoadingMessage = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::loadingMessage, "loading");
+        namespace menu_animated_background {
+            constexpr double animationUpdateRate = 0.001;
+        }
 
-        constexpr double destSizeModifierFrameRateOverlay = 0.5;
-        constexpr double destSizeModifierMenuTitle = 5.5;
-        constexpr double destSizeModifierLoadingMessage = 2.0;
+        namespace menu_button {
+            const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializer = {
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
+            };
+            constexpr double destSizeModifier = 1;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::fontOmoriHarmonic;
+        }
 
-        constexpr int frameRateOverlayUpdateRate = 30;
-    }
+        namespace menu_title {
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
+            constexpr double destSizeModifier = 5.5;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::fontOmoriHarmonic;
+        }
+        
+        namespace loading_message {
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::loadingMessage, "loading");
+            constexpr double destSizeModifier = 2;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::fontOmoriHarmonic;
+        }
 
-    namespace button {
-        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerFrameRateOverlay = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
-
-        const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializerMenuButton = {
-            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
-            std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
-            std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
-            std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
-        };
-
-        constexpr SDL_Point defaultDestRectRatio = { 10, 2 };
-        constexpr SDL_Point frameRateOverlayDestRectRatio = { 6, 2 };
-        constexpr SDL_Point menuButtonDestRectRatio = defaultDestRectRatio;
-    }
-
-    namespace avatar {
-        constexpr double destRectModifier = 0.125;
-    }
-
-    namespace animated_background {
-        constexpr double animationUpdateRate = 0.001;
-    }
-
-    namespace progress_bar {
-        const std::tuple<SDL_FPoint, ComponentPreset> intiializerLoadingProgressBar = std::make_tuple(SDL_FPoint{ 0.5f, 5.0f / 9.0f }, config::preset::lightButton);
-        constexpr double animationUpdateRate = 0.02;
+        namespace loading_progress_bar {
+            const std::tuple<SDL_FPoint, ComponentPreset> intializer = std::make_tuple(SDL_FPoint{ 0.5f, 5.0f / 9.0f }, config::preset::lightButton);
+            constexpr double destSizeModifier = 1;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            constexpr double progressUpdateRateLimit = 1;
+            constexpr double progressUpdateRate = 0.02;
+        }
     }
 }
 

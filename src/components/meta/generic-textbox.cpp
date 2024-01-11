@@ -26,5 +26,5 @@ void GenericTextBoxComponent<T>::onWindowChange() {
 }
 
 
-template class GenericTextBoxComponent<FrameRateOverlay>;
+template class GenericTextBoxComponent<FPSOverlay>;
 template class GenericTextBoxComponent<MenuButton>;

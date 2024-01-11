@@ -75,7 +75,7 @@ template <typename T>
 TTF_Font* GenericTextComponent<T>::font = nullptr;
 
 
-template class GenericTextComponent<FrameRateOverlay>;
+template class GenericTextComponent<FPSOverlay>;
 template class GenericTextComponent<MenuButton>;
 template class GenericTextComponent<MenuTitle>;
 template class GenericTextComponent<LoadingMessage>;
