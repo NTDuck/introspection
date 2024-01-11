@@ -74,6 +74,7 @@ class MenuInterface final : public AbstractInterface<MenuInterface> {
         MenuInterface();
         ~MenuInterface() = default;
 
+        static void initialize();
         static void deinitialize();
 
         void render() const override;
@@ -98,6 +99,7 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
         LoadingInterface();
         ~LoadingInterface() = default;
 
+        static void initialize();
         static void deinitialize();
 
         void render() const override;

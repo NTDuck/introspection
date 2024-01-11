@@ -9,6 +9,8 @@ LoadingInterface::LoadingInterface() {
     LoadingProgressBar::instantiate(config::progress_bar::intiializerLoadingProgressBar);
 }
 
+void LoadingInterface::initialize() {}
+
 void LoadingInterface::deinitialize() {
     LoadingMessage::deinitialize();
     LoadingProgressBar::deinitialize();

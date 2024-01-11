@@ -22,6 +22,10 @@ MenuInterface::MenuInterface() {
     MenuTitle::instantiate(config::text::initializerMenuTitle);
 }
 
+void MenuInterface::initialize() {
+    MenuButton::initialize();
+}
+
 void MenuInterface::deinitialize() {
     MenuAnimatedBackground::deinitialize();
     MenuAvatar::deinitialize();
@@ -62,4 +66,5 @@ void MenuInterface::updateAnimation() {
 
 void MenuInterface::handleMouseEvent(SDL_Event const& event) {
     MenuButton::invoke(&MenuButton::handleMouseEvent, event);
+    MenuButton::handleCursor();
 }

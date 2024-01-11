@@ -156,10 +156,14 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
 
         virtual ~GenericButtonComponent() = default;
 
+        static void initialize();
+        static void deinitialize();
+
         void render() const override;
         void onWindowChange() override;
 
         void handleMouseEvent(SDL_Event const& event);
+        static void handleCursor();
 
     protected:
         GenericButtonComponent(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState);
@@ -173,10 +177,15 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
         const GameState* kDestState = nullptr;
 
     private:
+        static SDL_Cursor* onMouseOutCursor;
+        static SDL_Cursor* onMouseOverCursor;
+
+        static bool prevAllMouseOut;
+        static bool currAllMouseOut;
         bool isMouseOut = true;
 };
 
-#define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::onMouseOverTextTexture, GenericButtonComponent<T>::onMouseOverBoxTexture, GenericButtonComponent<T>::kDestState;
+#define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::initialize, GenericButtonComponent<T>::deinitialize, GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::handleCursor, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::onMouseOverTextTexture, GenericButtonComponent<T>::onMouseOverBoxTexture, GenericButtonComponent<T>::kDestState;
 
 
 template <typename T>

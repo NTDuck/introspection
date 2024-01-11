@@ -68,6 +68,8 @@ void Game::initialize() {
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
 
     IngameInterface::initialize();
+    MenuInterface::initialize();
+    LoadingInterface::initialize();
 
     Player::initialize();
     Teleporter::initialize();
