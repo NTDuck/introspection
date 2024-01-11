@@ -398,6 +398,7 @@ namespace config {
         constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color black = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color gold = SDL_Color{ 0xff, 0xd7, 0x00, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color transparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
     }
 
@@ -408,10 +409,13 @@ namespace config {
         constexpr ComponentPreset darkButton = {
             config::color::black, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
         };
+        constexpr ComponentPreset frameRateOverlay = {
+            config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
         };
-        constexpr ComponentPreset loadingMesasge = title;
+        constexpr ComponentPreset loadingMessage = title;
     }
 
     namespace game {
@@ -469,18 +473,28 @@ namespace config {
 
     namespace text {
         const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerMenuTitle = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
-        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerLoadingMessage = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::title, "loading");
+        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerLoadingMessage = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::loadingMessage, "loading");
+
+        constexpr double destSizeModifierFrameRateOverlay = 0.5;
         constexpr double destSizeModifierMenuTitle = 5.5;
         constexpr double destSizeModifierLoadingMessage = 2.0;
+
+        constexpr int frameRateOverlayUpdateRate = 30;
     }
 
     namespace button {
+        const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializerFrameRateOverlay = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
+
         const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializerMenuButton = {
             std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
             std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
             std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
             std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
         };
+
+        constexpr SDL_Point defaultDestRectRatio = { 10, 2 };
+        constexpr SDL_Point frameRateOverlayDestRectRatio = { 6, 2 };
+        constexpr SDL_Point menuButtonDestRectRatio = defaultDestRectRatio;
     }
 
     namespace avatar {

@@ -15,8 +15,8 @@ void GenericTextBoxComponent<T>::deinitialize() {
 
 template <typename T>
 void GenericTextBoxComponent<T>::render() const {
-    GenericTextComponent<T>::render();
     GenericBoxComponent<T>::render();
+    GenericTextComponent<T>::render();
 }
 
 template <typename T>
@@ -26,4 +26,5 @@ void GenericTextBoxComponent<T>::onWindowChange() {
 }
 
 
+template class GenericTextBoxComponent<FrameRateOverlay>;
 template class GenericTextBoxComponent<MenuButton>;

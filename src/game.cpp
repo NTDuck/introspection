@@ -2,12 +2,14 @@
 
 #include <algorithm>
 #include <string>
+#include <limits>
 
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
 #include <interaction.hpp>
+#include <timer.hpp>
 #include <interface.hpp>
 #include <entities.hpp>
 #include <auxiliaries.hpp>
@@ -27,6 +29,7 @@ Game::~Game() {
     }
 
     globals::deinitialize();
+    Timer::deinitialize();
 
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
@@ -75,6 +78,9 @@ void Game::initialize() {
     Teleporter::initialize();
     Slime::initialize();
 
+    Timer::instantiate();
+    FrameRateOverlay::instantiate(config::button::initializerFrameRateOverlay);
+
     Player::instantiate(SDL_Point{ 0, 0 });
     IngameInterface::instantiate(config::interface::levelName);
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameInterface`
@@ -90,7 +96,16 @@ void Game::startGameLoop() {
     onLevelChange();
     onWindowChange();
 
+    accumulativeFPS = 0;
+    Timer::invoke(&Timer::start);
+
     while (globals::state != GameState::kExit) {
+        // Handle frame rate
+        averageFPS = accumulativeFPS / (Timer::instance->getTicks() / 1000.0f);
+        if (accumulativeFPS % FrameRateOverlay::animationUpdateRate == 0) FrameRateOverlay::invoke(&FrameRateOverlay::editContent, std::to_string(averageFPS));
+        if (accumulativeFPS >= std::numeric_limits<unsigned long long int>::max()) accumulativeFPS = 0;
+        ++accumulativeFPS;
+
         handleDependencies();
         handleEvents();
         render();
@@ -125,6 +140,8 @@ void Game::render() const {
         default: break;
     }
 
+    FrameRateOverlay::invoke(&FrameRateOverlay::render);
+
     SDL_RenderPresent(globals::renderer);
 }
 
@@ -147,6 +164,8 @@ void Game::onLevelChange() {
 void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
+
+    FrameRateOverlay::invoke(&FrameRateOverlay::onWindowChange);
 
     // Dependencies that rely on certain dimension-related global variables
     IngameInterface::invoke(&IngameInterface::onWindowChange);

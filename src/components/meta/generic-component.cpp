@@ -28,6 +28,7 @@ template <typename T>
 int GenericComponent<T>::destSize;
 
 
+template class GenericComponent<FrameRateOverlay>;
 template class GenericComponent<MenuButton>;
 template class GenericComponent<MenuTitle>;
 template class GenericComponent<LoadingMessage>;

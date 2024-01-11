@@ -13,4 +13,7 @@ template <>
 const double GenericComponent<MenuButton>::kDestSizeModifier = 1;
 
 template <>
+const SDL_Point GenericComponent<MenuButton>::kDestRectRatio = config::button::menuButtonDestRectRatio;
+
+template <>
 const std::filesystem::path GenericTextComponent<MenuButton>::fontPath = config::path::fontOmoriHarmonic;

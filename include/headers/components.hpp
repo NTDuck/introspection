@@ -34,7 +34,7 @@ class GenericComponent : public Multiton<T> {
 
         static int destSize;
         static const double kDestSizeModifier;
-        static constexpr SDL_Point kDestRectRatio = { 10, 2 };
+        static const SDL_Point kDestRectRatio;
 
         const SDL_FPoint kCenter;
         const ComponentPreset kPreset;
@@ -228,6 +228,23 @@ class GenericProgressBarComponent : public GenericBoxComponent<T> {
 
 
 /* Derived implementations */
+
+/**
+ * @brief Represent the FPS displayed at all times.
+*/
+class FrameRateOverlay final : public Singleton<FrameRateOverlay>, public GenericTextBoxComponent<FrameRateOverlay> {
+    public:
+        INCL_GENERIC_TEXTBOX_COMPONENT(FrameRateOverlay)
+        INCL_SINGLETON(FrameRateOverlay)
+
+        FrameRateOverlay(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
+        ~FrameRateOverlay() = default;
+
+        static void deinitialize();
+
+        static constexpr int animationUpdateRate = config::text::frameRateOverlayUpdateRate;
+};
+
 
 /**
  * @brief Represent the avatar visible on the menu.

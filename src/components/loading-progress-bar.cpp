@@ -13,3 +13,6 @@ void LoadingProgressBar::deinitialize() {
 
 template <>
 const double GenericComponent<LoadingProgressBar>::kDestSizeModifier = 1;
+
+template <>
+const SDL_Point GenericComponent<LoadingProgressBar>::kDestRectRatio = config::button::defaultDestRectRatio;

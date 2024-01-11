@@ -70,6 +70,9 @@ class Game final : public Singleton<Game> {
         SDL_Rect windowDimension;
         const int frameRate;
         const std::string title;
+
+        float averageFPS;
+        unsigned int accumulativeFPS;
 };
 
 

@@ -136,7 +136,6 @@ class Singleton : virtual public PolymorphicBase<T> {
             std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
 
-    protected:
         static T* instance;
 
     private:

@@ -21,4 +21,7 @@ template <>
 const double GenericComponent<LoadingMessage>::kDestSizeModifier = config::text::destSizeModifierLoadingMessage;
 
 template <>
+const SDL_Point GenericComponent<LoadingMessage>::kDestRectRatio = config::button::defaultDestRectRatio;
+
+template <>
 const std::filesystem::path GenericTextComponent<LoadingMessage>::fontPath = config::path::fontOmoriHarmonic;
