@@ -1,6 +1,10 @@
 #include <components.hpp>
 
+// #define _USE_MATH_DEFINES
+#include <cmath>
+
 #include <SDL.h>
+
 #include <auxiliaries.hpp>
 
 
@@ -32,13 +36,22 @@ void GenericProgressBarComponent<T>::onWindowChange() {
 template <typename T>
 void GenericProgressBarComponent<T>::updateAnimation() {
     if (!isActivated || isFinished) return;
-    currProgress += kProgressUpdateRate;
 
-    if (currProgress > kProgressUpdateRateLimit) {
-        currProgress = kProgressUpdateRateLimit;
+    // Increase `decoyProgress` linearly
+    decoyProgress += kProgressUpdateRate;
+    if (decoyProgress > kProgressUpdateRateLimit) {
+        decoyProgress = kProgressUpdateRateLimit;
         isFinished = true;
         isActivated = false;
     }
+    
+    // Calculate `currProgress` based on `decoyProgress`
+    auto eq = [](double x) {
+        // Imagine `decoyProgress` and `currProgress` being the x-axis and y-axis, respectively, of a Cartesian coordinate system
+        return std::sqrt(1.0 - pow(x - 1.0, 2));   // Equation of circle `C((1, 0), R = 1)`
+        // return 1.0 * std::cos(M_PI / 5 * x - M_PI / 2);   // Harmonic motion with `A = 1.0`, `ω = π/5`, `φ = -π/2`
+    };
+    currProgress = eq(decoyProgress);
 
     progressDestRects.first.w = static_cast<int>(currProgress * shrinkedBoxDestRect.w);
     progressDestRects.second.x = shrinkedBoxDestRect.x + progressDestRects.first.w;
@@ -47,7 +60,7 @@ void GenericProgressBarComponent<T>::updateAnimation() {
 
 template <typename T>
 void GenericProgressBarComponent<T>::resetProgress() {
-    currProgress = 0;
+    currProgress = decoyProgress = 0;
     isFinished = isActivated = false;
 }
 

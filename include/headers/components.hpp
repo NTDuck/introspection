@@ -212,7 +212,9 @@ class GenericProgressBarComponent : public GenericBoxComponent<T> {
         static const double kProgressUpdateRateLimit;
         static const double kProgressUpdateRate;
         
-        double currProgress = 0;
+        double currProgress = 0;   // Exponential decay
+        double decoyProgress = 0;   // Linear growth
+
         /**
          * The "partially constant" `SDL_Rect` to generate `progressDestRects`.
         */

@@ -509,7 +509,7 @@ namespace config {
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
             const std::filesystem::path fontPath = config::path::fontOmoriHarmonic;
         }
-        
+
         namespace loading_message {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::loadingMessage, "loading");
             constexpr double destSizeModifier = 2;
