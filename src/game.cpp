@@ -28,6 +28,11 @@ Game::~Game() {
         window = nullptr;
     }
 
+    if (textureEx != nullptr) {
+        SDL_DestroyTexture(textureEx);
+        textureEx = nullptr;
+    }
+
     globals::deinitialize();
     FPSDisplayTimer::deinitialize();
     FPSControlTimer::deinitialize();
@@ -128,12 +133,16 @@ void Game::startGameLoop() {
 void Game::render() const {
     SDL_RenderClear(globals::renderer);
 
+    auto renderIngameDependencies = []() {
+        IngameInterface::invoke(&IngameInterface::render);
+        Teleporter::invoke(&Teleporter::render);
+        Slime::invoke(&Slime::render);
+        Player::invoke(&Player::render);
+    };
+
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            IngameInterface::invoke(&IngameInterface::render);
-            Teleporter::invoke(&Teleporter::render);
-            Slime::invoke(&Slime::render);
-            Player::invoke(&Player::render);
+            Player::invoke(&Player::renderEx, textureEx, renderIngameDependencies);
             break;
 
         case GameState::kMenu:
@@ -171,6 +180,13 @@ void Game::onLevelChange() {
 void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
+
+    if (textureEx != nullptr) SDL_DestroyTexture(textureEx);
+    textureEx = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);
+
+    // tileCountEx.x = static_cast<float>(globals::windowSize.x) / static_cast<float>(globals::windowSize.y) * tileCountEx.y;
+    // srcRectEx.w = tileCountEx.x * globals::tileDestSize.x;
+    // srcRectEx.h = tileCountEx.y * globals::tileDestSize.y;
 
     FPSOverlay::invoke(&FPSOverlay::onWindowChange);
 

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <functional>
 #include <unordered_set>
 #include <type_traits>
 
@@ -54,6 +55,40 @@ void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collec
         auto instance = instantiate(entityLevelData.destCoords);
         instance->onLevelChange(entityLevelData);
     }
+}
+
+/**
+ * @brief Render only a portion of the screen to the window, focusing on the current instance of derived class `T`.
+ * @param textureEx the texture to "capture" i.e. called `SDL_SetRenderTarget()` on. Initialization and deallocation is handled elsewhere.
+ * @param callable a function with `void` return type that calls all `render()` method on all dependencies. Dependencies are other entities and the map, and not UI components, for example.
+ * @note Calling `SDL_SetRenderTarget()` on every frame might be expensive.
+*/
+template <typename T>
+void AbstractEntity<T>::renderEx(SDL_Texture* textureEx, std::function<void()> const& callable) {
+    // Focus on player entity
+    SDL_SetRenderTarget(globals::renderer, textureEx);
+
+    // Dependencies
+    callable();
+
+    // Calculate rendered portion
+    static SDL_FPoint tileCountEx = { 0, 13.0f };   // immutable `y`
+    static SDL_Rect srcRectEx;
+    
+    tileCountEx.x = static_cast<float>(globals::windowSize.x) / static_cast<float>(globals::windowSize.y) * tileCountEx.y;
+    srcRectEx.w = tileCountEx.x * globals::tileDestSize.x;
+    srcRectEx.h = tileCountEx.y * globals::tileDestSize.y;
+    srcRectEx.x = destRect.x + destRect.w / 2 - srcRectEx.w / 2;
+    srcRectEx.y = destRect.y + destRect.h / 2 - srcRectEx.h / 2;
+
+    // "Fix" out-of-bound cases
+    if (srcRectEx.x < 0) srcRectEx.x = 0;
+    else if (srcRectEx.x + srcRectEx.w > globals::windowSize.x) srcRectEx.x = globals::windowSize.x - srcRectEx.w;
+    if (srcRectEx.y < 0) srcRectEx.y = 0;
+    else if (srcRectEx.y + srcRectEx.h > globals::windowSize.y) srcRectEx.y = globals::windowSize.y - srcRectEx.h;
+
+    SDL_SetRenderTarget(globals::renderer, nullptr);
+    SDL_RenderCopy(globals::renderer, textureEx, &srcRectEx, nullptr);
 }
 
 /**

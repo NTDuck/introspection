@@ -67,6 +67,10 @@ class Game final : public Singleton<Game> {
         */
         Uint32 windowID;
 
+        SDL_Texture* textureEx = nullptr;
+        // SDL_FPoint tileCountEx = { 0, 13.0f };
+        // SDL_Rect srcRectEx;
+
         const GameInitFlag flags;
         SDL_Rect windowDimension;
         const int frameRate;
