@@ -34,14 +34,14 @@ class AbstractInterface : public Singleton<T> {
 /* Derived implementations */
 
 /**
- * @brief Represent the in-game interface.
+ * @brief Handle the in-game map.
 */
-class IngameInterface final : public AbstractInterface<IngameInterface> {
+class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
     public:
-        INCL_ABSTRACT_INTERFACE(IngameInterface)
+        INCL_ABSTRACT_INTERFACE(IngameMapHandler)
 
-        IngameInterface(const level::LevelName levelName);
-        ~IngameInterface() = default;
+        IngameMapHandler(const level::LevelName levelName);
+        ~IngameMapHandler() = default;
 
         static void initialize();
         
@@ -61,6 +61,38 @@ class IngameInterface final : public AbstractInterface<IngameInterface> {
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
         static level::LevelMapping kLevelMapping;
+};
+
+
+/**
+ * @brief Handle in-game camera angles i.e. perspectives.
+*/
+class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
+    public:
+        INCL_ABSTRACT_INTERFACE(IngameViewHandler)
+
+        IngameViewHandler(std::function<void()> const& callable, SDL_Rect& destRect, const IngameViewMode viewMode = config::interface::defaultViewMode);
+        ~IngameViewHandler() = default;
+
+        void render() const override;
+        void onWindowChange() override;
+        void handleKeyBoardEvent(SDL_Event const& event);
+
+        void switchViewMode(const IngameViewMode newViewMode);
+
+    private:
+        /**
+         * A function with `void` return type that calls all `render()` method on all dependencies. Dependencies are other entities and the map, and not UI components, for example.
+        */
+        const std::function<void()> callable;
+
+        IngameViewMode viewMode;
+
+        double tileCountWidth;
+        static constexpr double tileCountHeight = config::interface::tileCountHeight;
+
+        SDL_Rect& destRect;   // Read-only
+        mutable SDL_Rect srcRect;   // Prevent warning: `note: the first difference of corresponding definitions is field 'destRect'`
 };
 
 

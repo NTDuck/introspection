@@ -28,17 +28,13 @@ Game::~Game() {
         window = nullptr;
     }
 
-    if (textureEx != nullptr) {
-        SDL_DestroyTexture(textureEx);
-        textureEx = nullptr;
-    }
-
     globals::deinitialize();
     FPSDisplayTimer::deinitialize();
     FPSControlTimer::deinitialize();
     FPSOverlay::deinitialize();
 
-    IngameInterface::deinitialize();
+    IngameMapHandler::deinitialize();
+    IngameViewHandler::deinitialize();
     MenuInterface::deinitialize();
     LoadingInterface::deinitialize();
 
@@ -76,8 +72,8 @@ void Game::initialize() {
     window = SDL_CreateWindow(title.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
-
-    IngameInterface::initialize();
+    
+    IngameMapHandler::initialize();
     MenuInterface::initialize();
     LoadingInterface::initialize();
 
@@ -89,9 +85,17 @@ void Game::initialize() {
     FPSControlTimer::instantiate();
     FPSOverlay::instantiate(config::components::fps_overlay::initializer);
 
+    constexpr auto renderIngameDependencies = []() {
+        IngameMapHandler::invoke(&IngameMapHandler::render);
+        Teleporter::invoke(&Teleporter::render);
+        Slime::invoke(&Slime::render);
+        Player::invoke(&Player::render);
+    };
+
     Player::instantiate(SDL_Point{ 0, 0 });
-    IngameInterface::instantiate(config::interface::levelName);
-    MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameInterface`
+    IngameMapHandler::instantiate(config::interface::levelName);
+    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->destRect, IngameViewMode::kFocusOnEntity);
+    MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
     LoadingInterface::instantiate();
 }
 
@@ -133,16 +137,9 @@ void Game::startGameLoop() {
 void Game::render() const {
     SDL_RenderClear(globals::renderer);
 
-    auto renderIngameDependencies = []() {
-        IngameInterface::invoke(&IngameInterface::render);
-        Teleporter::invoke(&Teleporter::render);
-        Slime::invoke(&Slime::render);
-        Player::invoke(&Player::render);
-    };
-
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            Player::invoke(&Player::renderEx, textureEx, renderIngameDependencies);
+            IngameViewHandler::invoke(&IngameViewHandler::render);
             break;
 
         case GameState::kMenu:
@@ -166,7 +163,7 @@ void Game::render() const {
 */
 void Game::onLevelChange() {
     // Populate `globals::currentLevelData` members
-    IngameInterface::invoke(&IngameInterface::onLevelChange);
+    IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
@@ -181,17 +178,11 @@ void Game::onWindowChange() {
     windowSurface = SDL_GetWindowSurface(window);
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
-    if (textureEx != nullptr) SDL_DestroyTexture(textureEx);
-    textureEx = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);
-
-    // tileCountEx.x = static_cast<float>(globals::windowSize.x) / static_cast<float>(globals::windowSize.y) * tileCountEx.y;
-    // srcRectEx.w = tileCountEx.x * globals::tileDestSize.x;
-    // srcRectEx.h = tileCountEx.y * globals::tileDestSize.y;
-
     FPSOverlay::invoke(&FPSOverlay::onWindowChange);
 
     // Dependencies that rely on certain dimension-related global variables
-    IngameInterface::invoke(&IngameInterface::onWindowChange);
+    IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
+    IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
     MenuInterface::invoke(&MenuInterface::onWindowChange);
     LoadingInterface::invoke(&LoadingInterface::onWindowChange);
 
@@ -261,7 +252,7 @@ void Game::onEntityCollision(Active& active, Passive& passive) {
 
 template <>
 void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
-    IngameInterface::invoke(&IngameInterface::changeLevel, teleporter.targetLevel);
+    IngameMapHandler::invoke(&IngameMapHandler::changeLevel, teleporter.targetLevel);
     globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
 
     globals::state = GameState::kLoading | GameState::kIngamePlaying;
@@ -361,10 +352,7 @@ void Game::handleWindowEvent(const SDL_Event& event) {
 void Game::handleKeyBoardEvent(const SDL_Event& event) {
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                globals::state = GameState::kMenu;
-                break;
-            }
+            IngameViewHandler::invoke(&IngameViewHandler::handleKeyBoardEvent, event);
             Player::invoke(&Player::handleKeyboardEvent, event);
 
         default: break;

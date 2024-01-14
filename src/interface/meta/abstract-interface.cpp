@@ -26,6 +26,7 @@ void AbstractInterface<T>::onWindowChange() {
 }
 
 
-template class AbstractInterface<IngameInterface>;
+template class AbstractInterface<IngameMapHandler>;
+template class AbstractInterface<IngameViewHandler>;
 template class AbstractInterface<MenuInterface>;
 template class AbstractInterface<LoadingInterface>;

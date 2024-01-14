@@ -44,6 +44,14 @@ constexpr GameState operator|(GameState const& first, GameState const& second) {
 }
 
 /**
+ * Contain possible in-game view modes.
+*/
+enum class IngameViewMode {
+    kFullScreen = 1,
+    kFocusOnEntity = 2,
+};
+
+/**
  * Contain registered interaction types.
  * @see <interaction.h>
 */
@@ -149,7 +157,7 @@ struct ComponentPreset {
 /**
  * @brief Group components that are associated with tiles.
  * @see <utils.h> utils::loadTilesetsData()
- * @see <interface.h> IngameInterface
+ * @see <interface.h> IngameMapHandler
 */
 namespace tile {
     /**
@@ -214,8 +222,8 @@ namespace tile {
     struct TilelayerTilesetData : public BaseTilesetData {
         /**
          * An ordered iterable of `TilelayerTilesetData`, sorted by `firstGID`.
-         * @note Recommended implementation: instances should be (re)initialized once per `IngameInterface::loadLevel()` call, should be treated as a constant otherwise, its lifespan should not exceed beyond the scope of the aforementioned classmethod.
-         * @see <interface.h> IngameInterface::loadLevel()
+         * @note Recommended implementation: instances should be (re)initialized once per `IngameMapHandler::loadLevel()` call, should be treated as a constant otherwise, its lifespan should not exceed beyond the scope of the aforementioned classmethod.
+         * @see <interface.h> IngameMapHandler::loadLevel()
         */
         using Collection = std::vector<TilelayerTilesetData>;
 
@@ -305,8 +313,8 @@ namespace level {
 
     /**
      * Map a level name to the corresponding relative file path.
-     * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameInterface::initialize()` and should henceforth be treated as a constant. Additionally, `Collection` must be re-declared in every derived class declaration.
-     * @note For optimized memory usage, this approach does not encapsulate `LevelData`, instead `globals::currentLevelData` is loaded via `<interface.h> IngameInterface::loadLevel()` based on file path.
+     * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameMapHandler::initialize()` and should henceforth be treated as a constant. Additionally, `Collection` must be re-declared in every derived class declaration.
+     * @note For optimized memory usage, this approach does not encapsulate `LevelData`, instead `globals::currentLevelData` is loaded via `<interface.h> IngameMapHandler::loadLevel()` based on file path.
     */
     using LevelMapping = std::unordered_map<LevelName, std::string>;
 
@@ -440,6 +448,9 @@ namespace config {
         const std::filesystem::path path = "assets/.tiled/levels.json";
         constexpr level::LevelName levelName = level::LevelName::kLevelEquilibrium;
         constexpr int idleFrames = 16;
+
+        constexpr IngameViewMode defaultViewMode = IngameViewMode::kFocusOnEntity;
+        constexpr double tileCountHeight = 13;
     }
 
     namespace entities {

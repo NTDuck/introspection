@@ -38,7 +38,6 @@ class AbstractEntity : public Multiton<T> {
         template <typename LevelData>
         static void onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection);
 
-        virtual void renderEx(SDL_Texture* textureEx, std::function<void()> const& callable) final;
         virtual void render() const;
         virtual void onWindowChange();
         virtual void onLevelChange(level::EntityLevelData const& entityLevelData);
@@ -110,7 +109,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::renderEx, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
 
 /**
