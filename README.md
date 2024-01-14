@@ -11,7 +11,10 @@ a RPG made without a game engine.
 ## Features
 
 #### System:
-- `RCLICK` / `LCLICK` to enter the game or reset player position
+- Some components can be interacted with your mouse!
+- `F4`, while in-game, to reset everything i.e. re-load the level (without penalties!)
+- `F5`, while in-game, to switch camera angles
+- `ESC`, while in-game, to go back to the menu
 
 #### Player:
 - Move with `W` `A` `S` `D`
@@ -26,7 +29,7 @@ a RPG made without a game engine.
 - Equilibrium
 - Valley of Despair
 
-(bad names btw)
+(bad names btw - will expand in future commits)
 
 
 ## Installation

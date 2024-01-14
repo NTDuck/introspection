@@ -15,7 +15,8 @@
 
 
 /**
- * @brief A singleton class that controls are ingame operations.
+ * @brief Controls everything.
+ * @note Dependencies could communicate via `globals::gameState`.
 */
 class Game final : public Singleton<Game> {
     friend Singleton<Game>;   // Required for private constructor
@@ -38,19 +39,9 @@ class Game final : public Singleton<Game> {
         void onLevelChange();
         void onWindowChange();
 
-        void handleInterfaces();
-
-        void handleEntities();
-        void handleEntitiesMovement();
-        void handleEntitiesInteraction();
-        template <typename Active, typename Passive>
-        void onEntityCollision(Active& active, Passive& passive);
-        template <typename Active, typename Passive>
-        void onEntityAnimation(AnimationType animationType, Active& active, Passive& passive);
-
         void handleWindowEvent(SDL_Event const& event);
+        void handleKeyBoardEvent(SDL_Event const& event) const;
         void handleMouseEvent(SDL_Event const& event);
-        void handleKeyBoardEvent(SDL_Event const& event);
 
         /**
          * The pointer to the main window.

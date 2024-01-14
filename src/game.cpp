@@ -8,10 +8,8 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 
-#include <interaction.hpp>
 #include <timers.hpp>
 #include <interface.hpp>
-#include <entities.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -33,14 +31,9 @@ Game::~Game() {
     FPSControlTimer::deinitialize();
     FPSOverlay::deinitialize();
 
-    IngameMapHandler::deinitialize();
-    IngameViewHandler::deinitialize();
+    IngameInterface::deinitialize();
     MenuInterface::deinitialize();
     LoadingInterface::deinitialize();
-
-    Player::deinitialize();
-    Teleporter::deinitialize();
-    Slime::deinitialize();
 
     // Quit SDL subsystems
     IMG_Quit();
@@ -73,28 +66,16 @@ void Game::initialize() {
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
     
-    IngameMapHandler::initialize();
+    // IngameMapHandler::initialize();
+    IngameInterface::initialize();
     MenuInterface::initialize();
     LoadingInterface::initialize();
-
-    Player::initialize();
-    Teleporter::initialize();
-    Slime::initialize();
 
     FPSDisplayTimer::instantiate();
     FPSControlTimer::instantiate();
     FPSOverlay::instantiate(config::components::fps_overlay::initializer);
 
-    constexpr auto renderIngameDependencies = []() {
-        IngameMapHandler::invoke(&IngameMapHandler::render);
-        Teleporter::invoke(&Teleporter::render);
-        Slime::invoke(&Slime::render);
-        Player::invoke(&Player::render);
-    };
-
-    Player::instantiate(SDL_Point{ 0, 0 });
-    IngameMapHandler::instantiate(config::interface::levelName);
-    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->destRect, IngameViewMode::kFocusOnEntity);
+    IngameInterface::instantiate();
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
     LoadingInterface::instantiate();
 }
@@ -139,7 +120,7 @@ void Game::render() const {
 
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            IngameViewHandler::invoke(&IngameViewHandler::render);
+            IngameInterface::invoke(&IngameInterface::render);
             break;
 
         case GameState::kMenu:
@@ -153,6 +134,7 @@ void Game::render() const {
         default: break;
     }
 
+    // Dependencies that should render regardless of game state
     FPSOverlay::invoke(&FPSOverlay::render);
 
     SDL_RenderPresent(globals::renderer);
@@ -162,13 +144,7 @@ void Game::render() const {
  * @brief Called when switching to a new level.
 */
 void Game::onLevelChange() {
-    // Populate `globals::currentLevelData` members
-    IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
-
-    // Make changes to dependencies based on populated `globals::currentLevelData` members
-    Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
-    Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
+    IngameInterface::invoke(&IngameInterface::onLevelChange);
 }
 
 /**
@@ -181,14 +157,9 @@ void Game::onWindowChange() {
     FPSOverlay::invoke(&FPSOverlay::onWindowChange);
 
     // Dependencies that rely on certain dimension-related global variables
-    IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
-    IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
+    IngameInterface::invoke(&IngameInterface::onWindowChange);
     MenuInterface::invoke(&MenuInterface::onWindowChange);
     LoadingInterface::invoke(&LoadingInterface::onWindowChange);
-
-    Player::invoke(&Player::onWindowChange);
-    Teleporter::invoke(&Teleporter::onWindowChange);
-    Slime::invoke(&Slime::onWindowChange);
 
     SDL_UpdateWindowSurface(window);
 }
@@ -197,12 +168,11 @@ void Game::onWindowChange() {
  * @brief Handle everything about entities.
 */
 void Game::handleDependencies() {
-    handleInterfaces();
-    handleEntities();
-}
-
-void Game::handleInterfaces() {
     switch (globals::state) {
+        case GameState::kIngamePlaying:
+            IngameInterface::invoke(&IngameInterface::handleEntities);
+            break;
+
         case GameState::kMenu:
             MenuInterface::invoke(&MenuInterface::updateAnimation);
             break;
@@ -213,89 +183,16 @@ void Game::handleInterfaces() {
             onWindowChange();
             break;
 
+        case (GameState::kLoading | GameState::kMenu):
+            LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kMenu);
+            break;
+
         case GameState::kLoading:
             LoadingInterface::invoke(&LoadingInterface::updateAnimation);
             LoadingInterface::invoke(&LoadingInterface::handleTransition);
             break;
 
         default: break;
-    }
-}
-
-void Game::handleEntities() {
-    if (globals::state != GameState::kIngamePlaying) return;
-    handleEntitiesMovement();
-    handleEntitiesInteraction();
-}
-
-/**
- * @brief Handle all entities movements & animation updates.
-*/
-void Game::handleEntitiesMovement() {
-    Player::invoke(&Player::initiateAnimation);
-    Player::invoke(&Player::move);
-    Player::invoke(&Player::updateAnimation);
-
-    Teleporter::invoke(&Teleporter::updateAnimation);
-
-    Slime::invoke(&Slime::calculateMove, Player::instance->destCoords);
-    Slime::invoke(&Slime::initiateAnimation);
-    Slime::invoke(&Slime::move);
-    Slime::invoke(&Slime::updateAnimation);
-}
-
-template <typename Active, typename Passive>
-void Game::onEntityCollision(Active& active, Passive& passive) {
-    utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
-    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
-}
-
-template <>
-void Game::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) {
-    IngameMapHandler::invoke(&IngameMapHandler::changeLevel, teleporter.targetLevel);
-    globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
-
-    globals::state = GameState::kLoading | GameState::kIngamePlaying;
-}
-
-template <>
-void Game::onEntityCollision<Player, Slime>(Player& player, Slime& slime) {
-    // state = GameState::kExit;
-    // player.onDeath();
-}
-
-/**
- * @brief Called when the `active` entity initiate an animation (possibly caused by the `passive` entity).
-*/
-template <typename Active, typename Passive>
-void Game::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) {
-    utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
-    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
-
-    // Handle `kDamaged` case differently
-    if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
-        active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
-        if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
-    }
-
-    tile::NextAnimationData::update(active.nextAnimationData, animationType);
-}
-
-template void Game::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime);
-template void Game::onEntityAnimation<Slime, Player>(const AnimationType animationType, Slime& slime, Player& player);
-
-/**
- * @brief Handle interactions between entities.
-*/
-void Game::handleEntitiesInteraction() {
-    auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoords); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
-    auto slime = utils::checkEntityCollision<Player, Slime>(*Player::instance, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*Player::instance, *slime);
-
-    for (auto& slime : Slime::instances) {
-        if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
-        if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *Player::instance);
-        if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
-        if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
     }
 }
 
@@ -310,7 +207,6 @@ void Game::handleEvents() {
     switch (event->type) {
         case SDL_QUIT:
             globals::state = GameState::kExit;
-            // delete instance;   // ?
             break;
         
         case SDL_WINDOWEVENT:
@@ -349,11 +245,11 @@ void Game::handleWindowEvent(const SDL_Event& event) {
  * @brief Handle a keyboard event.
  * @note Scancode denotes physical location and keycode denotes actual meaning (different if remapped)
 */
-void Game::handleKeyBoardEvent(const SDL_Event& event) {
+void Game::handleKeyBoardEvent(const SDL_Event& event) const {
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            IngameViewHandler::invoke(&IngameViewHandler::handleKeyBoardEvent, event);
-            Player::invoke(&Player::handleKeyboardEvent, event);
+            IngameInterface::invoke(&IngameInterface::handleKeyBoardEvent, event);
+            break;
 
         default: break;
     }
@@ -364,14 +260,10 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) {
 */
 void Game::handleMouseEvent(const SDL_Event& event) {
     SDL_GetMouseState(&globals::mouseState.x, &globals::mouseState.y);
+
     switch (globals::state) {
         case GameState::kMenu:
             MenuInterface::invoke(&MenuInterface::handleMouseEvent, event);
-            break;
-
-        case GameState::kIngamePlaying:
-            if (event.type != SDL_MOUSEBUTTONDOWN) break;
-            onLevelChange(); onWindowChange();
             break;
 
         default: break;

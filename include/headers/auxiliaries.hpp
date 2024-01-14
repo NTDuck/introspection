@@ -36,6 +36,7 @@ enum class GameState {
     // kIngamePaused,
     // kIngameDialogue,
     // kIngameCutscene,
+    k6 = 6,
     k12 = 12,   // Prevent warnings
 };
 

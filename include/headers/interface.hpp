@@ -97,6 +97,39 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 
 
 /**
+ * @brief Represent the in-game interface.
+*/
+class IngameInterface final : public Singleton<IngameInterface> {
+    public:
+        INCL_SINGLETON(IngameInterface);
+
+        IngameInterface();
+        ~IngameInterface() = default;
+
+        static void initialize();
+        static void deinitialize();
+
+        void render() const;
+        void onLevelChange() const;
+        void onWindowChange() const;
+
+        void handleKeyBoardEvent(SDL_Event const& event) const;
+        void handleMouseEvent(SDL_Event const& event) const;
+
+        void handleEntities() const;
+
+    private:
+        void handleEntitiesMovement() const;
+        void handleEntitiesInteraction() const;
+
+        template <typename Active, typename Passive>
+        void onEntityCollision(Active& active, Passive& passive) const;
+        template <typename Active, typename Passive>
+        void onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) const;
+};
+
+
+/**
  * @brief Represent the menu interface.
 */
 class MenuInterface final : public AbstractInterface<MenuInterface> {

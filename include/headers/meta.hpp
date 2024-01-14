@@ -11,7 +11,7 @@
 
 
 /**
- * @brief Flow 1: Abstract Hierarchy
+ * @deprecated Flow 1: Abstract Hierarchy
  * ┌────────────────────┐
  * │ PolymorphicBase<T> │
  * └┬───────────────────┘

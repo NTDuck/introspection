@@ -51,10 +51,6 @@ void IngameViewHandler::onWindowChange() {
 */
 void IngameViewHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
-            globals::state = GameState::kMenu;
-            break;
-
         case SDLK_F5:
             if (event.type != SDL_KEYDOWN) break;
             switchViewMode(viewMode == IngameViewMode::kFocusOnEntity ? IngameViewMode::kFullScreen : IngameViewMode::kFocusOnEntity);
