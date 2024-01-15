@@ -74,7 +74,7 @@ void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameMapHandler::loadLevel() {
-    std::filesystem::path kLevelPath = config::path::assetTiled / kLevelMapping[levelName];
+    std::filesystem::path kLevelPath = config::path::asset_tiled / kLevelMapping[levelName];
     if (!std::filesystem::exists(kLevelPath)) return;
     json data;
     utils::readJSON(kLevelPath.string(), data);

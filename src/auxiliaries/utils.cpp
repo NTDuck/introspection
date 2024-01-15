@@ -4,7 +4,9 @@
 #include <cmath>
 #include <functional>
 #include <fstream>
+#include <iomanip>
 #include <vector>
+#include <sstream>
 #include <string>
 #include <random>
 #include <unordered_map>
@@ -51,6 +53,15 @@ std::size_t std::hash<SDL_FPoint>::operator()(SDL_FPoint const& instance) const 
  * @note Susceptible to data loss.
 */
 int utils::castFloatToInt(const float f) { return static_cast<int>(std::lroundf(f)); }
+
+/**
+ * @brief Stringify a `double` with specified precision i.e. digits after the decimal point.
+*/
+std::string utils::castDoubleToString(const double d, unsigned int precision) {
+    std::ostringstream oss;
+    oss << std::fixed << std::setprecision(precision) << d;
+    return oss.str();
+}
 
 /**
  * @brief Retrieve a binary outcome. Models a Bernoulli distribution.

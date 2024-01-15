@@ -80,7 +80,7 @@ void tile::TilelayerTilesetData::initialize(json const& tileset, SDL_Renderer* r
     utils::cleanRelativePath(xmlPath);
 
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file((config::path::assetTiled / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
+    pugi::xml_parse_result result = document.load_file((config::path::asset_tiled / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
     BaseTilesetData::initialize(document, renderer);

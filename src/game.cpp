@@ -97,7 +97,7 @@ void Game::startGameLoop() {
 
         // Calculate frame rate
         FPSDisplayTimer::invoke(&FPSDisplayTimer::calculateFPS);
-        if (FPSDisplayTimer::instance->accumulatedFrames % FPSOverlay::animationUpdateRate == 0) FPSOverlay::invoke(&FPSOverlay::editContent, std::to_string(FPSDisplayTimer::instance->averageFPS));
+        if (FPSDisplayTimer::instance->accumulatedFrames % FPSOverlay::animationUpdateRate == 0) FPSOverlay::invoke(&FPSOverlay::editContent, utils::castDoubleToString(FPSDisplayTimer::instance->averageFPS, config::components::fps_overlay::precision));
 
         // Main flow
         handleDependencies();
@@ -250,7 +250,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) const {
         case GameState::kIngamePlaying:
             IngameInterface::invoke(&IngameInterface::handleKeyBoardEvent, event);
             break;
-            
+
         default: break;
     }
 }
