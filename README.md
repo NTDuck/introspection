@@ -12,14 +12,15 @@ a RPG made without a game engine.
 
 #### System:
 - Some components can be interacted with your mouse!
-- `F4`, while in-game, to reset everything i.e. re-load the level (without penalties!)
-- `F5`, while in-game, to switch camera angles
-- `ESC`, while in-game, to go back to the menu
+- `F4`, while in-game, resets everything i.e. re-loads the level (without penalties!)
+- `F5`, while in-game, toggles between camera angles
+- `F6` toggles grayscale
+- `ESC`, while in-game, returns to the menu
 
 #### Player:
-- Move with `W` `A` `S` `D`
-- Toggle run with `Shift`
-- Attack with `Space`
+- `W` `A` `S` `D` moves the player
+- `Shift`, when held, makes the player run
+- `Space` launchs not-so-visually-aesthetic attacks!
 
 #### Entities:
 - Cat. Teleports you to somewhere fun.

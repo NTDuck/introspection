@@ -10,21 +10,25 @@
 
 IngameMapHandler::IngameMapHandler(const level::LevelName levelName) : AbstractInterface<IngameMapHandler>(), levelName(levelName) {}
 
+IngameMapHandler::~IngameMapHandler() {
+    if (grayscaleTexture != nullptr) {
+        SDL_DestroyTexture(grayscaleTexture);
+        grayscaleTexture = nullptr;
+    }
+}
+
 void IngameMapHandler::initialize() {
     if (!std::filesystem::exists(config::interface::path)) return;
     utils::loadLevelsData(kLevelMapping);
 }
 
-/**
- * @brief Force load level after changes.
-*/
-void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
-    levelName = levelName_;
-    onLevelChange();
+void IngameMapHandler::render() const {
+    SDL_RenderCopy(globals::renderer, (isOnGrayscale ? grayscaleTexture : texture), nullptr, nullptr);
 }
 
 /**
  * @brief Populate `level` members and re-render `texture`.
+ * @note The `grayscaleTexture` block must be at THAT exact location i.e. before resetting render-target else undefined behaviour would be encountered.
 */
 void IngameMapHandler::onLevelChange() {
     SDL_SetRenderTarget(globals::renderer, texture);
@@ -35,11 +39,33 @@ void IngameMapHandler::onLevelChange() {
     renderBackground();
     renderLevelTiles();
 
+    if (grayscaleTexture != nullptr) SDL_DestroyTexture(grayscaleTexture);
+    grayscaleTexture = utils::createGrayscaleTexture(globals::renderer, texture);
+
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
 
 void IngameMapHandler::onWindowChange() {
     AbstractInterface<IngameMapHandler>::onWindowChange();
+    onLevelChange();
+}
+
+void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
+    switch (event.key.keysym.sym) {
+        case config::key::INGAME_TOGGLE_GRAYSCALE:
+            if (event.type != SDL_KEYDOWN) break;
+            isOnGrayscale ^= true;
+            break;
+
+        default: break;
+    }
+}
+
+/**
+ * @brief Force load level after changes.
+*/
+void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
+    levelName = levelName_;
     onLevelChange();
 }
 

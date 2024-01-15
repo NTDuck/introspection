@@ -6,7 +6,7 @@
 
 
 IngameInterface::IngameInterface() {
-    constexpr auto renderIngameDependencies = []() {
+    auto renderIngameDependencies = []() {
         IngameMapHandler::invoke(&IngameMapHandler::render);
         Teleporter::invoke(&Teleporter::render);
         Slime::invoke(&Slime::render);
@@ -62,14 +62,13 @@ void IngameInterface::onWindowChange() const {
 }
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
-
     switch (event.key.keysym.sym) {
-        case SDLK_ESCAPE:
+        case config::key::INGAME_RETURN_MENU:
             if (event.type != SDL_KEYDOWN) break;
             globals::state = GameState::kLoading | GameState::kMenu;
             break;
 
-        case SDLK_F4:
+        case config::key::INGAME_LEVEL_RESET:
             if (event.type != SDL_KEYDOWN) break;
             onLevelChange(); onWindowChange();
             break;
@@ -78,6 +77,7 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
     }
 
     IngameViewHandler::invoke(&IngameViewHandler::handleKeyBoardEvent, event);
+    IngameMapHandler::invoke(&IngameMapHandler::handleKeyBoardEvent, event);
     Player::invoke(&Player::handleKeyboardEvent, event);
 }
 

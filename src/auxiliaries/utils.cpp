@@ -97,6 +97,46 @@ void utils::setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color)
 }
 
 /**
+ * @brief Convert a texture to grayscale.
+ * @see https://gigi.nullneuron.net/gigilabs/converting-an-image-to-grayscale-using-sdl2/
+ * @see https://en.wikipedia.org/wiki/Grayscale
+*/
+SDL_Texture* utils::createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture) {
+    constexpr auto grayscale = [](SDL_Color const& color) {
+        return static_cast<uint8_t>(0.212671f * color.r + 0.715160f * color.g + 0.072169f * color.b);
+    };
+
+    // Query texture dimensions
+    SDL_Point size;
+    SDL_QueryTexture(texture, nullptr, nullptr, &size.x, &size.y);
+
+    SDL_Surface* surface = SDL_CreateRGBSurfaceWithFormat(0, size.x, size.y, 32, SDL_PIXELFORMAT_RGBA32);   // Also needs to be same format?
+    if (surface == nullptr) return nullptr;
+    SDL_RenderReadPixels(renderer, nullptr, surface->format->format, surface->pixels, surface->pitch);   // Copy texture to surface
+
+    // Convert surface to grayscale
+    for (int y = 0; y < size.y; ++y) {
+        for (int x = 0; x < size.x; ++x) {
+            uint32_t& pixel = *(reinterpret_cast<uint32_t*>(surface->pixels) + y * (size.x) + x);   // Provide access to pixel `(x, y)` of `surface`
+
+            SDL_Color color;
+            SDL_GetRGBA(pixel, surface->format, &color.r, &color.g, &color.b, &color.a);   // Extract color from pixel
+
+            uint8_t grayscaledPixel = grayscale(color);   // Create grayscaled pixel from extracted color
+            pixel = SDL_MapRGBA(surface->format, grayscaledPixel, grayscaledPixel, grayscaledPixel, color.a);   // Register changes
+        }
+    }
+
+    // Create new texture from grayscaled surface
+    SDL_Texture* grayscaledTexture = SDL_CreateTextureFromSurface(renderer, surface);
+
+    // Clean up
+    SDL_FreeSurface(surface);
+
+    return grayscaledTexture;
+}
+
+/**
  * @brief Decompress a zlib-compressed string.
  * @param s the zlib-compressed string.
  * @return the decompressed stream represented as a vector of the specified data type.

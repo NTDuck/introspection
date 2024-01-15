@@ -29,10 +29,10 @@ void Player::deinitialize() {
 void Player::handleKeyboardEvent(SDL_Event const& event) {
     auto handleKeyboardMovementInput = [&]() {
         static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
-            { SDLK_w, {0, -1} },
-            { SDLK_s, {0, 1} },
-            { SDLK_a, {-1, 0} },
-            { SDLK_d, {1, 0} },
+            { config::key::PLAYER_MOVE_UP, {0, -1} },
+            { config::key::PLAYER_MOVE_DOWN, {0, 1} },
+            { config::key::PLAYER_MOVE_RIGHT, {-1, 0} },
+            { config::key::PLAYER_MOVE_LEFT, {1, 0} },
         };
 
         auto it = mapping.find(event.key.keysym.sym);
@@ -50,12 +50,12 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
     if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::EntitiesTilesetData::AnimationType::kDamaged)) return;
 
     switch (event.key.keysym.sym) {
-        case SDLK_w: case SDLK_s: case SDLK_a: case SDLK_d:
+        case config::key::PLAYER_MOVE_UP: case config::key::PLAYER_MOVE_DOWN: case config::key::PLAYER_MOVE_RIGHT: case config::key::PLAYER_MOVE_LEFT:
             handleKeyboardMovementInput(); break;
-        case SDLK_SPACE:
+        case config::key::PLAYER_ATTACK:
             if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kAttack) break;
             AbstractAnimatedDynamicEntity<Player>::onAttackInitiated(); break;
-        case SDLK_LSHIFT: case SDLK_RSHIFT:
+        case config::key::PLAYER_RUN_TOGGLE:
             AbstractAnimatedDynamicEntity<Player>::onRunningToggled(event.type == SDL_KEYDOWN);
             break;
     }

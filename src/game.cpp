@@ -86,8 +86,8 @@ void Game::initialize() {
 */
 void Game::startGameLoop() {
     // Serve as partial initialization for certain attributes of certain classes
-    onLevelChange();
     onWindowChange();
+    onLevelChange();
 
     FPSDisplayTimer::invoke(&FPSDisplayTimer::start);
 
@@ -250,7 +250,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) const {
         case GameState::kIngamePlaying:
             IngameInterface::invoke(&IngameInterface::handleKeyBoardEvent, event);
             break;
-
+            
         default: break;
     }
 }

@@ -403,6 +403,20 @@ namespace config {
         const std::filesystem::path fontOmoriHarmonic = asset / "fonts/omori-game-2.ttf";
     }
 
+    namespace key {
+        constexpr SDL_Keycode INGAME_LEVEL_RESET = SDLK_F4;
+        constexpr SDL_Keycode INGAME_TOGGLE_CAMERA_ANGLE = SDLK_F5;
+        constexpr SDL_Keycode INGAME_TOGGLE_GRAYSCALE = SDLK_F6;
+        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_ESCAPE;
+
+        constexpr SDL_Keycode PLAYER_MOVE_UP = SDLK_w;
+        constexpr SDL_Keycode PLAYER_MOVE_DOWN = SDLK_s;
+        constexpr SDL_Keycode PLAYER_MOVE_RIGHT = SDLK_a;
+        constexpr SDL_Keycode PLAYER_MOVE_LEFT = SDLK_d;
+        constexpr SDL_Keycode PLAYER_RUN_TOGGLE = SDLK_LSHIFT;
+        constexpr SDL_KeyCode PLAYER_ATTACK = SDLK_SPACE;
+    }
+
     namespace color {
         constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
@@ -658,6 +672,7 @@ namespace utils {
     double calculateDistance(SDL_Point const& first, SDL_Point const& second);
     SDL_Color SDL_ColorFromHexString(std::string const& hexString);
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
+    SDL_Texture* createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture);
 
     template <typename T>
     std::vector<T> zlibDecompress(std::string const& s);

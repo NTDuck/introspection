@@ -41,13 +41,16 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         INCL_ABSTRACT_INTERFACE(IngameMapHandler)
 
         IngameMapHandler(const level::LevelName levelName);
-        ~IngameMapHandler() = default;
+        ~IngameMapHandler();
 
         static void initialize();
         
-        void changeLevel(const level::LevelName levelName);
+        void render() const override;
         void onLevelChange();
         void onWindowChange() override;
+        void handleKeyBoardEvent(SDL_Event const& event);
+
+        void changeLevel(const level::LevelName levelName);
 
     private:
         void loadLevel();
@@ -61,6 +64,13 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
         static level::LevelMapping kLevelMapping;
+
+        /**
+         * A grayscaled version of `texture`.
+        */
+        SDL_Texture* grayscaleTexture = nullptr;
+
+        bool isOnGrayscale = false;
 };
 
 
