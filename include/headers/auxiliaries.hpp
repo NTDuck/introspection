@@ -404,7 +404,7 @@ namespace config {
         namespace font {
             const std::filesystem::path OmoriChaotic = asset_font / "omori-game-1.ttf";
             const std::filesystem::path OmoriHarmonic = asset_font / "omori-game-2.ttf";
-            const std::filesystem::path JetBrainsMono = asset_font / "JetBrainsMonoNL-Regular.ttf";   // Mono
+            const std::filesystem::path DeterminationMono = asset_font / "DeterminationMonoWebRegular-Z5oq.ttf";
             const std::filesystem::path BadlyStuffedAnimal = asset_font / "BadlyStuffedAnimalDemoReg-8M3AD.ttf";   // Bizarre
         }
     }
@@ -472,6 +472,7 @@ namespace config {
 
         constexpr IngameViewMode defaultViewMode = IngameViewMode::kFocusOnEntity;
         constexpr double tileCountHeight = 13;
+        constexpr double grayscaleIntensity = 0.5;
     }
 
     namespace entities {
@@ -511,7 +512,7 @@ namespace config {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
             constexpr double destSizeModifier = 0.5;
             constexpr SDL_Point destRectRatio = { 6, 2 };
-            const std::filesystem::path fontPath = config::path::font::JetBrainsMono;
+            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
             constexpr int updateRate = 30;
             constexpr unsigned int precision = 2;
         }
@@ -540,7 +541,7 @@ namespace config {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
             constexpr double destSizeModifier = 5.5;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
-            const std::filesystem::path fontPath = config::path::font::BadlyStuffedAnimal;
+            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
         }
 
         namespace loading_message {
@@ -680,7 +681,7 @@ namespace utils {
     double calculateDistance(SDL_Point const& first, SDL_Point const& second);
     SDL_Color SDL_ColorFromHexString(std::string const& hexString);
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
-    SDL_Texture* createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture);
+    SDL_Texture* createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture, double intensity = 1);
 
     template <typename T>
     std::vector<T> zlibDecompress(std::string const& s);

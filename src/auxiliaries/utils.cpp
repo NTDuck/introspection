@@ -112,10 +112,13 @@ void utils::setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color)
  * @see https://gigi.nullneuron.net/gigilabs/converting-an-image-to-grayscale-using-sdl2/
  * @see https://en.wikipedia.org/wiki/Grayscale
 */
-SDL_Texture* utils::createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture) {
+SDL_Texture* utils::createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture, double intensity) {
     constexpr auto grayscale = [](SDL_Color const& color) {
         return static_cast<uint8_t>(0.212671f * color.r + 0.715160f * color.g + 0.072169f * color.b);
     };
+
+    if (intensity <= 0 || texture == nullptr) return texture;
+    if (intensity > 1) intensity = 1;
 
     // Query texture dimensions
     SDL_Point size;
@@ -133,8 +136,12 @@ SDL_Texture* utils::createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* 
             SDL_Color color;
             SDL_GetRGBA(pixel, surface->format, &color.r, &color.g, &color.b, &color.a);   // Extract color from pixel
 
-            uint8_t grayscaledPixel = grayscale(color);   // Create grayscaled pixel from extracted color
-            pixel = SDL_MapRGBA(surface->format, grayscaledPixel, grayscaledPixel, grayscaledPixel, color.a);   // Register changes
+            uint8_t grayscaledPixel = grayscale(color);   // Create grayscaled pixel (100% intensity) from extracted color
+            color.r = (1 - intensity) * color.r + intensity * grayscaledPixel;
+            color.g = (1 - intensity) * color.g + intensity * grayscaledPixel;
+            color.b = (1 - intensity) * color.b + intensity * grayscaledPixel;
+
+            pixel = SDL_MapRGBA(surface->format, color.r, color.g, color.b, color.a);   // Register changes
         }
     }
 

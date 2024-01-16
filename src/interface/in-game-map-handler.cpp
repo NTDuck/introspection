@@ -40,7 +40,7 @@ void IngameMapHandler::onLevelChange() {
     renderLevelTiles();
 
     if (grayscaleTexture != nullptr) SDL_DestroyTexture(grayscaleTexture);
-    grayscaleTexture = utils::createGrayscaleTexture(globals::renderer, texture);
+    grayscaleTexture = utils::createGrayscaleTexture(globals::renderer, texture, config::interface::grayscaleIntensity);
 
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
