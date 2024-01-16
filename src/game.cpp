@@ -7,7 +7,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 
+#include <mixer.hpp>
 #include <timers.hpp>
 #include <interface.hpp>
 #include <auxiliaries.hpp>
@@ -31,6 +33,8 @@ Game::~Game() {
     FPSControlTimer::deinitialize();
     FPSOverlay::deinitialize();
 
+    Mixer::deinitialize();
+
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
     LoadingInterface::deinitialize();
@@ -39,6 +43,7 @@ Game::~Game() {
     IMG_Quit();
     SDL_Quit();
     TTF_Quit();
+    Mix_Quit();
 }
 
 /**
@@ -59,6 +64,7 @@ void Game::initialize() {
     SDL_Init(flags.lSDL);
     IMG_Init(flags.lIMG);
     TTF_Init();
+    Mix_OpenAudio(config::mixer::frequency, config::mixer::format, config::mixer::channels, config::mixer::chunkSize);
 
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
@@ -74,6 +80,8 @@ void Game::initialize() {
     FPSDisplayTimer::instantiate();
     FPSControlTimer::instantiate();
     FPSOverlay::instantiate(config::components::fps_overlay::initializer);
+
+    Mixer::instantiate();
 
     IngameInterface::instantiate();
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
@@ -174,10 +182,12 @@ void Game::handleDependencies() {
             break;
 
         case GameState::kMenu:
+            Mixer::invoke(&Mixer::playBGM);
             MenuInterface::invoke(&MenuInterface::updateAnimation);
             break;
 
         case (GameState::kLoading | GameState::kIngamePlaying):
+            Mixer::invoke(&Mixer::stopBGM);
             LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
             onLevelChange();
             onWindowChange();
@@ -206,6 +216,7 @@ void Game::handleEvents() {
 
     switch (event->type) {
         case SDL_QUIT:
+            Mixer::invoke(&Mixer::stopBGM);
             globals::state = GameState::kExit;
             break;
         

@@ -3,6 +3,7 @@
 #include <string>
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -66,6 +67,7 @@ void GenericButtonComponent<T>::handleCursor() {
 template <typename T>
 void GenericButtonComponent<T>::onClick() {
     if (kDestState == nullptr) return;
+    Mixer::invoke(&Mixer::playSFX);
     globals::state = *kDestState;
 }
 

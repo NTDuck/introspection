@@ -29,7 +29,7 @@ WARNINGS = -Wall
 LDFLAGS =
 
 # Libraries to link
-LDLIBS = -l"SDL2" -l"SDL2_image" -l"SDL2_ttf" -l"z"
+LDLIBS = -l"SDL2" -l"SDL2_image" -l"SDL2_ttf" -l"SDL2_mixer" -l"z"
 
 # Debug (default) and release modes settings
 # https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html

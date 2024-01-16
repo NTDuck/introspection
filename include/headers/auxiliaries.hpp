@@ -13,6 +13,7 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_mixer.h>
 #include <nlohmann/json.hpp>
 #include <pugixml/pugixml.hpp>
 
@@ -400,6 +401,7 @@ namespace config {
         const std::filesystem::path asset = "assets";
         const std::filesystem::path asset_tiled = asset / ".tiled";
         const std::filesystem::path asset_font = asset / "fonts";
+        const std::filesystem::path asset_audio = asset / "audio";
         
         namespace font {
             const std::filesystem::path OmoriChaotic = asset_font / "omori-game-1.ttf";
@@ -463,6 +465,17 @@ namespace config {
             frameRate,
             "8964",
         };
+    }
+
+    namespace mixer {
+        // Different initialization process
+        constexpr int frequency = MIX_DEFAULT_FREQUENCY;
+        constexpr uint16_t format = MIX_DEFAULT_FORMAT;
+        constexpr int channels = MIX_DEFAULT_CHANNELS;
+        constexpr int chunkSize = 2048;   // 2 KB
+
+        const std::filesystem::path MenuBGM = config::path::asset_audio / "inaba-inst.wav";
+        const std::filesystem::path SFXButtonClick = config::path::asset_audio / "一般の警告音.wav";
     }
 
     namespace interface {
