@@ -9,6 +9,9 @@
 *.o
 *.obj
 
+*.gcda
+*.gcno
+
 # Precompiled Headers
 *.gch
 *.pch
