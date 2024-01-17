@@ -50,6 +50,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
 
+        inline level::LevelName getLevel() { return levelName; }
         void changeLevel(const level::LevelName levelName);
 
     private:

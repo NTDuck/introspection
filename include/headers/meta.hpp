@@ -132,8 +132,7 @@ class Singleton : virtual public PolymorphicBase<T> {
 
         template <typename Callable, typename... Args>
         static auto invoke(Callable&& callable, Args&&... args) {
-            if (instance == nullptr) return;
-            return std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
+            return std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);   // if (instance == nullptr) ...
         }
 
         static T* instance;

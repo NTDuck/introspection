@@ -95,15 +95,28 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 ## Acknowledgements
 
 > We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
+1. Tilesets
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
->
+2. Fonts
 - [Omori Font](https://dafontonline.com/omori-font/)
 - [Determination Mono Font](https://www.fontspace.com/determination-mono-web-font-f23209)
 - [Badly Stuffed Animal Font](https://www.fontspace.com/badly-stuffed-animal-font-f107899) (DEMO)
-
+3. BGM & SFX
+- [Main Theme - Animal Crossing New Horizons](https://youtu.be/lI_C1Bjdqn4)
+- [credits song for my death](https://youtu.be/urxeNbBc1nk) by [vivivivivi](https://www.youtube.com/@vivivivivi)
+- [Your Reality - DDLC](https://youtu.be/GU2D4zmhvbo) by [Artemisia](https://www.youtube.com/@ArtemisiaBeats)
+- [Inabakumori-styled な - instrumental](https://youtu.be/p0s0_4KO9t4) by [いめ44](https://www.youtube.com/@ime44)
+- [A Home For Flowers - OMORI OST 013](https://youtu.be/u2xW23u4qEY) by [OMOCAT](https://www.youtube.com/@OMOCAT143)
+- [it's safe here - OMORI](https://youtu.be/sg712AWBaSI) by [404p](https://www.youtube.com/@p404p)
+- [it means everything - OMORI](https://youtu.be/zUtIcrbhhPA) by [Solus](https://www.youtube.com/@strujilz)
+- [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [
+Angelina2 RedRevo-Scarlet](https://www.youtube.com/@angelinaflan58)
+- [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc) and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
+- [Lucky Star PS2 Bonus Disc](https://archive.org/details/lucky-star-ps-2-bonus-disc)
+>
 > We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).
 
 

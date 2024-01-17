@@ -174,20 +174,22 @@ void Game::onWindowChange() {
 
 /**
  * @brief Handle everything about entities.
+ * @note Some `Mixer::invoke(&Mixer::handleGameStateChange)` has been commented out to prevent overlap with `onLevelChange()`.
 */
 void Game::handleDependencies() {
+    Mixer::invoke(&Mixer::handleGameStateChange);
+
     switch (globals::state) {
         case GameState::kIngamePlaying:
             IngameInterface::invoke(&IngameInterface::handleEntities);
             break;
 
         case GameState::kMenu:
-            Mixer::invoke(&Mixer::playBGM);
+            Mixer::invoke(&Mixer::handleGameStateChange);
             MenuInterface::invoke(&MenuInterface::updateAnimation);
             break;
 
         case (GameState::kLoading | GameState::kIngamePlaying):
-            Mixer::invoke(&Mixer::stopBGM);
             LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
             onLevelChange();
             onWindowChange();

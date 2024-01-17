@@ -1,7 +1,8 @@
 #include <interface.hpp>
 
-#include <entities.hpp>
 #include <interaction.hpp>
+#include <entities.hpp>
+#include <mixer.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -50,6 +51,8 @@ void IngameInterface::onLevelChange() const {
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
     Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
     Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
+
+    Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
 
 void IngameInterface::onWindowChange() const {
