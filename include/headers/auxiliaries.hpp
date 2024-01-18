@@ -474,7 +474,7 @@ namespace config {
         constexpr int channels = MIX_DEFAULT_CHANNELS;
         constexpr int chunkSize = 2048;   // 2 KB
 
-        const std::filesystem::path SFXButtonClick = config::path::asset_audio / "sfx" / "一般の警告音.wav";
+        const std::filesystem::path SFXButtonClick = config::path::asset_audio / "sfx" / "一般の警告音.mp3";
     }
 
     namespace interface {
