@@ -30,6 +30,8 @@ void GenericButtonComponent<T>::deinitialize() {
         SDL_FreeCursor(onMouseOverCursor);
         onMouseOverCursor = nullptr;
     }
+
+    GenericTextBoxComponent<T>::deinitialize();
 }
 
 template <typename T>
@@ -84,4 +86,6 @@ bool GenericButtonComponent<T>::prevAllMouseOut = true;
 template <typename T>
 bool GenericButtonComponent<T>::currAllMouseOut = true;
 
+
 template class GenericButtonComponent<MenuButton>;
+template class GenericButtonComponent<GameOverButton>;

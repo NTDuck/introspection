@@ -31,6 +31,8 @@ void MenuInterface::deinitialize() {
     MenuAvatar::deinitialize();
     MenuButton::deinitialize();
     MenuTitle::deinitialize();
+
+    Singleton<MenuInterface>::deinitialize();
 }
 
 void MenuInterface::render() const {
@@ -54,6 +56,8 @@ void MenuInterface::renderComponents() const {
 }
 
 void MenuInterface::onWindowChange() {
+    AbstractInterface<MenuInterface>::onWindowChange();
+    
     MenuAnimatedBackground::invoke(&MenuAnimatedBackground::onWindowChange);
     MenuAvatar::invoke(&MenuAvatar::onWindowChange);
     MenuButton::invoke(&MenuButton::onWindowChange);

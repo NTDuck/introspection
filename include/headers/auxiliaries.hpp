@@ -34,6 +34,7 @@ enum class GameState {
     kMenu = 2,
     kLoading = 4,
     kIngamePlaying = 8,
+    kGameOver = 16,
     // kIngamePaused,
     // kIngameDialogue,
     // kIngameCutscene,
@@ -442,6 +443,9 @@ namespace config {
         constexpr ComponentPreset darkButton = {
             config::color::black, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
         };
+        constexpr ComponentPreset yellowButton = {
+            config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
+        };
         constexpr ComponentPreset frameRateOverlay = {
             config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
         };
@@ -581,6 +585,22 @@ namespace config {
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
             constexpr double progressUpdateRateLimit = 1;
             constexpr double progressUpdateRate = 0.02;
+        }
+
+        namespace game_over_title {
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.4f }, config::preset::title, "GAME OVER ...?");
+            constexpr double destSizeModifier = 5;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
+        }
+
+        namespace game_over_button {
+            const std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*> initializer = {
+                std::make_tuple(SDL_FPoint{ 0.5f, 0.6f }, config::preset::lightButton, config::preset::yellowButton, "amend", new GameState(GameState::kLoading | GameState::kMenu)),
+            };
+            constexpr double destSizeModifier = 1;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
         }
     }
 }

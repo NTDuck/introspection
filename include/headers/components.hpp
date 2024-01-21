@@ -379,4 +379,28 @@ class LoadingProgressBar final : public Singleton<LoadingProgressBar>, public Ge
 };
 
 
+class GameOverTitle final : public Singleton<GameOverTitle>, public GenericTextComponent<GameOverTitle> {
+    public:
+        INCL_GENERIC_TEXT_COMPONENT(GameOverTitle)
+        INCL_SINGLETON(GameOverTitle)
+
+        GameOverTitle(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
+        ~GameOverTitle() = default;
+
+        static void deinitialize();
+};
+
+
+class GameOverButton final : public Singleton<GameOverButton>, public GenericButtonComponent<GameOverButton> {
+    public:
+        INCL_GENERIC_BUTTON_COMPONENT(GameOverButton)
+        INCL_SINGLETON(GameOverButton)
+
+        GameOverButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState);
+        ~GameOverButton() = default;
+
+        static void deinitialize();
+};
+
+
 #endif

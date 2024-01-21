@@ -29,7 +29,7 @@ Game::~Game() {
     }
 
     globals::deinitialize();
-    
+
     FPSDisplayTimer::deinitialize();
     FPSControlTimer::deinitialize();
     FPSOverlay::deinitialize();
@@ -78,6 +78,7 @@ void Game::initialize() {
     IngameInterface::initialize();
     MenuInterface::initialize();
     LoadingInterface::initialize();
+    GameOverInterface::initialize();
 
     FPSDisplayTimer::instantiate();
     FPSControlTimer::instantiate();
@@ -89,6 +90,7 @@ void Game::initialize() {
     IngameInterface::instantiate();
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
     LoadingInterface::instantiate();
+    GameOverInterface::instantiate();
 }
 
 /**
@@ -142,6 +144,10 @@ void Game::render() const {
             LoadingInterface::invoke(&LoadingInterface::render);
             break;
 
+        case GameState::kGameOver:
+            GameOverInterface::invoke(&GameOverInterface::render);
+            break;
+
         default: break;
     }
 
@@ -173,6 +179,7 @@ void Game::onWindowChange() {
     IngameInterface::invoke(&IngameInterface::onWindowChange);
     MenuInterface::invoke(&MenuInterface::onWindowChange);
     LoadingInterface::invoke(&LoadingInterface::onWindowChange);
+    GameOverInterface::invoke(&GameOverInterface::onWindowChange);
 
     SDL_UpdateWindowSurface(window);
 }
@@ -207,6 +214,10 @@ void Game::handleDependencies() {
         case GameState::kLoading:
             LoadingInterface::invoke(&LoadingInterface::updateAnimation);
             LoadingInterface::invoke(&LoadingInterface::handleTransition);
+            break;
+
+        case GameState::kGameOver:
+            Mixer::invoke(&Mixer::handleGameStateChange);
             break;
 
         default: break;
@@ -284,6 +295,10 @@ void Game::handleMouseEvent(const SDL_Event& event) {
     switch (globals::state) {
         case GameState::kMenu:
             MenuInterface::invoke(&MenuInterface::handleMouseEvent, event);
+            break;
+
+        case GameState::kGameOver:
+            GameOverInterface::invoke(&GameOverInterface::handleMouseEvent, event);
             break;
 
         default: break;

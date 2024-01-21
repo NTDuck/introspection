@@ -80,3 +80,5 @@ template class GenericTextComponent<ExitText>;
 template class GenericTextComponent<MenuButton>;
 template class GenericTextComponent<MenuTitle>;
 template class GenericTextComponent<LoadingMessage>;
+template class GenericTextComponent<GameOverTitle>;
+template class GenericTextComponent<GameOverButton>;

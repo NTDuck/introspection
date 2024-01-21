@@ -257,6 +257,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         ~Player() = default;
 
         static void deinitialize();
+
+        void onDeath() override;
         
         void onLevelChange(level::EntityLevelData const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);

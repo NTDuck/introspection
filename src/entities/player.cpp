@@ -66,6 +66,11 @@ void Player::onLevelChange(level::EntityLevelData const& player) {
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
 }
 
+void Player::onDeath() {
+    AbstractAnimatedDynamicEntity<Player>::onDeath();
+    globals::state = GameState::kGameOver;
+}
+
 
 template <>
 int AbstractAnimatedDynamicEntity<Player>::kMoveDelay = config::entities::player::moveDelay;

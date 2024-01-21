@@ -28,3 +28,4 @@ void GenericTextBoxComponent<T>::onWindowChange() {
 
 template class GenericTextBoxComponent<FPSOverlay>;
 template class GenericTextBoxComponent<MenuButton>;
+template class GenericTextBoxComponent<GameOverButton>;

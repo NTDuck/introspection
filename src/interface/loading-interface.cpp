@@ -1,6 +1,8 @@
 #include <interface.hpp>
 
 #include <SDL.h>
+
+#include <components.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -9,11 +11,11 @@ LoadingInterface::LoadingInterface() {
     LoadingProgressBar::instantiate(config::components::loading_progress_bar::intializer);
 }
 
-void LoadingInterface::initialize() {}
-
 void LoadingInterface::deinitialize() {
     LoadingMessage::deinitialize();
     LoadingProgressBar::deinitialize();
+
+    Singleton<LoadingInterface>::deinitialize();
 }
 
 void LoadingInterface::render() const {
@@ -32,6 +34,8 @@ void LoadingInterface::renderComponents() const {
 }
 
 void LoadingInterface::onWindowChange() {
+    AbstractInterface<LoadingInterface>::onWindowChange();
+
     LoadingMessage::invoke(&LoadingMessage::onWindowChange);
     LoadingProgressBar::invoke(&LoadingProgressBar::onWindowChange);
 }

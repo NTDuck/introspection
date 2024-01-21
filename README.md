@@ -115,7 +115,7 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [it means everything - OMORI](https://youtu.be/zUtIcrbhhPA) by [Solus](https://www.youtube.com/@strujilz)
 - [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [
 Angelina2 RedRevo-Scarlet](https://www.youtube.com/@angelinaflan58)
-- [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc) and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
+- [Determination - UNDERTALE OST 011](https://youtu.be/W1i4mTyidOc), [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc), and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
 - [Lucky Star PS2 Bonus Disc](https://archive.org/details/lucky-star-ps-2-bonus-disc)
 >
 > We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).

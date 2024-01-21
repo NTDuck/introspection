@@ -175,7 +175,7 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
         LoadingInterface();
         ~LoadingInterface() = default;
 
-        static void initialize();
+        inline static void initialize() {}
         static void deinitialize();
 
         void render() const override;
@@ -194,6 +194,31 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
 
         GameState nextGameState;
 };
+
+
+/**
+ * @brief Represent whatever shows up when the player should be defeated.
+*/
+class GameOverInterface final : public AbstractInterface<GameOverInterface> {
+    public:
+        INCL_ABSTRACT_INTERFACE(GameOverInterface)
+
+        GameOverInterface();
+        ~GameOverInterface() = default;
+        
+        static void initialize();
+        static void deinitialize();
+
+        void render() const override;
+        void onWindowChange() override;
+
+        void handleMouseEvent(SDL_Event const& event);
+
+    private:
+        void renderBackground() const;
+        void renderComponents() const;
+};
+
 
 
 #endif
