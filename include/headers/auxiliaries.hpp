@@ -412,10 +412,12 @@ namespace config {
     }
 
     namespace key {
+        constexpr SDL_Keycode EXIT = SDLK_ESCAPE;
+
         constexpr SDL_Keycode INGAME_LEVEL_RESET = SDLK_F4;
         constexpr SDL_Keycode INGAME_TOGGLE_CAMERA_ANGLE = SDLK_F5;
         constexpr SDL_Keycode INGAME_TOGGLE_GRAYSCALE = SDLK_F6;
-        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_ESCAPE;
+        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_F1;
 
         constexpr SDL_Keycode PLAYER_MOVE_UP = SDLK_w;
         constexpr SDL_Keycode PLAYER_MOVE_DOWN = SDLK_s;
@@ -446,6 +448,7 @@ namespace config {
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
         };
+        constexpr ComponentPreset exitText = title;
         constexpr ComponentPreset loadingMessage = title;
     }
 
@@ -527,6 +530,15 @@ namespace config {
             const std::filesystem::path fontPath = config::path::font::DeterminationMono;
             constexpr int updateRate = 30;
             constexpr unsigned int precision = 2;
+        }
+
+        namespace exit_text {
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.05f }, config::preset::exitText, "quitting~");
+            constexpr double destSizeModifier = 0.5;
+            constexpr SDL_Point destRectRatio = config::components::destRectRatio;
+            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
+            constexpr double progressUpdateRateLimit = 1;
+            constexpr double progressUpdateRate = progressUpdateRateLimit / static_cast<double>(config::game::frameRate >> 2);
         }
 
         namespace menu_avatar {

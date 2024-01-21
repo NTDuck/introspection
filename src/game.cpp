@@ -29,9 +29,11 @@ Game::~Game() {
     }
 
     globals::deinitialize();
+    
     FPSDisplayTimer::deinitialize();
     FPSControlTimer::deinitialize();
     FPSOverlay::deinitialize();
+    ExitText::deinitialize();
 
     Mixer::deinitialize();
 
@@ -80,6 +82,7 @@ void Game::initialize() {
     FPSDisplayTimer::instantiate();
     FPSControlTimer::instantiate();
     FPSOverlay::instantiate(config::components::fps_overlay::initializer);
+    ExitText::instantiate(config::components::exit_text::initializer);
 
     Mixer::instantiate();
 
@@ -144,6 +147,7 @@ void Game::render() const {
 
     // Dependencies that should render regardless of game state
     FPSOverlay::invoke(&FPSOverlay::render);
+    ExitText::invoke(&ExitText::render);
 
     SDL_RenderPresent(globals::renderer);
 }
@@ -163,6 +167,7 @@ void Game::onWindowChange() {
     SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
 
     FPSOverlay::invoke(&FPSOverlay::onWindowChange);
+    ExitText::invoke(&ExitText::onWindowChange);
 
     // Dependencies that rely on certain dimension-related global variables
     IngameInterface::invoke(&IngameInterface::onWindowChange);
@@ -266,6 +271,8 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) const {
 
         default: break;
     }
+
+    ExitText::invoke(&ExitText::handleKeyBoardEvent, event);
 }
 
 /**

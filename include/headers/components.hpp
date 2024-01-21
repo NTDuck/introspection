@@ -249,6 +249,32 @@ class FPSOverlay final : public Singleton<FPSOverlay>, public GenericTextBoxComp
 
 
 /**
+ * @brief Represent the big but not-so-chunky title on the menu.
+*/
+class ExitText final : public Singleton<ExitText>, public GenericTextComponent<ExitText> {
+    public:
+        INCL_GENERIC_TEXT_COMPONENT(ExitText)
+        INCL_SINGLETON(ExitText)
+
+        ExitText(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content);
+        ~ExitText() = default;
+
+        static void deinitialize();
+        void render() const override;
+        void onWindowChange() override;
+        void handleKeyBoardEvent(SDL_Event const& event);
+    
+    private:
+        void registerProgress();
+
+        const double kProgressUpdateRateLimit = config::components::exit_text::progressUpdateRateLimit;
+        const double kProgressUpdateRate = config::components::exit_text::progressUpdateRate;
+
+        double currProgress;
+};
+
+
+/**
  * @brief Represent the avatar visible on the menu.
 */
 class MenuAvatar final : public Singleton<MenuAvatar> {

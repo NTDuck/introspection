@@ -12,10 +12,11 @@ a RPG made without a game engine.
 
 #### System:
 - Some components can be interacted with your mouse!
+- `ESC`, when held, exits the game (just like Undertale!)
+- `F1`, while in-game, returns to the menu
 - `F4`, while in-game, resets everything i.e. re-loads the level (without penalties!)
 - `F5`, while in-game, toggles between camera angles
 - `F6` toggles grayscale
-- `ESC`, while in-game, returns to the menu
 
 #### Player:
 - `W` `A` `S` `D` moves the player

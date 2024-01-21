@@ -29,6 +29,7 @@ int GenericComponent<T>::destSize;
 
 
 template class GenericComponent<FPSOverlay>;
+template class GenericComponent<ExitText>;
 template class GenericComponent<MenuButton>;
 template class GenericComponent<MenuTitle>;
 template class GenericComponent<LoadingMessage>;
