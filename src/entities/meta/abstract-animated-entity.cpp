@@ -74,7 +74,7 @@ template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++currAnimationUpdateCount;
     
-    if (currAnimationUpdateCount == tilesetData->animationUpdateRate) {
+    if (currAnimationUpdateCount >= static_cast<int>(tilesetData->animationUpdateRate * tilesetData->animationMapping[currAnimationType].animationUpdateRateMultiplier)) {
         currAnimationUpdateCount = 0;
         if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
             currAnimationGID += tilesetData->animationSize.x;

@@ -111,12 +111,11 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 
     // If new move has not been "initiated", terminate movement i.e. switch back to IDLE
     if (nextVelocity == nullptr) onMoveEnd();
-    // If new move has been initiated, do it like this to avoid 
-    else 
-
-    // If new move 
-    onMoveEnd(EntityStatusFlag::kContinued);
-    initiateMove(EntityStatusFlag::kContinued);
+    // If new move has been initiated, do this to avoid switching back to original GID
+    else {
+        onMoveEnd(EntityStatusFlag::kContinued);
+        initiateMove(EntityStatusFlag::kContinued);
+    }
 }
 
 /**

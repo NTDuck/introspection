@@ -275,6 +275,7 @@ namespace tile {
             int startGID = 0;
             int stopGID = 0;
             bool isPermanent = false;
+            double animationUpdateRateMultiplier = 1;
         };
 
         void initialize(pugi::xml_document& document, SDL_Renderer* renderer);

@@ -3,6 +3,7 @@
  <properties>
   <property name="animation-attack" type="class" propertytype="animation">
    <properties>
+    <property name="animation-update-rate-multiplier" type="float" value="1.5"/>
     <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="16"/>
     <property name="stopGID" type="int" value="19"/>
@@ -17,6 +18,7 @@
   </property>
   <property name="animation-death" type="class" propertytype="animation">
    <properties>
+    <property name="animation-update-rate-multiplier" type="float" value="2"/>
     <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="20"/>
     <property name="stopGID" type="int" value="26"/>

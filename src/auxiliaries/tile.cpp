@@ -137,6 +137,8 @@ void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Ren
                     animation.stopGID = value_.as_int();
                 } else if (!std::strcmp(name_.as_string(), "isPermanent")) {
                     animation.isPermanent = value_.as_bool();
+                } else if (!std::strcmp(name_.as_string(), "animation-update-rate-multiplier")) {
+                    animation.animationUpdateRateMultiplier = value_.as_double();
                 }
             }
 

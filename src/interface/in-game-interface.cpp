@@ -142,7 +142,10 @@ void IngameInterface::onEntityAnimation(AnimationType animationType, Active& act
         if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
     }
 
-    if ((active.nextAnimationType == nullptr) || (!active.isAnimationOnProgress&& !(*active.nextAnimationType == AnimationType::kDamaged && animationType == AnimationType::kAttack))) active.nextAnimationType = new AnimationType(animationType);
+    if ((active.nextAnimationType == nullptr) || (!active.isAnimationOnProgress&& !(*active.nextAnimationType == AnimationType::kDamaged && animationType == AnimationType::kAttack))) {
+        active.nextAnimationType = new AnimationType(animationType);
+        active.isAnimationOnProgress = false;
+    }
 }
 
 template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
