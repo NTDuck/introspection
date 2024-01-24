@@ -69,7 +69,7 @@ void GenericButtonComponent<T>::handleCursor() {
 template <typename T>
 void GenericButtonComponent<T>::onClick() {
     if (kDestState == nullptr) return;
-    Mixer::invoke(&Mixer::playSFX);
+    Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kButtonClick);
     globals::state = *kDestState;
 }
 

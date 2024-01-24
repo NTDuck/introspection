@@ -116,6 +116,9 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [
 Angelina2 RedRevo-Scarlet](https://www.youtube.com/@angelinaflan58)
 - [Determination - UNDERTALE OST 011](https://youtu.be/W1i4mTyidOc), [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc), and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
+- [Mewo - OMORI SFX](https://youtu.be/UsGB7UvESWc?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Swish - OMORI SFX](https://youtu.be/VLRwSnPu2IU?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Omori attack - OMORI SFX](https://youtu.be/bHwXmfWeN34?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Bite - OMORI SFX](https://youtu.be/3wVWKTyVWYE?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Death by Experiment 667 - OMORI SFX](https://youtu.be/WIefFWfwdoY?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo) by [Home_Video](https://www.youtube.com/@home_video3)
+- [Wilhelm Scream SFX](https://youtu.be/r6JK-gRELI0)
+- [Shoe on Wet Ground SFX](https://www.zapsplat.com/music/footstep-single-shoe-on-wet-ground-very-light-puddles-of-water-5/), [Heavy Clump on Gravel SFX](https://www.zapsplat.com/music/single-boot-footstep-heavy-clump-on-gravel-2/)
 - [Lucky Star PS2 Bonus Disc](https://archive.org/details/lucky-star-ps-2-bonus-disc)
 >
 > We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).

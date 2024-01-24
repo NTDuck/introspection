@@ -124,6 +124,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual ~AbstractAnimatedEntity() = default;
 
         void onLevelChange(level::EntityLevelData const& entityLevelData) override;
+        virtual void handleSFX() const;
 
         void initiateAnimation();
         void updateAnimation();
@@ -131,8 +132,15 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         AnimationType currAnimationType;
         AnimationType* nextAnimationType = nullptr;
-        bool isAnimationOnProgress = false;
-        bool isAnimationAtFinalSprite;
+        bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
+
+        inline bool isAnimationAtFirstSprite() const {
+            return currAnimationGID == tilesetData->animationMapping[currAnimationType].startGID;
+        }
+
+        inline bool isAnimationAtFinalSprite() const {
+            return currAnimationGID == tilesetData->animationMapping[currAnimationType].stopGID;
+        }
 
         /**
          * The minimum range required for the entity to initiate an attack on a targetable entity.
@@ -152,7 +160,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int currAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
 
 
 /**
@@ -172,9 +180,6 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
         virtual void move();
         virtual void initiateMove(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onRunningToggled(bool onRunningStart);
 
         bool isRunning = false;
 
@@ -193,10 +198,14 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     protected:
         AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
 
+        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onRunningToggled(bool onRunningStart);
+
         virtual bool validateMove() const;
 
         /**
-         * Represent the multiplier applied to `kVelocity` should the entity switch to `kRunning` animation.
+         * Represent the multiplier applied to `kVelocity` should the entity switch to `kRun` animation.
         */
         static const double runModifier;
 

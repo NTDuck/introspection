@@ -9,18 +9,13 @@
 Mixer::Mixer() : Singleton<Mixer>() {
     for (auto& pair : kGameStateBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
     for (auto& pair : kLevelBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
-
-    SFXButtonClick = Mix_LoadWAV(config::mixer::SFXButtonClick.string().c_str());
+    for (auto& pair : kSFXMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadWAV(pair.second.second.string().c_str());
 }
 
 Mixer::~Mixer() {
     for (auto& pair : kGameStateBGMMapping) if (pair.second.first != nullptr) Mix_FreeMusic(pair.second.first);
     for (auto& pair : kLevelBGMMapping) if (pair.second.first != nullptr) Mix_FreeMusic(pair.second.first);
-
-    if (SFXButtonClick != nullptr) {
-        Mix_FreeChunk(SFXButtonClick);
-        SFXButtonClick = nullptr;
-    }
+    for (auto& pair : kSFXMapping) if (pair.second.first != nullptr) Mix_FreeChunk(pair.second.first);
 }
 
 void Mixer::playBGM(Mix_Music* BGM) const {
@@ -42,15 +37,16 @@ void Mixer::unpauseBGM() const {
     Mix_ResumeMusic();
 }
 
-void Mixer::playSFX() const {
-    Mix_PlayChannel(-1, SFXButtonClick, 0);
+void Mixer::playSFX(SFXName SFX) const {
+    auto it = kSFXMapping.find(SFX);
+    if (it != kSFXMapping.end()) Mix_PlayChannel(-1, it->second.first, 0);
 }
 
 /**
  * @brief Change BGM upon entering new level.
  * @note Manually called.
 */
-void Mixer::onLevelChange(level::LevelName newLevel) {
+void Mixer::onLevelChange(level::LevelName newLevel) const {
     stopBGM();
     auto it = kLevelBGMMapping.find(newLevel);
     if (it != kLevelBGMMapping.end()) playBGM(it->second.first);

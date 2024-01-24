@@ -3,7 +3,7 @@
  <properties>
   <property name="animation-attack" type="class" propertytype="animation">
    <properties>
-    <property name="animation-update-rate-multiplier" type="float" value="0.5"/>
+    <property name="animation-update-rate-multiplier" type="float" value="0.75"/>
     <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="64"/>
     <property name="stopGID" type="int" value="71"/>

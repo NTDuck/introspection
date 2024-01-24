@@ -92,6 +92,7 @@ void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
 void IngameInterface::handleEntities() const {
     handleEntitiesMovement();
     handleEntitiesInteraction();
+    handleEntitiesSFX();
 }
 
 /**
@@ -165,5 +166,14 @@ void IngameInterface::handleEntitiesInteraction() const {
         if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
     }
 
-    if (Player::instance->currAnimationType == AnimationType::kDeath && Player::instance->isAnimationAtFinalSprite) globals::state = GameState::kGameOver;
+    if (Player::instance->currAnimationType == AnimationType::kDeath) {
+        IngameMapHandler::instance->isOnGrayscale = true;
+        if (Player::invoke(&Player::isAnimationAtFinalSprite)) globals::state = GameState::kGameOver;
+    }
+}
+
+void IngameInterface::handleEntitiesSFX() const {
+    Player::invoke(&Player::handleSFX);
+    // Teleporter::invoke(&Teleporter::handleSFX);
+    Slime::invoke(&Slime::handleSFX);
 }

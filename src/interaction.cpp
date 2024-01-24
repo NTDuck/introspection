@@ -74,7 +74,7 @@ bool utils::checkEntityAttackRegister(const Active& active, const Passive& passi
     utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
     utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
     
-    if (active.currAnimationType == AnimationType::kDamaged || passive.currAnimationType != AnimationType::kAttack || !passive.isAnimationAtFinalSprite) return false;
+    if (active.currAnimationType == AnimationType::kDamaged || passive.currAnimationType != AnimationType::kAttack || !passive.isAnimationAtFinalSprite()) return false;
 
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
     return !(distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y);

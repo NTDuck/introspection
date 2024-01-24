@@ -12,7 +12,7 @@ const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> 
     { "animation-disappear", AnimationType::kDisappear },
     { "animation-duck", AnimationType::kDuck },
     { "animation-jump", AnimationType::kJump },
-    { "animation-run", AnimationType::kRunning },
+    { "animation-run", AnimationType::kRun },
     { "animation-walk", AnimationType::kWalk },
     { "animation-damaged", AnimationType::kDamaged },
 };

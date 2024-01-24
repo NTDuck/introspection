@@ -254,7 +254,7 @@ namespace tile {
             kDisappear,
             kDuck,
             kJump,
-            kRunning,
+            kRun,
             kWalk,
             kDamaged,
         };
@@ -422,6 +422,7 @@ namespace config {
         constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color black = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color smoky_black = SDL_Color{ 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color gold = SDL_Color{ 0xff, 0xd7, 0x00, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color transparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
     }
@@ -437,7 +438,7 @@ namespace config {
             config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
         };
         constexpr ComponentPreset frameRateOverlay = {
-            config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
+            config::color::smoky_black, config::color::transparent, config::color::offwhite, 0, 0,
         };
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
@@ -470,8 +471,6 @@ namespace config {
         constexpr uint16_t format = MIX_DEFAULT_FORMAT;
         constexpr int channels = MIX_DEFAULT_CHANNELS;
         constexpr int chunkSize = 2048;   // 2 KB
-
-        const std::filesystem::path SFXButtonClick = config::path::asset_audio / "sfx" / "一般の警告音.mp3";
     }
 
     namespace interface {
@@ -519,11 +518,13 @@ namespace config {
 
         namespace fps_overlay {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
-            constexpr double destSizeModifier = 0.5;
-            constexpr SDL_Point destRectRatio = { 6, 2 };
-            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
+            constexpr double destSizeModifier = 0.25;
+            constexpr SDL_Point destRectRatio = { 5, 2 };
+            const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
             constexpr int updateRate = 30;
+
             constexpr unsigned int precision = 2;
+            const std::string prefix = "FPS: ";
         }
 
         namespace exit_text {

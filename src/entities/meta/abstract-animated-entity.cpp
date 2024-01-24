@@ -1,9 +1,11 @@
 #include <entities.hpp>
 
 #include <filesystem>
+#include <type_traits>
 
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -47,7 +49,7 @@
 */
 
 template <typename T>
-AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords), isAnimationAtFinalSprite(false) {
+AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords) {
     resetAnimation(AnimationType::kIdle);
 }
 
@@ -64,6 +66,32 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& enti
     }
     
     AbstractEntity<T>::onLevelChange(entityLevelData);
+}
+
+/**
+ * @note `AnimationType::kWalk` & `AnimationType:kRun` are handled elsewhere.
+ * @see https://stackoverflow.com/questions/41011900/equivalent-ternary-operator-for-constexpr-if
+*/
+template <typename T>
+void AbstractAnimatedEntity<T>::handleSFX() const {
+    switch (currAnimationType) {
+        case AnimationType::kAttack:
+            if (!isAnimationAtFirstSprite()) return;
+            Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
+            break;
+
+        case AnimationType::kDamaged:
+            if (!isAnimationAtFirstSprite()) return;
+            Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kEntityDamaged);
+            break;
+
+        case AnimationType::kDeath:
+            if (!isAnimationAtFirstSprite()) return;
+            Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerDeath : Mixer::SFXName::kEntityDeath);
+            break;
+
+        default: break;
+    }
 }
 
 /**
@@ -91,8 +119,6 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             resetAnimation(tilesetData->animationMapping[currAnimationType].isPermanent ? AnimationType::kIdle : currAnimationType);
         };
     }
-
-    isAnimationAtFinalSprite = (currAnimationGID == tilesetData->animationMapping[currAnimationType].stopGID);
 
     srcRect.x = currAnimationGID % tilesetData->srcCount.x * tilesetData->srcSize.x;
     srcRect.y = currAnimationGID / tilesetData->srcCount.x * tilesetData->srcSize.y;

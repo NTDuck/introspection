@@ -2,9 +2,11 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <type_traits>
 
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -127,7 +129,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
     if (
         nextDestCoords != nullptr   // Another move is on progress
         || currAnimationType == AnimationType::kDeath   // Cannot move if is already dead
-        || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
+        // || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
     ) return;
 
     if (nextVelocity == nullptr) {
@@ -191,7 +193,9 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
 
     if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    AbstractAnimatedEntity<T>::resetAnimation((!isRunning ? AnimationType::kWalk : AnimationType::kRunning), flag);
+    AbstractAnimatedEntity<T>::resetAnimation((isRunning ? AnimationType::kRun : AnimationType::kWalk), flag);
+    
+    if constexpr(std::is_same_v<T, Player>) Mixer::invoke(&Mixer::playSFX, isRunning ? Mixer::SFXName::kPlayerRun : Mixer::SFXName::kPlayerWalk);
 }
 
 /**
@@ -235,8 +239,8 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
     calculateVelocityDependencies();
 
     // Switch to proper animation type
-    if (currAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRunning);
-    else if (currAnimationType == AnimationType::kRunning && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
+    if (currAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRun);
+    else if (currAnimationType == AnimationType::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
 
     // Don't forget to change this
     isRunning = onRunningStart;

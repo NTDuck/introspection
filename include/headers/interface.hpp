@@ -53,6 +53,8 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         inline level::LevelName getLevel() { return levelName; }
         void changeLevel(const level::LevelName levelName);
 
+        bool isOnGrayscale = false;
+
     private:
         void loadLevel();
         void renderBackground() const;
@@ -70,8 +72,6 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
          * A grayscaled version of `texture`.
         */
         SDL_Texture* grayscaleTexture = nullptr;
-
-        bool isOnGrayscale = false;
 };
 
 
@@ -132,6 +132,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
     private:
         void handleEntitiesMovement() const;
         void handleEntitiesInteraction() const;
+        void handleEntitiesSFX() const;
 
         template <typename Active, typename Passive>
         void onEntityCollision(Active& active, Passive& passive) const;

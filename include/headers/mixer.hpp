@@ -15,6 +15,17 @@
 */
 class Mixer final : Singleton<Mixer> {
     public:
+        enum class SFXName {
+            kButtonClick,
+            kPlayerWalk,
+            kPlayerRun,
+            kPlayerAttack,
+            kEntityAttack,
+            kEntityDamaged,
+            kEntityDeath,
+            kPlayerDeath,
+        };
+
         INCL_SINGLETON(Mixer)
 
         Mixer();
@@ -25,9 +36,9 @@ class Mixer final : Singleton<Mixer> {
         void pauseBGM() const;
         void unpauseBGM() const;
 
-        void playSFX() const;
+        void playSFX(SFXName SFX) const;
 
-        void onLevelChange(level::LevelName newLevel);
+        void onLevelChange(level::LevelName newLevel) const;
         void handleGameStateChange();
 
     private:
@@ -47,7 +58,16 @@ class Mixer final : Singleton<Mixer> {
             { level::LevelName::kLevelValleyOfDespair, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-063-its-raining-somewhere-else.mp3") },
         };
 
-        Mix_Chunk* SFXButtonClick = nullptr;
+        std::unordered_map<SFXName, std::pair<Mix_Chunk*, std::filesystem::path>> kSFXMapping = {
+            { SFXName::kButtonClick, std::make_pair(nullptr, config::path::asset_audio / "sfx/一般の警告音.mp3") },
+            { SFXName::kPlayerWalk, std::make_pair(nullptr, config::path::asset_audio / "sfx/zapsplat-foley-footstep-single-wet-ground-light-puddles.mp3") },
+            { SFXName::kPlayerRun, std::make_pair(nullptr, config::path::asset_audio / "sfx/zapsplat-foley-footstep-single-boot-heavy-clump-step-gravel.mp3") },            
+            { SFXName::kPlayerAttack, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-omori-attack.mp3") },
+            { SFXName::kEntityAttack, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-swish.mp3") },
+            { SFXName::kEntityDamaged, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-bite.mp3") },
+            { SFXName::kEntityDeath, std::make_pair(nullptr, config::path::asset_audio / "sfx/wilhelm-scream.mp3") },
+            { SFXName::kPlayerDeath, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-death-by-experiment-667.mp3") },
+        };
 };
 
 
