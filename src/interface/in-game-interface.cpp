@@ -112,8 +112,7 @@ void IngameInterface::handleEntitiesMovement() const {
 
 template <typename Active, typename Passive>
 void IngameInterface::onEntityCollision(Active& active, Passive& passive) const {
-    utils::isDerivedFrom<AbstractAnimatedDynamicEntity<Active>, Active>();
-    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
+    // ...
 }
 
 template <>
@@ -137,16 +136,13 @@ void IngameInterface::onEntityCollision<Player, Slime>(Player& player, Slime& sl
 */
 template <typename Active, typename Passive>
 void IngameInterface::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) const {
-    utils::isDerivedFrom<AbstractAnimatedEntity<Active>, Active>();
-    utils::isDerivedFrom<AbstractAnimatedEntity<Passive>, Passive>();
-
     // Handle `kDamaged` case differently
     if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
         if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
     }
 
-    tile::NextAnimationData::update(active.nextAnimationData, animationType);
+    if ((active.nextAnimationType == nullptr) || (!active.isAnimationOnProgress&& !(*active.nextAnimationType == AnimationType::kDamaged && animationType == AnimationType::kAttack))) active.nextAnimationType = new AnimationType(animationType);
 }
 
 template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
@@ -165,4 +161,6 @@ void IngameInterface::handleEntitiesInteraction() const {
         if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
         if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
     }
+
+    if (Player::instance->currAnimationType == AnimationType::kDeath && Player::instance->isAnimationAtFinalSprite) globals::state = GameState::kGameOver;
 }

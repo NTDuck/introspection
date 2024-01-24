@@ -39,24 +39,29 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         if (it == mapping.end()) return;
 
         if (event.type == SDL_KEYUP) {
-            nextVelocity = {0, 0};
+            delete nextVelocity;
+            nextVelocity = nullptr;
             return;
         }
 
-        nextVelocity = it->second;
-        AbstractAnimatedDynamicEntity<Player>::initiateMove();
+        nextVelocity = new SDL_Point(it->second);
+        initiateMove();
     };
 
-    if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == tile::EntitiesTilesetData::AnimationType::kDamaged)) return;
+    if (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged)) return;
+    if (currAnimationType == AnimationType::kDeath || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDeath)) return;
 
     switch (event.key.keysym.sym) {
         case config::key::PLAYER_MOVE_UP: case config::key::PLAYER_MOVE_DOWN: case config::key::PLAYER_MOVE_RIGHT: case config::key::PLAYER_MOVE_LEFT:
             handleKeyboardMovementInput(); break;
+
         case config::key::PLAYER_ATTACK:
             if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kAttack) break;
-            AbstractAnimatedDynamicEntity<Player>::onAttackInitiated(); break;
+            resetAnimation(AnimationType::kAttack);
+            break;
+
         case config::key::PLAYER_RUN_TOGGLE:
-            AbstractAnimatedDynamicEntity<Player>::onRunningToggled(event.type == SDL_KEYDOWN);
+            onRunningToggled(event.type == SDL_KEYDOWN);
             break;
     }
 }
@@ -64,11 +69,6 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
 void Player::onLevelChange(level::EntityLevelData const& player) {
     auto data = dynamic_cast<const level::PlayerLevelData*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
-}
-
-void Player::onDeath() {
-    AbstractAnimatedDynamicEntity<Player>::onDeath();
-    globals::state = GameState::kGameOver;
 }
 
 

@@ -65,7 +65,7 @@ enum class InteractionType {
 /**
  * @brief Provide flexible handling base on a move's status.
 */
-enum class MoveStatusFlag {
+enum class EntityStatusFlag {
     kDefault, kInvalidated, kContinued,
 };
 
@@ -282,17 +282,6 @@ namespace tile {
         std::unordered_map<AnimationType, Animation> animationMapping;
         int animationUpdateRate = 64;
         SDL_Point animationSize = {1, 1};
-    };
-
-    /**
-     * @brief Contain data associated with the pending i.e. "next" animation.
-    */
-    struct NextAnimationData {
-        bool isExecuting = false;
-        EntitiesTilesetData::AnimationType animationType;
-
-        NextAnimationData(EntitiesTilesetData::AnimationType animationType);
-        static void update(NextAnimationData*& instance, const tile::EntitiesTilesetData::AnimationType pendingAnimationType);
     };
 }
 

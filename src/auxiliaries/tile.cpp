@@ -6,25 +6,6 @@
 #include <SDL.h>
 
 
-tile::NextAnimationData::NextAnimationData(AnimationType animationType) : animationType(animationType) {}
-
-/**
- * @brief Update `instance` based on `pendingAnimationType`.
-*/
-void tile::NextAnimationData::update(NextAnimationData*& instance, const tile::EntitiesTilesetData::AnimationType pendingAnimationType) {
-    if (instance == nullptr) {
-        instance = new tile::NextAnimationData(pendingAnimationType);
-        return;
-    }
-    
-    // if (instance->isExecuting) return;
-
-    // Update existing instance based on priority
-    // Current priority: `kDamaged` > `kAttack`
-    if (instance->animationType == AnimationType::kDamaged && pendingAnimationType == AnimationType::kAttack) return;
-    instance->animationType = pendingAnimationType;
-}
-
 void tile::BaseTilesetData::deinitialize() {
     if (texture != nullptr) {
         SDL_DestroyTexture(texture);

@@ -38,7 +38,7 @@ class Mixer final : Singleton<Mixer> {
         */
         std::unordered_map<GameState, std::pair<Mix_Music*, std::filesystem::path>> kGameStateBGMMapping = {
             { GameState::kMenu, std::make_pair(nullptr, config::path::asset_audio / "bgm/animal-crossing-new-horizons-main-theme.mp3") },
-            { GameState::kGameOver, std::make_pair(nullptr, config::path::asset_audio / "undertale-011-determination.mp3") },
+            { GameState::kGameOver, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-011-determination.mp3") },
             // { GameState::kLoading, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-013-a-home-for-flowers-tulip.mp3") },
         };
 

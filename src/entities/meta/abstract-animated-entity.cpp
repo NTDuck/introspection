@@ -57,9 +57,10 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) :
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
-    if (nextAnimationData != nullptr) {
-        delete nextAnimationData;
-        nextAnimationData = nullptr;
+    if (nextAnimationType != nullptr) {
+        delete nextAnimationType;
+        nextAnimationType = nullptr;
+        isAnimationOnProgress = false;
     }
     
     AbstractEntity<T>::onLevelChange(entityLevelData);
@@ -77,20 +78,17 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         currAnimationUpdateCount = 0;
         if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
             currAnimationGID += tilesetData->animationSize.x;
-            // Behold, heresy!
-            if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);
+            if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);   // Behold, heresy!
         } else {
             // Deinitialize `nextAnimationData`
-            if (nextAnimationData != nullptr && nextAnimationData->isExecuting) {
-                delete nextAnimationData;
-                nextAnimationData = nullptr;
+            if (nextAnimationType != nullptr && isAnimationOnProgress) {
+                delete nextAnimationType;
+                nextAnimationType = nullptr;
+                isAnimationOnProgress = false;
             }
 
-            if (tilesetData->animationMapping[currAnimationType].isPermanent) {
-                if (currAnimationType == AnimationType::kDeath) return;   // The real permanent
-                resetAnimation(AnimationType::kIdle);   // Might implement a temporary storage for most recent state to switch back to
-            }
-            currAnimationGID = tilesetData->animationMapping[currAnimationType].startGID;
+            if (currAnimationType == AnimationType::kDeath) return;   // The real permanent
+            resetAnimation(tilesetData->animationMapping[currAnimationType].isPermanent ? AnimationType::kIdle : currAnimationType);
         };
     }
 
@@ -104,9 +102,9 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(const AnimationType animationType, const MoveStatusFlag flag) {
+void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, EntityStatusFlag flag) {
     currAnimationType = animationType;
-    if (flag == MoveStatusFlag::kContinued) return;
+    if (flag == EntityStatusFlag::kContinued) return;
     currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
 }
 
@@ -118,42 +116,10 @@ template <typename T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
     if (currAnimationType == AnimationType::kDeath) return;
-    if (currAnimationType == AnimationType::kAttack && nextAnimationData != nullptr && nextAnimationData->animationType == AnimationType::kDamaged) onAttackRegistered();
+    if (nextAnimationType == nullptr || isAnimationOnProgress) return;
 
-    if (nextAnimationData == nullptr || nextAnimationData->isExecuting) return;
-
-    switch (nextAnimationData->animationType) {
-        case AnimationType::kAttack: onAttackInitiated(); break;
-        case AnimationType::kDamaged: onAttackRegistered(); break;
-        case AnimationType::kDeath: onDeath(); break;
-        default: return;
-    }
-
-    nextAnimationData->isExecuting = true;
-}
-
-/**
- * @brief Called when the entity should inititate an attack.
-*/
-template <typename T>
-void AbstractAnimatedEntity<T>::onAttackInitiated() {
-    resetAnimation(AnimationType::kAttack);
-}
-
-/**
- * @brief Called when the entity should be damaged.
-*/
-template <typename T>
-void AbstractAnimatedEntity<T>::onAttackRegistered() {
-    resetAnimation(AnimationType::kDamaged);
-}
-
-/**
- * @brief Called when the entity's `secondaryStats.HP` should drop below zero.
-*/
-template <typename T>
-void AbstractAnimatedEntity<T>::onDeath() {
-    resetAnimation(AnimationType::kDeath);
+    resetAnimation(*nextAnimationType);
+    isAnimationOnProgress = true;
 }
 
 

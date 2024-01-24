@@ -35,11 +35,12 @@ void AbstractEntity<T>::initialize() {
 
 template <typename T>
 void AbstractEntity<T>::deinitialize() {
-    Multiton<T>::deinitialize();
     if (tilesetData != nullptr) {
         tilesetData->deinitialize();
         tilesetData = nullptr;
     }
+    
+    Multiton<T>::deinitialize();
 }
 
 /**

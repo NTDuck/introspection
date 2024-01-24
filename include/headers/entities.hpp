@@ -122,17 +122,16 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         INCL_ABSTRACT_ENTITY(T)
 
         virtual ~AbstractAnimatedEntity() = default;
+
         void onLevelChange(level::EntityLevelData const& entityLevelData) override;
 
+        void initiateAnimation();
         void updateAnimation();
-        void resetAnimation(const AnimationType animationType, const MoveStatusFlag flag = MoveStatusFlag::kDefault);
-
-        virtual void initiateAnimation();
-        virtual void onAttackInitiated();
-        virtual void onAttackRegistered();
-        virtual void onDeath();
+        void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
         AnimationType currAnimationType;
+        AnimationType* nextAnimationType = nullptr;
+        bool isAnimationOnProgress = false;
         bool isAnimationAtFinalSprite;
 
         /**
@@ -145,11 +144,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         */
         SDL_Point kAttackRegisterRange;
 
-        /**
-         * Contain data associated with the pending i.e. "next" animation.
-        */
-        tile::NextAnimationData* nextAnimationData = nullptr;
-
     protected:
         AbstractAnimatedEntity(SDL_Point const& destCoords);
 
@@ -158,7 +152,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int currAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::onAttackInitiated, AbstractAnimatedEntity<T>::onAttackRegistered, AbstractAnimatedEntity<T>::onDeath, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange, AbstractAnimatedEntity<T>::nextAnimationData;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
 
 
 /**
@@ -177,11 +171,10 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         void onLevelChange(level::EntityLevelData const& entityLevelData) override;
 
         virtual void move();
-        virtual void initiateMove(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
-        virtual bool validateMove() const;
-        virtual void onMoveStart(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
-        virtual void onMoveEnd(const MoveStatusFlag flag = MoveStatusFlag::kDefault);
-        virtual void onRunningToggled(const bool onRunningStart);
+        virtual void initiateMove(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onRunningToggled(bool onRunningStart);
 
         bool isRunning = false;
 
@@ -199,6 +192,8 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
     protected:
         AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
+
+        virtual bool validateMove() const;
 
         /**
          * Represent the multiplier applied to `kVelocity` should the entity switch to `kRunning` animation.
@@ -220,7 +215,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
          * Represent the next direction of the entity. Might change every frame.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
-        SDL_Point nextVelocity;
+        SDL_Point* nextVelocity = nullptr;
 
     private:
         void calculateVelocityDependencies();
@@ -258,8 +253,6 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         static void deinitialize();
 
-        void onDeath() override;
-        
         void onLevelChange(level::EntityLevelData const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
 };

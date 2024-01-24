@@ -21,11 +21,12 @@ Slime::Slime(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Slime>
 void Slime::calculateMove(SDL_Point const& playerDestCoords) {
     auto distance = utils::calculateDistance(destCoords, playerDestCoords);
     if (kMoveInitiateRange.x < distance && kMoveInitiateRange.y < distance) {
-        nextVelocity = {0, 0};
+        delete nextVelocity;
+        nextVelocity = nullptr;
         return;
     }
 
-    nextVelocity = (utils::generateRandomBinary() ? SDL_Point{(playerDestCoords.x > destCoords.x) * 2 - 1, 0} : SDL_Point{0, (playerDestCoords.y > destCoords.y) * 2 - 1});
+    nextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (playerDestCoords.x > destCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (playerDestCoords.y > destCoords.y) * 2 - 1 });
     AbstractAnimatedDynamicEntity<Slime>::initiateMove();
 }
 

@@ -59,6 +59,10 @@ AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
         delete nextDestRect;
         nextDestRect = nullptr;
     }
+    if (nextVelocity != nullptr) {
+        delete nextVelocity;
+        nextVelocity = nullptr;
+    }
 }
 
 template <typename T>
@@ -102,20 +106,17 @@ void AbstractAnimatedDynamicEntity<T>::move() {
         if ((nextDestRect->x - destRect.x) * currVelocity.x > 0 || (nextDestRect->y - destRect.y) * currVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
     }
 
-    // Enable new movement based on `kMoveDelay`
-    if (counterMoveDelay) {
-        --counterMoveDelay;
-        return;
-    }
+    // Cease new movement if counter not done
+    if (counterMoveDelay) { --counterMoveDelay; return; }
 
     // If new move has not been "initiated", terminate movement i.e. switch back to IDLE
-    if ((nextVelocity.x | nextVelocity.y) == 0) {
-        onMoveEnd();
-        return;
-    }
+    if (nextVelocity == nullptr) onMoveEnd();
+    // If new move has been initiated, do it like this to avoid 
+    else 
 
-    onMoveEnd(MoveStatusFlag::kContinued);
-    initiateMove(MoveStatusFlag::kContinued);
+    // If new move 
+    onMoveEnd(EntityStatusFlag::kContinued);
+    initiateMove(EntityStatusFlag::kContinued);
 }
 
 /**
@@ -123,20 +124,22 @@ void AbstractAnimatedDynamicEntity<T>::move() {
  * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::initiateMove(const MoveStatusFlag flag) {
-    if (currAnimationType == AnimationType::kDeath) return;
-    if (currAnimationType == AnimationType::kDamaged || (nextAnimationData != nullptr && nextAnimationData->animationType == AnimationType::kDamaged)) return;   // Cannot move while damaged
+void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
+    if (
+        nextDestCoords != nullptr   // Another move is on progress
+        || currAnimationType == AnimationType::kDeath   // Cannot move if is already dead
+        || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
+    ) return;
 
-    if (nextDestCoords != nullptr || currAnimationType == AnimationType::kDeath) return;   // A new move should not be initiated if another is present, or the entity is considered "inactive"
-    if (nextVelocity == SDL_Point{0, 0}) {
-        onMoveEnd(MoveStatusFlag::kInvalidated);
+    if (nextVelocity == nullptr) {
+        onMoveEnd(EntityStatusFlag::kInvalidated);
         return;
     }
 
-    nextDestCoords = new SDL_Point(destCoords + nextVelocity);
+    nextDestCoords = new SDL_Point(destCoords + *nextVelocity);
     nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
 
-    if (validateMove()) onMoveStart(flag); else onMoveEnd(MoveStatusFlag::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
+    if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatusFlag::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
 
 /**
@@ -184,8 +187,8 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
  * @note Called when a move is initiated after successful validation.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
-    currVelocity = nextVelocity;
+void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
+    currVelocity = *nextVelocity;
 
     if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
@@ -196,14 +199,16 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(const MoveStatusFlag flag) {
  * @note Called when a validated move is finalized, or when a move is invalidated.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
     // Terminate movement when reached new `Tile`
-    if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != MoveStatusFlag::kInvalidated) {
+    if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != EntityStatusFlag::kInvalidated) {
         destCoords = *nextDestCoords;
         destRect = *nextDestRect;
 
-        // delete nextDestCoords;
-        // delete nextDestRect;
+        if (flag == EntityStatusFlag::kInvalidated) {
+            delete nextDestCoords;
+            delete nextDestRect;
+        }
     }
 
     nextDestCoords = nullptr;
@@ -213,7 +218,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
     counterMoveDelay = kMoveDelay;
     counterFractionalVelocity = {0, 0};
 
-    if (flag == MoveStatusFlag::kContinued) return;
+    if (flag == EntityStatusFlag::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kIdle, flag);
 }
 
@@ -222,16 +227,19 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(const MoveStatusFlag flag) {
  * @param onRunningStart governs whether this function is called to starts running or stops running.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onRunningToggled(const bool onRunningStart) {
+void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
     if (!isRunning ^ onRunningStart) return;
 
+    // Re-calculate certain dependencies
     kVelocity.x *= (onRunningStart ? 1 / runModifier : runModifier);
     kVelocity.y *= (onRunningStart ? 1 / runModifier : runModifier);
     calculateVelocityDependencies();
 
+    // Switch to proper animation type
     if (currAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRunning);
     else if (currAnimationType == AnimationType::kRunning && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
 
+    // Don't forget to change this
     isRunning = onRunningStart;
 }
 
@@ -245,7 +253,6 @@ void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
         utils::castFloatToInt(globals::tileDestSize.x / kVelocity.x),
         utils::castFloatToInt(globals::tileDestSize.y / kVelocity.y),
     };
-
     kFractionalVelocity = {
         globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
         globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
