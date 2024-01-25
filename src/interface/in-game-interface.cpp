@@ -1,5 +1,7 @@
 #include <interface.hpp>
 
+#include <iostream>
+
 #include <interaction.hpp>
 #include <entities.hpp>
 #include <mixer.hpp>
@@ -12,6 +14,7 @@ IngameInterface::IngameInterface() {
         Teleporter::invoke(&Teleporter::render);
         Slime::invoke(&Slime::render);
         Player::invoke(&Player::render);
+        SurgeAttackObject::invoke(&SurgeAttackObject::render);
     };
 
     Player::instantiate(SDL_Point{ 0, 0 });   // This is required for below instantiations
@@ -26,6 +29,8 @@ void IngameInterface::deinitialize() {
     IngameMapHandler::deinitialize();
     IngameViewHandler::deinitialize();
 
+    SurgeAttackObject::deinitialize();
+
     Player::deinitialize();
     Teleporter::deinitialize();
     Slime::deinitialize();
@@ -33,6 +38,8 @@ void IngameInterface::deinitialize() {
 
 void IngameInterface::initialize() {
     IngameMapHandler::initialize();
+
+    SurgeAttackObject::initialize();
 
     Player::initialize();
     Teleporter::initialize();
@@ -47,6 +54,8 @@ void IngameInterface::onLevelChange() const {
     // Populate `globals::currentLevelData` members
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
 
+    SurgeAttackObject::onLevelChangeAll();
+
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
     Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
@@ -58,6 +67,8 @@ void IngameInterface::onLevelChange() const {
 void IngameInterface::onWindowChange() const {
     IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
     IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
+
+    SurgeAttackObject::invoke(&SurgeAttackObject::onWindowChange);
 
     Player::invoke(&Player::onWindowChange);
     Teleporter::invoke(&Teleporter::onWindowChange);
@@ -99,6 +110,9 @@ void IngameInterface::handleEntities() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesMovement() const {
+    SurgeAttackObject::invoke(&SurgeAttackObject::handleLifespan);
+    SurgeAttackObject::invoke(&SurgeAttackObject::updateAnimation);
+
     Player::invoke(&Player::initiateAnimation);
     Player::invoke(&Player::move);
     Player::invoke(&Player::updateAnimation);
@@ -140,6 +154,7 @@ void IngameInterface::onEntityAnimation(AnimationType animationType, Active& act
     // Handle `kDamaged` case differently
     if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
+        active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(passive.secondaryStats, active.secondaryStats);
         if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
     }
 
@@ -151,19 +166,30 @@ void IngameInterface::onEntityAnimation(AnimationType animationType, Active& act
 
 template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
 template void IngameInterface::onEntityAnimation<Slime, Player>(const AnimationType animationType, Slime& slime, Player& player) const;
+template void IngameInterface::onEntityAnimation<SurgeAttackObject, Player>(const AnimationType animationType, SurgeAttackObject& surgeAttackObject, Player& player) const;
 
 /**
  * @brief Handle interactions between entities.
 */
 void IngameInterface::handleEntitiesInteraction() const {
-    auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoords); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
+    auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoordsArb); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
     auto slime = utils::checkEntityCollision<Player, Slime>(*Player::instance, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*Player::instance, *slime);
+
+    for (auto& surgeAttackObject : SurgeAttackObject::instances) {
+        if (surgeAttackObject == nullptr) continue;
+        if (utils::checkEntityAttackRegister<SurgeAttackObject, Player>(*surgeAttackObject, *Player::instance, false)) onEntityAnimation<SurgeAttackObject, Player>(AnimationType::kDamaged, *surgeAttackObject, *Player::instance);
+    }
 
     for (auto& slime : Slime::instances) {
         if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
         if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *Player::instance);
         if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
         if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
+
+        for (auto& surgeAttackObject : SurgeAttackObject::instances) {
+            if (surgeAttackObject == nullptr) continue;
+            if (utils::checkEntityAttackRegister<SurgeAttackObject, Slime>(*surgeAttackObject, *slime, false)) onEntityAnimation<SurgeAttackObject, Slime>(AnimationType::kDamaged, *surgeAttackObject, *slime);
+        }
     }
 
     if (Player::instance->currAnimationType == AnimationType::kDeath) {

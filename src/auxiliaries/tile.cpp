@@ -113,7 +113,8 @@ void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Ren
                 animationSize.x = value.as_int();
             } else if (!std::strcmp(name.as_string(), "animation-height")) {
                 animationSize.y = value.as_int();
-            }
+            } else properties.insert(std::make_pair(name.as_string(), value.as_string()));
+
         } else {
             auto propertytype = propertyNode.attribute("propertytype");
             pugi::xml_node animationsNode = propertyNode.child("properties");

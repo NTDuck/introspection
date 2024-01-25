@@ -267,5 +267,6 @@ template <typename T>
 const double AbstractAnimatedDynamicEntity<T>::runModifier = config::entities::runVelocityModifier;
 
 
+template class AbstractAnimatedDynamicEntity<SurgeAttackObject>;
 template class AbstractAnimatedDynamicEntity<Player>;
 template class AbstractAnimatedDynamicEntity<Slime>;

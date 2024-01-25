@@ -59,7 +59,7 @@ enum class IngameViewMode {
  * @see <interaction.h>
 */
 enum class InteractionType {
-    kCoords, kRect, kPerPixel,
+    kCoordsArb, kCoordsAbs, kRect, kPerPixel,
 };
 
 /**
@@ -416,6 +416,7 @@ namespace config {
         constexpr SDL_Keycode PLAYER_MOVE_LEFT = SDLK_d;
         constexpr SDL_Keycode PLAYER_RUN_TOGGLE = SDLK_LSHIFT;
         constexpr SDL_KeyCode PLAYER_ATTACK = SDLK_SPACE;
+        constexpr SDL_KeyCode PLAYER_LINEAR_SURGE_ATTACK = SDLK_q;
     }
 
     namespace color {
@@ -498,7 +499,8 @@ namespace config {
 
         namespace teleporter {
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
         }
 
         namespace slime {
@@ -509,7 +511,16 @@ namespace config {
             constexpr SDL_Point moveInitiateRange = { 16, 16 };
             constexpr SDL_Point attackInitiateRange = { 7, 7 };
             constexpr SDL_Point attackRegisterRange = { 5, 5 };
-            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+            constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
+        }
+
+        namespace surge_attack_object {
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
+            constexpr SDL_FPoint velocity = { 0, 0 };
+            constexpr int moveDelay = 0;
+            constexpr SDL_Point attackRegisterRange = { 5, 5 };
+            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }
     }
 
@@ -673,10 +684,10 @@ namespace std {
 
 
 namespace utils {
-    template <typename Base, typename Derived>
-    struct isDerivedFrom {
-        static_assert(std::is_base_of_v<Base, Derived>, "`Derived` must derive from `Base`");
-    };
+    // template <typename Base, typename Derived>
+    // struct isDerivedFrom {
+    //     static_assert(std::is_base_of_v<Base, Derived>, "`Derived` must derive from `Base`");
+    // };
 
     template <typename Iterable, typename Callable, typename... Args>
     void iterate(Iterable const& iterable, Callable&& callable, Args&&... args) {

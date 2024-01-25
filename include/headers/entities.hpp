@@ -134,12 +134,16 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         AnimationType* nextAnimationType = nullptr;
         bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
 
+        inline bool isAnimationAtSprite(int GID) const {
+            return currAnimationGID == GID;
+        }
+
         inline bool isAnimationAtFirstSprite() const {
-            return currAnimationGID == tilesetData->animationMapping[currAnimationType].startGID;
+            return isAnimationAtSprite(tilesetData->animationMapping[currAnimationType].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return currAnimationGID == tilesetData->animationMapping[currAnimationType].stopGID;
+            return isAnimationAtSprite(tilesetData->animationMapping[currAnimationType].stopGID);
         }
 
         /**
@@ -160,7 +164,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int currAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
 
 
 /**
@@ -205,6 +209,12 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual bool validateMove() const;
 
         /**
+         * Represent the current direction of the entity.
+         * @note Data members should only receive values of `-1`, `1`, and `0`.
+        */
+        SDL_Point currVelocity;
+
+        /**
          * Represent the multiplier applied to `kVelocity` should the entity switch to `kRun` animation.
         */
         static const double runModifier;
@@ -231,21 +241,36 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         
         int counterMoveDelay;
 
-        /**
-         * Represent the current direction of the entity.
-         * @note Data members should only receive values of `-1`, `1`, and `0`.
-        */
-        SDL_Point currVelocity;
-
         SDL_FPoint counterFractionalVelocity;
         SDL_FPoint kFractionalVelocity;
         SDL_Point kIntegralVelocity;
 };
 
-#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::isRunning, AbstractAnimatedDynamicEntity<T>::nextDestCoords, AbstractAnimatedDynamicEntity<T>::nextDestRect, AbstractAnimatedDynamicEntity<T>::runModifier, AbstractAnimatedDynamicEntity<T>::kMoveDelay, AbstractAnimatedDynamicEntity<T>::kVelocity, AbstractAnimatedDynamicEntity<T>::nextVelocity;
+#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::isRunning, AbstractAnimatedDynamicEntity<T>::nextDestCoords, AbstractAnimatedDynamicEntity<T>::nextDestRect, AbstractAnimatedDynamicEntity<T>::currVelocity, AbstractAnimatedDynamicEntity<T>::runModifier, AbstractAnimatedDynamicEntity<T>::kMoveDelay, AbstractAnimatedDynamicEntity<T>::kVelocity, AbstractAnimatedDynamicEntity<T>::nextVelocity;
 
 
 /* Derived implementations */
+
+class SurgeAttackObject final : public AbstractAnimatedDynamicEntity<SurgeAttackObject> {
+    public:
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(SurgeAttackObject)
+
+        SurgeAttackObject(SDL_Point const& destCoords, SDL_Point const& direction);
+        ~SurgeAttackObject() = default;
+
+        static void initialize();
+        static void onLevelChangeAll();
+
+        static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
+        static void initiateCircularAttack(SDL_Point const& destCoords);
+
+        void handleLifespan();
+
+    private:
+        void initiateNextLinearAttack();
+
+        SDL_Point& kDirection = currVelocity;   // Does not allocate additional memory
+};
 
 
 /**
@@ -264,6 +289,9 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         void onLevelChange(level::EntityLevelData const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
+
+    private:
+        SDL_Point prevDirection = { 1, 0 };
 };
 
 

@@ -106,7 +106,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         currAnimationUpdateCount = 0;
         if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
             currAnimationGID += tilesetData->animationSize.x;
-            if (currAnimationGID / tilesetData->animationSize.x != (currAnimationGID - tilesetData->animationSize.x) / tilesetData->animationSize.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);   // Behold, heresy!
+            if (currAnimationGID / tilesetData->srcCount.x != (currAnimationGID - tilesetData->srcCount.x) / tilesetData->srcCount.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);   // Behold, heresy!
         } else {
             // Deinitialize `nextAnimationData`
             if (nextAnimationType != nullptr && isAnimationOnProgress) {
@@ -149,6 +149,7 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 }
 
 
+template class AbstractAnimatedEntity<SurgeAttackObject>;
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;
 template class AbstractAnimatedEntity<Slime>;

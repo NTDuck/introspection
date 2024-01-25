@@ -45,6 +45,7 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         }
 
         nextVelocity = new SDL_Point(it->second);
+        prevDirection = it->second;
         initiateMove();
     };
 
@@ -55,14 +56,22 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case config::key::PLAYER_MOVE_UP: case config::key::PLAYER_MOVE_DOWN: case config::key::PLAYER_MOVE_RIGHT: case config::key::PLAYER_MOVE_LEFT:
             handleKeyboardMovementInput(); break;
 
-        case config::key::PLAYER_ATTACK:
-            if (currAnimationType == tile::EntitiesTilesetData::AnimationType::kAttack) break;
-            resetAnimation(AnimationType::kAttack);
-            break;
-
         case config::key::PLAYER_RUN_TOGGLE:
             onRunningToggled(event.type == SDL_KEYDOWN);
             break;
+
+        case config::key::PLAYER_ATTACK:
+            if (currAnimationType == AnimationType::kAttack || currAnimationType == AnimationType::kJump) break;
+            resetAnimation(AnimationType::kAttack);
+            break;
+
+        case config::key::PLAYER_LINEAR_SURGE_ATTACK:
+            if (currAnimationType == AnimationType::kAttack || currAnimationType == AnimationType::kJump) break;
+            resetAnimation(AnimationType::kJump);
+            SurgeAttackObject::initiateLinearAttack(destCoords + prevDirection, prevDirection);
+            break;
+
+        default: break;
     }
 }
 

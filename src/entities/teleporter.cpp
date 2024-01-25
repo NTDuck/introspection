@@ -10,6 +10,7 @@
 
 Teleporter::Teleporter(SDL_Point const& destCoords) : AbstractAnimatedEntity<Teleporter>(destCoords) {
     destRectModifier = config::entities::teleporter::destRectModifier;
+    primaryStats = config::entities::teleporter::primaryStats;
 }
 
 void Teleporter::onLevelChange(level::EntityLevelData const& teleporterData) {
