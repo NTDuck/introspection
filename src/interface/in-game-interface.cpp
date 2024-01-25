@@ -175,10 +175,11 @@ void IngameInterface::handleEntitiesInteraction() const {
     auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoordsArb); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
     auto slime = utils::checkEntityCollision<Player, Slime>(*Player::instance, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*Player::instance, *slime);
 
-    for (auto& surgeAttackObject : SurgeAttackObject::instances) {
-        if (surgeAttackObject == nullptr) continue;
-        if (utils::checkEntityAttackRegister<SurgeAttackObject, Player>(*surgeAttackObject, *Player::instance, false)) onEntityAnimation<SurgeAttackObject, Player>(AnimationType::kDamaged, *surgeAttackObject, *Player::instance);
-    }
+    // // Friendly fire shall not be tolerated!
+    // for (auto& surgeAttackObject : SurgeAttackObject::instances) {
+    //     if (surgeAttackObject == nullptr) continue;
+    //     if (utils::checkEntityAttackRegister<Player, SurgeAttackObject>(*Player::instance, *surgeAttackObject, false)) onEntityAnimation<Player, SurgeAttackObject>(AnimationType::kDamaged, *Player::instance, *surgeAttackObject);
+    // }
 
     for (auto& slime : Slime::instances) {
         if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
@@ -188,7 +189,7 @@ void IngameInterface::handleEntitiesInteraction() const {
 
         for (auto& surgeAttackObject : SurgeAttackObject::instances) {
             if (surgeAttackObject == nullptr) continue;
-            if (utils::checkEntityAttackRegister<SurgeAttackObject, Slime>(*surgeAttackObject, *slime, false)) onEntityAnimation<SurgeAttackObject, Slime>(AnimationType::kDamaged, *surgeAttackObject, *slime);
+            if (utils::checkEntityAttackRegister<Slime, SurgeAttackObject>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, SurgeAttackObject>(AnimationType::kDamaged, *slime, *surgeAttackObject);
         }
     }
 

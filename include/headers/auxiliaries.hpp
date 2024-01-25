@@ -519,7 +519,7 @@ namespace config {
             constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
             constexpr SDL_FPoint velocity = { 0, 0 };
             constexpr int moveDelay = 0;
-            constexpr SDL_Point attackRegisterRange = { 5, 5 };
+            constexpr SDL_Point attackRegisterRange = { 1, 1 };
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }
     }
