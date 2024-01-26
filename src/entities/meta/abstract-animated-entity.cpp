@@ -149,7 +149,8 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 }
 
 
-template class AbstractAnimatedEntity<SurgeAttackObject>;
+template class AbstractAnimatedEntity<PentacleProjectile>;
+template class AbstractAnimatedEntity<HauntedBookcaseProjectile>;
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;
 template class AbstractAnimatedEntity<Slime>;

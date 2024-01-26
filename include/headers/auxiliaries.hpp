@@ -399,6 +399,7 @@ namespace config {
             const std::filesystem::path OmoriHarmonic = asset_font / "omori-game-2.ttf";
             const std::filesystem::path DeterminationMono = asset_font / "DeterminationMonoWebRegular-Z5oq.ttf";
             const std::filesystem::path BadlyStuffedAnimal = asset_font / "BadlyStuffedAnimalDemoReg-8M3AD.ttf";   // Bizarre
+            const std::filesystem::path BadComa = asset_font / "bad-coma.ttf";
         }
     }
 
@@ -514,10 +515,19 @@ namespace config {
             constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
         }
 
-        namespace surge_attack_object {
+        namespace pentacle_projectile {
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
             constexpr SDL_FPoint velocity = { 0, 0 };
+            constexpr int moveDelay = 0;
+            constexpr SDL_Point attackRegisterRange = { 1, 1 };
+            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
+        }
+
+        namespace haunted_bookcase_projectile {
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-haunted-bookcase.tsx";
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 1, 1 };
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
@@ -571,7 +581,7 @@ namespace config {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
             constexpr double destSizeModifier = 5.5;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
-            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
+            const std::filesystem::path fontPath = config::path::font::BadComa;
         }
 
         namespace loading_message {

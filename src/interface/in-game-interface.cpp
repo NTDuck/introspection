@@ -11,10 +11,13 @@
 IngameInterface::IngameInterface() {
     auto renderIngameDependencies = []() {
         IngameMapHandler::invoke(&IngameMapHandler::render);
+
         Teleporter::invoke(&Teleporter::render);
         Slime::invoke(&Slime::render);
         Player::invoke(&Player::render);
-        SurgeAttackObject::invoke(&SurgeAttackObject::render);
+
+        PentacleProjectile::invoke(&PentacleProjectile::render);
+        HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::render);
     };
 
     Player::instantiate(SDL_Point{ 0, 0 });   // This is required for below instantiations
@@ -29,7 +32,8 @@ void IngameInterface::deinitialize() {
     IngameMapHandler::deinitialize();
     IngameViewHandler::deinitialize();
 
-    SurgeAttackObject::deinitialize();
+    PentacleProjectile::deinitialize();
+    HauntedBookcaseProjectile::deinitialize();
 
     Player::deinitialize();
     Teleporter::deinitialize();
@@ -39,7 +43,8 @@ void IngameInterface::deinitialize() {
 void IngameInterface::initialize() {
     IngameMapHandler::initialize();
 
-    SurgeAttackObject::initialize();
+    PentacleProjectile::initialize();
+    HauntedBookcaseProjectile::initialize();
 
     Player::initialize();
     Teleporter::initialize();
@@ -54,7 +59,8 @@ void IngameInterface::onLevelChange() const {
     // Populate `globals::currentLevelData` members
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
 
-    SurgeAttackObject::onLevelChangeAll();
+    PentacleProjectile::onLevelChangeAll();
+    HauntedBookcaseProjectile::onLevelChangeAll();
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
@@ -68,7 +74,8 @@ void IngameInterface::onWindowChange() const {
     IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
     IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
 
-    SurgeAttackObject::invoke(&SurgeAttackObject::onWindowChange);
+    PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::onWindowChange);
 
     Player::invoke(&Player::onWindowChange);
     Teleporter::invoke(&Teleporter::onWindowChange);
@@ -110,8 +117,11 @@ void IngameInterface::handleEntities() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesMovement() const {
-    SurgeAttackObject::invoke(&SurgeAttackObject::handleLifespan);
-    SurgeAttackObject::invoke(&SurgeAttackObject::updateAnimation);
+    PentacleProjectile::invoke(&PentacleProjectile::handleLifespan);
+    PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
+
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::move);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::updateAnimation);
 
     Player::invoke(&Player::initiateAnimation);
     Player::invoke(&Player::move);
@@ -166,7 +176,8 @@ void IngameInterface::onEntityAnimation(AnimationType animationType, Active& act
 
 template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
 template void IngameInterface::onEntityAnimation<Slime, Player>(const AnimationType animationType, Slime& slime, Player& player) const;
-template void IngameInterface::onEntityAnimation<SurgeAttackObject, Player>(const AnimationType animationType, SurgeAttackObject& surgeAttackObject, Player& player) const;
+template void IngameInterface::onEntityAnimation<PentacleProjectile, Player>(const AnimationType animationType, PentacleProjectile& surgeAttackObject, Player& player) const;
+template void IngameInterface::onEntityAnimation<HauntedBookcaseProjectile, Player>(const AnimationType animationType, HauntedBookcaseProjectile& projectile, Player& player) const;
 
 /**
  * @brief Handle interactions between entities.
@@ -187,9 +198,14 @@ void IngameInterface::handleEntitiesInteraction() const {
         if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
         if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
 
-        for (auto& surgeAttackObject : SurgeAttackObject::instances) {
+        for (auto& surgeAttackObject : PentacleProjectile::instances) {
             if (surgeAttackObject == nullptr) continue;
-            if (utils::checkEntityAttackRegister<Slime, SurgeAttackObject>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, SurgeAttackObject>(AnimationType::kDamaged, *slime, *surgeAttackObject);
+            if (utils::checkEntityAttackRegister<Slime, PentacleProjectile>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, PentacleProjectile>(AnimationType::kDamaged, *slime, *surgeAttackObject);
+        }
+
+        for (auto& projectile : HauntedBookcaseProjectile::instances) {
+            if (projectile == nullptr) continue;
+            if (utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(*slime, *projectile, false)) onEntityAnimation<Slime, HauntedBookcaseProjectile>(AnimationType::kDamaged, *slime, *projectile);
         }
     }
 

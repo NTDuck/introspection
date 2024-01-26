@@ -259,7 +259,7 @@ void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
     kFractionalVelocity = {
         globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
         globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
-    }; 
+    };
 }
 
 
@@ -267,6 +267,7 @@ template <typename T>
 const double AbstractAnimatedDynamicEntity<T>::runModifier = config::entities::runVelocityModifier;
 
 
-template class AbstractAnimatedDynamicEntity<SurgeAttackObject>;
+template class AbstractAnimatedDynamicEntity<PentacleProjectile>;
+template class AbstractAnimatedDynamicEntity<HauntedBookcaseProjectile>;
 template class AbstractAnimatedDynamicEntity<Player>;
 template class AbstractAnimatedDynamicEntity<Slime>;

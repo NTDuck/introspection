@@ -1,6 +1,5 @@
 #include <interaction.hpp>
 
-#include <iostream>
 #include <type_traits>
 #include <algorithm>
 #include <functional>
@@ -73,16 +72,10 @@ bool utils::checkEntityAttackInitiate(Active const& active, Passive const& passi
 */
 template <typename Active, typename Passive>
 bool utils::checkEntityAttackRegister(Active const& active, Passive const& passive, bool requiresPassiveAtFinalSprite) {
-    bool log = false;
-    if constexpr(std::is_same_v<Active, SurgeAttackObject> && std::is_same_v<Passive, Slime>) log = true;
-
-    if (log) std::cout << "cond: ";
     if (active.currAnimationType == AnimationType::kDamaged || passive.currAnimationType != AnimationType::kAttack) return false;
 
-    if (log) std::cout << "1 ";
     if (requiresPassiveAtFinalSprite && !passive.isAnimationAtFinalSprite()) return false;
 
-    if (log) std::cout << "2 ";
     int distance = utils::calculateDistance(active.destCoords, passive.destCoords);
     return !(distance > passive.kAttackRegisterRange.x || distance > passive.kAttackRegisterRange.y);
 }
@@ -90,11 +83,12 @@ bool utils::checkEntityAttackRegister(Active const& active, Passive const& passi
 
 template Teleporter* utils::checkEntityCollision<Player, Teleporter>(Player const& player, InteractionType interactionType);
 template Slime* utils::checkEntityCollision<Player, Slime>(Player const& player, InteractionType interactionType);
-template Player* utils::checkEntityCollision<SurgeAttackObject, Player>(SurgeAttackObject const& surgeAttackObject, InteractionType interactionType);
-template Slime* utils::checkEntityCollision<SurgeAttackObject, Slime>(SurgeAttackObject const& surgeAttackObject, InteractionType interactionType);
+template Player* utils::checkEntityCollision<PentacleProjectile, Player>(PentacleProjectile const& surgeAttackObject, InteractionType interactionType);
+template Slime* utils::checkEntityCollision<PentacleProjectile, Slime>(PentacleProjectile const& surgeAttackObject, InteractionType interactionType);
 
 template bool utils::checkEntityAttackInitiate<Slime, Player>(Slime const& slime, Player const& player);
 template bool utils::checkEntityAttackRegister<Player, Slime>(Player const& player, Slime const& slime, bool requiresPassiveAtFinalSprite);
 template bool utils::checkEntityAttackRegister<Slime, Player>(Slime const& slime, Player const& player, bool requiresPassiveAtFinalSprite);
-template bool utils::checkEntityAttackRegister<Player, SurgeAttackObject>(Player const& player, SurgeAttackObject const& surgeAttackObject, bool requiresPassiveAtFinalSprite);
-template bool utils::checkEntityAttackRegister<Slime, SurgeAttackObject>(Slime const& slime, SurgeAttackObject const& surgeAttackObject, bool requiresPassiveAtFinalSprite);
+template bool utils::checkEntityAttackRegister<Player, PentacleProjectile>(Player const& player, PentacleProjectile const& surgeAttackObject, bool requiresPassiveAtFinalSprite);
+template bool utils::checkEntityAttackRegister<Slime, PentacleProjectile>(Slime const& slime, PentacleProjectile const& surgeAttackObject, bool requiresPassiveAtFinalSprite);
+template bool utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(Slime const& slime, HauntedBookcaseProjectile const& projectile, bool requiresPassiveAtFinalSprite);

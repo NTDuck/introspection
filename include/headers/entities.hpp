@@ -127,7 +127,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual void handleSFX() const;
 
         void initiateAnimation();
-        void updateAnimation();
+        virtual void updateAnimation();
         void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
         AnimationType currAnimationType;
@@ -249,16 +249,17 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 #define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::isRunning, AbstractAnimatedDynamicEntity<T>::nextDestCoords, AbstractAnimatedDynamicEntity<T>::nextDestRect, AbstractAnimatedDynamicEntity<T>::currVelocity, AbstractAnimatedDynamicEntity<T>::runModifier, AbstractAnimatedDynamicEntity<T>::kMoveDelay, AbstractAnimatedDynamicEntity<T>::kVelocity, AbstractAnimatedDynamicEntity<T>::nextVelocity;
 
 
-/* Derived implementations */
-
-class SurgeAttackObject final : public AbstractAnimatedDynamicEntity<SurgeAttackObject> {
+template <typename T>
+class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
     public:
-        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(SurgeAttackObject)
+        INCL_MULTITON(T)
+        INCL_ABSTRACT_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
 
-        SurgeAttackObject(SDL_Point const& destCoords, SDL_Point const& direction);
-        ~SurgeAttackObject() = default;
+        GenericSurgeProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+        ~GenericSurgeProjectile() = default;
 
-        static void initialize();
         static void onLevelChangeAll();
 
         static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
@@ -270,6 +271,55 @@ class SurgeAttackObject final : public AbstractAnimatedDynamicEntity<SurgeAttack
         void initiateNextLinearAttack();
 
         SDL_Point& kDirection = currVelocity;   // Does not allocate additional memory
+};
+
+#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::initiateLinearAttack, GenericSurgeProjectile<T>::initiateCircularAttack, GenericSurgeProjectile<T>::handleLifespan;
+
+
+template <typename T>
+class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
+    public:
+        INCL_MULTITON(T)
+        INCL_ABSTRACT_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
+
+        virtual ~GenericAerialProjectile() = default;
+
+        static void onLevelChangeAll();
+        static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
+
+        void updateAnimation() override;
+
+    protected:
+        GenericAerialProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+
+    private:
+        void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault) override;
+        void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault) override; 
+};
+
+#define INCL_GENERIC_AERIAL_PROJECTILE(T) using GenericAerialProjectile<T>::onLevelChangeAll, GenericAerialProjectile<T>::initiateLinearAttack, GenericAerialProjectile<T>::updateAnimation;
+
+
+/* Derived implementations */
+
+class PentacleProjectile final : public GenericSurgeProjectile<PentacleProjectile> {
+    public:
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(PentacleProjectile)
+
+        PentacleProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+        ~PentacleProjectile() = default;
+};
+
+
+class HauntedBookcaseProjectile final : public GenericAerialProjectile<HauntedBookcaseProjectile> {
+    public:
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(HauntedBookcaseProjectile)
+        INCL_GENERIC_AERIAL_PROJECTILE(HauntedBookcaseProjectile)
+
+        HauntedBookcaseProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+        ~HauntedBookcaseProjectile() = default;
 };
 
 
@@ -289,9 +339,6 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         void onLevelChange(level::EntityLevelData const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
-
-    private:
-        SDL_Point prevDirection = { 1, 0 };
 };
 
 

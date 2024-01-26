@@ -27,6 +27,8 @@ void Player::deinitialize() {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
+    static SDL_Point prevDirection = { 1, 0 };
+
     auto handleKeyboardMovementInput = [&]() {
         static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
             { config::key::PLAYER_MOVE_UP, {0, -1} },
@@ -68,7 +70,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case config::key::PLAYER_LINEAR_SURGE_ATTACK:
             if (currAnimationType == AnimationType::kAttack || currAnimationType == AnimationType::kJump) break;
             resetAnimation(AnimationType::kJump);
-            SurgeAttackObject::initiateLinearAttack(destCoords + prevDirection, prevDirection);
+            // HauntedBookcaseProjectile::initiateLinearAttack(destCoords + prevDirection, prevDirection);
+            PentacleProjectile::initiateLinearAttack(destCoords + prevDirection, prevDirection);
             break;
 
         default: break;

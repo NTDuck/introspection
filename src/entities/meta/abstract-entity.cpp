@@ -123,7 +123,8 @@ tile::EntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
  * @note Bear fruition from 8 hours of debugging and not less than 50 articles from StackOverflow and other places.
  * @warning Recommended implementation: derived abstract classes MUST provide similar implementation at the end of the corresponding source files.
 */
-template class AbstractEntity<SurgeAttackObject>;
+template class AbstractEntity<PentacleProjectile>;
+template class AbstractEntity<HauntedBookcaseProjectile>;
 template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
 template class AbstractEntity<Slime>;
