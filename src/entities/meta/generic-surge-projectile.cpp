@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <string>
+#include <unordered_set>
 
 #include <SDL.h>
 
@@ -30,16 +31,36 @@ void GenericSurgeProjectile<T>::onLevelChangeAll() {
 }
 
 /**
- * @param destCoords handled by the entity from which the attack should be invoked. Usually calculated by `destCoords + *nextVelocity`.
+ * @param destCoords the `destCoords` of the entity from which the attack would be invoked.
 */
 template <typename T>
-void GenericSurgeProjectile<T>::initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction) {
-    instantiate(destCoords, direction);
-}
+void GenericSurgeProjectile<T>::initiateAttack(ProjectileType type, SDL_Point const& destCoords, SDL_Point const& direction) {
+    switch (type) {
+        case ProjectileType::kDiagonalQuadruple:
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, SDL_Point{ 1, 1 });
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, SDL_Point{ 1, 1 } << 1);
+            break;
 
-template <typename T>
-void GenericSurgeProjectile<T>::initiateCircularAttack(SDL_Point const& destCoords) {
-    // ...
+        case ProjectileType::kOrthogonalQuadruple:
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction << 1);
+            break;
+
+        case ProjectileType::kOrthogonalTriple:
+            initiateAttack(ProjectileType::kOrthogonalSingle, destCoords, direction);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction << 1);
+            break;
+
+        case ProjectileType::kOrthogonalDouble:
+            initiateAttack(ProjectileType::kOrthogonalSingle, destCoords, -direction);
+            [[fallthrough]];
+
+        case ProjectileType::kOrthogonalSingle:   // Also work with diagonals
+            instantiate(destCoords + direction, direction);   // Actual stuff
+            break;
+
+        default: break;
+    }
 }
 
 template <typename T>
@@ -53,10 +74,8 @@ void GenericSurgeProjectile<T>::handleLifespan() {
 template <typename T>
 void GenericSurgeProjectile<T>::initiateNextLinearAttack() {
     nextDestCoords = new SDL_Point(destCoords + kDirection);
-    if (!validateMove()) return;
-
-    instantiate(*nextDestCoords, kDirection);
-    Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kSurgeAttack);
+    if (!validateMove()) Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kSurgeAttack);
+    else instantiate(*nextDestCoords, kDirection);
 }
 
 

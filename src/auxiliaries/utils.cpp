@@ -1,6 +1,7 @@
 #include <auxiliaries.hpp>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <functional>
 #include <fstream>
@@ -29,15 +30,78 @@ bool operator<(SDL_Point const& first, SDL_Point const& second) {
 }
 
 SDL_Point operator+(SDL_Point const& first, SDL_Point const& second) {
-    return {first.x + second.x, first.y + second.y};
+    return { first.x + second.x, first.y + second.y };
 }
 
 SDL_Point operator-(SDL_Point const& first, SDL_Point const& second) {
-    return {first.x - second.x, first.y - second.y};
+    return { first.x - second.x, first.y - second.y };
+}
+
+SDL_Point operator-(SDL_Point const& instance) {
+    return { -instance.x, -instance.y };
+}
+
+/**
+ * @brief Multiply a `2`x`2` matrix with a `2`x`1` vector.
+*/
+SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& vector) {
+    return {
+        matrix[0][0] * vector.x + matrix[0][1] * vector.y,
+        matrix[1][0] * vector.x + matrix[1][1] * vector.y,
+    };
+}
+
+/**
+ * @brief Rotate a decimal point for a specified number of times.
+ * @see https://www.learncpp.com/cpp-tutorial/multidimensional-stdarray/
+ * @see https://ideone.com/cTHReg
+*/
+SDL_Point operator<<(SDL_Point const& instance, unsigned int times) {
+    static const std::array<std::array<std::array<int, 2>, 2>, 3> matrices {{
+        {{
+            { 0, -1 },
+            { 1, 0 },
+        }},
+        {{
+            { -1, 0 },
+            { 0, -1 },
+        }},
+        {{
+            { 0, 1 },
+            { -1, 0 },
+        }},
+    }};
+
+    times %= 4;
+    return times ? matrices[times + 1] * instance : instance;
+}
+
+SDL_Point operator>>(SDL_Point const& instance, unsigned int times) {
+    return instance << (4 - (times % 4));
 }
 
 bool operator==(SDL_FPoint const& first, SDL_FPoint const& second) {
     return first.x == second.x && first.y == second.y;
+}
+
+/**
+ * @brief Rotate a floating point by the specified angle, counterclockwise.
+ * @note Behold, linear algebra! Use `<cmath.h>`'s `M_PI` or `std::acos(-1)`.
+ * @see https://en.wikipedia.org/wiki/Rotation_matrix
+ * @see https://www.modernescpp.com/index.php/c-core-guidelines-rules-for-conversions-and-casts/
+*/
+SDL_FPoint operator<<(SDL_FPoint const& instance, float rad) {
+    return {
+        instance.x * std::cos(rad) - instance.y * std::sin(rad),
+        instance.x * std::sin(rad) + instance.y * std::cos(rad),
+    };
+}
+
+/**
+ * @brief Rotate a floating point by the specified angle, clockwise.
+*/
+SDL_FPoint operator>>(SDL_FPoint const& instance, float rad) {
+    return instance << -rad;
 }
 
 std::size_t std::hash<SDL_Point>::operator()(SDL_Point const& instance) const {

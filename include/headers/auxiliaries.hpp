@@ -2,6 +2,7 @@
 #define AUXILIARIES_H
 
 #include <array>
+#include <cmath>
 #include <filesystem>
 #include <functional>
 #include <string>
@@ -67,6 +68,14 @@ enum class InteractionType {
 */
 enum class EntityStatusFlag {
     kDefault, kInvalidated, kContinued,
+};
+
+enum class ProjectileType {
+    kOrthogonalSingle,
+    kOrthogonalDouble,
+    kOrthogonalTriple,
+    kOrthogonalQuadruple,
+    kDiagonalQuadruple,
 };
 
 /**
@@ -416,8 +425,12 @@ namespace config {
         constexpr SDL_Keycode PLAYER_MOVE_RIGHT = SDLK_a;
         constexpr SDL_Keycode PLAYER_MOVE_LEFT = SDLK_d;
         constexpr SDL_Keycode PLAYER_RUN_TOGGLE = SDLK_LSHIFT;
-        constexpr SDL_KeyCode PLAYER_ATTACK = SDLK_SPACE;
-        constexpr SDL_KeyCode PLAYER_LINEAR_SURGE_ATTACK = SDLK_q;
+        constexpr SDL_Keycode PLAYER_ATTACK = SDLK_SPACE;
+        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE = SDLK_1;
+        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE = SDLK_2;
+        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE = SDLK_3;
+        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE = SDLK_4;
+        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE = SDLK_5;
     }
 
     namespace color {
@@ -678,7 +691,14 @@ bool operator!=(SDL_Point const& first, SDL_Point const& second);
 bool operator<(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator+(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator-(SDL_Point const& first, SDL_Point const& second);
+SDL_Point operator-(SDL_Point const& instance);
+SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& vector);
+SDL_Point operator<<(SDL_Point const& instance, unsigned int times);
+SDL_Point operator>>(SDL_Point const& instance, unsigned int times);
+
 bool operator==(SDL_FPoint const& first, SDL_FPoint const& second);
+SDL_FPoint operator<<(SDL_FPoint const& instance, float rad);
+SDL_FPoint operator>>(SDL_FPoint const& instance, float rad);
 
 namespace std {
     template <>

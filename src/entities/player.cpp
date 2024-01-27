@@ -1,5 +1,7 @@
 #include <entities.hpp>
 
+#include <SDL.h>
+
 #include <filesystem>
 #include <unordered_map>
 
@@ -29,7 +31,7 @@ void Player::deinitialize() {
 void Player::handleKeyboardEvent(SDL_Event const& event) {
     static SDL_Point prevDirection = { 1, 0 };
 
-    auto handleKeyboardMovementInput = [&]() {
+    auto arbHandleMovement = [&]() {
         static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
             { config::key::PLAYER_MOVE_UP, {0, -1} },
             { config::key::PLAYER_MOVE_DOWN, {0, 1} },
@@ -51,12 +53,32 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         initiateMove();
     };
 
+    auto arbHandleProjectileAttack = [&]() {
+        static const std::unordered_map<SDL_Keycode, ProjectileType> mapping = {
+            { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE, ProjectileType::kOrthogonalSingle },
+            { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE, ProjectileType::kOrthogonalDouble },
+            { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE, ProjectileType::kOrthogonalTriple },
+            { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE, ProjectileType::kOrthogonalQuadruple },
+            { config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE, ProjectileType::kDiagonalQuadruple },
+        };
+
+        auto it = mapping.find(event.key.keysym.sym);
+        if (it == mapping.end()) return;
+
+        if (event.type == SDL_KEYUP) return;
+
+        PentacleProjectile::initiateAttack(it->second, destCoords, prevDirection);
+    };
+
     if (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged)) return;
     if (currAnimationType == AnimationType::kDeath || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDeath)) return;
 
     switch (event.key.keysym.sym) {
-        case config::key::PLAYER_MOVE_UP: case config::key::PLAYER_MOVE_DOWN: case config::key::PLAYER_MOVE_RIGHT: case config::key::PLAYER_MOVE_LEFT:
-            handleKeyboardMovementInput(); break;
+        case config::key::PLAYER_MOVE_UP:
+        case config::key::PLAYER_MOVE_DOWN:
+        case config::key::PLAYER_MOVE_RIGHT:
+        case config::key::PLAYER_MOVE_LEFT:
+            arbHandleMovement(); break;
 
         case config::key::PLAYER_RUN_TOGGLE:
             onRunningToggled(event.type == SDL_KEYDOWN);
@@ -67,12 +89,14 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             resetAnimation(AnimationType::kAttack);
             break;
 
-        case config::key::PLAYER_LINEAR_SURGE_ATTACK:
+        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE:
+        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE:
+        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE:
+        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE:
+        case config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE:
             if (currAnimationType == AnimationType::kAttack || currAnimationType == AnimationType::kJump) break;
             resetAnimation(AnimationType::kJump);
-            // HauntedBookcaseProjectile::initiateLinearAttack(destCoords + prevDirection, prevDirection);
-            PentacleProjectile::initiateLinearAttack(destCoords + prevDirection, prevDirection);
-            break;
+            arbHandleProjectileAttack(); break;
 
         default: break;
     }

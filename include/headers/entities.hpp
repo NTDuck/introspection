@@ -262,8 +262,7 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
         static void onLevelChangeAll();
 
-        static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
-        static void initiateCircularAttack(SDL_Point const& destCoords);
+        static void initiateAttack(ProjectileType type, SDL_Point const& destCoords, SDL_Point const& direction);
 
         void handleLifespan();
 
@@ -273,7 +272,7 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         SDL_Point& kDirection = currVelocity;   // Does not allocate additional memory
 };
 
-#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::initiateLinearAttack, GenericSurgeProjectile<T>::initiateCircularAttack, GenericSurgeProjectile<T>::handleLifespan;
+#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleLifespan;
 
 
 template <typename T>
@@ -307,6 +306,7 @@ class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
 class PentacleProjectile final : public GenericSurgeProjectile<PentacleProjectile> {
     public:
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(PentacleProjectile)
+        INCL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
 
         PentacleProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
         ~PentacleProjectile() = default;

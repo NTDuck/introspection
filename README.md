@@ -21,7 +21,8 @@ a RPG made without a game engine.
 #### Player:
 - `W` `A` `S` `D` moves the player
 - `Shift`, when held, makes the player run
-- `Space` launchs not-so-visually-aesthetic attacks!
+- `Space` launchs a not-so-visually-aesthetic melee attack
+- `1`, `2`, `3`, `4`, `5` each launches an unique set of projectiles, try them yourself!
 
 #### Entities:
 - Cat. Teleports you to somewhere fun.
