@@ -107,6 +107,24 @@ void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
     // onLevelChange(); onWindowChange();
 }
 
+void IngameInterface::handleCustomEvent(SDL_Event const& event) const {
+    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEvent, event);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEvent, event);
+
+    Player::invoke(&Player::handleCustomEvent, event);
+    Teleporter::invoke(&Teleporter::handleCustomEvent, event);
+    Slime::invoke(&Slime::handleCustomEvent, event);
+}
+
+void IngameInterface::pushEvent() const {
+    PentacleProjectile::invoke(&PentacleProjectile::pushEvent);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::pushEvent);
+
+    Player::invoke(&Player::pushEvent);
+    Teleporter::invoke(&Teleporter::pushEvent);
+    Slime::invoke(&Slime::pushEvent);
+}
+
 void IngameInterface::handleEntities() const {
     handleEntitiesMovement();
     handleEntitiesInteraction();
@@ -195,17 +213,17 @@ void IngameInterface::handleEntitiesInteraction() const {
     for (auto& slime : Slime::instances) {
         if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
         if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *Player::instance);
-        if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
-        if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
+        // if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
+        // if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
 
         for (auto& surgeAttackObject : PentacleProjectile::instances) {
             if (surgeAttackObject == nullptr) continue;
-            if (utils::checkEntityAttackRegister<Slime, PentacleProjectile>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, PentacleProjectile>(AnimationType::kDamaged, *slime, *surgeAttackObject);
+            // if (utils::checkEntityAttackRegister<Slime, PentacleProjectile>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, PentacleProjectile>(AnimationType::kDamaged, *slime, *surgeAttackObject);
         }
 
         for (auto& projectile : HauntedBookcaseProjectile::instances) {
             if (projectile == nullptr) continue;
-            if (utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(*slime, *projectile, false)) onEntityAnimation<Slime, HauntedBookcaseProjectile>(AnimationType::kDamaged, *slime, *projectile);
+            // if (utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(*slime, *projectile, false)) onEntityAnimation<Slime, HauntedBookcaseProjectile>(AnimationType::kDamaged, *slime, *projectile);
         }
     }
 

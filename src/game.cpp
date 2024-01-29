@@ -1,5 +1,6 @@
 #include <game.hpp>
 
+#include <iostream>
 #include <algorithm>
 #include <string>
 #include <limits>
@@ -74,7 +75,7 @@ void Game::initialize() {
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
     
-    // IngameMapHandler::initialize();
+    // Initialize dependencies
     IngameInterface::initialize();
     MenuInterface::initialize();
     LoadingInterface::initialize();
@@ -91,6 +92,9 @@ void Game::initialize() {
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
     LoadingInterface::instantiate();
     GameOverInterface::instantiate();
+
+    // Additional setup
+    registerCustomEvents();
 }
 
 /**
@@ -229,30 +233,46 @@ void Game::handleDependencies() {
  * @note All `handleEvent()` methods should go here.
 */
 void Game::handleEvents() {
+    // Totally necessary
+    if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::pushEvent);
+
     SDL_Event* event = new SDL_Event;
-    if (!SDL_PollEvent(event)) return;
+    
+    while (SDL_PollEvent(event)) {
+        switch (event->type) {
+            case SDL_QUIT:
+                Mixer::invoke(&Mixer::stopBGM);
+                globals::state = GameState::kExit;
+                break;
+            
+            case SDL_WINDOWEVENT:
+                handleWindowEvent(*event);
+                break;
 
-    switch (event->type) {
-        case SDL_QUIT:
-            Mixer::invoke(&Mixer::stopBGM);
-            globals::state = GameState::kExit;
-            break;
-        
-        case SDL_WINDOWEVENT:
-            handleWindowEvent(*event);
-            break;
+            // track mouse motion & buttons only
+            // also invoked when mouse focus regained/lost
+            case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
+                handleMouseEvent(*event);
+                break;
 
-        // track mouse motion & buttons only
-        // also invoked when mouse focus regained/lost
-        case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
-            handleMouseEvent(*event);
-            break;
+            case SDL_KEYDOWN: case SDL_KEYUP:
+                handleKeyBoardEvent(*event);
+                break;
 
-        case SDL_KEYDOWN: case SDL_KEYUP:
-            handleKeyBoardEvent(*event);
-            break;
+            default: break;
+        }
+
+        // Deallocate custom events
+        if (event->type == globals::customEventTypes[CustomEventType::kPlayerAttack] || event->type == globals::customEventTypes[CustomEventType::kEntityAttack]) {
+            if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEvent, *event);
+
+            // if (event->user.data1 != nullptr) delete event->user.data1;
+            // if (event->user.data2 != nullptr) delete event->user.data2;
+        }
+
     }
 
+    // Do you need to delete here?
     delete event;
 }
 
@@ -303,4 +323,11 @@ void Game::handleMouseEvent(const SDL_Event& event) {
 
         default: break;
     }
+}
+
+void Game::registerCustomEvents() const {
+    globals::customEventTypes.clear();
+
+    uint32_t startID = SDL_RegisterEvents(static_cast<int>(CustomEventType::__count__));
+    for (uint32_t id = startID; id < static_cast<uint32_t>(CustomEventType::__count__); ++id) globals::customEventTypes.emplace(std::make_pair(static_cast<CustomEventType>(id - startID), id));
 }

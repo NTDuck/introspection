@@ -43,6 +43,8 @@ class Game final : public Singleton<Game> {
         void handleKeyBoardEvent(SDL_Event const& event) const;
         void handleMouseEvent(SDL_Event const& event);
 
+        void registerCustomEvents() const;
+
         /**
          * The pointer to the main window.
         */

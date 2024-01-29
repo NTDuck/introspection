@@ -134,7 +134,6 @@ void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, Enti
     currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
 }
 
-
 /**
  * @brief Initiate a new animation based on `nextAnimationData`.
 */
@@ -146,6 +145,43 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 
     resetAnimation(*nextAnimationType);
     isAnimationOnProgress = true;
+}
+
+template <typename T>
+void AbstractAnimatedEntity<T>::pushEvent() {
+    if (currAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+
+    SDL_Event event;
+    SDL_memset(&event, 0, sizeof(event));
+
+    event.type = globals::customEventTypes[std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile> ? CustomEventType::kPlayerAttack : CustomEventType::kEntityAttack];
+    event.user.code = 0;   // what?
+    auto relevantData = new CustomEventData({ destCoords, kAttackRegisterRange, secondaryStats });
+    event.user.data1 = relevantData;   // implicit
+    event.user.data2 = nullptr;   // Probably could make more use
+
+    SDL_PushEvent(&event);
+}
+
+template <typename T>
+void AbstractAnimatedEntity<T>::handleCustomEvent(SDL_Event const& event) {
+    if (std::is_same_v<T, Player> ^ (event.type != globals::customEventTypes[CustomEventType::kPlayerAttack])) return;  // If one condition is true, one is false
+
+    CustomEventData data = *reinterpret_cast<CustomEventData*>(event.user.data1);   // Careful when dealing with `void*`
+
+    // Check
+    if (currAnimationType == AnimationType::kDamaged) return;
+    int distance = utils::calculateDistance(destCoords, data.destCoords);
+    if (distance > data.attackRegisterRange.x || distance > data.attackRegisterRange.y) return;
+
+    // Execute
+    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(data.stats, secondaryStats);
+    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(data.stats, secondaryStats);
+
+    if (nextAnimationType == nullptr) {
+        nextAnimationType = new AnimationType(AnimationType::kDamaged);
+        isAnimationOnProgress = false;
+    }
 }
 
 

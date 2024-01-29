@@ -126,6 +126,8 @@ class IngameInterface final : public Singleton<IngameInterface> {
 
         void handleKeyBoardEvent(SDL_Event const& event) const;
         void handleMouseEvent(SDL_Event const& event) const;
+        void handleCustomEvent(SDL_Event const& event) const;
+        void pushEvent() const;
 
         void handleEntities() const;
 

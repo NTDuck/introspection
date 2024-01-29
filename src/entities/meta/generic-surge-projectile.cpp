@@ -35,10 +35,12 @@ void GenericSurgeProjectile<T>::onLevelChangeAll() {
 */
 template <typename T>
 void GenericSurgeProjectile<T>::initiateAttack(ProjectileType type, SDL_Point const& destCoords, SDL_Point const& direction) {
+    static constexpr SDL_Point kDiagonalQuadrupleDirection = { 1, 1 };
+
     switch (type) {
         case ProjectileType::kDiagonalQuadruple:
-            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, SDL_Point{ 1, 1 });
-            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, SDL_Point{ 1, 1 } << 1);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, kDiagonalQuadrupleDirection);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, kDiagonalQuadrupleDirection << 1);
             break;
 
         case ProjectileType::kOrthogonalQuadruple:

@@ -130,6 +130,9 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual void updateAnimation();
         void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
+        void pushEvent();
+        void handleCustomEvent(SDL_Event const& event);
+
         AnimationType currAnimationType;
         AnimationType* nextAnimationType = nullptr;
         bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
@@ -164,7 +167,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int currAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::pushEvent, AbstractAnimatedEntity<T>::handleCustomEvent, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
 
 
 /**

@@ -3,6 +3,7 @@
 
 #include <array>
 #include <cmath>
+#include <cstdint>
 #include <filesystem>
 #include <functional>
 #include <string>
@@ -46,6 +47,13 @@ enum class GameState {
 constexpr GameState operator|(GameState const& first, GameState const& second) {
     return static_cast<GameState>(static_cast<int>(first) | static_cast<int>(second));   // Must be defined here
 }
+
+enum class CustomEventType {
+    kPlayerAttack,
+    kEntityAttack,
+
+    __count__ = 2,   // Not a custom event!
+};
 
 /**
  * Contain possible in-game view modes.
@@ -164,6 +172,12 @@ struct ComponentPreset {
 
     float lineOffset;
     float lineWidth;
+};
+
+struct CustomEventData {
+    SDL_Point destCoords;
+    SDL_Point attackRegisterRange;
+    EntitySecondaryStats stats;
 };
 
 /**
@@ -683,6 +697,8 @@ namespace globals {
      * The current game state. Is strictly bound to the main control flow.
     */
     extern GameState state;
+
+    extern std::unordered_map<CustomEventType, uint32_t> customEventTypes;
 }
 
 

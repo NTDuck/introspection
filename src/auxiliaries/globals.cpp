@@ -32,6 +32,7 @@ SDL_Point globals::mouseState;
 tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
 level::LevelData globals::currentLevelData;
 GameState globals::state = GameState::kMenu;
+std::unordered_map<CustomEventType, uint32_t> globals::customEventTypes;
 
 
 /**
