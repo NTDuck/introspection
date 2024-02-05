@@ -1,5 +1,5 @@
 
-# 8964
+# Introspection
 
 a RPG made without a game engine.
 
@@ -103,9 +103,8 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
 2. Fonts
-- [Omori Font](https://dafontonline.com/omori-font/)
-- [Determination Mono Font](https://www.fontspace.com/determination-mono-web-font-f23209)
-- [Badly Stuffed Animal Font](https://www.fontspace.com/badly-stuffed-animal-font-f107899) (DEMO)
+- [Omori](https://dafontonline.com/omori-font/)
+- [Phorssa](https://www.dafont.com/phorssa.font)
 3. BGM & SFX
 - [Main Theme - Animal Crossing New Horizons](https://youtu.be/lI_C1Bjdqn4)
 - [credits song for my death](https://youtu.be/urxeNbBc1nk) by [vivivivivi](https://www.youtube.com/@vivivivivi)

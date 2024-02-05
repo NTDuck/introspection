@@ -1,8 +1,5 @@
 #include <interface.hpp>
 
-#include <iostream>
-
-#include <interaction.hpp>
 #include <entities.hpp>
 #include <mixer.hpp>
 #include <auxiliaries.hpp>
@@ -64,8 +61,8 @@ void IngameInterface::onLevelChange() const {
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChangeAll<level::TeleporterLevelData>(globals::currentLevelData.teleportersLevelData);
-    Slime::onLevelChangeAll<level::SlimeLevelData>(globals::currentLevelData.slimesLevelData);
+    Teleporter::onLevelChangeAll(globals::currentLevelData.teleportersLevelData);
+    Slime::onLevelChangeAll(globals::currentLevelData.slimesLevelData);
 
     Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
@@ -107,27 +104,43 @@ void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
     // onLevelChange(); onWindowChange();
 }
 
-void IngameInterface::handleCustomEvent(SDL_Event const& event) const {
-    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEvent, event);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEvent, event);
+void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
+    switch (static_cast<event::Code>(event.user.code)) {
+        case event::Code::kResp_Teleport_GTE_Player:
+            handleCustomEventGET_kResp_Teleport_GTE_Player(event);
+            break;
 
-    Player::invoke(&Player::handleCustomEvent, event);
-    Teleporter::invoke(&Teleporter::handleCustomEvent, event);
-    Slime::invoke(&Slime::handleCustomEvent, event);
+        case event::Code::kReq_DeathPending_Player:
+            handleCustomEventGET_kReq_DeathPending_Player();
+            break;
+
+        case event::Code::kReq_DeathFinalized_Player:
+            handleCustomEventGET_kReq_DeathFinalized_Player();
+            break;
+
+        default: break;
+    }
+
+    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEventGET, event);
+
+    Player::invoke(&Player::handleCustomEventGET, event);
+    Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
+    Slime::invoke(&Slime::handleCustomEventGET, event);
 }
 
-void IngameInterface::pushEvent() const {
-    PentacleProjectile::invoke(&PentacleProjectile::pushEvent);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::pushEvent);
+void IngameInterface::handleCustomEventPOST() const {
+    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
+    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEventPOST);
 
-    Player::invoke(&Player::pushEvent);
-    Teleporter::invoke(&Teleporter::pushEvent);
-    Slime::invoke(&Slime::pushEvent);
+    Player::invoke(&Player::handleCustomEventPOST);
+    Teleporter::invoke(&Teleporter::handleCustomEventPOST);
+    Slime::invoke(&Slime::handleCustomEventPOST);
 }
 
 void IngameInterface::handleEntities() const {
     handleEntitiesMovement();
-    handleEntitiesInteraction();
+    // handleEntitiesInteraction();
     handleEntitiesSFX();
 }
 
@@ -147,62 +160,56 @@ void IngameInterface::handleEntitiesMovement() const {
 
     Teleporter::invoke(&Teleporter::updateAnimation);
 
-    Slime::invoke(&Slime::calculateMove, Player::instance->destCoords);
     Slime::invoke(&Slime::initiateAnimation);
     Slime::invoke(&Slime::move);
     Slime::invoke(&Slime::updateAnimation);
 }
 
-template <typename Active, typename Passive>
-void IngameInterface::onEntityCollision(Active& active, Passive& passive) const {
-    // ...
-}
+// template <typename Active, typename Passive>
+// void IngameInterface::onEntityCollision(Active& active, Passive& passive) const {
+//     // ...
+// }
 
-template <>
-void IngameInterface::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) const {
-    IngameMapHandler::invoke(&IngameMapHandler::changeLevel, teleporter.targetLevel);
-    globals::currentLevelData.playerLevelData.destCoords = teleporter.targetDestCoords;
+// template <>
+// void IngameInterface::onEntityCollision<Player, Teleporter>(Player& player, Teleporter& teleporter) const {
 
-    // globals::state = GameState::kLoading | GameState::kIngamePlaying;
-    onLevelChange();
-    onWindowChange();
-}
+// }
 
-template <>
-void IngameInterface::onEntityCollision<Player, Slime>(Player& player, Slime& slime) const {
-    // state = GameState::kExit;
-    // player.onDeath();
-}
+// template <>
+// void IngameInterface::onEntityCollision<Player, Slime>(Player& player, Slime& slime) const {
+//     // state = GameState::kExit;
+//     // player.onDeath();
+// }
 
-/**
- * @brief Called when the `active` entity initiate an animation (possibly caused by the `passive` entity).
-*/
-template <typename Active, typename Passive>
-void IngameInterface::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) const {
-    // Handle `kDamaged` case differently
-    if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
-        active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
-        active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(passive.secondaryStats, active.secondaryStats);
-        if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
-    }
+// /**
+//  * @brief Called when the `active` entity initiate an animation (possibly caused by the `passive` entity).
+// */
+// template <typename Active, typename Passive>
+// void IngameInterface::onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) const {
+//     // Handle `kDamaged` case differently
+//     if (animationType == AnimationType::kDamaged && passive.currAnimationType == AnimationType::kAttack) {
+//         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(passive.secondaryStats, active.secondaryStats);
+//         active.secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(passive.secondaryStats, active.secondaryStats);
+//         if (active.secondaryStats.HP <= 0) animationType = AnimationType::kDeath;
+//     }
 
-    if ((active.nextAnimationType == nullptr) || (!active.isAnimationOnProgress&& !(*active.nextAnimationType == AnimationType::kDamaged && animationType == AnimationType::kAttack))) {
-        active.nextAnimationType = new AnimationType(animationType);
-        active.isAnimationOnProgress = false;
-    }
-}
+//     if ((active.nextAnimationType == nullptr) || (!active.isAnimationOnProgress&& !(*active.nextAnimationType == AnimationType::kDamaged && animationType == AnimationType::kAttack))) {
+//         active.nextAnimationType = new AnimationType(animationType);
+//         active.isAnimationOnProgress = false;
+//     }
+// }
 
-template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
-template void IngameInterface::onEntityAnimation<Slime, Player>(const AnimationType animationType, Slime& slime, Player& player) const;
-template void IngameInterface::onEntityAnimation<PentacleProjectile, Player>(const AnimationType animationType, PentacleProjectile& surgeAttackObject, Player& player) const;
-template void IngameInterface::onEntityAnimation<HauntedBookcaseProjectile, Player>(const AnimationType animationType, HauntedBookcaseProjectile& projectile, Player& player) const;
+// template void IngameInterface::onEntityAnimation<Player, Slime>(const AnimationType animationType, Player& player, Slime& slime) const;
+// template void IngameInterface::onEntityAnimation<Slime, Player>(const AnimationType animationType, Slime& slime, Player& player) const;
+// template void IngameInterface::onEntityAnimation<PentacleProjectile, Player>(const AnimationType animationType, PentacleProjectile& surgeAttackObject, Player& player) const;
+// template void IngameInterface::onEntityAnimation<HauntedBookcaseProjectile, Player>(const AnimationType animationType, HauntedBookcaseProjectile& projectile, Player& player) const;
 
-/**
- * @brief Handle interactions between entities.
-*/
-void IngameInterface::handleEntitiesInteraction() const {
-    auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoordsArb); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
-    auto slime = utils::checkEntityCollision<Player, Slime>(*Player::instance, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*Player::instance, *slime);
+// /**
+//  * @brief Handle interactions between entities.
+// */
+// void IngameInterface::handleEntitiesInteraction() const {
+//     auto teleporter = utils::checkEntityCollision<Player, Teleporter>(*Player::instance, InteractionType::kCoordsArb); if (teleporter != nullptr) onEntityCollision<Player, Teleporter>(*Player::instance, *teleporter);
+    // auto slime = utils::checkEntityCollision<Player, Slime>(*Player::instance, InteractionType::kRect); if (slime != nullptr) onEntityCollision<Player, Slime>(*Player::instance, *slime);
 
     // // Friendly fire shall not be tolerated!
     // for (auto& surgeAttackObject : SurgeAttackObject::instances) {
@@ -210,31 +217,51 @@ void IngameInterface::handleEntitiesInteraction() const {
     //     if (utils::checkEntityAttackRegister<Player, SurgeAttackObject>(*Player::instance, *surgeAttackObject, false)) onEntityAnimation<Player, SurgeAttackObject>(AnimationType::kDamaged, *Player::instance, *surgeAttackObject);
     // }
 
-    for (auto& slime : Slime::instances) {
-        if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
-        if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *Player::instance);
-        // if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
-        // if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
+    // for (auto& slime : Slime::instances) {
+    //     if (slime == nullptr || slime->currAnimationType == AnimationType::kDeath) continue;
+    //     if (utils::checkEntityAttackInitiate<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kAttack, *slime, *Player::instance);
+    //     // if (utils::checkEntityAttackRegister<Player, Slime>(*Player::instance, *slime)) onEntityAnimation<Player, Slime>(AnimationType::kDamaged, *Player::instance, *slime);
+    //     // if (utils::checkEntityAttackRegister<Slime, Player>(*slime, *Player::instance)) onEntityAnimation<Slime, Player>(AnimationType::kDamaged, *slime, *Player::instance);
 
-        for (auto& surgeAttackObject : PentacleProjectile::instances) {
-            if (surgeAttackObject == nullptr) continue;
-            // if (utils::checkEntityAttackRegister<Slime, PentacleProjectile>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, PentacleProjectile>(AnimationType::kDamaged, *slime, *surgeAttackObject);
-        }
+    //     for (auto& surgeAttackObject : PentacleProjectile::instances) {
+    //         if (surgeAttackObject == nullptr) continue;
+    //         // if (utils::checkEntityAttackRegister<Slime, PentacleProjectile>(*slime, *surgeAttackObject, false)) onEntityAnimation<Slime, PentacleProjectile>(AnimationType::kDamaged, *slime, *surgeAttackObject);
+    //     }
 
-        for (auto& projectile : HauntedBookcaseProjectile::instances) {
-            if (projectile == nullptr) continue;
-            // if (utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(*slime, *projectile, false)) onEntityAnimation<Slime, HauntedBookcaseProjectile>(AnimationType::kDamaged, *slime, *projectile);
-        }
-    }
+    //     for (auto& projectile : HauntedBookcaseProjectile::instances) {
+    //         if (projectile == nullptr) continue;
+    //         // if (utils::checkEntityAttackRegister<Slime, HauntedBookcaseProjectile>(*slime, *projectile, false)) onEntityAnimation<Slime, HauntedBookcaseProjectile>(AnimationType::kDamaged, *slime, *projectile);
+    //     }
+    // }
 
-    if (Player::instance->currAnimationType == AnimationType::kDeath) {
-        IngameMapHandler::instance->isOnGrayscale = true;
-        if (Player::invoke(&Player::isAnimationAtFinalSprite)) globals::state = GameState::kGameOver;
-    }
-}
+//     if (Player::instance->currAnimationType == AnimationType::kDeath) {
+//         IngameMapHandler::instance->isOnGrayscale = true;
+//         if (Player::invoke(&Player::isAnimationAtFinalSprite)) globals::state = GameState::kGameOver;
+//     }
+// }
 
 void IngameInterface::handleEntitiesSFX() const {
     Player::invoke(&Player::handleSFX);
     // Teleporter::invoke(&Teleporter::handleSFX);
     Slime::invoke(&Slime::handleSFX);
+}
+
+void IngameInterface::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const {
+    auto data = *reinterpret_cast<event::data::kReq_Teleport_GTE_Player*>(event.user.data1);
+    
+    IngameMapHandler::invoke(&IngameMapHandler::changeLevel, data.targetLevel);
+    globals::currentLevelData.playerLevelData.destCoords = data.targetDestCoords;
+
+    // globals::state = GameState::kLoading | GameState::kIngamePlaying;
+    onLevelChange();
+    onWindowChange();
+}
+
+void IngameInterface::handleCustomEventGET_kReq_DeathPending_Player() const {
+    IngameMapHandler::instance->isOnGrayscale = true;
+}
+
+void IngameInterface::handleCustomEventGET_kReq_DeathFinalized_Player() const {
+    globals::state = GameState::kGameOver;
+    IngameMapHandler::instance->isOnGrayscale = false;
 }

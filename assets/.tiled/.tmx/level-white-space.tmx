@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="1">
+ <layer id="3" name="static-collision" width="64" height="36">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+  </data>
+ </layer>
+ <layer id="1" name="floors" width="64" height="36">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+  </data>
+ </layer>
+ <layer id="2" name="walls" width="64" height="36">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+  </data>
+ </layer>
+ <objectgroup id="4" name="entities"/>
+ <layer id="5" name="props-i" width="64" height="36">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+  </data>
+ </layer>
+ <layer id="6" name="props-0" width="64" height="36">
+  <data encoding="base64" compression="zlib">
+   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+  </data>
+ </layer>
+</map>

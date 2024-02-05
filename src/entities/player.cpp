@@ -1,9 +1,9 @@
 #include <entities.hpp>
 
-#include <SDL.h>
-
 #include <filesystem>
 #include <unordered_map>
+
+#include <SDL.h>
 
 #include <meta.hpp>
 #include <auxiliaries.hpp>
@@ -22,6 +22,11 @@ void Player::deinitialize() {
     tilesetData->deinitialize();
     tilesetData = nullptr;
     Singleton<Player>::deinitialize();
+}
+
+void Player::onLevelChange(level::EntityLevelData const& player) {
+    auto data = *reinterpret_cast<const level::PlayerLevelData*>(&player);
+    AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
 }
 
 /**
@@ -102,9 +107,100 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
     }
 }
 
-void Player::onLevelChange(level::EntityLevelData const& player) {
-    auto data = dynamic_cast<const level::PlayerLevelData*>(&player);
-    AbstractAnimatedDynamicEntity<Player>::onLevelChange(*data);
+void Player::handleCustomEventPOST() const {
+    handleCustomEventPOST_kReq_AttackRegister_Player_GHE();
+    handleCustomEventPOST_kReq_Death_Player();
+}
+
+void Player::handleCustomEventGET(SDL_Event const& event) {
+    switch (static_cast<event::Code>(event.user.code)) {
+        case event::Code::kReq_AttackRegister_GHE_Player:
+            handleCustomEventGET_kReq_AttackRegister_GHE_Player(event);
+            break;
+
+        case event::Code::kReq_AttackInitiate_GHE_Player:
+            handleCustomEventGET_kResp_AttackInitiate_GHE_Player(event);
+            break;
+
+        case event::Code::kReq_MoveInitiate_GHE_Player:
+            handleCustomEventGET_kResp_MoveInitiate_GHE_Player(event);
+            break;
+
+        case event::Code::kReq_Teleport_GTE_Player:
+            handleCustomEventGET_kResp_Teleport_GTE_Player(event);
+            break;
+
+        default: break;
+    }
+}
+
+void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
+    if (currAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+
+    auto event = formatCustomEvent();
+    populateCustomEvent(event, event::Code::kReq_AttackRegister_Player_GHE, event::data::kReq_AttackRegister_Player_GHE({ destCoords, kAttackRegisterRange, secondaryStats }));
+    enqueueCustomEvent(event);
+}
+
+void Player::handleCustomEventPOST_kReq_Death_Player() const {
+    if (currAnimationType != AnimationType::kDeath) return;
+
+    static int counter = config::entities::player::waitingFramesAfterDeath;
+    if (counter > 0) --counter;
+
+    auto event = formatCustomEvent();
+    populateCustomEvent(event, counter == 0 ? event::Code::kReq_DeathFinalized_Player : event::Code::kReq_DeathPending_Player, counter);   // Placeholder
+    enqueueCustomEvent(event);
+}
+
+void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event) {
+    auto data = *reinterpret_cast<event::data::kReq_AttackRegister_GHE_Player*>(event.user.data1);
+
+    if (currAnimationType == AnimationType::kDamaged) return;
+    auto distance = utils::calculateDistance(destCoords, data.destCoords);
+    if (distance > data.range.x || distance > data.range.y) return;
+
+    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(data.stats, secondaryStats);
+    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(data.stats, secondaryStats);
+
+    if (nextAnimationType == nullptr) {
+        nextAnimationType = new AnimationType(secondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
+        isAnimationOnProgress = false;
+    }
+}
+
+void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event) {
+    auto data = *reinterpret_cast<event::data::kReq_AttackInitiate_GHE_Player*>(event.user.data1);
+
+    if (currAnimationType == AnimationType::kDamaged || currAnimationType == AnimationType::kDeath) return;
+    auto distance = utils::calculateDistance(destCoords, data.destCoords);
+    if (distance > data.range.x || distance > data.range.y) return;
+
+    auto event_ = formatCustomEvent(*reinterpret_cast<int*>(event.user.data2));
+    populateCustomEvent(event_, event::Code::kResp_AttackInitiate_GHE_Player, data);
+    enqueueCustomEvent(event_);
+}
+
+void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
+    auto data = *reinterpret_cast<event::data::kReq_MoveInitiate_GHE_Player*>(event.user.data1);
+
+    if (currAnimationType == AnimationType::kDeath) return;
+    auto distance = utils::calculateDistance(destCoords, data.destCoords);
+
+    auto event_ = formatCustomEvent(*reinterpret_cast<int*>(event.user.data2));
+    data.destCoords = destCoords;
+    populateCustomEvent(event_, distance > data.range.x || distance > data.range.y ? event::Code::kResp_MoveTerminate_GHE_Player : event::Code::kResp_MoveInitiate_GHE_Player, data);
+    enqueueCustomEvent(event_);
+}
+
+void Player::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) {
+    auto data = *reinterpret_cast<event::data::kReq_Teleport_GTE_Player*>(event.user.data1);
+
+    if (destCoords != data.destCoords) return;
+
+    auto event_ = formatCustomEvent(*reinterpret_cast<int*>(event.user.data2));
+    populateCustomEvent(event_, event::Code::kResp_Teleport_GTE_Player, data);
+    enqueueCustomEvent(event_);
 }
 
 

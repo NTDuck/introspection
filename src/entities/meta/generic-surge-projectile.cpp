@@ -30,6 +30,11 @@ void GenericSurgeProjectile<T>::onLevelChangeAll() {
     Multiton<T>::deinitialize();
 }
 
+template <typename T>
+void GenericSurgeProjectile<T>::handleCustomEventPOST() const {
+    handleCustomEventPOST_kReq_AttackRegister_Player_GHE();
+}
+
 /**
  * @param destCoords the `destCoords` of the entity from which the attack would be invoked.
 */
@@ -70,7 +75,7 @@ void GenericSurgeProjectile<T>::handleLifespan() {
     if (!isAnimationAtFinalSprite()) return;
 
     initiateNextLinearAttack();
-    instances.erase(dynamic_cast<T*>(this));
+    instances.erase(reinterpret_cast<T*>(this));
 }
 
 template <typename T>
@@ -78,6 +83,13 @@ void GenericSurgeProjectile<T>::initiateNextLinearAttack() {
     nextDestCoords = new SDL_Point(destCoords + kDirection);
     if (!validateMove()) Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kSurgeAttack);
     else instantiate(*nextDestCoords, kDirection);
+}
+
+template <typename T>
+void GenericSurgeProjectile<T>::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
+    auto event = formatCustomEvent();
+    populateCustomEvent(event, event::Code::kReq_AttackRegister_Player_GHE, event::data::kReq_AttackRegister_Player_GHE({ destCoords, kAttackRegisterRange, secondaryStats }));
+    enqueueCustomEvent(event);    
 }
 
 

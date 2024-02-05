@@ -16,6 +16,8 @@
 
 template <typename T>
 AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : destCoords(destCoords), destRectModifier(config::entities::destRectModifier) {
+    id = ++idCounter;
+
     srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
     srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
 }
@@ -41,6 +43,7 @@ void AbstractEntity<T>::deinitialize() {
     }
     
     Multiton<T>::deinitialize();
+    idCounter = 0;
 }
 
 /**
@@ -51,6 +54,7 @@ template <typename T>
 template <typename LevelData>
 void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection) {
     Multiton<T>::deinitialize();
+    idCounter = 0;
 
     for (const auto& entityLevelData : entityLevelDataCollection) {
         auto instance = instantiate(entityLevelData.destCoords);
@@ -86,6 +90,27 @@ void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelD
 }
 
 /**
+ * @note If `id_` is `-1`, use member `id` instead.
+*/
+template <typename T>
+SDL_Event AbstractEntity<T>::formatCustomEvent(int id_) const {
+    SDL_Event event;
+    SDL_memset(&event, 0, sizeof(event));
+
+    event.type = event::type;
+    event.user.data1 = nullptr;
+    event.user.data2 = new int(id_ == -1 ? id : id_);
+
+    return event;
+}
+
+template <typename T>
+void AbstractEntity<T>::enqueueCustomEvent(SDL_Event& event) const {
+    if (event.user.data1 != nullptr) SDL_PushEvent(&event);
+    else delete reinterpret_cast<int*>(event.user.data2);
+}
+
+/**
  * Adjust `destRect` based on `tilesetData->animationSize` and `destRectModifier`.
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
  * @see https://stackoverflow.com/questions/3127962/c-float-to-int
@@ -116,6 +141,9 @@ bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& firs
 
 template <typename T>
 tile::EntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
+
+template <typename T>
+int AbstractEntity<T>::idCounter = 0;
 
 
 /**

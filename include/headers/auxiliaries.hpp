@@ -1,6 +1,8 @@
 #ifndef AUXILIARIES_H
 #define AUXILIARIES_H
 
+#include <iostream>
+
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -47,13 +49,6 @@ enum class GameState {
 constexpr GameState operator|(GameState const& first, GameState const& second) {
     return static_cast<GameState>(static_cast<int>(first) | static_cast<int>(second));   // Must be defined here
 }
-
-enum class CustomEventType {
-    kPlayerAttack,
-    kEntityAttack,
-
-    __count__ = 2,   // Not a custom event!
-};
 
 /**
  * Contain possible in-game view modes.
@@ -174,11 +169,6 @@ struct ComponentPreset {
     float lineWidth;
 };
 
-struct CustomEventData {
-    SDL_Point destCoords;
-    SDL_Point attackRegisterRange;
-    EntitySecondaryStats stats;
-};
 
 /**
  * @brief Group components that are associated with tiles.
@@ -406,11 +396,63 @@ using AnimationType = tile::EntitiesTilesetData::AnimationType;
 
 
 /**
+ * @brief Group components that are associated to custom events.
+*/
+namespace event {
+    /**
+     * @note Does not implicitly convert to underlying integer type `Sint32`.
+     * @note Strictly abide to the following format: `k[Req/Resp]_[AnimationType]_[SrcEntityType]_[DestEntityType]`
+    */
+    enum class Code : Sint32 {
+        kReq_DeathPending_Player,
+        kReq_DeathFinalized_Player,
+        kReq_AttackRegister_Player_GHE,
+        kReq_AttackRegister_GHE_Player,
+        kReq_AttackInitiate_GHE_Player,
+        kReq_MoveInitiate_GHE_Player,
+        kResp_AttackInitiate_GHE_Player,
+        kResp_MoveInitiate_GHE_Player,
+        kResp_MoveTerminate_GHE_Player,
+        kReq_Teleport_GTE_Player,
+        kResp_Teleport_GTE_Player,
+    };
+
+    namespace data {
+        struct kReq_AttackRegister_Player_GHE {
+            SDL_Point destCoords;
+            SDL_Point range;
+            EntitySecondaryStats stats;
+        };
+
+        using kReq_AttackRegister_GHE_Player =  kReq_AttackRegister_Player_GHE;
+
+        using kReq_AttackInitiate_GHE_Player =  kReq_AttackRegister_Player_GHE;
+
+        using kReq_MoveInitiate_GHE_Player =  kReq_AttackRegister_Player_GHE;
+
+        struct kReq_Teleport_GTE_Player {
+            SDL_Point destCoords;
+            SDL_Point targetDestCoords;
+            level::LevelName targetLevel;
+        };
+    }
+
+
+    /**
+     * The global custom event type.
+    */
+    extern uint32_t type;
+}
+
+
+/**
  * @brief Group components that are used for configuration.
  * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
  * @note All namespace members, even without Google's recommended `"k"` prefix, are `const`/`constexpr`.
 */
 namespace config {
+    constexpr bool audioEnabled = true;
+
     namespace path {
         const std::filesystem::path asset = "assets";
         const std::filesystem::path asset_tiled = asset / ".tiled";
@@ -420,9 +462,7 @@ namespace config {
         namespace font {
             const std::filesystem::path OmoriChaotic = asset_font / "omori-game-1.ttf";
             const std::filesystem::path OmoriHarmonic = asset_font / "omori-game-2.ttf";
-            const std::filesystem::path DeterminationMono = asset_font / "DeterminationMonoWebRegular-Z5oq.ttf";
-            const std::filesystem::path BadlyStuffedAnimal = asset_font / "BadlyStuffedAnimalDemoReg-8M3AD.ttf";   // Bizarre
-            const std::filesystem::path BadComa = asset_font / "bad-coma.ttf";
+            const std::filesystem::path Phorssa = asset_font / "phorssa.ttf";   // Bizarre
         }
     }
 
@@ -490,7 +530,7 @@ namespace config {
             },
             { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720 },
             frameRate,
-            "8964",
+            "introspection",
         };
     }
 
@@ -523,6 +563,7 @@ namespace config {
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 99, 99 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+            constexpr int waitingFramesAfterDeath = 6.66 * config::game::frameRate;
         }
 
         namespace teleporter {
@@ -579,7 +620,7 @@ namespace config {
             const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.05f }, config::preset::exitText, "quitting~");
             constexpr double destSizeModifier = 0.5;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
-            const std::filesystem::path fontPath = config::path::font::DeterminationMono;
+            const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
             constexpr double progressUpdateRateLimit = 1;
             constexpr double progressUpdateRate = progressUpdateRateLimit / static_cast<double>(config::game::frameRate >> 2);
         }
@@ -605,10 +646,10 @@ namespace config {
         }
 
         namespace menu_title {
-            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "8964");
-            constexpr double destSizeModifier = 5.5;
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.2f }, config::preset::title, "introspection");
+            constexpr double destSizeModifier = 3.0;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
-            const std::filesystem::path fontPath = config::path::font::BadComa;
+            const std::filesystem::path fontPath = config::path::font::Phorssa;
         }
 
         namespace loading_message {
@@ -697,8 +738,6 @@ namespace globals {
      * The current game state. Is strictly bound to the main control flow.
     */
     extern GameState state;
-
-    extern std::unordered_map<CustomEventType, uint32_t> customEventTypes;
 }
 
 
@@ -709,6 +748,7 @@ SDL_Point operator+(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator-(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator-(SDL_Point const& instance);
 SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& vector);
+SDL_Point operator~(SDL_Point const& instance);
 SDL_Point operator<<(SDL_Point const& instance, unsigned int times);
 SDL_Point operator>>(SDL_Point const& instance, unsigned int times);
 

@@ -22,6 +22,8 @@ const std::unordered_map<std::string, level::LevelName> level::kLevelNameConvers
     { "level-valley-of-despair", LevelName::kLevelValleyOfDespair },
 };
 
+uint32_t event::type = -1;
+
 
 SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
@@ -32,7 +34,6 @@ SDL_Point globals::mouseState;
 tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
 level::LevelData globals::currentLevelData;
 GameState globals::state = GameState::kMenu;
-std::unordered_map<CustomEventType, uint32_t> globals::customEventTypes;
 
 
 /**

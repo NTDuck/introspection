@@ -147,42 +147,54 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
     isAnimationOnProgress = true;
 }
 
-template <typename T>
-void AbstractAnimatedEntity<T>::pushEvent() {
-    if (currAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+// /**
+//  * @note `event.user.data1` is relevant data, `event.user.data2` is id
+// */
+// template <typename T>
+// void AbstractAnimatedEntity<T>::handleCustomEventPOST() {
+//     if (currAnimationType == AnimationType::kAttack && isAnimationAtFinalSprite()) {
+//         event.user.code = static_cast<Sint32>(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile> ? event::Code::kRequestPlayerAttackRegister : event::Code::kRequestEntityAttackRegister);
+//         event.user.data1 = new event::EntityAttackData({ destCoords, kAttackRegisterRange, secondaryStats });   // implicit
+//         auto event = formatCustomEvent();
+//         populateCustomEvent(event, )
+//     } else if constexpr(std::is_same_v<T, Player>) {
+//         event.user.code = static_cast<Sint32>(event::Code::kPlayerGeneric);
+//         event.user.data1 = new event::PlayerGenericData({ destCoords, currAnimationType });
+//     }
+// }
 
-    SDL_Event event;
-    SDL_memset(&event, 0, sizeof(event));
+// template <typename T>
+// void AbstractAnimatedEntity<T>::handleCustomEventGET(SDL_Event const& event) {
+//     auto handleDamaged = [&](SDL_Event const& event) {
+//         auto data = *reinterpret_cast<event::EntityAttackData*>(event.user.data1);   // Careful when dealing with `void*`
 
-    event.type = globals::customEventTypes[std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile> ? CustomEventType::kPlayerAttack : CustomEventType::kEntityAttack];
-    event.user.code = 0;   // what?
-    auto relevantData = new CustomEventData({ destCoords, kAttackRegisterRange, secondaryStats });
-    event.user.data1 = relevantData;   // implicit
-    event.user.data2 = nullptr;   // Probably could make more use
+//         // Check
+//         if (currAnimationType == AnimationType::kDamaged) return;
+//         int distance = utils::calculateDistance(destCoords, data.destCoords);
+//         if (distance > data.attackRegisterRange.x || distance > data.attackRegisterRange.y) return;
 
-    SDL_PushEvent(&event);
-}
+//         // Execute
+//         secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(data.stats, secondaryStats);
+//         secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(data.stats, secondaryStats);
 
-template <typename T>
-void AbstractAnimatedEntity<T>::handleCustomEvent(SDL_Event const& event) {
-    if (std::is_same_v<T, Player> ^ (event.type != globals::customEventTypes[CustomEventType::kPlayerAttack])) return;  // If one condition is true, one is false
+//         if (nextAnimationType == nullptr) {
+//             nextAnimationType = new AnimationType(secondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
+//             isAnimationOnProgress = false;
+//         }
+//     };
 
-    CustomEventData data = *reinterpret_cast<CustomEventData*>(event.user.data1);   // Careful when dealing with `void*`
+//     switch (static_cast<event::Code>(event.user.code)) {
+//         case event::Code::kRequestPlayerAttackRegister:
+//             if constexpr(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile>) break;
+//             handleDamaged(event); break;
+        
+//         case event::Code::kRequestEntityAttackRegister:
+//             if constexpr(!(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile>)) break;
+//             handleDamaged(event); break;
 
-    // Check
-    if (currAnimationType == AnimationType::kDamaged) return;
-    int distance = utils::calculateDistance(destCoords, data.destCoords);
-    if (distance > data.attackRegisterRange.x || distance > data.attackRegisterRange.y) return;
-
-    // Execute
-    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(data.stats, secondaryStats);
-    secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(data.stats, secondaryStats);
-
-    if (nextAnimationType == nullptr) {
-        nextAnimationType = new AnimationType(AnimationType::kDamaged);
-        isAnimationOnProgress = false;
-    }
-}
+//         default: break;
+//     }
+// }
 
 
 template class AbstractAnimatedEntity<PentacleProjectile>;

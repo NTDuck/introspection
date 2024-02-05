@@ -51,6 +51,10 @@ SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& v
     };
 }
 
+SDL_Point operator~(SDL_Point const& instance) {
+    return { instance.y, instance.x };
+}
+
 /**
  * @brief Rotate a decimal point for a specified number of times.
  * @see https://www.learncpp.com/cpp-tutorial/multidimensional-stdarray/

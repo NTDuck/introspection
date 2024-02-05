@@ -22,7 +22,8 @@ CPPFLAGS = $(INCLUDES) -MMD -MP
 
 # C++ compiler settings
 CXX = g++
-CXXFLAGS = -std=c++17 -fprofile-generate -flto
+CXXFLAGS = -std=c++17 -fprofile-generate
+# Removed: -flto (causing compilation error `multiple definition of `construction vtable for Multiton<Teleporter>-in-Teleporter'`)
 WARNINGS = -Wall
 
 # Linker flags

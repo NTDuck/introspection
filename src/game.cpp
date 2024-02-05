@@ -1,6 +1,5 @@
 #include <game.hpp>
 
-#include <iostream>
 #include <algorithm>
 #include <string>
 #include <limits>
@@ -16,7 +15,7 @@
 #include <auxiliaries.hpp>
 
 
-Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : flags(flags), windowDimension(windowDimension), frameRate(frameRate), title(title) {}
+Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : flags(flags), windowDimension(windowDimension), frameRate(frameRate), windowTitle(title) {}
 
 Game::~Game() {
     if (windowSurface != nullptr) {
@@ -71,7 +70,7 @@ void Game::initialize() {
 
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
-    window = SDL_CreateWindow(title.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
+    window = SDL_CreateWindow(windowTitle.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
     
@@ -234,7 +233,7 @@ void Game::handleDependencies() {
 */
 void Game::handleEvents() {
     // Totally necessary
-    if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::pushEvent);
+    if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEventPOST);
 
     SDL_Event* event = new SDL_Event;
     
@@ -259,20 +258,18 @@ void Game::handleEvents() {
                 handleKeyBoardEvent(*event);
                 break;
 
-            default: break;
+            default: 
+                if (event->type != event::type) break;
+                if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEventGET, *event);
+
+                /**
+                 * @warning Deleting `void*` is undefined.
+                */
+                // if (event->user.data1 != nullptr) delete event->user.data1;
+                if (event->user.data2 != nullptr) delete reinterpret_cast<int*>(event->user.data2);
         }
-
-        // Deallocate custom events
-        if (event->type == globals::customEventTypes[CustomEventType::kPlayerAttack] || event->type == globals::customEventTypes[CustomEventType::kEntityAttack]) {
-            if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEvent, *event);
-
-            // if (event->user.data1 != nullptr) delete event->user.data1;
-            // if (event->user.data2 != nullptr) delete event->user.data2;
-        }
-
     }
 
-    // Do you need to delete here?
     delete event;
 }
 
@@ -326,8 +323,6 @@ void Game::handleMouseEvent(const SDL_Event& event) {
 }
 
 void Game::registerCustomEvents() const {
-    globals::customEventTypes.clear();
-
-    uint32_t startID = SDL_RegisterEvents(static_cast<int>(CustomEventType::__count__));
-    for (uint32_t id = startID; id < static_cast<uint32_t>(CustomEventType::__count__); ++id) globals::customEventTypes.emplace(std::make_pair(static_cast<CustomEventType>(id - startID), id));
+    if (event::type != (uint32_t)-1) return;
+    event::type = SDL_RegisterEvents(1);
 }

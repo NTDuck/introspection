@@ -126,8 +126,9 @@ class IngameInterface final : public Singleton<IngameInterface> {
 
         void handleKeyBoardEvent(SDL_Event const& event) const;
         void handleMouseEvent(SDL_Event const& event) const;
-        void handleCustomEvent(SDL_Event const& event) const;
-        void pushEvent() const;
+
+        void handleCustomEventPOST() const;
+        void handleCustomEventGET(SDL_Event const& event) const;
 
         void handleEntities() const;
 
@@ -136,10 +137,9 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleEntitiesInteraction() const;
         void handleEntitiesSFX() const;
 
-        template <typename Active, typename Passive>
-        void onEntityCollision(Active& active, Passive& passive) const;
-        template <typename Active, typename Passive>
-        void onEntityAnimation(AnimationType animationType, Active& active, Passive& passive) const;
+        void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const;
+        void handleCustomEventGET_kReq_DeathPending_Player() const;
+        void handleCustomEventGET_kReq_DeathFinalized_Player() const;
 };
 
 

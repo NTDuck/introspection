@@ -63,7 +63,7 @@ class Game final : public Singleton<Game> {
         const GameInitFlag flags;
         SDL_Rect windowDimension;
         const int frameRate;
-        const std::string title;
+        const std::string windowTitle;
 };
 
 

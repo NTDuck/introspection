@@ -19,25 +19,30 @@ Mixer::~Mixer() {
 }
 
 void Mixer::playBGM(Mix_Music* BGM) const {
+    if constexpr(!config::audioEnabled) return;
     if (Mix_PlayingMusic()) return;
     Mix_PlayMusic(BGM, -1);
 }
 
 void Mixer::stopBGM() const {
+    if constexpr(!config::audioEnabled) return;
     Mix_HaltMusic();
 }
 
 void Mixer::pauseBGM() const {
+    if constexpr(!config::audioEnabled) return;
     if (!Mix_PlayingMusic() || Mix_PausedMusic()) return;
     Mix_PauseMusic();
 }
 
 void Mixer::unpauseBGM() const {
+    if constexpr(!config::audioEnabled) return;
     if (!Mix_PlayingMusic() || !Mix_PausedMusic()) return;
     Mix_ResumeMusic();
 }
 
 void Mixer::playSFX(SFXName SFX) const {
+    if constexpr(!config::audioEnabled) return;
     auto it = kSFXMapping.find(SFX);
     if (it != kSFXMapping.end()) Mix_PlayChannel(-1, it->second.first, 0);
 }
