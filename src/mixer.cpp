@@ -64,7 +64,7 @@ void Mixer::onLevelChange(level::LevelName newLevel) const {
 void Mixer::handleGameStateChange() {
     static GameState prevState;   // Initialize with decoy value
     onGameStateChange(prevState, globals::state);
-    prevState = globals::state;
+    prevState = globals::state;   // Req this
 }
 
 void Mixer::onGameStateChange(GameState const prev, GameState const next) {

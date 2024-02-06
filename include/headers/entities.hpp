@@ -6,6 +6,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <queue>
 #include <unordered_set>
 #include <utility>
 
@@ -47,9 +48,15 @@ class AbstractEntity : public Multiton<T> {
         virtual void handleCustomEventPOST() const {}
         virtual void handleCustomEventGET(SDL_Event const& event) {}
 
+    protected:
+        AbstractEntity(SDL_Point const& destCoords);
+        SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
+
+        event::ID id;
+
+        static const std::filesystem::path kTilesetPath;
         static tile::EntitiesTilesetData* tilesetData;
 
-        int id;
 
         /**
          * The non-negative coordinates of the entity relative to a 2-dimensional standardized Cartesian coordinate system. (origin at top-left corner)
@@ -58,41 +65,14 @@ class AbstractEntity : public Multiton<T> {
         SDL_Point destCoords;
 
         /**
-         * Contain data associated with the position of the entity relative to the window. In pixels.
-        */
-        SDL_Rect destRect;
-
-        EntityPrimaryStats primaryStats;
-        EntitySecondaryStats secondaryStats;
-
-    protected:
-        AbstractEntity(SDL_Point const& destCoords);
-
-        // Lifetime of a custom event, in order
-        SDL_Event formatCustomEvent(int id_ = -1) const;
-
-        template <typename Data>
-        inline void populateCustomEvent(SDL_Event& event, Data const& data) const {
-            if constexpr(std::is_same_v<Data, event::Code>) event.user.code = static_cast<Sint32>(data);
-            else event.user.data1 = new Data(data);   // Implicit
-        }
-
-        template <typename Data>
-        inline void populateCustomEvent(SDL_Event& event, event::Code code, Data const& data) const {
-            populateCustomEvent(event, code);
-            populateCustomEvent(event, data);
-        }
-
-        void enqueueCustomEvent(SDL_Event& event) const;
-
-        SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
-
-        /**
          * Contain data associated with the position of the entity's sprite/animation relative to the tileset. In pixels.
         */
         SDL_Rect srcRect;
 
-        static const std::filesystem::path kTilesetPath;
+        /**
+         * Contain data associated with the position of the entity relative to the window. In pixels.
+        */
+        SDL_Rect destRect;
 
         /**
          * Modify `destRect`.
@@ -121,6 +101,9 @@ class AbstractEntity : public Multiton<T> {
         */
         SDL_RendererFlip flip = SDL_FLIP_NONE;
 
+        EntityPrimaryStats primaryStats;
+        EntitySecondaryStats secondaryStats;
+
     private:
         static int idCounter;
 };
@@ -137,7 +120,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::id, AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::formatCustomEvent, AbstractEntity<T>::populateCustomEvent, AbstractEntity<T>::enqueueCustomEvent, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::id, AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
 
 
 /**
@@ -158,10 +141,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual void updateAnimation();
         void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
-        AnimationType currAnimationType;
-        AnimationType* nextAnimationType = nullptr;
-        bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
-
         inline bool isAnimationAtSprite(int GID) const {
             return currAnimationGID == GID;
         }
@@ -174,6 +153,13 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
             return isAnimationAtSprite(tilesetData->animationMapping[currAnimationType].stopGID);
         }
 
+    protected:
+        AbstractAnimatedEntity(SDL_Point const& destCoords);
+
+        AnimationType currAnimationType;
+        AnimationType* nextAnimationType = nullptr;
+        bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
+
         /**
          * The minimum range required for the entity to initiate an attack on a targetable entity.
         */
@@ -183,9 +169,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
          * The minimum range required for the entity to register an attack on a targetable entity.
         */
         SDL_Point kAttackRegisterRange;
-
-    protected:
-        AbstractAnimatedEntity(SDL_Point const& destCoords);
 
     private:
         int currAnimationUpdateCount = 0;
@@ -213,6 +196,15 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual void move();
         virtual void initiateMove(EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
+    protected:
+        AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
+
+        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onRunningToggled(bool onRunningStart);
+
+        virtual bool validateMove() const;
+
         bool isRunning = false;
 
         /**
@@ -226,16 +218,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
          * @note Recommended implementation: this member should be used in strict conjunction with `nextDestCoords`.
         */
         SDL_Rect* nextDestRect = nullptr;
-
-    protected:
-        AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
-
-        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onRunningToggled(bool onRunningStart);
-
-        virtual bool validateMove() const;
-
+        
         /**
          * Represent the current direction of the entity.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
@@ -336,9 +319,9 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         void handleCustomEventPOST_kReq_MoveInitiate_GHE_Player() const;
 
         void handleCustomEventGET_kReq_AttackRegister_Player_GHE(SDL_Event const& event);
-        void handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event);
+        void handleCustomEventGET_kResp_AttackInitiate_GHE_Player();
         void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
-        void handleCustomEventGET_kResp_MoveTerminate_GHE_Player(SDL_Event const& event);
+        void handleCustomEventGET_kResp_MoveTerminate_GHE_Player();
 };
 
 #define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::kMoveInitiateRange;
@@ -359,7 +342,8 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
         static void initiateAttack(ProjectileType type, SDL_Point const& destCoords, SDL_Point const& direction);
 
-        void handleLifespan();
+        void handleInstantiation();
+        static void handleTermination();
 
     protected:
         GenericSurgeProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
@@ -369,9 +353,11 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
 
         SDL_Point& kDirection = currVelocity;   // Does not allocate additional memory
+
+        static std::queue<T*> terminatedInstances;
 };
 
-#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleLifespan;
+#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;
 
 
 template <typename T>
@@ -443,6 +429,9 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleCustomEventGET(SDL_Event const& event) override;
 
     private:
+        void handleKeyboardEvent_Movement(SDL_Event const& event);
+        void handleKeyboardEvent_ProjectileAttack(SDL_Event const& event);
+
         void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
         void handleCustomEventPOST_kReq_Death_Player() const;
 
@@ -450,6 +439,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event);
+
+        static SDL_Point prevDirection;
 };
 
 

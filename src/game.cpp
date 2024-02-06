@@ -73,6 +73,8 @@ void Game::initialize() {
     window = SDL_CreateWindow(windowTitle.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
+
+    event::initialize();
     
     // Initialize dependencies
     IngameInterface::initialize();
@@ -91,9 +93,6 @@ void Game::initialize() {
     MenuInterface::instantiate();   // Requires instantiation of `Player` and `IngameMapHandler`
     LoadingInterface::instantiate();
     GameOverInterface::instantiate();
-
-    // Additional setup
-    registerCustomEvents();
 }
 
 /**
@@ -235,49 +234,41 @@ void Game::handleEvents() {
     // Totally necessary
     if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEventPOST);
 
-    SDL_Event* event = new SDL_Event;
+    SDL_Event event;
     
-    while (SDL_PollEvent(event)) {
-        switch (event->type) {
+    while (SDL_PollEvent(&event)) {
+        switch (event.type) {
             case SDL_QUIT:
                 Mixer::invoke(&Mixer::stopBGM);
                 globals::state = GameState::kExit;
                 break;
             
             case SDL_WINDOWEVENT:
-                handleWindowEvent(*event);
+                handleWindowEvent(event);
                 break;
 
             // track mouse motion & buttons only
             // also invoked when mouse focus regained/lost
             case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
-                handleMouseEvent(*event);
+                handleMouseEvent(event);
                 break;
 
             case SDL_KEYDOWN: case SDL_KEYUP:
-                handleKeyBoardEvent(*event);
+                handleKeyBoardEvent(event);
                 break;
 
-            default: 
-                if (event->type != event::type) break;
-                if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEventGET, *event);
-
-                /**
-                 * @warning Deleting `void*` is undefined.
-                */
-                // if (event->user.data1 != nullptr) delete event->user.data1;
-                if (event->user.data2 != nullptr) delete reinterpret_cast<int*>(event->user.data2);
+            default:
+                if (event.type != event::type) break;
+                handleCustomEventGET(event);
         }
     }
-
-    delete event;
 }
 
 /**
  * @brief Handle a windows event.
  * @bug Event `SDL_WINDOWEVENT_SIZE_CHANGED` causes temporary undefined behavior for non-stationary entities.
 */
-void Game::handleWindowEvent(const SDL_Event& event) {
+void Game::handleWindowEvent(SDL_Event const& event) {
     if (event.window.windowID != windowID) return;
     switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
@@ -291,7 +282,7 @@ void Game::handleWindowEvent(const SDL_Event& event) {
  * @brief Handle a keyboard event.
  * @note Scancode denotes physical location and keycode denotes actual meaning (different if remapped)
 */
-void Game::handleKeyBoardEvent(const SDL_Event& event) const {
+void Game::handleKeyBoardEvent(SDL_Event const& event) const {
     switch (globals::state) {
         case GameState::kIngamePlaying:
             IngameInterface::invoke(&IngameInterface::handleKeyBoardEvent, event);
@@ -306,7 +297,7 @@ void Game::handleKeyBoardEvent(const SDL_Event& event) const {
 /**
  * @brief Handle a mouse event.
 */
-void Game::handleMouseEvent(const SDL_Event& event) {
+void Game::handleMouseEvent(SDL_Event const& event) const {
     SDL_GetMouseState(&globals::mouseState.x, &globals::mouseState.y);
 
     switch (globals::state) {
@@ -322,7 +313,14 @@ void Game::handleMouseEvent(const SDL_Event& event) {
     }
 }
 
-void Game::registerCustomEvents() const {
-    if (event::type != (uint32_t)-1) return;
-    event::type = SDL_RegisterEvents(1);
+void Game::handleCustomEventGET(SDL_Event const& event) const {
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            IngameInterface::invoke(&IngameInterface::handleCustomEventGET, event);
+            break;
+
+        default: break;
+    }
+
+    event::terminate(event);
 }

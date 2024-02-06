@@ -90,27 +90,6 @@ void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelD
 }
 
 /**
- * @note If `id_` is `-1`, use member `id` instead.
-*/
-template <typename T>
-SDL_Event AbstractEntity<T>::formatCustomEvent(int id_) const {
-    SDL_Event event;
-    SDL_memset(&event, 0, sizeof(event));
-
-    event.type = event::type;
-    event.user.data1 = nullptr;
-    event.user.data2 = new int(id_ == -1 ? id : id_);
-
-    return event;
-}
-
-template <typename T>
-void AbstractEntity<T>::enqueueCustomEvent(SDL_Event& event) const {
-    if (event.user.data1 != nullptr) SDL_PushEvent(&event);
-    else delete reinterpret_cast<int*>(event.user.data2);
-}
-
-/**
  * Adjust `destRect` based on `tilesetData->animationSize` and `destRectModifier`.
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
  * @see https://stackoverflow.com/questions/3127962/c-float-to-int

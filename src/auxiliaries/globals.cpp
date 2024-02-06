@@ -22,8 +22,6 @@ const std::unordered_map<std::string, level::LevelName> level::kLevelNameConvers
     { "level-valley-of-despair", LevelName::kLevelValleyOfDespair },
 };
 
-uint32_t event::type = -1;
-
 
 SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
@@ -66,17 +64,9 @@ void EntitySecondaryStats::initialize(EntityPrimaryStats const& entityPrimarySta
 }
 
 /**
- * @brief Calculate the finalized physical damage dealt to entity `passive` by entity `active`.
- * @note Defined here to prevent circular dependencies.
+ * @brief Update both entities' secondary stats after entity `active` registered an attack onto entity `passive`.
 */
-int EntitySecondaryStats::calculateFinalizedPhysicalDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive) {
-    return std::round(active.PhysicalDamage * (1 - passive.PhysicalDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
-}
-
-/**
- * @brief Calculate the finalized magic damage dealt to entity `passive` by entity `active`.
- * @note Defined here to prevent circular dependencies.
-*/
-int EntitySecondaryStats::calculateFinalizedMagicDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive) {
-    return std::round(active.MagicDamage * (1 - passive.MagicDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
+void EntitySecondaryStats::resolve(EntitySecondaryStats const& active, EntitySecondaryStats& passive) {
+    passive.HP -= std::round(active.PhysicalDamage * (1 - passive.PhysicalDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
+    passive.HP -= std::round(active.MagicDamage * (1 - passive.MagicDefense) * (utils::generateRandomBinary(active.CriticalChance) ? active.CriticalDamage : 1));
 }

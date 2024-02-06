@@ -28,9 +28,11 @@ void GenericTeleporterEntity<T>::handleCustomEventPOST() const {
 
 template <typename T>
 void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player() const {
-    auto event = formatCustomEvent();
-    populateCustomEvent(event, event::Code::kReq_Teleport_GTE_Player, event::data::kReq_Teleport_GTE_Player({ destCoords, targetDestCoords, targetLevel }));
-    enqueueCustomEvent(event);
+    auto event = event::instantiate();
+    event::setID(event, id);
+    event::setCode(event, event::Code::kReq_Teleport_GTE_Player);
+    event::setData(event, event::data::Teleporter({ destCoords, targetDestCoords, targetLevel }));
+    event::enqueue(event);
 }
 
 

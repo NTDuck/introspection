@@ -11,86 +11,6 @@
 
 
 /**
- * @deprecated Flow 1: Abstract Hierarchy
- * ┌────────────────────┐
- * │ PolymorphicBase<T> │
- * └┬───────────────────┘
- *  │
- *  │ ┌──────────────┐
- *  ├─► Singleton<T> ├───────────────────────────────────────────┐
- *  │ └┬─────────────┘                                           │
- *  │  │                                                         │
- *  │  │ ┌──────┐                   ┌──────────────────┐         │
- *  │  ├─► Game │                 ┌─► IngameMapHandler │         │
- *  │  │ └──────┘                 │ └──────────────────┘         │
- *  │  │                          │                              │
- *  │  │ ┌──────────────────────┐ │ ┌───────────────┐            │
- *  │  ├─► AbstractInterface<T> ├─┼─► MenuInterface │            │
- *  │  │ └──────────────────────┘ │ └───────────────┘            │
- *  │  │                          │                              │
- *  │  │ ┌────────────┐           │ ┌──────────────────┐         │
- *  │  ├─► MenuAvatar │           └─► LoadingInterface │         │
- *  │  │ └────────────┘             └──────────────────┘         │
- *  │  │                                                         │
- *  │  │ ┌────────────────────────┐                              │
- *  │  └─► MenuAnimatedBackground │                              │
- *  │    └────────────────────────┘                              │
- *  │                                                            │
- *  │ ┌─────────────┐                                            │
- *  └─► Multiton<T> │                                            │
- *    └┬────────────┘                                            │
- *     │                                                         │
- *     │ ┌───────────────────┐                                   │
- *     ├─► AbstractEntity<T> │                                   │
- *     │ └┬──────────────────┘                                   │
- *     │  │                                                      │
- *     │  │ ┌───────────────────────────┐ ┌────────────┐         │
- *     │  └─► AbstractAnimatedEntity<T> ├─► Teleporter │         │
- *     │    └┬──────────────────────────┘ └────────────┘         │
- *     │     │                                                   │
- *     │     │ ┌──────────────────────────────────┐   ┌────────┐ │
- *     │     └─► AbstractAnimatedDynamicEntity<T> ├─┬─► Player ◄─┤
- *     │       └──────────────────────────────────┘ │ └────────┘ │
- *     │                                            │            │
- *     │ ┌─────────────────────┐                    │ ┌───────┐  │
- *     └─► GenericComponent<T> │                    └─► Slime │  │
- *       └┬────────────────────┘                      └───────┘  │
- *        │                                                      │
- *        │ ┌─────────────────────────┐                          │
- *        ├─► GenericTextComponent<T> ├───────┐                  │
- *        │ └┬────────────────────────┘       │                  │
- *        │  │                                │                  │
- *        │  │ ┌───────────┐                  │                  │
- *        │  ├─► MenuTitle ◄──────────────────┼──────────────────┤
- *        │  │ └───────────┘                  │                  │
- *        │  │                                │                  │
- *        │  │ ┌────────────────┐             │                  │
- *        │  └─► LoadingMessage ◄─────────────┼──────────────────┤
- *        │    └────────────────┘             │                  │
- *        │                                   │                  │
- *        │ ┌────────────────────────┐        │                  │
- *        └─► GenericBoxComponent<T> ├────────┤                  │
- *          └┬───────────────────────┘        │                  │
- *           │                                │                  │
- *           │ ┌────────────────────────────┐ │                  │
- *           │ │ GenericTextBoxComponent<T> ◄─┘                  │
- *           │ └┬───────────────────────────┘                    │
- *           │  │                                                │
- *           │  │ ┌───────────────────────────┐ ┌────────────┐   │
- *           │  └─► GenericButtonComponent<T> ├─► MenuButton │   │
- *           │    └───────────────────────────┘ └────────────┘   │
- *           │                                                   │
- *           │ ┌────────────────────────────────┐                │
- *           └─► GenericProgressBarComponent<T> │                │
- *             └┬───────────────────────────────┘                │
- *              │                                                │
- *              │ ┌────────────────────┐                         │
- *              └─► LoadingProgressBar ◄─────────────────────────┘
- *                └────────────────────┘
-*/
-
-
-/**
  * @brief An abstract base with certain operators deleted. Required for implementation of derived classes `Singleton<T>` and `Multiton<T>`.
 */
 template <typename T>
@@ -139,6 +59,7 @@ class Singleton : virtual public PolymorphicBase<T> {
             return std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);   // if (instance == nullptr) ...
         }
 
+    protected:
         static T* instance;
 
     private:
@@ -195,8 +116,6 @@ class Multiton : virtual public PolymorphicBase<T> {
             for (auto& instance : instances) if (instance != nullptr) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
 
-        static std::unordered_set<T*> instances;
-
     protected:
         /**
          * @see https://stackoverflow.com/questions/3747066/c-cannot-convert-from-base-a-to-derived-type-b-via-virtual-base-a
@@ -206,6 +125,8 @@ class Multiton : virtual public PolymorphicBase<T> {
         virtual ~Multiton() override {
             instances.erase(dynamic_cast<T*>(this));   // remove from `instances`
         }
+
+        static std::unordered_set<T*> instances;
 
     private:
         template <std::size_t... Indices, typename Tuple>

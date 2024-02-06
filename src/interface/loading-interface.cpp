@@ -54,7 +54,7 @@ void LoadingInterface::handleTransition() {
     if (!LoadingProgressBar::instance->isFinished) return;
     if (currIdleFrames < kIdleFramesLimit) ++currIdleFrames; else {
         currIdleFrames = 0;
-        globals::state = nextGameState; 
+        globals::state = nextGameState;
         LoadingProgressBar::invoke(&LoadingProgressBar::resetProgress);
     }
 }

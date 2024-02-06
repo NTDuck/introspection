@@ -1,8 +1,6 @@
 #ifndef AUXILIARIES_H
 #define AUXILIARIES_H
 
-#include <iostream>
-
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -30,9 +28,6 @@ using json = nlohmann::json;
 
 /* Enumerations & Structs */
 
-/**
- * Contain possible game states. Should be used closely with the main control flow.
-*/
 enum class GameState {
     kExit = 1,
     kMenu = 2,
@@ -42,32 +37,21 @@ enum class GameState {
     // kIngamePaused,
     // kIngameDialogue,
     // kIngameCutscene,
-    k6 = 6,
-    k12 = 12,   // Prevent warnings
+    __6__ = 6,
+    __12__ = 12,   // Prevent warnings
 };
 
 constexpr GameState operator|(GameState const& first, GameState const& second) {
     return static_cast<GameState>(static_cast<int>(first) | static_cast<int>(second));   // Must be defined here
 }
 
-/**
- * Contain possible in-game view modes.
-*/
 enum class IngameViewMode {
     kFullScreen = 1,
     kFocusOnEntity = 2,
 };
 
 /**
- * Contain registered interaction types.
- * @see <interaction.h>
-*/
-enum class InteractionType {
-    kCoordsArb, kCoordsAbs, kRect, kPerPixel,
-};
-
-/**
- * @brief Provide flexible handling base on a move's status.
+ * @brief Provide flexible handling base on an entity movement's status.
 */
 enum class EntityStatusFlag {
     kDefault, kInvalidated, kContinued,
@@ -153,13 +137,9 @@ struct EntitySecondaryStats {
     double CriticalDamage;
 
     void initialize(EntityPrimaryStats const& entityPrimaryStats);
-    static int calculateFinalizedPhysicalDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive);
-    static int calculateFinalizedMagicDamage(EntitySecondaryStats const& active, EntitySecondaryStats const& passive);
+    static void resolve(EntitySecondaryStats const& active, EntitySecondaryStats& passive);
 };
 
-/**
- * @brief Contain data associated with a text area's configurations.
-*/
 struct ComponentPreset {
     SDL_Color backgroundColor;
     SDL_Color lineColor;
@@ -404,8 +384,11 @@ namespace event {
      * @note Strictly abide to the following format: `k[Req/Resp]_[AnimationType]_[SrcEntityType]_[DestEntityType]`
     */
     enum class Code : Sint32 {
+        // Uses `event::ID`
         kReq_DeathPending_Player,
         kReq_DeathFinalized_Player,
+
+        // Uses `Mob`
         kReq_AttackRegister_Player_GHE,
         kReq_AttackRegister_GHE_Player,
         kReq_AttackInitiate_GHE_Player,
@@ -413,35 +396,67 @@ namespace event {
         kResp_AttackInitiate_GHE_Player,
         kResp_MoveInitiate_GHE_Player,
         kResp_MoveTerminate_GHE_Player,
+
+        // Uses `Teleporter`
         kReq_Teleport_GTE_Player,
         kResp_Teleport_GTE_Player,
     };
 
+    using ID = int;
+
     namespace data {
-        struct kReq_AttackRegister_Player_GHE {
+        struct Mob {
             SDL_Point destCoords;
             SDL_Point range;
             EntitySecondaryStats stats;
         };
 
-        using kReq_AttackRegister_GHE_Player =  kReq_AttackRegister_Player_GHE;
-
-        using kReq_AttackInitiate_GHE_Player =  kReq_AttackRegister_Player_GHE;
-
-        using kReq_MoveInitiate_GHE_Player =  kReq_AttackRegister_Player_GHE;
-
-        struct kReq_Teleport_GTE_Player {
+        struct Teleporter {
             SDL_Point destCoords;
             SDL_Point targetDestCoords;
             level::LevelName targetLevel;
         };
     }
 
-
     /**
-     * The global custom event type.
+     * The global custom event type. Registered only once.
     */
     extern uint32_t type;
+    void initialize();
+
+    SDL_Event instantiate();
+    void terminate(SDL_Event const& event);
+    void enqueue(SDL_Event& event);
+
+    event::ID getID(SDL_Event const& event);
+    void setID(SDL_Event& event, event::ID id);
+    event::Code getCode(SDL_Event const& event);
+    void setCode(SDL_Event& event, event::Code code);
+
+    /**
+     * Helper function. Not meant to be used outside of namespace.
+    */
+    template <typename Data>
+    inline void __deallocate__(SDL_Event const& event) {
+        if (event.user.data1 != nullptr) delete reinterpret_cast<Data*>(event.user.data1);
+    }
+
+    /**
+     * @note Should only be called when `event.user.data1` is not `nullptr`.
+    */
+    template <typename Data>
+    inline Data getData(SDL_Event const& event) {
+        return event.user.data1 != nullptr ? *reinterpret_cast<Data*>(event.user.data1) : Data{};
+    }
+
+    /**
+     * @note Assumes that `event.user.data1`, for its entire lifespan, is of type `Data`.
+    */
+    template <typename Data>
+    inline void setData(SDL_Event& event, Data const& data) {
+        if (event.user.data1 != nullptr) delete reinterpret_cast<Data*>(event.user.data1);
+        event.user.data1 = new Data(data);
+    }
 }
 
 
@@ -698,6 +713,7 @@ namespace globals {
      * @see https://stackoverflow.com/questions/12506979/what-is-the-point-of-an-sdl2-texture
     */
     extern SDL_Renderer* renderer;
+
     /**
      * Represents the width and height of the in-game window.
      * @note Recommended implementation: this instance should be assigned during `<game.h> Game::initialize()`, then reassigned in `<game.h> Game::onWindowChange().
@@ -728,15 +744,8 @@ namespace globals {
      * Store data associated with tilelayer tilesets of the current level.
     */
     extern tile::TilelayerTilesetData::Collection tilelayerTilesetDataCollection;
-
-    /**
-     * Contain data associated with the current level.
-    */
     extern level::LevelData currentLevelData;
 
-    /**
-     * The current game state. Is strictly bound to the main control flow.
-    */
     extern GameState state;
 }
 

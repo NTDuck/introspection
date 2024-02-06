@@ -10,44 +10,6 @@
 #include <auxiliaries.hpp>
 
 
-/**
- * @brief Flow 1: Initialization of `nextAnimationData`
- * ┌─────────────┐   ┌───────────────────────────┐
- * │ interaction ├───┤ checkEntityAnimation(...) ├───┐
- * └─────────────┘   └───────────────────────────┘   │
- *                                                   │
- * ┌─────────────┐   ┌────────────────────────┐      │
- * │    Game     ├───┤ onEntityAnimation(...) ◄──────┘
- * └─────────────┘   └────────────────────────┘
-*/
-
-/**
- * @brief Flow 2: Retrieval & Modification of `nextAnimationData`
- * ┌────────────────────────┐
- * │ AbstractAnimatedEntity │
- * └───┬────────────────────┘
- *     │
- *     │   ┌─────────────────────┐
- *     ├───┤ initiateAnimation() ├────────┐
- *     │   └─────────────────────┘        │
- *     │                                  │
- *     │       ┌──── conditional check ◄──┘
- *     │       │
- *     │       └───► priority overlap ────┬───┐
- *     │                                  │   │
- *     │       ┌──── isExecuting = false ◄┘   │
- *     │       │                              │
- *     │   ┌───▼───────────┐                  │
- *     └───┤ onAnimation() ◄──────────────────┘
- *         └───┬───────────┘
- *             │
- *             └───► isExecuting = true
-*/
-
-/**
- * @note There is no Flow 3. For Deallocation of `nextAnimationData`, see `updateAnimation()`.
-*/
-
 template <typename T>
 AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords) {
     resetAnimation(AnimationType::kIdle);
@@ -146,55 +108,6 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
     resetAnimation(*nextAnimationType);
     isAnimationOnProgress = true;
 }
-
-// /**
-//  * @note `event.user.data1` is relevant data, `event.user.data2` is id
-// */
-// template <typename T>
-// void AbstractAnimatedEntity<T>::handleCustomEventPOST() {
-//     if (currAnimationType == AnimationType::kAttack && isAnimationAtFinalSprite()) {
-//         event.user.code = static_cast<Sint32>(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile> ? event::Code::kRequestPlayerAttackRegister : event::Code::kRequestEntityAttackRegister);
-//         event.user.data1 = new event::EntityAttackData({ destCoords, kAttackRegisterRange, secondaryStats });   // implicit
-//         auto event = formatCustomEvent();
-//         populateCustomEvent(event, )
-//     } else if constexpr(std::is_same_v<T, Player>) {
-//         event.user.code = static_cast<Sint32>(event::Code::kPlayerGeneric);
-//         event.user.data1 = new event::PlayerGenericData({ destCoords, currAnimationType });
-//     }
-// }
-
-// template <typename T>
-// void AbstractAnimatedEntity<T>::handleCustomEventGET(SDL_Event const& event) {
-//     auto handleDamaged = [&](SDL_Event const& event) {
-//         auto data = *reinterpret_cast<event::EntityAttackData*>(event.user.data1);   // Careful when dealing with `void*`
-
-//         // Check
-//         if (currAnimationType == AnimationType::kDamaged) return;
-//         int distance = utils::calculateDistance(destCoords, data.destCoords);
-//         if (distance > data.attackRegisterRange.x || distance > data.attackRegisterRange.y) return;
-
-//         // Execute
-//         secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedPhysicalDamage(data.stats, secondaryStats);
-//         secondaryStats.HP -= EntitySecondaryStats::calculateFinalizedMagicDamage(data.stats, secondaryStats);
-
-//         if (nextAnimationType == nullptr) {
-//             nextAnimationType = new AnimationType(secondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
-//             isAnimationOnProgress = false;
-//         }
-//     };
-
-//     switch (static_cast<event::Code>(event.user.code)) {
-//         case event::Code::kRequestPlayerAttackRegister:
-//             if constexpr(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile>) break;
-//             handleDamaged(event); break;
-        
-//         case event::Code::kRequestEntityAttackRegister:
-//             if constexpr(!(std::is_same_v<T, Player> || std::is_same_v<T, PentacleProjectile>)) break;
-//             handleDamaged(event); break;
-
-//         default: break;
-//     }
-// }
 
 
 template class AbstractAnimatedEntity<PentacleProjectile>;

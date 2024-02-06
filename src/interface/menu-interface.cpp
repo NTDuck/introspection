@@ -17,7 +17,7 @@
 */
 MenuInterface::MenuInterface() {
     MenuAnimatedBackground::instantiate(IngameMapHandler::instance->texture);
-    MenuAvatar::instantiate(*Teleporter::tilesetData, config::components::menu_avatar::destRectModifier);
+    // MenuAvatar::instantiate(*Teleporter::tilesetData, config::components::menu_avatar::destRectModifier);
     MenuButton::instantiate(config::components::menu_button::initializer);
     MenuTitle::instantiate(config::components::menu_title::initializer);
 }
@@ -28,7 +28,7 @@ void MenuInterface::initialize() {
 
 void MenuInterface::deinitialize() {
     MenuAnimatedBackground::deinitialize();
-    MenuAvatar::deinitialize();
+    // MenuAvatar::deinitialize();
     MenuButton::deinitialize();
     MenuTitle::deinitialize();
 
@@ -50,7 +50,7 @@ void MenuInterface::renderBackground() const {
 
 void MenuInterface::renderComponents() const {
     MenuAnimatedBackground::invoke(&MenuAnimatedBackground::render);
-    MenuAvatar::invoke(&MenuAvatar::render);
+    // MenuAvatar::invoke(&MenuAvatar::render);
     MenuButton::invoke(&MenuButton::render);
     MenuTitle::invoke(&MenuTitle::render);
 }
@@ -59,7 +59,7 @@ void MenuInterface::onWindowChange() {
     AbstractInterface<MenuInterface>::onWindowChange();
     
     MenuAnimatedBackground::invoke(&MenuAnimatedBackground::onWindowChange);
-    MenuAvatar::invoke(&MenuAvatar::onWindowChange);
+    // MenuAvatar::invoke(&MenuAvatar::onWindowChange);
     MenuButton::invoke(&MenuButton::onWindowChange);
     MenuTitle::invoke(&MenuTitle::onWindowChange);
 }

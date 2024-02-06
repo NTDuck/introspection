@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <string>
+#include <queue>
 #include <unordered_set>
 
 #include <SDL.h>
@@ -71,11 +72,22 @@ void GenericSurgeProjectile<T>::initiateAttack(ProjectileType type, SDL_Point co
 }
 
 template <typename T>
-void GenericSurgeProjectile<T>::handleLifespan() {
+void GenericSurgeProjectile<T>::handleInstantiation() {
     if (!isAnimationAtFinalSprite()) return;
 
     initiateNextLinearAttack();
-    instances.erase(reinterpret_cast<T*>(this));
+    terminatedInstances.push(dynamic_cast<T*>(this));
+    // instances.erase(reinterpret_cast<T*>(this));
+}
+
+template <typename T>
+void GenericSurgeProjectile<T>::handleTermination() {
+    while (!terminatedInstances.empty()) {
+        auto instance = terminatedInstances.front();
+        if (instance != nullptr) delete instance;
+        instances.erase(instance);
+        terminatedInstances.pop();
+    }
 }
 
 template <typename T>
@@ -87,10 +99,16 @@ void GenericSurgeProjectile<T>::initiateNextLinearAttack() {
 
 template <typename T>
 void GenericSurgeProjectile<T>::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
-    auto event = formatCustomEvent();
-    populateCustomEvent(event, event::Code::kReq_AttackRegister_Player_GHE, event::data::kReq_AttackRegister_Player_GHE({ destCoords, kAttackRegisterRange, secondaryStats }));
-    enqueueCustomEvent(event);    
+    auto event = event::instantiate();
+    event::setID(event, id);
+    event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
+    event::setData(event, event::data::Mob({ destCoords, kAttackRegisterRange, secondaryStats }));
+    event::enqueue(event);
 }
+
+
+template <typename T>
+std::queue<T*> GenericSurgeProjectile<T>::terminatedInstances;
 
 
 template class GenericSurgeProjectile<PentacleProjectile>;

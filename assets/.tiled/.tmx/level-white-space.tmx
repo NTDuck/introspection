@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="36" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="1">
- <layer id="3" name="static-collision" width="64" height="36">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="64" height="36" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#f2f3f4" nextlayerid="7" nextobjectid="1">
+ <tileset firstgid="1" source="../.tsx/mi-rb-floors.tsx"/>
+ <tileset firstgid="601" source="../.tsx/collision.tsx"/>
+ <layer id="3" name="static-collision" width="64" height="36" visible="0">
   <data encoding="base64" compression="zlib">
-   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+   eJztwwEJAAAMA6DxlutfZDkOCvaSqqqqqqqqqqqqLw/YUTMu
   </data>
  </layer>
  <layer id="1" name="floors" width="64" height="36">
   <data encoding="base64" compression="zlib">
-   eJztwQENAAAAwqD3T20ON6AAAAAAAAAAAIBXAyQAAAE=
+   eJztzzENAAAIwDDwr5cfA5yEhzaZgEUAAAAA7Kuc+8K//8//AAAAwK0GilkXEQ==
   </data>
  </layer>
  <layer id="2" name="walls" width="64" height="36">

@@ -4,6 +4,7 @@
 #include <SDL.h>
 
 #include <components.hpp>
+#include <entities.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -111,6 +112,7 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
  * @brief Represent the in-game interface.
 */
 class IngameInterface final : public Singleton<IngameInterface> {
+    friend Player;
     public:
         INCL_SINGLETON(IngameInterface);
 
