@@ -3,31 +3,31 @@
 #include <SDL.h>
 
 
-MenuAnimatedBackground::MenuAnimatedBackground(SDL_Texture*& texture) : texture(texture) {
-    srcRects.first.x = srcRects.first.y = srcRects.second.y = destRects.first.y = destRects.second.x = destRects.second.y = 0;
+MenuAnimatedBackground::MenuAnimatedBackground(SDL_Texture*& texture) : pTexture(texture) {
+    mSrcRects.first.x = mSrcRects.first.y = mSrcRects.second.y = mDestRects.first.y = mDestRects.second.x = mDestRects.second.y = 0;
 }
 
 /**
  * @brief Update `srcRects` and `destRects` based on `currAnimationUpdateCount`.
 */
 void MenuAnimatedBackground::updateAnimation() {
-    currAnimationUpdateCount += kAnimationUpdateRate;
-    if (currAnimationUpdateCount > animationUpdateRateLimit) currAnimationUpdateCount = 0;
+    mCurrAnimationUpdateCount += kAnimationUpdateRate;
+    if (mCurrAnimationUpdateCount > kAnimationUpdateRateLimit) mCurrAnimationUpdateCount = 0;
 
-    srcRects.second.w = static_cast<int>(currAnimationUpdateCount * srcSize.x);
-    srcRects.first.w = srcRects.second.x = srcSize.x - srcRects.second.w;
+    mSrcRects.second.w = static_cast<int>(mCurrAnimationUpdateCount * mSrcSize.x);
+    mSrcRects.first.w = mSrcRects.second.x = mSrcSize.x - mSrcRects.second.w;
 
-    destRects.first.x = destRects.second.w = static_cast<int>(currAnimationUpdateCount * destSize.x);
-    destRects.first.w = globals::windowSize.x - destRects.first.x;
+    mDestRects.first.x = mDestRects.second.w = static_cast<int>(mCurrAnimationUpdateCount * mDestSize.x);
+    mDestRects.first.w = globals::windowSize.x - mDestRects.first.x;
 }
 
 void MenuAnimatedBackground::render() const {
-    SDL_RenderCopy(globals::renderer, texture, &srcRects.first, &destRects.first);
-    SDL_RenderCopy(globals::renderer, texture, &srcRects.second, &destRects.second);
+    SDL_RenderCopy(globals::renderer, pTexture, &mSrcRects.first, &mDestRects.first);
+    SDL_RenderCopy(globals::renderer, pTexture, &mSrcRects.second, &mDestRects.second);
 }
 
 void MenuAnimatedBackground::onWindowChange() {
-    SDL_QueryTexture(texture, nullptr, nullptr, &srcSize.x, &srcSize.y);
-    srcRects.first.h = srcRects.second.h = srcSize.y;
-    destRects.first.h = destRects.second.h = destSize.y;
+    SDL_QueryTexture(pTexture, nullptr, nullptr, &mSrcSize.x, &mSrcSize.y);
+    mSrcRects.first.h = mSrcRects.second.h = mSrcSize.y;
+    mDestRects.first.h = mDestRects.second.h = mDestSize.y;
 }

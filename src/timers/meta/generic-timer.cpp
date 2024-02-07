@@ -8,53 +8,53 @@
 */
 template <typename T>
 void GenericTimer<T>::start() {
-    isStarted_ = true;
-    isPaused_ = false;
+    mIsStarted = true;
+    mIsPaused = false;
 
-    startTicks = SDL_GetTicks();
-    pausedTicks = 0;
+    mStartTicks = SDL_GetTicks();
+    mPausedTicks = 0;
 }
 
 template <typename T>
 void GenericTimer<T>::stop() {
-    isStarted_ = false;
-    isPaused_ = true;
+    mIsStarted = false;
+    mIsPaused = true;
 
-    startTicks = 0;
-    pausedTicks = 0;
+    mStartTicks = 0;
+    mPausedTicks = 0;
 }
 
 template <typename T>
 void GenericTimer<T>::pause() {
-    if (!isStarted_ || isPaused_) return;
+    if (!mIsStarted || mIsPaused) return;
 
-    isPaused_ = true;
-    pausedTicks = SDL_GetTicks() - startTicks;   // The time the timer was paused based on `startTicks`
-    startTicks = 0;
+    mIsPaused = true;
+    mPausedTicks = SDL_GetTicks() - mStartTicks;   // The time the timer was paused based on `startTicks`
+    mStartTicks = 0;
 }
 
 template <typename T>
 void GenericTimer<T>::unpause() {
-    if (!isStarted_ || !isPaused_) return;
+    if (!mIsStarted || !mIsPaused) return;
 
-    isPaused_ = false;
-    startTicks = SDL_GetTicks() - pausedTicks;   // Continue based on previously recorded `pausedTicks`
-    pausedTicks = 0;
+    mIsPaused = false;
+    mStartTicks = SDL_GetTicks() - mPausedTicks;   // Continue based on previously recorded `pausedTicks`
+    mPausedTicks = 0;
 }
 
 template <typename T>
 uint32_t GenericTimer<T>::getTicks() {
-    return isStarted_ ? (isPaused_ ? pausedTicks : SDL_GetTicks() - startTicks) : 0;
+    return mIsStarted ? (mIsPaused ? mPausedTicks : SDL_GetTicks() - mStartTicks) : 0;
 }
 
 template <typename T>
 bool GenericTimer<T>::isStarted() {
-    return isStarted_;
+    return mIsStarted;
 }
 
 template <typename T>
 bool GenericTimer<T>::isPaused() {
-    return isPaused_ && isStarted_;
+    return mIsPaused && mIsStarted;
 }
 
 

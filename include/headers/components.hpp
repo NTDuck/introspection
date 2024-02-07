@@ -32,15 +32,13 @@ class GenericComponent : public Multiton<T> {
     protected:
         GenericComponent(SDL_FPoint const& center, ComponentPreset const& preset);
 
-        static int destSize;
+        static int sDestSize;
         static const double kDestSizeModifier;
         static const SDL_Point kDestRectRatio;
 
         const SDL_FPoint kCenter;
         const ComponentPreset kPreset;
 };
-
-#define INCL_GENERIC_COMPONENT(T) using GenericComponent<T>::onWindowChange, GenericComponent<T>::destSize, GenericComponent<T>::kDestSizeModifier, GenericComponent<T>::kDestRectRatio, GenericComponent<T>::kCenter, GenericComponent<T>::kPreset;
 
 namespace std {
     template <typename T>
@@ -54,10 +52,9 @@ namespace std {
     };
 }
 
+#define INCL_GENERIC_COMPONENT(T) using GenericComponent<T>::onWindowChange, GenericComponent<T>::sDestSize, GenericComponent<T>::kDestSizeModifier, GenericComponent<T>::kDestRectRatio, GenericComponent<T>::kCenter, GenericComponent<T>::kPreset;
 
-/**
- * @brief Represent a generic box component with `OMORI`-styled outline.
-*/
+
 template <typename T>
 class GenericBoxComponent : virtual public GenericComponent<T> {
     public:
@@ -75,16 +72,13 @@ class GenericBoxComponent : virtual public GenericComponent<T> {
         static void shrinkRect(SDL_Rect& rect, const float ratio);
         void loadBoxTexture(SDL_Texture*& texture, ComponentPreset const& preset);
 
-        SDL_Texture* boxTexture = nullptr;
-        SDL_Rect boxDestRect;
+        SDL_Texture* mBoxTexture = nullptr;
+        SDL_Rect mBoxDestRect;
 };
 
-#define INCL_GENERIC_BOX_COMPONENT(T) using GenericBoxComponent<T>::render, GenericBoxComponent<T>::onWindowChange, GenericBoxComponent<T>::shrinkRect, GenericBoxComponent<T>::loadBoxTexture, GenericBoxComponent<T>::boxTexture, GenericBoxComponent<T>::boxDestRect;
+#define INCL_GENERIC_BOX_COMPONENT(T) using GenericBoxComponent<T>::render, GenericBoxComponent<T>::onWindowChange, GenericBoxComponent<T>::shrinkRect, GenericBoxComponent<T>::loadBoxTexture, GenericBoxComponent<T>::mBoxTexture, GenericBoxComponent<T>::mBoxDestRect;
 
 
-/**
- * @brief Represent a generic text component.
-*/
 template <typename T>
 class GenericTextComponent : virtual public GenericComponent<T> {
     public:
@@ -118,7 +112,7 @@ class GenericTextComponent : virtual public GenericComponent<T> {
 
 
 /**
- * @brief Represent a text-inside-a-box component. Essentially the combination of `GenericTextComponent<T>` and `GenericBoxComponent<T>`.
+ * @brief A text-inside-a-box component, essentially the combination of `GenericTextComponent<T>` and `GenericBoxComponent<T>`.
 */
 template <typename T>
 class GenericTextBoxComponent : public GenericTextComponent<T>, public GenericBoxComponent<T> {
@@ -171,21 +165,21 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
         virtual void onClick();
 
         const ComponentPreset kOnMouseOverPreset;
-        SDL_Texture* onMouseOverTextTexture = nullptr;
-        SDL_Texture* onMouseOverBoxTexture = nullptr;
+        SDL_Texture* mTextTextureOnMouseOver = nullptr;
+        SDL_Texture* mBoxTextureOnMouseOver = nullptr;
 
-        const GameState* kDestState = nullptr;
+        const GameState* kTargetGameState = nullptr;
 
     private:
-        static SDL_Cursor* onMouseOutCursor;
-        static SDL_Cursor* onMouseOverCursor;
+        static SDL_Cursor* sOnMouseOutCursor;
+        static SDL_Cursor* sOnMouseOverCursor;
 
-        static bool prevAllMouseOut;
-        static bool currAllMouseOut;
-        bool isMouseOut = true;
+        static bool sPrevAllMouseOutState;
+        static bool sCurrAllMouseOutState;
+        bool mIsMouseOut = true;
 };
 
-#define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::initialize, GenericButtonComponent<T>::deinitialize, GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::handleCursor, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::onMouseOverTextTexture, GenericButtonComponent<T>::onMouseOverBoxTexture, GenericButtonComponent<T>::kDestState;
+#define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::initialize, GenericButtonComponent<T>::deinitialize, GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::handleCursor, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::mTextTextureOnMouseOver, GenericButtonComponent<T>::mBoxTextureOnMouseOver, GenericButtonComponent<T>::kTargetGameState;
 
 
 template <typename T>
@@ -212,18 +206,18 @@ class GenericProgressBarComponent : public GenericBoxComponent<T> {
         static const double kProgressUpdateRateLimit;
         static const double kProgressUpdateRate;
         
-        double currProgress = 0;   // Exponential decay
-        double decoyProgress = 0;   // Linear growth
+        double mCurrProgress = 0;   // Exponential decay
+        double mDecoyProgress = 0;   // Linear growth
 
         /**
-         * The "partially constant" `SDL_Rect` to generate `progressDestRects`.
+         * The "partially constant" `SDL_Rect` to generate `mProgressDestRects`.
         */
-        SDL_Rect shrinkedBoxDestRect;
+        SDL_Rect mShrinkedBoxDestRect;
 
         /**
-         * These `SDL_Rect`, when combined, occupy the same space as `shrinkedBoxDestRect`.
+         * These `SDL_Rect`, when combined, occupy the same space as `mShrinkedBoxDestRect`.
         */
-        std::pair<SDL_Rect, SDL_Rect> progressDestRects;
+        std::pair<SDL_Rect, SDL_Rect> mProgressDestRects;
 };
 
 #define INCL_GENERIC_PROGRESS_BAR_COMPONENT(T) using GenericProgressBarComponent<T>::render, GenericProgressBarComponent<T>::onWindowChange, GenericProgressBarComponent<T>::updateAnimation, GenericProgressBarComponent<T>::resetProgress, GenericProgressBarComponent<T>::isActivated, GenericProgressBarComponent<T>::isFinished;
@@ -244,7 +238,7 @@ class FPSOverlay final : public Singleton<FPSOverlay>, public GenericTextBoxComp
 
         static void deinitialize();
 
-        static constexpr int animationUpdateRate = config::components::fps_overlay::updateRate;
+        static constexpr int kAnimationUpdateRate = config::components::fps_overlay::updateRate;
 };
 
 
@@ -270,29 +264,29 @@ class ExitText final : public Singleton<ExitText>, public GenericTextComponent<E
         const double kProgressUpdateRateLimit = config::components::exit_text::progressUpdateRateLimit;
         const double kProgressUpdateRate = config::components::exit_text::progressUpdateRate;
 
-        double currProgress;
+        double mCurrProgress;
 };
 
 
-/**
- * @brief Represent the avatar visible on the menu.
-*/
-class MenuAvatar final : public Singleton<MenuAvatar> {
-    public:
-        INCL_SINGLETON(MenuAvatar)
+// /**
+//  * @brief Represent the avatar visible on the menu.
+// */
+// class MenuAvatar final : public Singleton<MenuAvatar> {
+//     public:
+//         INCL_SINGLETON(MenuAvatar)
 
-        MenuAvatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
-        ~MenuAvatar() = default;
+//         MenuAvatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
+//         ~MenuAvatar() = default;
 
-        void render() const;
-        void onWindowChange();
+//         void render() const;
+//         void onWindowChange();
 
-    private:
-        SDL_Texture*& texture;
-        const SDL_Rect srcRect;
-        SDL_Rect destRect;
-        const double destRectModifier;
-};
+//     private:
+//         SDL_Texture*& texture;
+//         const SDL_Rect srcRect;
+//         SDL_Rect destRect;
+//         const double destRectModifier;
+// };
 
 
 /**
@@ -310,15 +304,14 @@ class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
         void onWindowChange();
 
     private:
-        static constexpr double animationUpdateRateLimit = 1;
-
-        SDL_Texture*& texture;
-        SDL_Point srcSize;
-        SDL_Point& destSize = globals::windowSize;
-        std::pair<SDL_Rect, SDL_Rect> srcRects, destRects;
-
-        double currAnimationUpdateCount;
+        static constexpr double kAnimationUpdateRateLimit = 1;
+        double mCurrAnimationUpdateCount;
         const double kAnimationUpdateRate = config::components::menu_animated_background::animationUpdateRate;
+
+        SDL_Texture*& pTexture;
+        SDL_Point mSrcSize;
+        SDL_Point& mDestSize = globals::windowSize;
+        std::pair<SDL_Rect, SDL_Rect> mSrcRects, mDestRects;
 };
 
 

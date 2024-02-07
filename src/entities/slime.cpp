@@ -7,19 +7,19 @@
 
 
 Slime::Slime(SDL_Point const& destCoords) : GenericHostileEntity<Slime>(destCoords) {
-    destRectModifier = config::entities::slime::destRectModifier;
-    kMoveInitiateRange = config::entities::slime::moveInitiateRange;
-    kAttackInitiateRange = config::entities::slime::attackInitiateRange;
-    kAttackRegisterRange = config::entities::slime::attackRegisterRange;
-    primaryStats = config::entities::slime::primaryStats;
+    mDestRectModifier = config::entities::slime::destRectModifier;
+    mMoveInitiateRange = config::entities::slime::moveInitiateRange;
+    mAttackInitiateRange = config::entities::slime::attackInitiateRange;
+    mAttackRegisterRange = config::entities::slime::attackRegisterRange;
+    mPrimaryStats = config::entities::slime::primaryStats;
 }
 
 
 template <>
-int AbstractAnimatedDynamicEntity<Slime>::kMoveDelay = config::entities::slime::moveDelay;
+int AbstractAnimatedDynamicEntity<Slime>::sMoveDelay = config::entities::slime::moveDelay;
 
 template <>
-SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::kVelocity = config::entities::slime::velocity;
+SDL_FPoint AbstractAnimatedDynamicEntity<Slime>::sVelocity = config::entities::slime::velocity;
 
 template <>
 const std::filesystem::path AbstractEntity<Slime>::kTilesetPath = config::entities::slime::path;

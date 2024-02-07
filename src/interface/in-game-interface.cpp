@@ -14,12 +14,11 @@ IngameInterface::IngameInterface() {
         Player::invoke(&Player::render);
 
         PentacleProjectile::invoke(&PentacleProjectile::render);
-        HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::render);
     };
 
     Player::instantiate(SDL_Point{ 0, 0 });   // This is required for below instantiations
     IngameMapHandler::instantiate(config::interface::levelName);
-    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->destRect, IngameViewMode::kFocusOnEntity);
+    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect, IngameViewMode::kFocusOnEntity);
 }
 
 /**
@@ -30,7 +29,6 @@ void IngameInterface::deinitialize() {
     IngameViewHandler::deinitialize();
 
     PentacleProjectile::deinitialize();
-    HauntedBookcaseProjectile::deinitialize();
 
     Player::deinitialize();
     Teleporter::deinitialize();
@@ -41,7 +39,6 @@ void IngameInterface::initialize() {
     IngameMapHandler::initialize();
 
     PentacleProjectile::initialize();
-    HauntedBookcaseProjectile::initialize();
 
     Player::initialize();
     Teleporter::initialize();
@@ -57,7 +54,6 @@ void IngameInterface::onLevelChange() const {
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
 
     PentacleProjectile::onLevelChangeAll();
-    HauntedBookcaseProjectile::onLevelChangeAll();
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
@@ -72,7 +68,6 @@ void IngameInterface::onWindowChange() const {
     IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
 
     PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::onWindowChange);
 
     Player::invoke(&Player::onWindowChange);
     Teleporter::invoke(&Teleporter::onWindowChange);
@@ -122,7 +117,6 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     }
 
     PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEventGET, event);
 
     Player::invoke(&Player::handleCustomEventGET, event);
     Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
@@ -131,7 +125,6 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
 
 void IngameInterface::handleCustomEventPOST() const {
     PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::handleCustomEventPOST);
 
     Player::invoke(&Player::handleCustomEventPOST);
     Teleporter::invoke(&Teleporter::handleCustomEventPOST);
@@ -151,9 +144,6 @@ void IngameInterface::handleEntitiesMovement() const {
     PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
     PentacleProjectile::handleTermination();
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
-
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::move);
-    HauntedBookcaseProjectile::invoke(&HauntedBookcaseProjectile::updateAnimation);
 
     Player::invoke(&Player::initiateAnimation);
     Player::invoke(&Player::move);

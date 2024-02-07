@@ -9,8 +9,8 @@ GenericComponent<T>::GenericComponent(SDL_FPoint const& center, ComponentPreset 
 
 template <typename T>
 void GenericComponent<T>::onWindowChange() {
-    destSize = std::min(globals::windowSize.x / kDestRectRatio.x, globals::windowSize.y / kDestRectRatio.y) >> 2;   // The closest power of 2
-    destSize *= kDestSizeModifier;
+    sDestSize = std::min(globals::windowSize.x / kDestRectRatio.x, globals::windowSize.y / kDestRectRatio.y) >> 2;   // The closest power of 2
+    sDestSize *= kDestSizeModifier;
 }
 
 template <typename T>
@@ -25,7 +25,7 @@ bool std::equal_to<GenericComponent<T>>::operator()(GenericComponent<T> const*& 
 
 
 template <typename T>
-int GenericComponent<T>::destSize;
+int GenericComponent<T>::sDestSize;
 
 
 template class GenericComponent<FPSOverlay>;

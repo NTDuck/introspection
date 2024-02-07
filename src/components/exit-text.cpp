@@ -17,7 +17,7 @@ void ExitText::deinitialize() {
 }
 
 void ExitText::render() const {
-    if (!currProgress) return;
+    if (!mCurrProgress) return;
     GenericTextComponent<ExitText>::render();
 }
 
@@ -29,16 +29,16 @@ void ExitText::onWindowChange() {
 void ExitText::handleKeyBoardEvent(SDL_Event const& event) {
     if (event.key.keysym.sym != config::key::EXIT || event.type != SDL_KEYDOWN) {
         // Reset
-        currProgress = 0;
+        mCurrProgress = 0;
         return;
     }
 
-    currProgress += kProgressUpdateRate;
+    mCurrProgress += kProgressUpdateRate;
     registerProgress();
-    if (currProgress < kProgressUpdateRateLimit) return;
+    if (mCurrProgress < kProgressUpdateRateLimit) return;
 
     // Exit
-    currProgress = kProgressUpdateRateLimit;
+    mCurrProgress = kProgressUpdateRateLimit;
     globals::state = GameState::kExit;
 }
 
@@ -50,7 +50,7 @@ void ExitText::registerProgress() {
     auto eq = [](double progress) {
         return std::sqrt(1.0 - pow(progress - 1.0, 2));
     };
-    SDL_SetTextureAlphaMod(textTexture, SDL_ALPHA_OPAQUE * eq(currProgress));
+    SDL_SetTextureAlphaMod(textTexture, SDL_ALPHA_OPAQUE * eq(mCurrProgress));
 }
 
 

@@ -17,7 +17,7 @@
 */
 template <typename T>
 GenericSurgeProjectile<T>::GenericSurgeProjectile(SDL_Point const& destCoords, SDL_Point const& direction) : AbstractAnimatedDynamicEntity<T>(destCoords) {
-    kDirection = direction;
+    mDirection = direction;
 
     resetAnimation(AnimationType::kAttack);
     // onWindowChange();
@@ -76,39 +76,39 @@ void GenericSurgeProjectile<T>::handleInstantiation() {
     if (!isAnimationAtFinalSprite()) return;
 
     initiateNextLinearAttack();
-    terminatedInstances.push(dynamic_cast<T*>(this));
+    sTerminatedInstances.push(dynamic_cast<T*>(this));
     // instances.erase(reinterpret_cast<T*>(this));
 }
 
 template <typename T>
 void GenericSurgeProjectile<T>::handleTermination() {
-    while (!terminatedInstances.empty()) {
-        auto instance = terminatedInstances.front();
+    while (!sTerminatedInstances.empty()) {
+        auto instance = sTerminatedInstances.front();
         if (instance != nullptr) delete instance;
         instances.erase(instance);
-        terminatedInstances.pop();
+        sTerminatedInstances.pop();
     }
 }
 
 template <typename T>
 void GenericSurgeProjectile<T>::initiateNextLinearAttack() {
-    nextDestCoords = new SDL_Point(destCoords + kDirection);
+    pNextDestCoords = new SDL_Point(mDestCoords + mDirection);
     if (!validateMove()) Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kSurgeAttack);
-    else instantiate(*nextDestCoords, kDirection);
+    else instantiate(*pNextDestCoords, mDirection);
 }
 
 template <typename T>
 void GenericSurgeProjectile<T>::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
     auto event = event::instantiate();
-    event::setID(event, id);
+    event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::data::Mob({ destCoords, kAttackRegisterRange, secondaryStats }));
+    event::setData(event, event::data::Mob({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
 
 template <typename T>
-std::queue<T*> GenericSurgeProjectile<T>::terminatedInstances;
+std::queue<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
 
 
 template class GenericSurgeProjectile<PentacleProjectile>;

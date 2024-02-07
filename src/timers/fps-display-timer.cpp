@@ -4,7 +4,7 @@
 
 
 void FPSDisplayTimer::calculateFPS() {
-    averageFPS = accumulatedFrames / (static_cast<int>(getTicks()) / 1000.0f);
-    if (accumulatedFrames >= std::numeric_limits<unsigned long long int>::max()) accumulatedFrames = 0;
-    ++accumulatedFrames;
+    mAverageFPS = mAccumulatedFrames / (static_cast<int>(getTicks()) / 1000.0f);
+    if (mAccumulatedFrames >= std::numeric_limits<unsigned long long int>::max()) mAccumulatedFrames = 0;
+    ++mAccumulatedFrames;
 }

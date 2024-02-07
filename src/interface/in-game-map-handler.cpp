@@ -8,22 +8,22 @@
 #include <auxiliaries.hpp>
 
 
-IngameMapHandler::IngameMapHandler(const level::LevelName levelName) : AbstractInterface<IngameMapHandler>(), levelName(levelName) {}
+IngameMapHandler::IngameMapHandler(const level::LevelName levelName) : AbstractInterface<IngameMapHandler>(), mLevelName(levelName) {}
 
 IngameMapHandler::~IngameMapHandler() {
-    if (grayscaleTexture != nullptr) {
-        SDL_DestroyTexture(grayscaleTexture);
-        grayscaleTexture = nullptr;
+    if (mGrayscaleTexture != nullptr) {
+        SDL_DestroyTexture(mGrayscaleTexture);
+        mGrayscaleTexture = nullptr;
     }
 }
 
 void IngameMapHandler::initialize() {
     if (!std::filesystem::exists(config::interface::path)) return;
-    utils::loadLevelsData(kLevelMapping);
+    utils::loadLevelsData(sLevelMapping);
 }
 
 void IngameMapHandler::render() const {
-    SDL_RenderCopy(globals::renderer, (isOnGrayscale ? grayscaleTexture : texture), nullptr, nullptr);
+    SDL_RenderCopy(globals::renderer, (isOnGrayscale ? mGrayscaleTexture : mTexture), nullptr, nullptr);
 }
 
 /**
@@ -31,7 +31,7 @@ void IngameMapHandler::render() const {
  * @note The `grayscaleTexture` block must be at THAT exact location i.e. before resetting render-target else undefined behaviour would be encountered.
 */
 void IngameMapHandler::onLevelChange() {
-    SDL_SetRenderTarget(globals::renderer, texture);
+    SDL_SetRenderTarget(globals::renderer, mTexture);
     SDL_RenderClear(globals::renderer);
 
     loadLevel();
@@ -39,8 +39,8 @@ void IngameMapHandler::onLevelChange() {
     renderBackground();
     renderLevelTiles();
 
-    if (grayscaleTexture != nullptr) SDL_DestroyTexture(grayscaleTexture);
-    grayscaleTexture = utils::createGrayscaleTexture(globals::renderer, texture, config::interface::grayscaleIntensity);
+    if (mGrayscaleTexture != nullptr) SDL_DestroyTexture(mGrayscaleTexture);
+    mGrayscaleTexture = utils::createGrayscaleTexture(globals::renderer, mTexture, config::interface::grayscaleIntensity);
 
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
@@ -65,7 +65,7 @@ void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
  * @brief Force load level after changes.
 */
 void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
-    levelName = levelName_;
+    mLevelName = levelName_;
     onLevelChange();
 }
 
@@ -74,7 +74,7 @@ void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameMapHandler::loadLevel() {
-    std::filesystem::path kLevelPath = config::path::asset_tiled / kLevelMapping[levelName];
+    std::filesystem::path kLevelPath = config::path::asset_tiled / sLevelMapping[mLevelName];
     if (!std::filesystem::exists(kLevelPath)) return;
     json data;
     utils::readJSON(kLevelPath.string(), data);
@@ -144,4 +144,4 @@ void IngameMapHandler::renderLevelTiles() const {
 }
 
 
-level::LevelMapping IngameMapHandler::kLevelMapping;
+level::LevelMapping IngameMapHandler::sLevelMapping;

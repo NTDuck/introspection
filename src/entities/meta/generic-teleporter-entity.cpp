@@ -8,8 +8,8 @@
 
 template <typename T>
 GenericTeleporterEntity<T>::GenericTeleporterEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {
-    destRectModifier = config::entities::teleporter::destRectModifier;
-    primaryStats = config::entities::teleporter::primaryStats;
+    mDestRectModifier = config::entities::teleporter::destRectModifier;
+    mPrimaryStats = config::entities::teleporter::primaryStats;
 }
 
 template <typename T>
@@ -17,8 +17,8 @@ void GenericTeleporterEntity<T>::onLevelChange(level::EntityLevelData const& tel
     auto data = *reinterpret_cast<const level::TeleporterLevelData*>(&teleporterData);
     AbstractAnimatedEntity<T>::onLevelChange(data);
 
-    targetDestCoords = data.targetDestCoords;
-    targetLevel = data.targetLevel;
+    mTargetDestCoords = data.targetDestCoords;
+    mTargetLevel = data.targetLevel;
 }
 
 template <typename T>
@@ -29,9 +29,9 @@ void GenericTeleporterEntity<T>::handleCustomEventPOST() const {
 template <typename T>
 void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player() const {
     auto event = event::instantiate();
-    event::setID(event, id);
+    event::setID(event, mID);
     event::setCode(event, event::Code::kReq_Teleport_GTE_Player);
-    event::setData(event, event::data::Teleporter({ destCoords, targetDestCoords, targetLevel }));
+    event::setData(event, event::data::Teleporter({ mDestCoords, mTargetDestCoords, mTargetLevel }));
     event::enqueue(event);
 }
 

@@ -15,11 +15,9 @@
 
 
 template <typename T>
-AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : destCoords(destCoords), destRectModifier(config::entities::destRectModifier) {
-    id = ++idCounter;
-
-    srcRect.w = tilesetData->srcSize.x * tilesetData->animationSize.x;
-    srcRect.h = tilesetData->srcSize.y * tilesetData->animationSize.y;
+AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : mID(++sID_Counter), mDestCoords(destCoords), mDestRectModifier(config::entities::destRectModifier) {
+    mSrcRect.w = sTilesetData->srcSize.x * sTilesetData->animationSize.x;
+    mSrcRect.h = sTilesetData->srcSize.y * sTilesetData->animationSize.y;
 }
 
 /**
@@ -31,19 +29,19 @@ void AbstractEntity<T>::initialize() {
     pugi::xml_parse_result result = document.load_file(kTilesetPath.c_str());
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
     
-    tilesetData = new tile::EntitiesTilesetData;
-    tilesetData->initialize(document, globals::renderer);
+    sTilesetData = new tile::EntitiesTilesetData;
+    sTilesetData->initialize(document, globals::renderer);
 }
 
 template <typename T>
 void AbstractEntity<T>::deinitialize() {
-    if (tilesetData != nullptr) {
-        tilesetData->deinitialize();
-        tilesetData = nullptr;
+    if (sTilesetData != nullptr) {
+        sTilesetData->deinitialize();
+        sTilesetData = nullptr;
     }
     
     Multiton<T>::deinitialize();
-    idCounter = 0;
+    sID_Counter = 0;
 }
 
 /**
@@ -54,7 +52,7 @@ template <typename T>
 template <typename LevelData>
 void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection) {
     Multiton<T>::deinitialize();
-    idCounter = 0;
+    sID_Counter = 0;
 
     for (const auto& entityLevelData : entityLevelDataCollection) {
         auto instance = instantiate(entityLevelData.destCoords);
@@ -68,7 +66,7 @@ void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collec
 */
 template <typename T>
 void AbstractEntity<T>::render() const {
-    SDL_RenderCopyEx(globals::renderer, tilesetData->texture, &srcRect, &destRect, angle, center, flip);
+    SDL_RenderCopyEx(globals::renderer, sTilesetData->texture, &mSrcRect, &mDestRect, mAngle, pCenter, mFlip);
 }
 
 /**
@@ -76,7 +74,7 @@ void AbstractEntity<T>::render() const {
 */
 template <typename T>
 void AbstractEntity<T>::onWindowChange() {
-    destRect = getDestRectFromCoords(destCoords);
+    mDestRect = getDestRectFromCoords(mDestCoords);
 }
 
 /**
@@ -85,8 +83,8 @@ void AbstractEntity<T>::onWindowChange() {
 */
 template <typename T>
 void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
-    secondaryStats.initialize(primaryStats);   // Prevent resetting secondary stats on player entity
-    destCoords = entityLevelData.destCoords;
+    mSecondaryStats.initialize(mPrimaryStats);   // Prevent resetting secondary stats on player entity
+    mDestCoords = entityLevelData.destCoords;
 }
 
 /**
@@ -98,31 +96,31 @@ template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
         coords.x * globals::tileDestSize.x + globals::windowOffset.x
-        + utils::castFloatToInt(destRectModifier.x * globals::tileDestSize.x)
-        - (tilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x
-        - utils::castFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * (destRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
-        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::castFloatToInt(destRectModifier.y * globals::tileDestSize.y) - (tilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * (destRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
-        utils::castFloatToInt(globals::tileDestSize.x * tilesetData->animationSize.x * destRectModifier.w),
-        utils::castFloatToInt(globals::tileDestSize.y * tilesetData->animationSize.y * destRectModifier.h),
+        + utils::castFloatToInt(mDestRectModifier.x * globals::tileDestSize.x)
+        - (sTilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x
+        - utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
+        utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * mDestRectModifier.w),
+        utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * mDestRectModifier.h),
     };
 }
 
 template <typename T>
 std::size_t std::hash<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& instance) const {
-    return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_Point>(instance->destCoords);
+    return instance == nullptr ? std::hash<std::nullptr_t>{}(instance) : std::hash<SDL_Point>(instance->mDestCoords);
 }
 
 template <typename T>
 bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& first, AbstractEntity<T> const*& second) const {
-    return (first == nullptr && second == nullptr) || (first && second && first->destCoords == second->destCoords);
+    return (first == nullptr && second == nullptr) || (first && second && first->mDestCoords == second->mDestCoords);
 }
 
 
 template <typename T>
-tile::EntitiesTilesetData* AbstractEntity<T>::tilesetData = nullptr;
+tile::EntitiesTilesetData* AbstractEntity<T>::sTilesetData = nullptr;
 
 template <typename T>
-int AbstractEntity<T>::idCounter = 0;
+int AbstractEntity<T>::sID_Counter = 0;
 
 
 /**
@@ -131,7 +129,6 @@ int AbstractEntity<T>::idCounter = 0;
  * @warning Recommended implementation: derived abstract classes MUST provide similar implementation at the end of the corresponding source files.
 */
 template class AbstractEntity<PentacleProjectile>;
-template class AbstractEntity<HauntedBookcaseProjectile>;
 template class AbstractEntity<Player>;
 template class AbstractEntity<Teleporter>;
 template class AbstractEntity<Slime>;

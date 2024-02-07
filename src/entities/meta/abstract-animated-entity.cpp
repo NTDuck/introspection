@@ -21,10 +21,10 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) :
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
-    if (nextAnimationType != nullptr) {
-        delete nextAnimationType;
-        nextAnimationType = nullptr;
-        isAnimationOnProgress = false;
+    if (pNextAnimationType != nullptr) {
+        delete pNextAnimationType;
+        pNextAnimationType = nullptr;
+        mIsAnimationOnProgress = false;
     }
     
     AbstractEntity<T>::onLevelChange(entityLevelData);
@@ -36,7 +36,7 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& enti
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::handleSFX() const {
-    switch (currAnimationType) {
+    switch (mCurrAnimationType) {
         case AnimationType::kAttack:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
@@ -62,28 +62,28 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
-    ++currAnimationUpdateCount;
+    ++mCurrAnimationUpdateCount;
     
-    if (currAnimationUpdateCount >= static_cast<int>(tilesetData->animationUpdateRate * tilesetData->animationMapping[currAnimationType].animationUpdateRateMultiplier)) {
-        currAnimationUpdateCount = 0;
-        if (currAnimationGID < tilesetData->animationMapping[currAnimationType].stopGID) {
-            currAnimationGID += tilesetData->animationSize.x;
-            if (currAnimationGID / tilesetData->srcCount.x != (currAnimationGID - tilesetData->srcCount.x) / tilesetData->srcCount.x) currAnimationGID += tilesetData->srcCount.x * (tilesetData->animationSize.y - 1);   // Behold, heresy!
+    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData->animationUpdateRate * sTilesetData->animationMapping[mCurrAnimationType].animationUpdateRateMultiplier)) {
+        mCurrAnimationUpdateCount = 0;
+        if (mCurrAnimationGID < sTilesetData->animationMapping[mCurrAnimationType].stopGID) {
+            mCurrAnimationGID += sTilesetData->animationSize.x;
+            if (mCurrAnimationGID / sTilesetData->srcCount.x != (mCurrAnimationGID - sTilesetData->srcCount.x) / sTilesetData->srcCount.x) mCurrAnimationGID += sTilesetData->srcCount.x * (sTilesetData->animationSize.y - 1);   // Behold, heresy!
         } else {
             // Deinitialize `nextAnimationData`
-            if (nextAnimationType != nullptr && isAnimationOnProgress) {
-                delete nextAnimationType;
-                nextAnimationType = nullptr;
-                isAnimationOnProgress = false;
+            if (pNextAnimationType != nullptr && mIsAnimationOnProgress) {
+                delete pNextAnimationType;
+                pNextAnimationType = nullptr;
+                mIsAnimationOnProgress = false;
             }
 
-            if (currAnimationType == AnimationType::kDeath) return;   // The real permanent
-            resetAnimation(tilesetData->animationMapping[currAnimationType].isPermanent ? AnimationType::kIdle : currAnimationType);
+            if (mCurrAnimationType == AnimationType::kDeath) return;   // The real permanent
+            resetAnimation(sTilesetData->animationMapping[mCurrAnimationType].isPermanent ? AnimationType::kIdle : mCurrAnimationType);
         };
     }
 
-    srcRect.x = currAnimationGID % tilesetData->srcCount.x * tilesetData->srcSize.x;
-    srcRect.y = currAnimationGID / tilesetData->srcCount.x * tilesetData->srcSize.y;
+    mSrcRect.x = mCurrAnimationGID % sTilesetData->srcCount.x * sTilesetData->srcSize.x;
+    mSrcRect.y = mCurrAnimationGID / sTilesetData->srcCount.x * sTilesetData->srcSize.y;
 }
 
 /**
@@ -91,9 +91,9 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, EntityStatusFlag flag) {
-    currAnimationType = animationType;
+    mCurrAnimationType = animationType;
     if (flag == EntityStatusFlag::kContinued) return;
-    currAnimationGID = AbstractEntity<T>::tilesetData->animationMapping[currAnimationType].startGID;
+    mCurrAnimationGID = AbstractEntity<T>::sTilesetData->animationMapping[mCurrAnimationType].startGID;
 }
 
 /**
@@ -102,16 +102,15 @@ void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, Enti
 template <typename T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
-    if (currAnimationType == AnimationType::kDeath) return;
-    if (nextAnimationType == nullptr || isAnimationOnProgress) return;
+    if (mCurrAnimationType == AnimationType::kDeath) return;
+    if (pNextAnimationType == nullptr || mIsAnimationOnProgress) return;
 
-    resetAnimation(*nextAnimationType);
-    isAnimationOnProgress = true;
+    resetAnimation(*pNextAnimationType);
+    mIsAnimationOnProgress = true;
 }
 
 
 template class AbstractAnimatedEntity<PentacleProjectile>;
-template class AbstractAnimatedEntity<HauntedBookcaseProjectile>;
 template class AbstractAnimatedEntity<Player>;
 template class AbstractAnimatedEntity<Teleporter>;
 template class AbstractAnimatedEntity<Slime>;

@@ -46,15 +46,15 @@ void LoadingInterface::updateAnimation() {
 
 void LoadingInterface::initiateTransition(GameState const& gameState) {
     globals::state = GameState::kLoading;
-    nextGameState = gameState;
+    mNextGameState = gameState;
     LoadingProgressBar::instance->isActivated = true;
 }
 
 void LoadingInterface::handleTransition() {
     if (!LoadingProgressBar::instance->isFinished) return;
-    if (currIdleFrames < kIdleFramesLimit) ++currIdleFrames; else {
-        currIdleFrames = 0;
-        globals::state = nextGameState;
+    if (mCurrIdleFrames < kIdleFramesLimit) ++mCurrIdleFrames; else {
+        mCurrIdleFrames = 0;
+        globals::state = mNextGameState;
         LoadingProgressBar::invoke(&LoadingProgressBar::resetProgress);
     }
 }

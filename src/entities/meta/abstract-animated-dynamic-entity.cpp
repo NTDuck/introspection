@@ -53,17 +53,17 @@ AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const&
 
 template <typename T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
-    if (nextDestCoords != nullptr) {
-        delete nextDestCoords;
-        nextDestCoords = nullptr;
+    if (pNextDestCoords != nullptr) {
+        delete pNextDestCoords;
+        pNextDestCoords = nullptr;
     }
-    if (nextDestRect != nullptr) {
-        delete nextDestRect;
-        nextDestRect = nullptr;
+    if (pNextDestRect != nullptr) {
+        delete pNextDestRect;
+        pNextDestRect = nullptr;
     }
-    if (nextVelocity != nullptr) {
-        delete nextVelocity;
-        nextVelocity = nullptr;
+    if (pNextVelocity != nullptr) {
+        delete pNextVelocity;
+        pNextVelocity = nullptr;
     }
 }
 
@@ -84,35 +84,35 @@ void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::EntityLevelData cons
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::move() {
-    if (nextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
+    if (pNextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
 
-    if (counterMoveDelay == kMoveDelay) {   // Only executed if 
-        destRect.x += currVelocity.x * kIntegralVelocity.x;
-        destRect.y += currVelocity.y * kIntegralVelocity.y;
+    if (mMoveDelayCounter == sMoveDelay) {   // Only executed if 
+        mDestRect.x += mCurrVelocity.x * mIntegralVelocity.x;
+        mDestRect.y += mCurrVelocity.y * mIntegralVelocity.y;
 
         // Store the fractional part
-        counterFractionalVelocity.x += kFractionalVelocity.x;
-        counterFractionalVelocity.y += kFractionalVelocity.y;
+        mFractionalVelocityCounter.x += mFractionalVelocity.x;
+        mFractionalVelocityCounter.y += mFractionalVelocity.y;
 
         // Prevent movement loss by handling accumulative movement 
-        if (counterFractionalVelocity.x >= 1) {
-            destRect.x += currVelocity.x;
-            --counterFractionalVelocity.x;
+        if (mFractionalVelocityCounter.x >= 1) {
+            mDestRect.x += mCurrVelocity.x;
+            --mFractionalVelocityCounter.x;
         }
-        if (counterFractionalVelocity.y >= 1) {
-            destRect.y += currVelocity.y;
-            --counterFractionalVelocity.y;
+        if (mFractionalVelocityCounter.y >= 1) {
+            mDestRect.y += mCurrVelocity.y;
+            --mFractionalVelocityCounter.y;
         }
 
         // Continue movement if new `Tile` has not been reached
-        if ((nextDestRect->x - destRect.x) * currVelocity.x > 0 || (nextDestRect->y - destRect.y) * currVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+        if ((pNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (pNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
     }
 
     // Cease new movement if counter not done
-    if (counterMoveDelay) { --counterMoveDelay; return; }
+    if (mMoveDelayCounter) { --mMoveDelayCounter; return; }
 
     // If new move has not been "initiated", terminate movement i.e. switch back to IDLE
-    if (nextVelocity == nullptr) onMoveEnd();
+    if (pNextVelocity == nullptr) onMoveEnd();
     // If new move has been initiated, do this to avoid switching back to original GID
     else {
         onMoveEnd(EntityStatusFlag::kContinued);
@@ -127,18 +127,18 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
     if (
-        nextDestCoords != nullptr   // Another move is on progress
-        || currAnimationType == AnimationType::kDeath   // Cannot move if is already dead
+        pNextDestCoords != nullptr   // Another move is on progress
+        || mCurrAnimationType == AnimationType::kDeath   // Cannot move if is already dead
         // || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
     ) return;
 
-    if (nextVelocity == nullptr) {
+    if (pNextVelocity == nullptr) {
         onMoveEnd(EntityStatusFlag::kInvalidated);
         return;
     }
 
-    nextDestCoords = new SDL_Point(destCoords + *nextVelocity);
-    nextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*nextDestCoords));
+    pNextDestCoords = new SDL_Point(mDestCoords + *pNextVelocity);
+    pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
 
     if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatusFlag::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
@@ -150,7 +150,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
 */
 template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
-    if (nextDestCoords == nullptr || nextDestCoords -> x < 0 || nextDestCoords -> y < 0 || nextDestCoords -> x >= globals::tileDestCount.x || nextDestCoords -> y >= globals::tileDestCount.y) return false;
+    if (pNextDestCoords == nullptr || pNextDestCoords -> x < 0 || pNextDestCoords -> y < 0 || pNextDestCoords -> x >= globals::tileDestCount.x || pNextDestCoords -> y >= globals::tileDestCount.y) return false;
 
     // Prevent `destCoords` overlap
     // Warning: expensive operation
@@ -158,7 +158,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
         std::find_if(
             instances.begin(), instances.end(),
             [&](const auto& instance) {
-                return (*nextDestCoords == instance->destCoords);
+                return (*pNextDestCoords == instance->mDestCoords);
             }
         ) != instances.end()
     ) return false;
@@ -169,16 +169,16 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
             auto tilelayerTilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
             if (tilelayerTilesetData == nullptr) continue;
 
-            auto it = tilesetData->properties.find("collision");
-            if (!gid && it != tilesetData->properties.end() && it->second == "true") continue;
+            auto it = sTilesetData->properties.find("collision");
+            if (!gid && it != sTilesetData->properties.end() && it->second == "true") continue;
 
             return gid;
         }
         return 0;
     };
 
-    int currCollisionLevel = findCollisionLevelGID(destCoords);
-    int nextCollisionLevel = findCollisionLevelGID(*nextDestCoords);
+    int currCollisionLevel = findCollisionLevelGID(mDestCoords);
+    int nextCollisionLevel = findCollisionLevelGID(*pNextDestCoords);
 
     if (!nextCollisionLevel) return false;
     return currCollisionLevel == nextCollisionLevel;
@@ -189,13 +189,13 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
-    currVelocity = *nextVelocity;
+    mCurrVelocity = *pNextVelocity;
 
-    if (currVelocity.x) flip = (currVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
+    if (mCurrVelocity.x) mFlip = (mCurrVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    AbstractAnimatedEntity<T>::resetAnimation((isRunning ? AnimationType::kRun : AnimationType::kWalk), flag);
+    AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? AnimationType::kRun : AnimationType::kWalk), flag);
     
-    if constexpr(std::is_same_v<T, Player>) Mixer::invoke(&Mixer::playSFX, isRunning ? Mixer::SFXName::kPlayerRun : Mixer::SFXName::kPlayerWalk);
+    if constexpr(std::is_same_v<T, Player>) Mixer::invoke(&Mixer::playSFX, mIsRunning ? Mixer::SFXName::kPlayerRun : Mixer::SFXName::kPlayerWalk);
 }
 
 /**
@@ -204,22 +204,22 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
     // Terminate movement when reached new `Tile`
-    if (nextDestCoords != nullptr && nextDestRect != nullptr && flag != EntityStatusFlag::kInvalidated) {
-        destCoords = *nextDestCoords;
-        destRect = *nextDestRect;
+    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != EntityStatusFlag::kInvalidated) {
+        mDestCoords = *pNextDestCoords;
+        mDestRect = *pNextDestRect;
 
         if (flag == EntityStatusFlag::kInvalidated) {
-            delete nextDestCoords;
-            delete nextDestRect;
+            delete pNextDestCoords;
+            delete pNextDestRect;
         }
     }
 
-    nextDestCoords = nullptr;
-    nextDestRect = nullptr;
+    pNextDestCoords = nullptr;
+    pNextDestRect = nullptr;
 
-    currVelocity = {0, 0};
-    counterMoveDelay = kMoveDelay;
-    counterFractionalVelocity = {0, 0};
+    mCurrVelocity = {0, 0};
+    mMoveDelayCounter = sMoveDelay;
+    mFractionalVelocityCounter = {0, 0};
 
     if (flag == EntityStatusFlag::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kIdle, flag);
@@ -231,19 +231,19 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
-    if (!isRunning ^ onRunningStart) return;
+    if (!mIsRunning ^ onRunningStart) return;
 
     // Re-calculate certain dependencies
-    kVelocity.x *= (onRunningStart ? 1 / runModifier : runModifier);
-    kVelocity.y *= (onRunningStart ? 1 / runModifier : runModifier);
+    sVelocity.x *= (onRunningStart ? 1 / sRunModifier : sRunModifier);
+    sVelocity.y *= (onRunningStart ? 1 / sRunModifier : sRunModifier);
     calculateVelocityDependencies();
 
     // Switch to proper animation type
-    if (currAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRun);
-    else if (currAnimationType == AnimationType::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
+    if (mCurrAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRun);
+    else if (mCurrAnimationType == AnimationType::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
 
     // Don't forget to change this
-    isRunning = onRunningStart;
+    mIsRunning = onRunningStart;
 }
 
 /**
@@ -252,22 +252,21 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
     // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
-    kIntegralVelocity = {
-        utils::castFloatToInt(globals::tileDestSize.x / kVelocity.x),
-        utils::castFloatToInt(globals::tileDestSize.y / kVelocity.y),
+    mIntegralVelocity = {
+        utils::castFloatToInt(globals::tileDestSize.x / sVelocity.x),
+        utils::castFloatToInt(globals::tileDestSize.y / sVelocity.y),
     };
-    kFractionalVelocity = {
-        globals::tileDestSize.x / kVelocity.x - kIntegralVelocity.x,
-        globals::tileDestSize.y / kVelocity.y - kIntegralVelocity.y,
+    mFractionalVelocity = {
+        globals::tileDestSize.x / sVelocity.x - mIntegralVelocity.x,
+        globals::tileDestSize.y / sVelocity.y - mIntegralVelocity.y,
     };
 }
 
 
 template <typename T>
-const double AbstractAnimatedDynamicEntity<T>::runModifier = config::entities::runVelocityModifier;
+const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::runVelocityModifier;
 
 
 template class AbstractAnimatedDynamicEntity<PentacleProjectile>;
-template class AbstractAnimatedDynamicEntity<HauntedBookcaseProjectile>;
 template class AbstractAnimatedDynamicEntity<Player>;
 template class AbstractAnimatedDynamicEntity<Slime>;

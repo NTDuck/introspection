@@ -17,50 +17,50 @@ void GenericProgressBarComponent<T>::render() const {
     GenericBoxComponent<T>::render();
 
     utils::setRendererDrawColor(globals::renderer, kPreset.lineColor);
-    SDL_RenderFillRect(globals::renderer, &progressDestRects.first);
+    SDL_RenderFillRect(globals::renderer, &mProgressDestRects.first);
 
     utils::setRendererDrawColor(globals::renderer, kPreset.backgroundColor);
-    SDL_RenderFillRect(globals::renderer, &progressDestRects.second);
+    SDL_RenderFillRect(globals::renderer, &mProgressDestRects.second);
 }
 
 template <typename T>
 void GenericProgressBarComponent<T>::onWindowChange() {
     GenericBoxComponent<T>::onWindowChange();
 
-    shrinkedBoxDestRect = boxDestRect;
-    shrinkRect(shrinkedBoxDestRect, kPreset.lineWidth);
+    mShrinkedBoxDestRect = mBoxDestRect;
+    shrinkRect(mShrinkedBoxDestRect, kPreset.lineWidth);
 
-    progressDestRects.first = progressDestRects.second = shrinkedBoxDestRect;
+    mProgressDestRects.first = mProgressDestRects.second = mShrinkedBoxDestRect;
 }
 
 template <typename T>
 void GenericProgressBarComponent<T>::updateAnimation() {
     if (!isActivated || isFinished) return;
 
-    // Increase `decoyProgress` linearly
-    decoyProgress += kProgressUpdateRate;
-    if (decoyProgress > kProgressUpdateRateLimit) {
-        decoyProgress = kProgressUpdateRateLimit;
+    // Increase `mDecoyProgress` linearly
+    mDecoyProgress += kProgressUpdateRate;
+    if (mDecoyProgress > kProgressUpdateRateLimit) {
+        mDecoyProgress = kProgressUpdateRateLimit;
         isFinished = true;
         isActivated = false;
     }
     
-    // Calculate `currProgress` based on `decoyProgress`
+    // Calculate `mCurrProgress` based on `mDecoyProgress`
     auto eq = [](double x) {
-        // Imagine `decoyProgress` and `currProgress` being the x-axis and y-axis, respectively, of a Cartesian coordinate system
+        // Imagine `mDecoyProgress` and `mCurrProgress` being the x-axis and y-axis, respectively, of a Cartesian coordinate system
         return std::sqrt(1.0 - pow(x - 1.0, 2));   // Equation of circle `C((1, 0), R = 1)`
         // return 1.0 * std::cos(M_PI / 5 * x - M_PI / 2);   // Harmonic motion with `A = 1.0`, `ω = π/5`, `φ = -π/2`
     };
-    currProgress = eq(decoyProgress);
+    mCurrProgress = eq(mDecoyProgress);
 
-    progressDestRects.first.w = static_cast<int>(currProgress * shrinkedBoxDestRect.w);
-    progressDestRects.second.x = shrinkedBoxDestRect.x + progressDestRects.first.w;
-    progressDestRects.second.w = shrinkedBoxDestRect.w - progressDestRects.first.w;
+    mProgressDestRects.first.w = static_cast<int>(mCurrProgress * mShrinkedBoxDestRect.w);
+    mProgressDestRects.second.x = mShrinkedBoxDestRect.x + mProgressDestRects.first.w;
+    mProgressDestRects.second.w = mShrinkedBoxDestRect.w - mProgressDestRects.first.w;
 }
 
 template <typename T>
 void GenericProgressBarComponent<T>::resetProgress() {
-    currProgress = decoyProgress = 0;
+    mCurrProgress = mDecoyProgress = 0;
     isFinished = isActivated = false;
 }
 

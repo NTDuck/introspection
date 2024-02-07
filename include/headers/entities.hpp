@@ -52,30 +52,17 @@ class AbstractEntity : public Multiton<T> {
         AbstractEntity(SDL_Point const& destCoords);
         SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
 
-        event::ID id;
+        const event::ID mID;
 
         static const std::filesystem::path kTilesetPath;
-        static tile::EntitiesTilesetData* tilesetData;
+        static tile::EntitiesTilesetData* sTilesetData;
 
-
-        /**
-         * The non-negative coordinates of the entity relative to a 2-dimensional standardized Cartesian coordinate system. (origin at top-left corner)
-         * @see <utils.h> tile::TileCollection
-        */
-        SDL_Point destCoords;
+        SDL_Point mDestCoords;
+        SDL_Rect mSrcRect;
+        SDL_Rect mDestRect;
 
         /**
-         * Contain data associated with the position of the entity's sprite/animation relative to the tileset. In pixels.
-        */
-        SDL_Rect srcRect;
-
-        /**
-         * Contain data associated with the position of the entity relative to the window. In pixels.
-        */
-        SDL_Rect destRect;
-
-        /**
-         * Modify `destRect`.
+         * Modify `mDestRect`.
          * @param x a value of `k` specifies that `destRect.x` would be shifted by `k * globals::tileDestSize.x` pixels.
          * @param y a value of `k` specifies that `destRect.y` would be shifted by `k * globals::tileDestSize.y` pixels.
          * @param w a value of `k` specifies that `destRect.w` would be multiplied by `k`.
@@ -83,29 +70,17 @@ class AbstractEntity : public Multiton<T> {
          * @note The use of `float` might cause significant data loss.
          * @note Recommended implementation: this should not affect `center`.
         */
-        SDL_FRect destRectModifier;
+        SDL_FRect mDestRectModifier;
 
-        /**
-         * Indicate the rotation (clockwise) applied to the entity. In degrees.
-        */
-        double angle = 0;
+        double mAngle = 0;   // Clockwise rotation, in degrees
+        SDL_Point* pCenter = nullptr;
+        SDL_RendererFlip mFlip = SDL_FLIP_NONE;
 
-        /**
-         * A pointer to the point relative to the window, around which the entity would be rotated.
-        */
-        SDL_Point* center = nullptr;
-
-        /**
-         * An `SDL_RendererFlip` enumeration constant indicating the flipping method to be used on the entity.
-         * @see https://wiki.libsdl.org/SDL2/SDL_RendererFlip
-        */
-        SDL_RendererFlip flip = SDL_FLIP_NONE;
-
-        EntityPrimaryStats primaryStats;
-        EntitySecondaryStats secondaryStats;
+        EntityPrimaryStats mPrimaryStats;
+        EntitySecondaryStats mSecondaryStats;
 
     private:
-        static int idCounter;
+        static int sID_Counter;
 };
 
 namespace std {
@@ -120,7 +95,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::id, AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::tilesetData, AbstractEntity<T>::destCoords, AbstractEntity<T>::destRect, AbstractEntity<T>::primaryStats, AbstractEntity<T>::secondaryStats, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::srcRect, AbstractEntity<T>::destRectModifier, AbstractEntity<T>::angle, AbstractEntity<T>::center, AbstractEntity<T>::flip;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::mID, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::pCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
 
 
 /**
@@ -142,40 +117,32 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
         inline bool isAnimationAtSprite(int GID) const {
-            return currAnimationGID == GID;
+            return mCurrAnimationGID == GID;
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(tilesetData->animationMapping[currAnimationType].startGID);
+            return isAnimationAtSprite(sTilesetData->animationMapping[mCurrAnimationType].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(tilesetData->animationMapping[currAnimationType].stopGID);
+            return isAnimationAtSprite(sTilesetData->animationMapping[mCurrAnimationType].stopGID);
         }
 
     protected:
         AbstractAnimatedEntity(SDL_Point const& destCoords);
 
-        AnimationType currAnimationType;
-        AnimationType* nextAnimationType = nullptr;
-        bool isAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
+        AnimationType mCurrAnimationType;
+        AnimationType* pNextAnimationType = nullptr;
+        bool mIsAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
 
-        /**
-         * The minimum range required for the entity to initiate an attack on a targetable entity.
-        */
-        SDL_Point kAttackInitiateRange;
-
-        /**
-         * The minimum range required for the entity to register an attack on a targetable entity.
-        */
-        SDL_Point kAttackRegisterRange;
+        SDL_Point mAttackRegisterRange;
 
     private:
-        int currAnimationUpdateCount = 0;
-        int currAnimationGID;
+        int mCurrAnimationUpdateCount = 0;
+        int mCurrAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::currAnimationType, AbstractAnimatedEntity<T>::nextAnimationType, AbstractAnimatedEntity<T>::isAnimationOnProgress, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::kAttackInitiateRange, AbstractAnimatedEntity<T>::kAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mCurrAnimationType, AbstractAnimatedEntity<T>::pNextAnimationType, AbstractAnimatedEntity<T>::mIsAnimationOnProgress, AbstractAnimatedEntity<T>::mAttackRegisterRange;
 
 
 /**
@@ -205,59 +172,59 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
         virtual bool validateMove() const;
 
-        bool isRunning = false;
+        bool mIsRunning = false;
 
         /**
-         * A pointer to the "next" `destCoords`.
+         * A pointer to the "next" `mDestCoords`.
          * @note Recommended implementation: this member should be set when the entity "moves" (implemented by derived classes). Upon successful validation, its stored value should be reassigned to `destCoords`. This member should then be nullified regardless.
         */
-        SDL_Point* nextDestCoords = nullptr;
+        SDL_Point* pNextDestCoords = nullptr;
 
         /**
-         * A pointer to the "next" `destRect`.
+         * A pointer to the "next" `mDestRect`.
          * @note Recommended implementation: this member should be used in strict conjunction with `nextDestCoords`.
         */
-        SDL_Rect* nextDestRect = nullptr;
-        
-        /**
-         * Represent the current direction of the entity.
-         * @note Data members should only receive values of `-1`, `1`, and `0`.
-        */
-        SDL_Point currVelocity;
+        SDL_Rect* pNextDestRect = nullptr;
 
         /**
-         * Represent the multiplier applied to `kVelocity` should the entity switch to `kRun` animation.
+         * Represent the multiplier applied to `sVelocity` should the entity switch to `kRun` animation.
         */
-        static const double runModifier;
+        static const double sRunModifier;
 
         /**
          * Represent the minimum number of frames of inaction, between 2 consecutive moves.
         */
-        static int kMoveDelay;
+        static int sMoveDelay;
 
         /**
          * For dimension `i`, a number of `kVelocity.i` frames is required for the entity to make a full move i.e. `destRect.i` shifts by `globals::tileDestSize.i` pixels.
          * @note This constant and the "physical" speed of the entity are in an inverse ratio.
         */
-        static SDL_FPoint kVelocity;
+        static SDL_FPoint sVelocity;
+        
+        /**
+         * Represent the current direction of the entity.
+         * @note Data members should only receive values of `-1`, `1`, and `0`.
+        */
+        SDL_Point mCurrVelocity;
 
         /**
          * Represent the next direction of the entity. Might change every frame.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
-        SDL_Point* nextVelocity = nullptr;
+        SDL_Point* pNextVelocity = nullptr;
 
     private:
         void calculateVelocityDependencies();
         
-        int counterMoveDelay;
+        int mMoveDelayCounter;
 
-        SDL_FPoint counterFractionalVelocity;
-        SDL_FPoint kFractionalVelocity;
-        SDL_Point kIntegralVelocity;
+        SDL_FPoint mFractionalVelocityCounter;
+        SDL_FPoint mFractionalVelocity;
+        SDL_Point mIntegralVelocity;
 };
 
-#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::isRunning, AbstractAnimatedDynamicEntity<T>::nextDestCoords, AbstractAnimatedDynamicEntity<T>::nextDestRect, AbstractAnimatedDynamicEntity<T>::currVelocity, AbstractAnimatedDynamicEntity<T>::runModifier, AbstractAnimatedDynamicEntity<T>::kMoveDelay, AbstractAnimatedDynamicEntity<T>::kVelocity, AbstractAnimatedDynamicEntity<T>::nextVelocity;
+#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::mIsRunning, AbstractAnimatedDynamicEntity<T>::pNextDestCoords, AbstractAnimatedDynamicEntity<T>::pNextDestRect, AbstractAnimatedDynamicEntity<T>::sRunModifier, AbstractAnimatedDynamicEntity<T>::sMoveDelay, AbstractAnimatedDynamicEntity<T>::sVelocity, AbstractAnimatedDynamicEntity<T>::mCurrVelocity, AbstractAnimatedDynamicEntity<T>::pNextVelocity;
 
 
 template <typename T>
@@ -281,12 +248,12 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
         /**
          * The new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
         */
-        SDL_Point targetDestCoords;
+        SDL_Point mTargetDestCoords;
 
         /**
          * The new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
         */
-        level::LevelName targetLevel;
+        level::LevelName mTargetLevel;
 };
 
 #define INCL_GENERIC_TELEPORTER_ENTITY(T) using GenericTeleporterEntity<T>::onLevelChange, GenericTeleporterEntity<T>::handleCustomEventPOST;
@@ -311,7 +278,8 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         /**
          * If the player entity is "within" the specified range, the slime entity would move towards the player. The slime would remain IDLE otherwise.
         */
-        SDL_Point kMoveInitiateRange;
+        SDL_Point mMoveInitiateRange;
+        SDL_Point mAttackInitiateRange;
 
     private:
         void handleCustomEventPOST_kReq_AttackRegister_GHE_Player() const;
@@ -324,7 +292,7 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         void handleCustomEventGET_kResp_MoveTerminate_GHE_Player();
 };
 
-#define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::kMoveInitiateRange;
+#define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
 
 
 template <typename T>
@@ -352,38 +320,38 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         void initiateNextLinearAttack();
         void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
 
-        SDL_Point& kDirection = currVelocity;   // Does not allocate additional memory
+        SDL_Point& mDirection = mCurrVelocity;   // Does not allocate additional memory
 
-        static std::queue<T*> terminatedInstances;
+        static std::queue<T*> sTerminatedInstances;
 };
 
 #define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;
 
 
-template <typename T>
-class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
-    public:
-        INCL_MULTITON(T)
-        INCL_ABSTRACT_ENTITY(T)
-        INCL_ABSTRACT_ANIMATED_ENTITY(T)
-        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
+// template <typename T>
+// class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
+//     public:
+//         INCL_MULTITON(T)
+//         INCL_ABSTRACT_ENTITY(T)
+//         INCL_ABSTRACT_ANIMATED_ENTITY(T)
+//         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
 
-        virtual ~GenericAerialProjectile() = default;
+//         virtual ~GenericAerialProjectile() = default;
 
-        static void onLevelChangeAll();
-        static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
+//         static void onLevelChangeAll();
+//         static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
 
-        void updateAnimation() override;
+//         void updateAnimation() override;
 
-    protected:
-        GenericAerialProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+//     protected:
+//         GenericAerialProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
 
-    private:
-        void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault) override;
-        void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault) override; 
-};
+//     private:
+//         void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault) override;
+//         void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault) override; 
+// };
 
-#define INCL_GENERIC_AERIAL_PROJECTILE(T) using GenericAerialProjectile<T>::onLevelChangeAll, GenericAerialProjectile<T>::initiateLinearAttack, GenericAerialProjectile<T>::updateAnimation;
+// #define INCL_GENERIC_AERIAL_PROJECTILE(T) using GenericAerialProjectile<T>::onLevelChangeAll, GenericAerialProjectile<T>::initiateLinearAttack, GenericAerialProjectile<T>::updateAnimation;
 
 
 /* Derived implementations */
@@ -398,20 +366,16 @@ class PentacleProjectile final : public GenericSurgeProjectile<PentacleProjectil
 };
 
 
-class HauntedBookcaseProjectile final : public GenericAerialProjectile<HauntedBookcaseProjectile> {
-    public:
-        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(HauntedBookcaseProjectile)
-        INCL_GENERIC_AERIAL_PROJECTILE(HauntedBookcaseProjectile)
+// class HauntedBookcaseProjectile final : public GenericAerialProjectile<HauntedBookcaseProjectile> {
+//     public:
+//         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(HauntedBookcaseProjectile)
+//         INCL_GENERIC_AERIAL_PROJECTILE(HauntedBookcaseProjectile)
 
-        HauntedBookcaseProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
-        ~HauntedBookcaseProjectile() = default;
-};
+//         HauntedBookcaseProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
+//         ~HauntedBookcaseProjectile() = default;
+// };
 
 
-/**
- * @brief A singleton class representing one instance of the player entity.
- * @note Only one instance should exist at a time.
-*/
 class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
     public:
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Player)
@@ -440,13 +404,10 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event);
 
-        static SDL_Point prevDirection;
+        SDL_Point mPrevDirection = { 1, 0 };
 };
 
 
-/**
- * @brief A multiton class representing controlled instances of teleporter entities.
-*/
 class Teleporter final : public GenericTeleporterEntity<Teleporter> {
     public:
         INCL_ABSTRACT_ANIMATED_ENTITY(Teleporter)
@@ -457,9 +418,6 @@ class Teleporter final : public GenericTeleporterEntity<Teleporter> {
 };
 
 
-/**
- * @brief A multiton class representing controlled instances of slime entities.
-*/
 class Slime final : public GenericHostileEntity<Slime> {
     public:
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Slime)

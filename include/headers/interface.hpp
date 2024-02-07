@@ -26,10 +26,10 @@ class AbstractInterface : public Singleton<T> {
          * @brief A temporary storage that is rendered every frame. Used to prevent multiple unnecessary calls of `SDL_RenderCopy()`.
          * @note Needs optimization to perfect relative positions of props to entities.
         */
-        SDL_Texture* texture = nullptr;
+        SDL_Texture* mTexture = nullptr;
 };
 
-#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::texture;
+#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::mTexture;
 
 
 /* Derived implementations */
@@ -51,7 +51,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
 
-        inline level::LevelName getLevel() { return levelName; }
+        inline level::LevelName getLevel() { return mLevelName; }
         void changeLevel(const level::LevelName levelName);
 
         bool isOnGrayscale = false;
@@ -61,18 +61,18 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         void renderBackground() const;
         void renderLevelTiles() const;
 
-        level::LevelName levelName;
+        level::LevelName mLevelName;
 
         /**
          * @brief Maps a level's name with its corresponding relative file path.
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
-        static level::LevelMapping kLevelMapping;
+        static level::LevelMapping sLevelMapping;
 
         /**
          * A grayscaled version of `texture`.
         */
-        SDL_Texture* grayscaleTexture = nullptr;
+        SDL_Texture* mGrayscaleTexture = nullptr;
 };
 
 
@@ -96,15 +96,15 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
         /**
          * A function with `void` return type that calls all `render()` method on all dependencies. Dependencies are other entities and the map, and not UI components, for example.
         */
-        const std::function<void()> callable;
+        const std::function<void()> kRenderMethod;
 
-        IngameViewMode viewMode;
+        IngameViewMode mViewMode;
 
-        double tileCountWidth;
-        static constexpr double tileCountHeight = config::interface::tileCountHeight;
+        double mTileCountWidth;
+        static constexpr double mTileCountHeight = config::interface::tileCountHeight;
 
-        SDL_Rect& destRect;   // Read-only
-        mutable SDL_Rect srcRect;   // Prevent warning: `note: the first difference of corresponding definitions is field 'destRect'`
+        SDL_Rect& mDestRect;   // Read-only
+        mutable SDL_Rect mSrcRect;   // Prevent warning: `note: the first difference of corresponding definitions is field 'destRect'`
 };
 
 
@@ -195,9 +195,9 @@ class LoadingInterface final : public AbstractInterface<LoadingInterface> {
         void renderComponents() const;
 
         static constexpr int kIdleFramesLimit = config::interface::idleFrames;
-        int currIdleFrames = 0;
+        int mCurrIdleFrames = 0;
 
-        GameState nextGameState;
+        GameState mNextGameState;
 };
 
 

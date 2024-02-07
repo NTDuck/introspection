@@ -9,21 +9,21 @@ GenericBoxComponent<T>::GenericBoxComponent(SDL_FPoint const& center, ComponentP
 
 template <typename T>
 GenericBoxComponent<T>::~GenericBoxComponent() {
-    if (boxTexture != nullptr) {
-        SDL_DestroyTexture(boxTexture);
-        boxTexture = nullptr;
+    if (mBoxTexture != nullptr) {
+        SDL_DestroyTexture(mBoxTexture);
+        mBoxTexture = nullptr;
     }
 }
 
 template <typename T>
 void GenericBoxComponent<T>::render() const {
-    SDL_RenderCopy(globals::renderer, boxTexture, nullptr, &boxDestRect);
+    SDL_RenderCopy(globals::renderer, mBoxTexture, nullptr, &mBoxDestRect);
 }
 
 template <typename T>
 void GenericBoxComponent<T>::onWindowChange() {
     GenericComponent<T>::onWindowChange();
-    loadBoxTexture(boxTexture, kPreset);
+    loadBoxTexture(mBoxTexture, kPreset);
 }
 
 template <typename T>
@@ -39,16 +39,16 @@ template <typename T>
 void GenericBoxComponent<T>::loadBoxTexture(SDL_Texture*& texture, ComponentPreset const& preset) {
     if (texture != nullptr) SDL_DestroyTexture(texture);
     
-    boxDestRect.w = destSize * kDestRectRatio.x;
-    boxDestRect.h = destSize * kDestRectRatio.y;
-    boxDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - boxDestRect.w / 2);
-    boxDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - boxDestRect.h / 2);
+    mBoxDestRect.w = sDestSize * kDestRectRatio.x;
+    mBoxDestRect.h = sDestSize * kDestRectRatio.y;
+    mBoxDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - mBoxDestRect.w / 2);
+    mBoxDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - mBoxDestRect.h / 2);
 
     texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, 
-    SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, boxDestRect.w, boxDestRect.h);
+    SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mBoxDestRect.w, mBoxDestRect.h);
 
     SDL_SetRenderTarget(globals::renderer, texture);
-    SDL_Rect arbitraryRect = boxDestRect;
+    SDL_Rect arbitraryRect = mBoxDestRect;
     arbitraryRect.x = arbitraryRect.y = 0;
 
     auto fillRect = [&](float multiplier, SDL_Color const& color) {

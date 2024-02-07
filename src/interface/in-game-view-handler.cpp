@@ -7,33 +7,33 @@
 #include <auxiliaries.hpp>
 
 
-IngameViewHandler::IngameViewHandler(std::function<void()> const& callable, SDL_Rect& destRect, const IngameViewMode viewMode) : AbstractInterface<IngameViewHandler>(), callable(callable), viewMode(viewMode), destRect(destRect) {}
+IngameViewHandler::IngameViewHandler(std::function<void()> const& callable, SDL_Rect& destRect, const IngameViewMode viewMode) : AbstractInterface<IngameViewHandler>(), kRenderMethod(callable), mViewMode(viewMode), mDestRect(destRect) {}
 
 void IngameViewHandler::render() const {
-    switch (viewMode) {
+    switch (mViewMode) {
         case IngameViewMode::kFullScreen:
-            std::invoke(callable);
+            std::invoke(kRenderMethod);
             break;
 
         case IngameViewMode::kFocusOnEntity:
             // Focus on player entity
-            SDL_SetRenderTarget(globals::renderer, texture);
+            SDL_SetRenderTarget(globals::renderer, mTexture);
 
             // Render dependencies
-            std::invoke(callable);
+            std::invoke(kRenderMethod);
 
             // Calculate rendered portion
-            srcRect.x = destRect.x + destRect.w / 2 - srcRect.w / 2;
-            srcRect.y = destRect.y + destRect.h / 2 - srcRect.h / 2;
+            mSrcRect.x = mDestRect.x + mDestRect.w / 2 - mSrcRect.w / 2;
+            mSrcRect.y = mDestRect.y + mDestRect.h / 2 - mSrcRect.h / 2;
 
             // "Fix" out-of-bound cases
-            if (srcRect.x < 0) srcRect.x = 0;
-            else if (srcRect.x + srcRect.w > globals::windowSize.x) srcRect.x = globals::windowSize.x - srcRect.w;
-            if (srcRect.y < 0) srcRect.y = 0;
-            else if (srcRect.y + srcRect.h > globals::windowSize.y) srcRect.y = globals::windowSize.y - srcRect.h;
+            if (mSrcRect.x < 0) mSrcRect.x = 0;
+            else if (mSrcRect.x + mSrcRect.w > globals::windowSize.x) mSrcRect.x = globals::windowSize.x - mSrcRect.w;
+            if (mSrcRect.y < 0) mSrcRect.y = 0;
+            else if (mSrcRect.y + mSrcRect.h > globals::windowSize.y) mSrcRect.y = globals::windowSize.y - mSrcRect.h;
 
             SDL_SetRenderTarget(globals::renderer, nullptr);
-            SDL_RenderCopy(globals::renderer, texture, &srcRect, nullptr);
+            SDL_RenderCopy(globals::renderer, mTexture, &mSrcRect, nullptr);
             break;
     }
 }
@@ -41,9 +41,9 @@ void IngameViewHandler::render() const {
 void IngameViewHandler::onWindowChange() {
     AbstractInterface<IngameViewHandler>::onWindowChange();
     
-    tileCountWidth = static_cast<double>(globals::windowSize.x) / static_cast<double>(globals::windowSize.y) * tileCountHeight;
-    srcRect.w = tileCountWidth * globals::tileDestSize.x;
-    srcRect.h = tileCountHeight * globals::tileDestSize.y;
+    mTileCountWidth = static_cast<double>(globals::windowSize.x) / static_cast<double>(globals::windowSize.y) * mTileCountHeight;
+    mSrcRect.w = mTileCountWidth * globals::tileDestSize.x;
+    mSrcRect.h = mTileCountHeight * globals::tileDestSize.y;
 }
 
 /**
@@ -53,7 +53,7 @@ void IngameViewHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
         case config::key::INGAME_TOGGLE_CAMERA_ANGLE:
             if (event.type != SDL_KEYDOWN) break;
-            switchViewMode(viewMode == IngameViewMode::kFocusOnEntity ? IngameViewMode::kFullScreen : IngameViewMode::kFocusOnEntity);
+            switchViewMode(mViewMode == IngameViewMode::kFocusOnEntity ? IngameViewMode::kFullScreen : IngameViewMode::kFocusOnEntity);
             break;
 
         default: break;
@@ -61,6 +61,6 @@ void IngameViewHandler::handleKeyBoardEvent(SDL_Event const& event) {
 }
 
 void IngameViewHandler::switchViewMode(const IngameViewMode newViewMode) {
-    if (viewMode == newViewMode) return;
-    viewMode = newViewMode;
+    if (mViewMode == newViewMode) return;
+    mViewMode = newViewMode;
 }

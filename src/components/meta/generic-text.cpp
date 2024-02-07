@@ -33,11 +33,11 @@ template <typename T>
 void GenericTextComponent<T>::onWindowChange() {
     auto loadFont = [&]() {
         if (font != nullptr) {
-            if (TTF_FontHeight(font) == destSize) return;
+            if (TTF_FontHeight(font) == sDestSize) return;
             TTF_CloseFont(font);
         }
 
-        font = TTF_OpenFont(fontPath.generic_string().c_str(), destSize);   // Prevent `error: cannot convert 'const std::filesystem::__cxx11::path::value_type*' {aka 'const wchar_t*'} to 'const char*'`
+        font = TTF_OpenFont(fontPath.generic_string().c_str(), sDestSize);   // Prevent `error: cannot convert 'const std::filesystem::__cxx11::path::value_type*' {aka 'const wchar_t*'} to 'const char*'`
     };
 
     GenericComponent<T>::onWindowChange();

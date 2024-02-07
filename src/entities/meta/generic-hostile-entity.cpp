@@ -24,17 +24,17 @@ void GenericHostileEntity<T>::handleCustomEventGET(SDL_Event const& event) {
             break;
 
         case event::Code::kResp_AttackInitiate_GHE_Player:
-            if (event::getID(event) != id) return;
+            if (event::getID(event) != mID) return;
             handleCustomEventGET_kResp_AttackInitiate_GHE_Player();
             break;
 
         case event::Code::kResp_MoveInitiate_GHE_Player:
-            if (event::getID(event) != id) return;
+            if (event::getID(event) != mID) return;
             handleCustomEventGET_kResp_MoveInitiate_GHE_Player(event);
             break;
 
         case event::Code::kResp_MoveTerminate_GHE_Player:
-            if (event::getID(event) != id) return;
+            if (event::getID(event) != mID) return;
             handleCustomEventGET_kResp_MoveTerminate_GHE_Player();
             break;
 
@@ -44,32 +44,32 @@ void GenericHostileEntity<T>::handleCustomEventGET(SDL_Event const& event) {
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Player() const {
-    if (currAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+    if (mCurrAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
-    event::setID(event, id);
+    event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_GHE_Player);
-    event::setData(event, event::data::Mob({ destCoords, kAttackRegisterRange, secondaryStats }));
+    event::setData(event, event::data::Mob({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackInitiate_GHE_Player() const {
-    if (currAnimationType == AnimationType::kAttack) return;
+    if (mCurrAnimationType == AnimationType::kAttack) return;
 
     auto event = event::instantiate();
-    event::setID(event, id);
+    event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackInitiate_GHE_Player);
-    event::setData(event, event::data::Mob({ destCoords, kAttackInitiateRange, secondaryStats }));
+    event::setData(event, event::data::Mob({ mDestCoords, mAttackInitiateRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_MoveInitiate_GHE_Player() const {
     auto event = event::instantiate();
-    event::setID(event, id);
+    event::setID(event, mID);
     event::setCode(event, event::Code::kReq_MoveInitiate_GHE_Player);
-    event::setData(event, event::data::Mob({ destCoords, kMoveInitiateRange, secondaryStats }));
+    event::setData(event, event::data::Mob({ mDestCoords, mMoveInitiateRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -77,36 +77,36 @@ template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GHE(SDL_Event const& event) {
     auto data = event::getData<event::data::Mob>(event);
 
-    if (currAnimationType == AnimationType::kDamaged) return;
-    auto distance = utils::calculateDistance(destCoords, data.destCoords);
+    if (mCurrAnimationType == AnimationType::kDamaged) return;
+    auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
-    EntitySecondaryStats::resolve(data.stats, secondaryStats);
+    EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
 
-    if (nextAnimationType == nullptr) {
-        nextAnimationType = new AnimationType(secondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
-        isAnimationOnProgress = false;
+    if (pNextAnimationType == nullptr) {
+        pNextAnimationType = new AnimationType(mSecondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
+        mIsAnimationOnProgress = false;
     }
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_AttackInitiate_GHE_Player() {
-    if (nextAnimationType != nullptr) return;
-    nextAnimationType = new AnimationType(AnimationType::kAttack);
-    isAnimationOnProgress = false;
+    if (pNextAnimationType != nullptr) return;
+    pNextAnimationType = new AnimationType(AnimationType::kAttack);
+    mIsAnimationOnProgress = false;
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
     auto data = event::getData<event::data::Mob>(event);
-    nextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (data.destCoords.x > destCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (data.destCoords.y > destCoords.y) * 2 - 1 });
+    pNextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (data.destCoords.x > mDestCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (data.destCoords.y > mDestCoords.y) * 2 - 1 });
     initiateMove();
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_MoveTerminate_GHE_Player() {
-    delete nextVelocity;
-    nextVelocity = nullptr;
+    delete pNextVelocity;
+    pNextVelocity = nullptr;
 }
 
 

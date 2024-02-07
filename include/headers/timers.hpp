@@ -33,14 +33,14 @@ class GenericTimer : public Singleton<T> {
         bool isPaused();
 
     protected:
-        uint32_t startTicks = 0;
-        uint32_t pausedTicks = 0;
+        uint32_t mStartTicks = 0;
+        uint32_t mPausedTicks = 0;
 
-        bool isStarted_ = false;
-        bool isPaused_ = true;
+        bool mIsStarted = false;
+        bool mIsPaused = true;
 };
 
-#define INCL_GENERIC_TIMER(T) using GenericTimer<T>::start, GenericTimer<T>::stop, GenericTimer<T>::pause, GenericTimer<T>::unpause, GenericTimer<T>::getTicks, GenericTimer<T>::isStarted, GenericTimer<T>::isPaused, GenericTimer<T>::startTicks, GenericTimer<T>::pausedTicks, GenericTimer<T>::isStarted_, GenericTimer<T>::isPaused_;
+#define INCL_GENERIC_TIMER(T) using GenericTimer<T>::start, GenericTimer<T>::stop, GenericTimer<T>::pause, GenericTimer<T>::unpause, GenericTimer<T>::getTicks, GenericTimer<T>::isStarted, GenericTimer<T>::isPaused, GenericTimer<T>::mStartTicks, GenericTimer<T>::mPausedTicks, GenericTimer<T>::mIsStarted, GenericTimer<T>::mIsPaused;
 
 
 /* Derived implementations */
@@ -57,8 +57,8 @@ class FPSDisplayTimer final : public GenericTimer<FPSDisplayTimer> {
 
         void calculateFPS();
 
-        double averageFPS;
-        unsigned long long int accumulatedFrames;
+        double mAverageFPS;
+        unsigned long long int mAccumulatedFrames;
 };
 
 
