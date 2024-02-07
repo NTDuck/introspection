@@ -63,9 +63,9 @@ event::ID event::getID(SDL_Event const& event) {
     return *reinterpret_cast<event::ID*>(event.user.data2);
 }
 
-void event::setID(SDL_Event& event, int id_) {
+void event::setID(SDL_Event& event, int id) {
     if (event.user.data2 != nullptr) delete reinterpret_cast<event::ID*>(event.user.data2);
-    event.user.data2 = new event::ID(id_);
+    event.user.data2 = new event::ID(id);
 }
 
 event::Code event::getCode(SDL_Event const& event) {

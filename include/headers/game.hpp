@@ -44,6 +44,9 @@ class Game final : public Singleton<Game> {
         void handleMouseEvent(SDL_Event const& event) const;
         void handleCustomEventGET(SDL_Event const& event) const;
 
+        const std::filesystem::path kWindowIconPath = config::game::windowIconPath;
+        SDL_Surface* windowIcon = nullptr;
+
         /**
          * The pointer to the main window.
         */

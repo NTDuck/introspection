@@ -22,6 +22,11 @@ Game::~Game() {
         SDL_FreeSurface(windowSurface);
         windowSurface = nullptr;
     }
+
+    if (windowIcon != nullptr) {
+        SDL_FreeSurface(windowIcon);
+        windowIcon = nullptr;
+    }
     
     if (window != nullptr) {
         SDL_DestroyWindow(window);
@@ -71,6 +76,8 @@ void Game::initialize() {
     for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
     window = SDL_CreateWindow(windowTitle.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
+    windowIcon = IMG_Load(kWindowIconPath.generic_string().c_str());
+    SDL_SetWindowIcon(window, windowIcon);
     windowID = SDL_GetWindowID(window);
     globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
 
