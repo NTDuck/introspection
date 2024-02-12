@@ -47,11 +47,6 @@ constexpr GameState operator|(GameState const& first, GameState const& second) {
     return static_cast<GameState>(static_cast<int>(first) | static_cast<int>(second));   // Must be defined here
 }
 
-enum class IngameViewMode {
-    kFullScreen = 1,
-    kFocusOnEntity = 2,
-};
-
 /**
  * @brief Provide flexible handling base on an entity movement's status.
 */
@@ -567,7 +562,6 @@ namespace config {
         constexpr level::LevelName levelName = level::LevelName::kLevelWhiteSpace;
         constexpr int idleFrames = 16;
 
-        constexpr IngameViewMode defaultViewMode = IngameViewMode::kFocusOnEntity;
         constexpr double tileCountHeight = 24;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }

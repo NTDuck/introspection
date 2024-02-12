@@ -81,11 +81,16 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
 /**
  * @brief Handle in-game camera angles i.e. perspectives.
 */
-class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
+class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {      
+    enum class View : bool {
+        kTargetEntity = false,
+        kFullScreen = true,
+    };
+
     public:
         INCL_ABSTRACT_INTERFACE(IngameViewHandler)
 
-        IngameViewHandler(std::function<void()> const& callable, SDL_Rect& destRect, const IngameViewMode viewMode = config::interface::defaultViewMode);
+        IngameViewHandler(std::function<void()> const& callable, SDL_Rect& targetedEntityDestRect);
         ~IngameViewHandler() = default;
 
         void render() const override;
@@ -93,7 +98,7 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
         void onLevelChange();
         void handleKeyBoardEvent(SDL_Event const& event);
 
-        void switchViewMode(const IngameViewMode newViewMode);
+        void switchView();
 
     private:
         friend class IngameInterface;   // Provide access to private member `mTileCountWidth` and `mTileCountHeight`
@@ -102,14 +107,15 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
          * A function with `void` return type that calls all `render()` method on all dependencies. Dependencies are other entities and the map, and not UI components, for example.
         */
         const std::function<void()> kRenderMethod;
+        View mView = View::kTargetEntity;
 
-        IngameViewMode mViewMode;
-
+        SDL_Point mTileDestSize;   // Not to be confused with `globals::tileDestSize`.
         double mTileCountWidth;
         static constexpr double mTileCountHeight = config::interface::tileCountHeight;
 
-        SDL_Rect& mDestRect;   // Read-only
-        mutable SDL_Rect mSrcRect;   // Prevent warning: `note: the first difference of corresponding definitions is field 'destRect'`
+        SDL_Rect& mTargetedEntityDestRect;   // Read-only
+        mutable SDL_Rect mViewport;   // Prevent warning: `note: the first difference of corresponding definitions is field 'mTargetedEntityDestRect'`
+        SDL_Rect mDestRect;
 };
 
 

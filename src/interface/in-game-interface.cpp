@@ -29,7 +29,7 @@ IngameInterface::IngameInterface() {
 
     Player::instantiate(SDL_Point{});   // This is required for below instantiations
     IngameMapHandler::instantiate(config::interface::levelName);
-    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect, IngameViewMode::kFocusOnEntity);
+    IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect);
 }
 
 IngameInterface::~IngameInterface() {

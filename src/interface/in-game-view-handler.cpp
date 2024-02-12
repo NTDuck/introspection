@@ -1,5 +1,6 @@
 #include <interface.hpp>
 
+#include <cmath>
 #include <functional>
 
 #include <SDL.h>
@@ -7,7 +8,7 @@
 #include <auxiliaries.hpp>
 
 
-IngameViewHandler::IngameViewHandler(std::function<void()> const& callable, SDL_Rect& destRect, const IngameViewMode viewMode) : AbstractInterface<IngameViewHandler>(), kRenderMethod(callable), mViewMode(viewMode), mDestRect(destRect) {}
+IngameViewHandler::IngameViewHandler(std::function<void()> const& callable, SDL_Rect& targetedEntityDestRect) : AbstractInterface<IngameViewHandler>(), kRenderMethod(callable), mTargetedEntityDestRect(targetedEntityDestRect) {}
 
 void IngameViewHandler::render() const {
     // Focus on player entity
@@ -16,34 +17,51 @@ void IngameViewHandler::render() const {
     // Render dependencies
     std::invoke(kRenderMethod);
 
-    switch (mViewMode) {
-        case IngameViewMode::kFullScreen:
+    switch (mView) {
+        case View::kFullScreen:
             SDL_SetRenderTarget(globals::renderer, nullptr);
-            SDL_RenderCopy(globals::renderer, mTexture, nullptr, nullptr);
-            // Calculate `destRect` here: PENDING
+            SDL_RenderCopy(globals::renderer, mTexture, nullptr, &mDestRect);
             break;
 
-        case IngameViewMode::kFocusOnEntity:
+        case View::kTargetEntity:
             // Calculate rendered portion
-            mSrcRect.x = mDestRect.x + mDestRect.w / 2 - mSrcRect.w / 2;
-            mSrcRect.y = mDestRect.y + mDestRect.h / 2 - mSrcRect.h / 2;
+            mViewport.x = mTargetedEntityDestRect.x + mTargetedEntityDestRect.w / 2 - mViewport.w / 2;
+            mViewport.y = mTargetedEntityDestRect.y + mTargetedEntityDestRect.h / 2 - mViewport.h / 2;
 
             // "Fix" out-of-bound cases
-            if (mSrcRect.x < 0) mSrcRect.x = 0;
-            else if (mSrcRect.x + mSrcRect.w > mTextureSize.x) mSrcRect.x = mTextureSize.x - mSrcRect.w;
-            if (mSrcRect.y < 0) mSrcRect.y = 0;
-            else if (mSrcRect.y + mSrcRect.h > mTextureSize.y) mSrcRect.y = mTextureSize.y - mSrcRect.h;
+            if (mViewport.x < 0) mViewport.x = 0;
+            else if (mViewport.x + mViewport.w > mTextureSize.x) mViewport.x = mTextureSize.x - mViewport.w;
+            if (mViewport.y < 0) mViewport.y = 0;
+            else if (mViewport.y + mViewport.h > mTextureSize.y) mViewport.y = mTextureSize.y - mViewport.h;
 
             SDL_SetRenderTarget(globals::renderer, nullptr);
-            SDL_RenderCopy(globals::renderer, mTexture, &mSrcRect, nullptr);
+            SDL_RenderCopy(globals::renderer, mTexture, &mViewport, nullptr);
             break;
     }
 }
 
 void IngameViewHandler::onWindowChange() {
-    mTileCountWidth = static_cast<double>(globals::windowSize.x) / static_cast<double>(globals::windowSize.y) * mTileCountHeight;
-    mSrcRect.w = mTileCountWidth * globals::tileDestSize.x;
-    mSrcRect.h = mTileCountHeight * globals::tileDestSize.y;
+    mTileCountWidth = static_cast<double>(globals::windowSize.x) / static_cast<double>(globals::windowSize.y) * mTileCountHeight;   // `mTileCountHeight` is immutable
+
+    mViewport.w = mTileCountWidth * globals::tileDestSize.x;
+    mViewport.h = mTileCountHeight * globals::tileDestSize.y;
+
+    switch (mView) {
+        case View::kFullScreen:
+            // mTileDestSize = 1 << static_cast<int>(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));
+            mTileDestSize.x = mTileDestSize.y = std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y);   // Sacrifice absolute "powers of 2" for decreased offset
+            break;
+
+        case View::kTargetEntity:
+            mTileDestSize = globals::tileDestSize;
+            break;
+    }
+
+    mDestRect.w = globals::tileDestCount.x * mTileDestSize.x;
+    mDestRect.h = globals::tileDestCount.y * mTileDestSize.y;
+    mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
+    mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
+
 }
 
 void IngameViewHandler::onLevelChange() {
@@ -53,6 +71,8 @@ void IngameViewHandler::onLevelChange() {
         globals::tileDestCount.y * globals::tileDestSize.y,
     };
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
+    
+    onWindowChange();
 }
 
 /**
@@ -62,14 +82,14 @@ void IngameViewHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
         case config::key::INGAME_TOGGLE_CAMERA_ANGLE:
             if (event.type != SDL_KEYDOWN) break;
-            switchViewMode(mViewMode == IngameViewMode::kFocusOnEntity ? IngameViewMode::kFullScreen : IngameViewMode::kFocusOnEntity);
+            switchView();
             break;
 
         default: break;
     }
 }
 
-void IngameViewHandler::switchViewMode(const IngameViewMode newViewMode) {
-    if (mViewMode == newViewMode) return;
-    mViewMode = newViewMode;
+void IngameViewHandler::switchView() {
+    mView = static_cast<View>(!static_cast<bool>(mView));
+    onWindowChange();
 }
