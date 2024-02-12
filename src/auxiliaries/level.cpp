@@ -1,11 +1,11 @@
 #include <auxiliaries.hpp>
 
 
-std::size_t level::EntityLevelData::hash::operator()(level::EntityLevelData const& instance) const {
+std::size_t level::Data_Generic::hash::operator()(level::Data_Generic const& instance) const {
     return std::hash<SDL_Point>{}(instance.destCoords);
 }
 
-bool level::EntityLevelData::equal_to::operator()(level::EntityLevelData const& first, level::EntityLevelData const& second) const {
+bool level::Data_Generic::equal_to::operator()(level::Data_Generic const& first, level::Data_Generic const& second) const {
     return first.destCoords == second.destCoords;
 }
 
@@ -13,7 +13,7 @@ bool level::EntityLevelData::equal_to::operator()(level::EntityLevelData const& 
  * @brief An alternative to the constructor. Populate data members based on JSON data.
  * @note Requires JSON data to be in proper format before being called.
 */
-void level::EntityLevelData::initialize(json const& entityJSONLeveData) {
+void level::Data_Generic::initialize(json const& entityJSONLeveData) {
     auto destCoordsX = entityJSONLeveData.find("x");
     auto destCoordsY = entityJSONLeveData.find("y");
     auto destSizeWidth = entityJSONLeveData.find("width");
@@ -28,8 +28,8 @@ void level::EntityLevelData::initialize(json const& entityJSONLeveData) {
     };
 }
 
-void level::TeleporterLevelData::initialize(json const& entityJSONLevelData) {
-    EntityLevelData::initialize(entityJSONLevelData);
+void level::Data_Teleporter::initialize(json const& entityJSONLevelData) {
+    Data_Generic::initialize(entityJSONLevelData);
 
     auto teleporterProperties = entityJSONLevelData.find("properties");
     if (teleporterProperties == entityJSONLevelData.end() || !teleporterProperties.value().is_array()) return;
@@ -38,7 +38,7 @@ void level::TeleporterLevelData::initialize(json const& entityJSONLevelData) {
         auto name = property.find("name");
         auto value = property.find("value");
 
-        if (name == property.end() || value == property.end() || !value.value().is_string()) continue;
+        if (name == property.end() || value == property.end()) continue;
 
         if (name.value() == "target-dest-coords") {
             auto& value_ = value.value();
@@ -68,17 +68,30 @@ void level::LevelData::initialize(json const& JSONLayerData) {
         if (type == object.end() || !type.value().is_string()) continue;
 
         if (type.value() == "player") {
-            level::PlayerLevelData data;
+            level::Data_Player data;
             data.initialize(object);
             playerLevelData = data;
         } else if (type.value() == "teleporter") {
-            level::TeleporterLevelData data;
+            level::Data_Teleporter data;
             data.initialize(object);
             teleportersLevelData.insert(data);
         } else if (type.value() == "slime") {
-            level::SlimeLevelData data;
+            level::Data_Generic data;
             data.initialize(object);
             slimesLevelData.insert(data);
+
+        } else if (type.value() == "omori-laptop") {
+            level::Data_Generic data;
+            data.initialize(object);
+            omoriLaptopLevelData.insert(data);
+        } else if (type.value() == "omori-light-bulb") {
+            level::Data_Generic data;
+            data.initialize(object);
+            omoriLightBulbLevelData.insert(data);
+        } else if (type.value() == "omori-mewo") {
+            level::Data_Generic data;
+            data.initialize(object);
+            omoriMewOLevelData.insert(data);
         }
     }
 }
@@ -86,6 +99,12 @@ void level::LevelData::initialize(json const& JSONLayerData) {
 void level::LevelData::deinitialize() {
     for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
     backgroundColor = config::color::offblack;
+    
     teleportersLevelData.clear();
+    redHandThroneTeleportersLevelData.clear();
     slimesLevelData.clear();
+
+    omoriLaptopLevelData.clear();
+    omoriLightBulbLevelData.clear();
+    omoriMewOLevelData.clear();
 }

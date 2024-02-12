@@ -51,17 +51,6 @@
          "objects":[
                 {
                  "height":32,
-                 "id":5,
-                 "name":"null",
-                 "rotation":0,
-                 "type":"player",
-                 "visible":true,
-                 "width":32,
-                 "x":640,
-                 "y":256
-                }, 
-                {
-                 "height":32,
                  "id":7,
                  "name":"away",
                  "properties":[
@@ -72,7 +61,7 @@
                          "value":
                             {
                              "x":32,
-                             "y":6
+                             "y":15
                             }
                         }, 
                         {
@@ -149,7 +138,7 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":27,
+ "nextlayerid":28,
  "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
@@ -183,6 +172,10 @@
         {
          "firstgid":5137,
          "source":"..\/.tsx\/mi-clothing-store.tsx"
+        }, 
+        {
+         "firstgid":6209,
+         "source":"..\/.tsx\/omori-white-space.tsx"
         }],
  "tilewidth":32,
  "type":"map",

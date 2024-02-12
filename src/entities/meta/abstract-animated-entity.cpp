@@ -20,7 +20,7 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) :
  * @note Recommended implementation: this method should be defined by derived classes.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
+void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
     if (pNextAnimationType != nullptr) {
         delete pNextAnimationType;
         pNextAnimationType = nullptr;
@@ -111,6 +111,14 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 
 
 template class AbstractAnimatedEntity<PentacleProjectile>;
+
 template class AbstractAnimatedEntity<Player>;
+
 template class AbstractAnimatedEntity<Teleporter>;
+template class AbstractAnimatedEntity<RedHandThroneTeleporter>;
+
 template class AbstractAnimatedEntity<Slime>;
+
+template class AbstractAnimatedEntity<OmoriLaptop>;
+template class AbstractAnimatedEntity<OmoriLightBulb>;
+template class AbstractAnimatedEntity<OmoriMewO>;

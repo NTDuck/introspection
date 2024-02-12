@@ -6,19 +6,34 @@
 
 
 IngameInterface::IngameInterface() {
-    auto renderIngameDependencies = []() {
+    static constexpr auto renderIngameDependencies = []() {
+        // Static assets
         IngameMapHandler::invoke(&IngameMapHandler::render);
 
-        Teleporter::invoke(&Teleporter::render);
-        Slime::invoke(&Slime::render);
-        Player::invoke(&Player::render);
+        // Non-interactible entities
+        OmoriLaptop::invoke(&OmoriLaptop::render);
+        OmoriLightBulb::invoke(&OmoriLightBulb::render);
+        OmoriMewO::invoke(&OmoriMewO::render);
 
+        // Entities
+        Teleporter::invoke(&Teleporter::render);
+        RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::render);
+        Slime::invoke(&Slime::render);
+
+        // Projectiles
         PentacleProjectile::invoke(&PentacleProjectile::render);
+
+        // Player must be rendered last
+        Player::invoke(&Player::render);
     };
 
-    Player::instantiate(SDL_Point{ 0, 0 });   // This is required for below instantiations
+    Player::instantiate(SDL_Point{});   // This is required for below instantiations
     IngameMapHandler::instantiate(config::interface::levelName);
     IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect, IngameViewMode::kFocusOnEntity);
+}
+
+IngameInterface::~IngameInterface() {
+    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
 }
 
 /**
@@ -32,7 +47,12 @@ void IngameInterface::deinitialize() {
 
     Player::deinitialize();
     Teleporter::deinitialize();
+    RedHandThroneTeleporter::deinitialize();
     Slime::deinitialize();
+
+    OmoriLaptop::deinitialize();
+    OmoriLightBulb::deinitialize();
+    OmoriMewO::deinitialize();
 }
 
 void IngameInterface::initialize() {
@@ -42,7 +62,12 @@ void IngameInterface::initialize() {
 
     Player::initialize();
     Teleporter::initialize();
+    RedHandThroneTeleporter::initialize();
     Slime::initialize();
+
+    OmoriLaptop::initialize();
+    OmoriLightBulb::initialize();
+    OmoriMewO::initialize();
 }
 
 void IngameInterface::render() const {
@@ -52,13 +77,21 @@ void IngameInterface::render() const {
 void IngameInterface::onLevelChange() const {
     // Populate `globals::currentLevelData` members
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
+    IngameViewHandler::invoke(&IngameViewHandler::onLevelChange);
+    
+    if (mCachedTargetDestCoords != nullptr) globals::currentLevelData.playerLevelData.destCoords = *mCachedTargetDestCoords;   // Do we need to also delete its value here?
 
     PentacleProjectile::onLevelChangeAll();
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
     Teleporter::onLevelChangeAll(globals::currentLevelData.teleportersLevelData);
+    RedHandThroneTeleporter::onLevelChangeAll(globals::currentLevelData.redHandThroneTeleportersLevelData);
     Slime::onLevelChangeAll(globals::currentLevelData.slimesLevelData);
+
+    OmoriLaptop::onLevelChangeAll(globals::currentLevelData.omoriLaptopLevelData);
+    OmoriLightBulb::onLevelChangeAll(globals::currentLevelData.omoriLightBulbLevelData);
+    OmoriMewO::onLevelChangeAll(globals::currentLevelData.omoriMewOLevelData);
 
     Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
@@ -71,7 +104,12 @@ void IngameInterface::onWindowChange() const {
 
     Player::invoke(&Player::onWindowChange);
     Teleporter::invoke(&Teleporter::onWindowChange);
+    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
     Slime::invoke(&Slime::onWindowChange);
+
+    OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
+    OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
+    OmoriMewO::invoke(&OmoriMewO::onWindowChange);
 }
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
@@ -120,6 +158,7 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
 
     Player::invoke(&Player::handleCustomEventGET, event);
     Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
+    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::handleCustomEventGET, event);
     Slime::invoke(&Slime::handleCustomEventGET, event);
 }
 
@@ -128,19 +167,20 @@ void IngameInterface::handleCustomEventPOST() const {
 
     Player::invoke(&Player::handleCustomEventPOST);
     Teleporter::invoke(&Teleporter::handleCustomEventPOST);
+    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::handleCustomEventPOST);
     Slime::invoke(&Slime::handleCustomEventPOST);
 }
 
 void IngameInterface::handleEntities() const {
-    handleEntitiesMovement();
-    // handleEntitiesInteraction();
+    handleEntitiesInteraction();
+    handleLevelSpecifics();
     handleEntitiesSFX();
 }
 
 /**
  * @brief Handle all entities movements & animation updates.
 */
-void IngameInterface::handleEntitiesMovement() const {
+void IngameInterface::handleEntitiesInteraction() const {
     PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
     PentacleProjectile::handleTermination();
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
@@ -150,10 +190,25 @@ void IngameInterface::handleEntitiesMovement() const {
     Player::invoke(&Player::updateAnimation);
 
     Teleporter::invoke(&Teleporter::updateAnimation);
+    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::updateAnimation);
 
     Slime::invoke(&Slime::initiateAnimation);
     Slime::invoke(&Slime::move);
     Slime::invoke(&Slime::updateAnimation);
+
+    OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
+    OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
+    OmoriMewO::invoke(&OmoriMewO::updateAnimation);
+}
+
+void IngameInterface::handleLevelSpecifics() const {
+    switch (IngameMapHandler::instance->getLevel()) {
+        case level::LevelName::kLevelWhiteSpace:
+            handleLevelSpecifics_kLevelWhiteSpace();
+            break;
+
+        default: break;
+    }
 }
 
 void IngameInterface::handleEntitiesSFX() const {
@@ -163,10 +218,12 @@ void IngameInterface::handleEntitiesSFX() const {
 }
 
 void IngameInterface::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const {
-    auto data = *reinterpret_cast<event::data::Teleporter*>(event.user.data1);
+    auto data = event::getData<event::data::Teleporter>(event);
     
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, data.targetLevel);
-    globals::currentLevelData.playerLevelData.destCoords = data.targetDestCoords;
+    // globals::currentLevelData.playerLevelData.destCoords = data.targetDestCoords;   // This has no effect if placed here
+    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
+    mCachedTargetDestCoords = new SDL_Point(data.targetDestCoords);   // Cache
 
     // globals::state = GameState::kLoading | GameState::kIngamePlaying;
     onLevelChange();
@@ -180,4 +237,37 @@ void IngameInterface::handleCustomEventGET_kReq_DeathPending_Player() const {
 void IngameInterface::handleCustomEventGET_kReq_DeathFinalized_Player() const {
     globals::state = GameState::kGameOver;
     IngameMapHandler::instance->isOnGrayscale = false;
+}
+
+void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
+    static unsigned int borderTraversedTracker = 0;
+    static constexpr auto kArbitraryClamp = [&](int& i, const double lower, const double upper) {
+        if (i <= lower) {
+            if (!borderTraversedTracker) ++borderTraversedTracker;
+            i = upper;
+        } else if (i >= upper) {
+            if (!borderTraversedTracker) ++borderTraversedTracker;
+            i = lower;
+        }
+        // return (i <= lower) ? upper : (i >= upper) ? lower : i;
+    };
+
+    // "Infinite loop" effect
+    if (Player::instance->pNextDestCoords != nullptr) {
+        kArbitraryClamp(Player::instance->pNextDestCoords->x, IngameViewHandler::instance->mTileCountWidth / 2 + 1, globals::tileDestCount.x - IngameViewHandler::instance->mTileCountWidth / 2 - 1);
+        kArbitraryClamp(Player::instance->pNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, globals::tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
+    }
+
+    if (borderTraversedTracker == 1) {
+        // Hard-coded unfortunately, will have to change in future commits
+        level::Data_Teleporter data;
+        data.destCoords = { 52, 43 };
+        data.targetDestCoords = { 20, 8 };
+        data.targetLevel = level::LevelName::kLevelEquilibrium;
+        globals::currentLevelData.redHandThroneTeleportersLevelData.insert(data);
+        RedHandThroneTeleporter::onLevelChangeAll(globals::currentLevelData.redHandThroneTeleportersLevelData);
+        RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
+
+        ++borderTraversedTracker;
+    }
 }

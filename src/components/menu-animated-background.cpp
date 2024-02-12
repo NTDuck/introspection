@@ -3,7 +3,7 @@
 #include <SDL.h>
 
 
-MenuAnimatedBackground::MenuAnimatedBackground(SDL_Texture*& texture) : pTexture(texture) {
+MenuAnimatedBackground::MenuAnimatedBackground(SDL_Texture*& texture, SDL_Point& srcSize, SDL_Point& destSize) : mTexture(texture), mSrcSize(srcSize), mDestSize(destSize) {
     mSrcRects.first.x = mSrcRects.first.y = mSrcRects.second.y = mDestRects.first.y = mDestRects.second.x = mDestRects.second.y = 0;
 }
 
@@ -22,12 +22,11 @@ void MenuAnimatedBackground::updateAnimation() {
 }
 
 void MenuAnimatedBackground::render() const {
-    SDL_RenderCopy(globals::renderer, pTexture, &mSrcRects.first, &mDestRects.first);
-    SDL_RenderCopy(globals::renderer, pTexture, &mSrcRects.second, &mDestRects.second);
+    SDL_RenderCopy(globals::renderer, mTexture, &mSrcRects.first, &mDestRects.first);
+    SDL_RenderCopy(globals::renderer, mTexture, &mSrcRects.second, &mDestRects.second);
 }
 
 void MenuAnimatedBackground::onWindowChange() {
-    SDL_QueryTexture(pTexture, nullptr, nullptr, &mSrcSize.x, &mSrcSize.y);
     mSrcRects.first.h = mSrcRects.second.h = mSrcSize.y;
     mDestRects.first.h = mDestRects.second.h = mDestSize.y;
 }

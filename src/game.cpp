@@ -108,8 +108,8 @@ void Game::initialize() {
 */
 void Game::startGameLoop() {
     // Serve as partial initialization for certain attributes of certain classes
-    onWindowChange();
     onLevelChange();
+    onWindowChange();
 
     FPSDisplayTimer::invoke(&FPSDisplayTimer::start);
 

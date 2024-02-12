@@ -1,6 +1,8 @@
 #ifndef AUXILIARIES_H
 #define AUXILIARIES_H
 
+#include <iostream>
+
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -290,6 +292,8 @@ namespace level {
     enum class LevelName {
         kLevelEquilibrium,
         kLevelValleyOfDespair,
+
+        kLevelWhiteSpace,
     };
 
     /**
@@ -308,13 +312,13 @@ namespace level {
      * @brief Contain data associated with an entity, used in level-loading.
      * @param destCoords the new `destCoords` of the entity upon entering new level.
     */
-    struct EntityLevelData {
+    struct Data_Generic {
         struct hash {
-            std::size_t operator()(EntityLevelData const& instance) const;
+            std::size_t operator()(Data_Generic const& instance) const;
         };
 
         struct equal_to {
-            bool operator()(EntityLevelData const& first, EntityLevelData const& second) const;
+            bool operator()(Data_Generic const& first, Data_Generic const& second) const;
         };
 
         /**
@@ -324,7 +328,7 @@ namespace level {
         using Collection = std::unordered_set<T, hash, equal_to>;
 
         virtual void initialize(json const& entityJSONLevelData);
-        virtual ~EntityLevelData() = default;   // Virtual destructor, required for polymorphism
+        virtual ~Data_Generic() = default;   // Virtual destructor, required for polymorphism
         
         SDL_Point destCoords;
     };
@@ -332,24 +336,19 @@ namespace level {
     /**
      * @brief Contain data associated with a player entity, used in level-loading.
     */
-    struct PlayerLevelData : public EntityLevelData {};
+    struct Data_Player : public Data_Generic {};
 
     /**
      * @brief Contain data associated with a teleporter entity, used in level-loading.
      * @param targetDestCoords the new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
-    struct TeleporterLevelData : public EntityLevelData {
+    struct Data_Teleporter : public Data_Generic {
         void initialize(json const& entityJSONLevelData) override;
 
         SDL_Point targetDestCoords;
         level::LevelName targetLevel;
     };
-
-    /**
-     * @brief Contain data associated with a slime entity, used in level-loading.
-    */
-    struct SlimeLevelData : public EntityLevelData {};
 
     /**
      * @brief Contain data associated with a level.
@@ -362,9 +361,13 @@ namespace level {
     struct LevelData {
         tile::TileCollection tileCollection;
         SDL_Color backgroundColor;
-        level::PlayerLevelData playerLevelData;
-        level::EntityLevelData::Collection<level::TeleporterLevelData> teleportersLevelData;
-        level::EntityLevelData::Collection<level::SlimeLevelData> slimesLevelData;
+        level::Data_Player playerLevelData;
+        level::Data_Generic::Collection<level::Data_Teleporter> teleportersLevelData;
+        level::Data_Generic::Collection<level::Data_Teleporter> redHandThroneTeleportersLevelData;
+        level::Data_Generic::Collection<level::Data_Generic> slimesLevelData;
+        level::Data_Generic::Collection<level::Data_Generic> omoriLaptopLevelData;
+        level::Data_Generic::Collection<level::Data_Generic> omoriLightBulbLevelData;
+        level::Data_Generic::Collection<level::Data_Generic> omoriMewOLevelData;
 
         void initialize(json const& JSONLayerData);
         void deinitialize();
@@ -466,7 +469,7 @@ namespace event {
  * @note All namespace members, even without Google's recommended `"k"` prefix, are `const`/`constexpr`.
 */
 namespace config {
-    constexpr bool audioEnabled = true;
+    constexpr bool audioEnabled = false;
 
     namespace path {
         const std::filesystem::path asset = "assets";
@@ -561,22 +564,22 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::LevelName levelName = level::LevelName::kLevelEquilibrium;
+        constexpr level::LevelName levelName = level::LevelName::kLevelWhiteSpace;
         constexpr int idleFrames = 16;
 
         constexpr IngameViewMode defaultViewMode = IngameViewMode::kFocusOnEntity;
-        constexpr double tileCountHeight = 13;
+        constexpr double tileCountHeight = 24;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 
     namespace entities {
-        constexpr double runVelocityModifier = 2;
+        constexpr double runVelocityModifier = 4;
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
         
         namespace player {
             const std::filesystem::path path = "assets/.tiled/.tsx/hp-player.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -0.75f, 2, 2 };
-            constexpr SDL_FPoint velocity = { 32, 32 };
+            constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 99, 99 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
@@ -586,7 +589,11 @@ namespace config {
         namespace teleporter {
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
-            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
+        }
+
+        namespace teleporter_red_hand_throne {
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-red-hand-throne.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -0.25, 1, 1 };
         }
 
         namespace slime {
@@ -609,14 +616,29 @@ namespace config {
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }
 
-        namespace haunted_bookcase_projectile {
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-haunted-bookcase.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
-            constexpr SDL_FPoint velocity = { 16, 16 };
-            constexpr int moveDelay = 0;
-            constexpr SDL_Point attackRegisterRange = { 1, 1 };
-            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
+        // namespace haunted_bookcase_projectile {
+        //     const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-haunted-bookcase.tsx";
+        //     constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+        //     constexpr SDL_FPoint velocity = { 16, 16 };
+        //     constexpr int moveDelay = 0;
+        //     constexpr SDL_Point attackRegisterRange = { 1, 1 };
+        //     constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
+        // }
+
+        namespace omori_laptop {
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -0.125, 1, 1 };
         }
+
+        namespace omori_light_bulb {
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-light-bulb.tsx";
+            constexpr SDL_FRect destRectModifier = { 0.5, 0, 1, 1 };
+        }
+
+        namespace omori_mewo {
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+        }        
     }
 
     namespace components {
@@ -731,11 +753,6 @@ namespace globals {
      * The maximum number of `Tile` on the window, per dimension.
     */
     extern SDL_Point tileDestCount;
-
-    /**
-     * The modifier for `destRect` used in rendering. Aims to center the rendered textures.
-    */
-    extern SDL_Point windowOffset;
 
     /**
      * The current position of the mouse relative to the window.

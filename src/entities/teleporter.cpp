@@ -8,8 +8,5 @@
 #include <auxiliaries.hpp>
 
 
-Teleporter::Teleporter(SDL_Point const& destCoords) : GenericTeleporterEntity<Teleporter>(destCoords) {}
-
-
-template <>
-const std::filesystem::path AbstractEntity<Teleporter>::kTilesetPath = config::entities::teleporter::path;
+DEFINE_GENERIC_TELEPORTER_ENTITY(Teleporter, config::entities::teleporter)
+DEFINE_GENERIC_TELEPORTER_ENTITY(RedHandThroneTeleporter, config::entities::teleporter_red_hand_throne)

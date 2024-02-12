@@ -372,11 +372,8 @@ void utils::loadLevelData(level::LevelData& currentLevelData, json const& JSONLe
     if (tileDestCountWidth == JSONLevelData.end() || tileDestCountHeight == JSONLevelData.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
 
     globals::tileDestCount = {tileDestCountWidth.value(), tileDestCountHeight.value()};
-    globals::tileDestSize.x = globals::tileDestSize.y = 1 << int(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));   // The closest power of 2
-    globals::windowOffset = {
-        (globals::windowSize.x - globals::tileDestCount.x * globals::tileDestSize.x) / 2,
-        (globals::windowSize.y - globals::tileDestCount.y * globals::tileDestSize.y) / 2,
-    };
+    // globals::tileDestSize.x = globals::tileDestSize.y = 1 << int(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));   // The closest power of 2
+    globals::tileDestSize.x = globals::tileDestSize.y = 32;
 
     auto backgroundColor = JSONLevelData.find("backgroundcolor");
     if (backgroundColor != JSONLevelData.end() && !backgroundColor.value().is_string()) return;

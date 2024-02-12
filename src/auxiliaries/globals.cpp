@@ -20,6 +20,7 @@ const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> 
 const std::unordered_map<std::string, level::LevelName> level::kLevelNameConversionMapping = {
     { "level-equilibrium", LevelName::kLevelEquilibrium },
     { "level-valley-of-despair", LevelName::kLevelValleyOfDespair },
+    { "level-white-space", LevelName::kLevelWhiteSpace },
 };
 
 
@@ -27,7 +28,6 @@ SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
 SDL_Point globals::tileDestSize;
 SDL_Point globals::tileDestCount;
-SDL_Point globals::windowOffset;
 SDL_Point globals::mouseState;
 tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
 level::LevelData globals::currentLevelData;

@@ -54,7 +54,7 @@
                  "id":2,
                  "name":"null",
                  "rotation":0,
-                 "type":"player",
+                 "type":"",
                  "visible":true,
                  "width":32,
                  "x":1024,
@@ -71,8 +71,8 @@
                          "type":"class",
                          "value":
                             {
-                             "x":21,
-                             "y":12
+                             "x":20,
+                             "y":8
                             }
                         }, 
                         {
@@ -141,7 +141,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":7,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

@@ -1,5 +1,7 @@
 #include <interface.hpp>
 
+#include <type_traits>
+
 #include <SDL.h>
 
 #include <meta.hpp>
@@ -22,7 +24,8 @@ void AbstractInterface<T>::render() const {
 template <typename T>
 void AbstractInterface<T>::onWindowChange() {
     if (mTexture != nullptr) SDL_DestroyTexture(mTexture);
-    mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, globals::windowSize.x, globals::windowSize.y);
+    mTextureSize = globals::windowSize;
+    mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
 }
 
 

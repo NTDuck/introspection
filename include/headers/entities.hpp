@@ -38,12 +38,24 @@ class AbstractEntity : public Multiton<T> {
         static void initialize();
         static void deinitialize();
 
+        /**
+         * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
+         * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
+        */
         template <typename LevelData>
-        static void onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection);
+        static inline void onLevelChangeAll(typename level::Data_Generic::Collection<LevelData> const& entityLevelDataCollection) {
+            Multiton<T>::deinitialize();
+            sID_Counter = 0;
+
+            for (const auto& entityLevelData : entityLevelDataCollection) {
+                auto instance = instantiate(entityLevelData.destCoords);
+                instance->onLevelChange(entityLevelData);
+            }
+        }
 
         virtual void render() const;
         virtual void onWindowChange();
-        virtual void onLevelChange(level::EntityLevelData const& entityLevelData);
+        virtual void onLevelChange(level::Data_Generic const& entityLevelData);
 
         virtual void handleCustomEventPOST() const {}
         virtual void handleCustomEventGET(SDL_Event const& event) {}
@@ -109,7 +121,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         virtual ~AbstractAnimatedEntity() = default;
 
-        void onLevelChange(level::EntityLevelData const& entityLevelData) override;
+        void onLevelChange(level::Data_Generic const& entityLevelData) override;
         virtual void handleSFX() const;
 
         void initiateAnimation();
@@ -144,6 +156,31 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
 #define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mCurrAnimationType, AbstractAnimatedEntity<T>::pNextAnimationType, AbstractAnimatedEntity<T>::mIsAnimationOnProgress, AbstractAnimatedEntity<T>::mAttackRegisterRange;
 
+/**
+ * @brief A shorthand to declare a AAE-derived. Used in header files only.
+ * @note Does not include explicit template instantiation.
+*/
+#define DECLARE_ABSTRACT_ANIMATED_ENTITY(T) \
+class T final : public AbstractAnimatedEntity<T> {\
+    public:\
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)\
+        \
+        T(SDL_Point const& destCoords);\
+        ~T() = default;\
+};
+
+/**
+ * @brief A shorthand to define a AAE-derived. Used in source files only.
+ * @note Does not include dependencies i.e. `#include ...`
+*/
+#define DEFINE_ABSTRACT_ANIMATED_ENTITY(T, ns) \
+T::T(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {\
+    mDestRectModifier = ns::destRectModifier;\
+}\
+\
+template <>\
+const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;\
+
 
 /**
  * @brief An abstract class combining CRTP and adapted Multiton pattern. Represents an entity that updates animation and changes position.
@@ -158,7 +195,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual ~AbstractAnimatedDynamicEntity();
 
         void onWindowChange() override;
-        void onLevelChange(level::EntityLevelData const& entityLevelData) override;
+        void onLevelChange(level::Data_Generic const& entityLevelData) override;
 
         virtual void move();
         virtual void initiateMove(EntityStatusFlag flag = EntityStatusFlag::kDefault);
@@ -236,7 +273,7 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
 
         virtual ~GenericTeleporterEntity() = default;
         
-        void onLevelChange(level::EntityLevelData const& teleporterData) override;
+        void onLevelChange(level::Data_Generic const& teleporterData) override;
         void handleCustomEventPOST() const override;
 
     protected:
@@ -257,6 +294,24 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
 };
 
 #define INCL_GENERIC_TELEPORTER_ENTITY(T) using GenericTeleporterEntity<T>::onLevelChange, GenericTeleporterEntity<T>::handleCustomEventPOST;
+
+#define DECLARE_GENERIC_TELEPORTER_ENTITY(T) \
+class T final : public GenericTeleporterEntity<T> {\
+    public:\
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)\
+        INCL_GENERIC_TELEPORTER_ENTITY(T)\
+        \
+        T(SDL_Point const& destCoords);\
+        ~T() = default;\
+};
+
+#define DEFINE_GENERIC_TELEPORTER_ENTITY(T, ns) \
+T::T(SDL_Point const& destCoords) : GenericTeleporterEntity<T>(destCoords) {\
+    mDestRectModifier = ns::destRectModifier;\
+}\
+\
+template <>\
+const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;
 
 
 template <typename T>
@@ -294,6 +349,34 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
 
 #define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
 
+#define DECLARE_GENERIC_HOSTILE_ENTITY(T) \
+class T final : public GenericHostileEntity<T> {\
+    public:\
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
+        INCL_GENERIC_HOSTILE_ENTITY(T)\
+        \
+        T(SDL_Point const& destCoords);\
+        ~T() = default;\
+};
+
+#define DEFINE_GENERIC_HOSTILE_ENTITY(T, ns) \
+T::T(SDL_Point const& destCoords) : GenericHostileEntity<T>(destCoords) {\
+    mDestRectModifier = ns::destRectModifier;\
+    mMoveInitiateRange = ns::moveInitiateRange;\
+    mAttackInitiateRange = ns::attackInitiateRange;\
+    mAttackRegisterRange = ns::attackRegisterRange;\
+    mPrimaryStats = ns::primaryStats;\
+}\
+\
+template <>\
+int AbstractAnimatedDynamicEntity<T>::sMoveDelay = ns::moveDelay;\
+\
+template <>\
+SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\
+\
+template <>\
+const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;\
+
 
 template <typename T>
 class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
@@ -327,6 +410,33 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
 #define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;
 
+#define DECLARE_GENERIC_SURGE_PROJECTILE(T) \
+class T final : public GenericSurgeProjectile<T> {\
+    public:\
+        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
+        INCL_GENERIC_SURGE_PROJECTILE(T)\
+        \
+        T(SDL_Point const& destCoords, SDL_Point const& direction);\
+        ~T() = default;\
+};
+
+#define DEFINE_GENERIC_SURGE_PROJECTILE(T, ns) \
+T::T(SDL_Point const& destCoords, SDL_Point const& direction) : GenericSurgeProjectile<T>(destCoords, direction) {\
+    mDestRectModifier = config::entities::pentacle_projectile::destRectModifier;\
+    mAttackRegisterRange = config::entities::pentacle_projectile::attackRegisterRange;\
+    mPrimaryStats = config::entities::pentacle_projectile::primaryStats;\
+    onWindowChange();\
+}\
+\
+template <>\
+int AbstractAnimatedDynamicEntity<T>::sMoveDelay = config::entities::pentacle_projectile::moveDelay;\
+\
+template <>\
+SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = config::entities::pentacle_projectile::velocity;\
+\
+template <>\
+const std::filesystem::path AbstractEntity<T>::kTilesetPath = config::entities::pentacle_projectile::path;
+
 
 // template <typename T>
 // class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
@@ -356,15 +466,6 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
 /* Derived implementations */
 
-class PentacleProjectile final : public GenericSurgeProjectile<PentacleProjectile> {
-    public:
-        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(PentacleProjectile)
-        INCL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
-
-        PentacleProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
-        ~PentacleProjectile() = default;
-};
-
 
 // class HauntedBookcaseProjectile final : public GenericAerialProjectile<HauntedBookcaseProjectile> {
 //     public:
@@ -386,7 +487,7 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         static void deinitialize();
 
-        void onLevelChange(level::EntityLevelData const& player) override;
+        void onLevelChange(level::Data_Generic const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
 
         void handleCustomEventPOST() const override;
@@ -407,25 +508,16 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         SDL_Point mPrevDirection = { 1, 0 };
 };
 
+DECLARE_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
 
-class Teleporter final : public GenericTeleporterEntity<Teleporter> {
-    public:
-        INCL_ABSTRACT_ANIMATED_ENTITY(Teleporter)
-        INCL_GENERIC_TELEPORTER_ENTITY(Teleporter)
+DECLARE_GENERIC_TELEPORTER_ENTITY(Teleporter)
+DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThroneTeleporter)
 
-        Teleporter(SDL_Point const& destCoords);
-        ~Teleporter() = default;
-};
+DECLARE_GENERIC_HOSTILE_ENTITY(Slime)
 
-
-class Slime final : public GenericHostileEntity<Slime> {
-    public:
-        INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Slime)
-        INCL_GENERIC_HOSTILE_ENTITY(Slime)
-
-        Slime(SDL_Point const& destCoords);
-        ~Slime() = default;
-};
+DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLaptop)
+DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
+DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriMewO)
 
 
 #endif

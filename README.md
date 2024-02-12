@@ -97,22 +97,21 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 ## Acknowledgements
 
 > We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
-1. Icons
-- [brain](https://www.avogado6.com/diary2020?lightbox=dataItem-kdueqk3j8) by [アボガド6](https://www.avogado6.com/)
-2. Tilesets
+1. Tilesets
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
-3. Fonts
+- [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
+2. Fonts
 - [Omori](https://dafontonline.com/omori-font/)
 - [Phorssa](https://www.dafont.com/phorssa.font)
-4. BGM & SFX
+3. BGM & SFX
 - [Main Theme - Animal Crossing New Horizons](https://youtu.be/lI_C1Bjdqn4)
 - [credits song for my death](https://youtu.be/urxeNbBc1nk) by [vivivivivi](https://www.youtube.com/@vivivivivi)
 - [Your Reality - DDLC](https://youtu.be/GU2D4zmhvbo) by [Artemisia](https://www.youtube.com/@ArtemisiaBeats)
 - [Inabakumori-styled な - instrumental](https://youtu.be/p0s0_4KO9t4) by [いめ44](https://www.youtube.com/@ime44)
-- [A Home For Flowers - OMORI OST 013](https://youtu.be/u2xW23u4qEY) by [OMOCAT](https://www.youtube.com/@OMOCAT143)
+- [White Space - OMORI OST 002](https://youtu.be/wtVHR_1fS5k) and [A Home For Flowers - OMORI OST 013](https://youtu.be/u2xW23u4qEY) by [OMOCAT](https://www.youtube.com/@OMOCAT143)
 - [it's safe here - OMORI](https://youtu.be/sg712AWBaSI) by [404p](https://www.youtube.com/@p404p)
 - [it means everything - OMORI](https://youtu.be/zUtIcrbhhPA) by [Solus](https://www.youtube.com/@strujilz)
 - [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [

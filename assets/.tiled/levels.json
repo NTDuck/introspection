@@ -7,6 +7,10 @@
     {
       "name": "level-valley-of-despair",
       "source": ".tmx/level-valley-of-despair.json"
+    },
+    {
+      "name": "level-white-space",
+      "source": ".tmx/level-white-space.json"
     }
   ]
 }

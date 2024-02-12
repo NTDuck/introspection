@@ -74,7 +74,7 @@ void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
 }
 
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
+void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
     AbstractAnimatedEntity<T>::onLevelChange(entityLevelData);
     onMoveEnd();
 }

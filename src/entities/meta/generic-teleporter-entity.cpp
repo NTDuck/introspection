@@ -7,14 +7,11 @@
 
 
 template <typename T>
-GenericTeleporterEntity<T>::GenericTeleporterEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {
-    mDestRectModifier = config::entities::teleporter::destRectModifier;
-    mPrimaryStats = config::entities::teleporter::primaryStats;
-}
+GenericTeleporterEntity<T>::GenericTeleporterEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {}
 
 template <typename T>
-void GenericTeleporterEntity<T>::onLevelChange(level::EntityLevelData const& teleporterData) {
-    auto data = *reinterpret_cast<const level::TeleporterLevelData*>(&teleporterData);
+void GenericTeleporterEntity<T>::onLevelChange(level::Data_Generic const& teleporterData) {
+    auto data = *reinterpret_cast<const level::Data_Teleporter*>(&teleporterData);
     AbstractAnimatedEntity<T>::onLevelChange(data);
 
     mTargetDestCoords = data.targetDestCoords;
@@ -37,3 +34,4 @@ void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player(
 
 
 template class GenericTeleporterEntity<Teleporter>;
+template class GenericTeleporterEntity<RedHandThroneTeleporter>;

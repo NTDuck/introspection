@@ -55,7 +55,8 @@ class Singleton : virtual public PolymorphicBase<T> {
          * @note Cannot deduce custom i.e. non-`std` return types.
         */
         template <typename Callable, typename... Args>
-        static auto invoke(Callable&& callable, Args&&... args) {
+        static void invoke(Callable&& callable, Args&&... args) {
+            if (instance == nullptr) return;
             return std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);   // if (instance == nullptr) ...
         }
 

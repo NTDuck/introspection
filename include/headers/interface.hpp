@@ -27,9 +27,11 @@ class AbstractInterface : public Singleton<T> {
          * @note Needs optimization to perfect relative positions of props to entities.
         */
         SDL_Texture* mTexture = nullptr;
+
+        SDL_Point mTextureSize;
 };
 
-#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::mTexture;
+#define INCL_ABSTRACT_INTERFACE(T) using AbstractInterface<T>::render, AbstractInterface<T>::onWindowChange, AbstractInterface<T>::mTexture, AbstractInterface<T>::mTextureSize;
 
 
 /* Derived implementations */
@@ -88,11 +90,14 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 
         void render() const override;
         void onWindowChange() override;
+        void onLevelChange();
         void handleKeyBoardEvent(SDL_Event const& event);
 
         void switchViewMode(const IngameViewMode newViewMode);
 
     private:
+        friend class IngameInterface;   // Provide access to private member `mTileCountWidth` and `mTileCountHeight`
+
         /**
          * A function with `void` return type that calls all `render()` method on all dependencies. Dependencies are other entities and the map, and not UI components, for example.
         */
@@ -112,12 +117,11 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
  * @brief Represent the in-game interface.
 */
 class IngameInterface final : public Singleton<IngameInterface> {
-    friend Player;
     public:
         INCL_SINGLETON(IngameInterface);
 
         IngameInterface();
-        ~IngameInterface() = default;
+        ~IngameInterface();
 
         static void initialize();
         static void deinitialize();
@@ -135,13 +139,17 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleEntities() const;
 
     private:
-        void handleEntitiesMovement() const;
         void handleEntitiesInteraction() const;
+        void handleLevelSpecifics() const;
         void handleEntitiesSFX() const;
 
         void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const;
         void handleCustomEventGET_kReq_DeathPending_Player() const;
         void handleCustomEventGET_kReq_DeathFinalized_Player() const;
+
+        void handleLevelSpecifics_kLevelWhiteSpace() const;
+
+        mutable SDL_Point* mCachedTargetDestCoords = nullptr;
 };
 
 

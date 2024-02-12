@@ -44,21 +44,6 @@ void AbstractEntity<T>::deinitialize() {
     sID_Counter = 0;
 }
 
-/**
- * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
- * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
-*/
-template <typename T>
-template <typename LevelData>
-void AbstractEntity<T>::onLevelChangeAll(typename level::EntityLevelData::Collection<LevelData> const& entityLevelDataCollection) {
-    Multiton<T>::deinitialize();
-    sID_Counter = 0;
-
-    for (const auto& entityLevelData : entityLevelDataCollection) {
-        auto instance = instantiate(entityLevelData.destCoords);
-        instance->onLevelChange(entityLevelData);
-    }
-}
 
 /**
  * @brief Render the current sprite to the window.
@@ -82,7 +67,7 @@ void AbstractEntity<T>::onWindowChange() {
  * @note Recommended implementation: this method should be defined by derived classes.
 */
 template <typename T>
-void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelData) {
+void AbstractEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
     mSecondaryStats.initialize(mPrimaryStats);   // Prevent resetting secondary stats on player entity
     mDestCoords = entityLevelData.destCoords;
 }
@@ -95,11 +80,10 @@ void AbstractEntity<T>::onLevelChange(level::EntityLevelData const& entityLevelD
 template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
-        coords.x * globals::tileDestSize.x + globals::windowOffset.x
-        + utils::castFloatToInt(mDestRectModifier.x * globals::tileDestSize.x)
+        coords.x * globals::tileDestSize.x + utils::castFloatToInt(mDestRectModifier.x * globals::tileDestSize.x)
         - (sTilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x
         - utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
-        coords.y * globals::tileDestSize.y + globals::windowOffset.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
+        coords.y * globals::tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
         utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * mDestRectModifier.w),
         utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * mDestRectModifier.h),
     };
@@ -129,9 +113,14 @@ int AbstractEntity<T>::sID_Counter = 0;
  * @warning Recommended implementation: derived abstract classes MUST provide similar implementation at the end of the corresponding source files.
 */
 template class AbstractEntity<PentacleProjectile>;
+
 template class AbstractEntity<Player>;
+
 template class AbstractEntity<Teleporter>;
+template class AbstractEntity<RedHandThroneTeleporter>;
+
 template class AbstractEntity<Slime>;
 
-template void AbstractEntity<Teleporter>::onLevelChangeAll<level::TeleporterLevelData>(const level::EntityLevelData::Collection<level::TeleporterLevelData>& entityLevelDataCollection);
-template void AbstractEntity<Slime>::onLevelChangeAll<level::SlimeLevelData>(const level::EntityLevelData::Collection<level::SlimeLevelData>& entityLevelDataCollection);
+template class AbstractEntity<OmoriLaptop>;
+template class AbstractEntity<OmoriLightBulb>;
+template class AbstractEntity<OmoriMewO>;

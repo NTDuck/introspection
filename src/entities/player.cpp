@@ -24,8 +24,8 @@ void Player::deinitialize() {
     Singleton<Player>::deinitialize();
 }
 
-void Player::onLevelChange(level::EntityLevelData const& player) {
-    auto data = *reinterpret_cast<const level::PlayerLevelData*>(&player);
+void Player::onLevelChange(level::Data_Generic const& player) {
+    auto data = *reinterpret_cast<const level::Data_Player*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
 }
 

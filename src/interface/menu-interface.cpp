@@ -16,7 +16,7 @@
  * @brief Populate members.
 */
 MenuInterface::MenuInterface() {
-    MenuAnimatedBackground::instantiate(IngameMapHandler::instance->mTexture);
+    MenuAnimatedBackground::instantiate(IngameMapHandler::instance->mTexture, IngameMapHandler::instance->mTextureSize, globals::windowSize);
     // MenuAvatar::instantiate(*Teleporter::tilesetData, config::components::menu_avatar::destRectModifier);
     MenuButton::instantiate(config::components::menu_button::initializer);
     MenuTitle::instantiate(config::components::menu_title::initializer);

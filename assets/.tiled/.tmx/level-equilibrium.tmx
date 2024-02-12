@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="27" nextobjectid="9">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="38" height="20" tilewidth="32" tileheight="32" infinite="0" nextlayerid="28" nextobjectid="9">
  <editorsettings>
   <export target="level-equilibrium.json" format="json"/>
  </editorsettings>
@@ -10,6 +10,7 @@
  <tileset firstgid="2657" source="../.tsx/mi-bedroom.tsx"/>
  <tileset firstgid="4369" source="../.tsx/mi-music-and-sport.tsx"/>
  <tileset firstgid="5137" source="../.tsx/mi-clothing-store.tsx"/>
+ <tileset firstgid="6209" source="../.tsx/omori-white-space.tsx"/>
  <layer id="26" name="static-collision" width="38" height="20">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUjIKRBxihmAGNZsSunG6AEQ8eSDBY3YUMRt01CkbBKBgFEAAAp2AAHA==
@@ -26,13 +27,12 @@
   </data>
  </layer>
  <objectgroup id="15" name="entities">
-  <object id="5" name="null" type="player" x="640" y="256" width="32" height="32"/>
   <object id="7" name="away" type="teleporter" x="672" y="384" width="32" height="32">
    <properties>
     <property name="target-dest-coords" type="class" propertytype="coords">
      <properties>
       <property name="x" type="int" value="32"/>
-      <property name="y" type="int" value="6"/>
+      <property name="y" type="int" value="15"/>
      </properties>
     </property>
     <property name="target-level" value="level-valley-of-despair"/>

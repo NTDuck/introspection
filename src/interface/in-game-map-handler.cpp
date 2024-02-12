@@ -31,10 +31,17 @@ void IngameMapHandler::render() const {
  * @note The `grayscaleTexture` block must be at THAT exact location i.e. before resetting render-target else undefined behaviour would be encountered.
 */
 void IngameMapHandler::onLevelChange() {
+    loadLevel();
+
+    if (mTexture != nullptr) SDL_DestroyTexture(mTexture);
+    mTextureSize = {
+        globals::tileDestCount.x * globals::tileDestSize.x,
+        globals::tileDestCount.y * globals::tileDestSize.y,
+    };
+    mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
+
     SDL_SetRenderTarget(globals::renderer, mTexture);
     SDL_RenderClear(globals::renderer);
-
-    loadLevel();
 
     renderBackground();
     renderLevelTiles();
@@ -45,10 +52,10 @@ void IngameMapHandler::onLevelChange() {
     SDL_SetRenderTarget(globals::renderer, nullptr);
 }
 
-void IngameMapHandler::onWindowChange() {
-    AbstractInterface<IngameMapHandler>::onWindowChange();
-    onLevelChange();
-}
+/**
+ * @note Last resort.
+*/
+void IngameMapHandler::onWindowChange() { onLevelChange(); }
 
 void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
@@ -105,8 +112,10 @@ void IngameMapHandler::renderLevelTiles() const {
         for (int x = 0; x < globals::tileDestCount.x; ++x) {
             tile::TilelayerRenderData& data = tileRenderDataCollection[y][x];
 
-            data.destRect.x = globals::tileDestSize.x * x + globals::windowOffset.x;
-            data.destRect.y = globals::tileDestSize.y * y + globals::windowOffset.y;
+            // data.destRect.x = globals::tileDestSize.x * x + globals::windowOffset.x;
+            // data.destRect.y = globals::tileDestSize.y * y + globals::windowOffset.y;
+            data.destRect.x = globals::tileDestSize.x * x;
+            data.destRect.y = globals::tileDestSize.y * y;
             data.destRect.w = globals::tileDestSize.x;
             data.destRect.h = globals::tileDestSize.y;
 

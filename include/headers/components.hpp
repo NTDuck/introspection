@@ -296,7 +296,7 @@ class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
     public:
         INCL_SINGLETON(MenuAnimatedBackground)
 
-        MenuAnimatedBackground(SDL_Texture*& texture);
+        MenuAnimatedBackground(SDL_Texture*& texture, SDL_Point& srcSize, SDL_Point& destSize);
         ~MenuAnimatedBackground() = default;
 
         void updateAnimation();
@@ -308,9 +308,9 @@ class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
         double mCurrAnimationUpdateCount;
         const double kAnimationUpdateRate = config::components::menu_animated_background::animationUpdateRate;
 
-        SDL_Texture*& pTexture;
-        SDL_Point mSrcSize;
-        SDL_Point& mDestSize = globals::windowSize;
+        SDL_Texture*& mTexture;
+        SDL_Point& mSrcSize;
+        SDL_Point& mDestSize;
         std::pair<SDL_Rect, SDL_Rect> mSrcRects, mDestRects;
 };
 
