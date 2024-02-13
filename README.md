@@ -98,7 +98,6 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 > We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
 1. Tilesets
-- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)

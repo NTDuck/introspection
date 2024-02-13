@@ -7,50 +7,10 @@
  <tileset firstgid="37" source="../.tsx/omori-light-bulb-string.tsx"/>
  <tileset firstgid="51" source="../.tsx/collision.tsx"/>
  <tileset firstgid="67" source="../.tsx/omori-black-space.tsx"/>
- <tileset firstgid="3139" source="../.tsx/mi-art.tsx"/>
- <tileset firstgid="3251" source="../.tsx/mi-basement.tsx"/>
- <tileset firstgid="4051" source="../.tsx/mi-bathroom.tsx"/>
- <tileset firstgid="4947" source="../.tsx/mi-bedroom.tsx"/>
- <tileset firstgid="6659" source="../.tsx/mi-birthday-party.tsx"/>
- <tileset firstgid="6743" source="../.tsx/eg-slime-full.tsx"/>
- <tileset firstgid="6773" source="../.tsx/hp-player.tsx"/>
- <tileset firstgid="6845" source="../.tsx/mi-a-cat.tsx"/>
- <tileset firstgid="6881" source="../.tsx/mi-a-haunted-bookcase.tsx"/>
- <tileset firstgid="7361" source="../.tsx/mi-a-pentacle.tsx"/>
- <tileset firstgid="7385" source="../.tsx/mi-christmas.tsx"/>
- <tileset firstgid="7657" source="../.tsx/mi-classroom-library.tsx"/>
- <tileset firstgid="8201" source="../.tsx/mi-clothing-store.tsx"/>
- <tileset firstgid="9273" source="../.tsx/mi-condominium.tsx"/>
- <tileset firstgid="9577" source="../.tsx/mi-conference-hall.tsx"/>
- <tileset firstgid="9769" source="../.tsx/mi-fishing.tsx"/>
- <tileset firstgid="10201" source="../.tsx/mi-generic.tsx"/>
- <tileset firstgid="11449" source="../.tsx/mi-grocery-store.tsx"/>
- <tileset firstgid="12697" source="../.tsx/mi-gym.tsx"/>
- <tileset firstgid="13225" source="../.tsx/mi-halloween.tsx"/>
- <tileset firstgid="14201" source="../.tsx/mi-hospital.tsx"/>
- <tileset firstgid="15961" source="../.tsx/mi-ice-cream-shop.tsx"/>
- <tileset firstgid="16233" source="../.tsx/mi-jail.tsx"/>
- <tileset firstgid="16953" source="../.tsx/mi-japanese-interior.tsx"/>
- <tileset firstgid="17465" source="../.tsx/mi-kitchen.tsx"/>
- <tileset firstgid="18249" source="../.tsx/mi-living-room.tsx"/>
- <tileset firstgid="18969" source="../.tsx/mi-museum.tsx"/>
- <tileset firstgid="20921" source="../.tsx/mi-music-and-sport.tsx"/>
- <tileset firstgid="21689" source="../.tsx/mi-rb-baseboards.tsx"/>
- <tileset firstgid="21725" source="../.tsx/mi-rb-borders.tsx"/>
- <tileset firstgid="22175" source="../.tsx/mi-rb-floors.tsx"/>
- <tileset firstgid="22775" source="../.tsx/mi-rb-floors-connector.tsx"/>
- <tileset firstgid="23027" source="../.tsx/mi-rb-floors-path.tsx"/>
- <tileset firstgid="23531" source="../.tsx/mi-rb-floors-shadow.tsx"/>
- <tileset firstgid="23611" source="../.tsx/mi-rb-walls.tsx"/>
- <tileset firstgid="24891" source="../.tsx/mi-rb-walls-3d.tsx"/>
- <tileset firstgid="26211" source="../.tsx/mi-shooting-range.tsx"/>
- <tileset firstgid="26291" source="../.tsx/mi-television-film-studio.tsx"/>
- <tileset firstgid="26515" source="../.tsx/omori-laptop.tsx"/>
- <tileset firstgid="26527" source="../.tsx/omori-light-bulb.tsx"/>
- <tileset firstgid="26542" source="../.tsx/omori-mewo.tsx"/>
- <tileset firstgid="26566" source="../.tsx/omori-red-hand.tsx"/>
- <tileset firstgid="26578" source="../.tsx/omori-shiny-knife.tsx"/>
- <tileset firstgid="26590" source="../.tsx/omori-red-hand-throne.tsx"/>
+ <tileset firstgid="3139" source="../.tsx/omori-laptop.tsx"/>
+ <tileset firstgid="3151" source="../.tsx/omori-light-bulb.tsx"/>
+ <tileset firstgid="3166" source="../.tsx/omori-mewo.tsx"/>
+ <tileset firstgid="3190" source="../.tsx/omori-red-hand-throne.tsx"/>
  <layer id="3" name="static-collision" width="110" height="90">
   <data encoding="base64" compression="zlib">
    eJzt0aEJADAQBMHt6fvvLQWEuIgXIwZWHtxUAwAAAAAAAAAAAAAAAAAAAAAAAAB80aMBuLVgAz4CAAAAAAAAAAAAAAAAAAAAgC0OKaiz4g==

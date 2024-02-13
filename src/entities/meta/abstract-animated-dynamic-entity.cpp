@@ -169,8 +169,8 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
             auto tilelayerTilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
             if (tilelayerTilesetData == nullptr) continue;
 
-            auto it = sTilesetData->properties.find("collision");
-            if (!gid && it != sTilesetData->properties.end() && it->second == "true") continue;
+            auto it = sTilesetData.properties.find("collision");
+            if (!gid && it != sTilesetData.properties.end() && it->second == "true") continue;
 
             return gid;
         }

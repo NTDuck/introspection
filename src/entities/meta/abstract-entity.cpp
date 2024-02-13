@@ -16,8 +16,8 @@
 
 template <typename T>
 AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : mID(++sID_Counter), mDestCoords(destCoords), mDestRectModifier(config::entities::destRectModifier) {
-    mSrcRect.w = sTilesetData->srcSize.x * sTilesetData->animationSize.x;
-    mSrcRect.h = sTilesetData->srcSize.y * sTilesetData->animationSize.y;
+    mSrcRect.w = sTilesetData.srcSize.x * sTilesetData.animationSize.x;
+    mSrcRect.h = sTilesetData.srcSize.y * sTilesetData.animationSize.y;
 }
 
 /**
@@ -26,22 +26,28 @@ AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : mID(++sID_Count
 template <typename T>
 void AbstractEntity<T>::initialize() {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(kTilesetPath.c_str());
+    pugi::xml_parse_result result = document.load_file(sTilesetPath.c_str());
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
     
-    sTilesetData = new tile::EntitiesTilesetData;
-    sTilesetData->initialize(document, globals::renderer);
+    sTilesetData.initialize(document, globals::renderer);
 }
 
 template <typename T>
 void AbstractEntity<T>::deinitialize() {
-    if (sTilesetData != nullptr) {
-        sTilesetData->deinitialize();
-        sTilesetData = nullptr;
-    }
-    
+    sTilesetData.deinitialize();
     Multiton<T>::deinitialize();
     sID_Counter = 0;
+}
+
+/**
+ * @brief Change `sTilesetData`.
+ * @note Experimental - only intended to use for `Player`, since undefined behaviour would occur on existing entities (that use old `sTilesetData`).
+*/
+template <typename T>
+void AbstractEntity<T>::reinitialize(std::filesystem::path path) {
+    sTilesetData.deinitialize();
+    sTilesetPath = path;
+    AbstractEntity<T>::initialize();
 }
 
 
@@ -51,7 +57,7 @@ void AbstractEntity<T>::deinitialize() {
 */
 template <typename T>
 void AbstractEntity<T>::render() const {
-    SDL_RenderCopyEx(globals::renderer, sTilesetData->texture, &mSrcRect, &mDestRect, mAngle, pCenter, mFlip);
+    SDL_RenderCopyEx(globals::renderer, sTilesetData.texture, &mSrcRect, &mDestRect, mAngle, pCenter, mFlip);
 }
 
 /**
@@ -81,11 +87,11 @@ template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
         coords.x * globals::tileDestSize.x + utils::castFloatToInt(mDestRectModifier.x * globals::tileDestSize.x)
-        - (sTilesetData->animationSize.x - 1) / 2 * globals::tileDestSize.x
-        - utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
-        coords.y * globals::tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData->animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
-        utils::castFloatToInt(globals::tileDestSize.x * sTilesetData->animationSize.x * mDestRectModifier.w),
-        utils::castFloatToInt(globals::tileDestSize.y * sTilesetData->animationSize.y * mDestRectModifier.h),
+        - (sTilesetData.animationSize.x - 1) / 2 * globals::tileDestSize.x
+        - utils::castFloatToInt(globals::tileDestSize.x * sTilesetData.animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        coords.y * globals::tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData.animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData.animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
+        utils::castFloatToInt(globals::tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
+        utils::castFloatToInt(globals::tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
     };
 }
 
@@ -101,7 +107,7 @@ bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& firs
 
 
 template <typename T>
-tile::EntitiesTilesetData* AbstractEntity<T>::sTilesetData = nullptr;
+tile::EntitiesTilesetData AbstractEntity<T>::sTilesetData;
 
 template <typename T>
 int AbstractEntity<T>::sID_Counter = 0;

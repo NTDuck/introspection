@@ -44,7 +44,7 @@ void GenericHostileEntity<T>::handleCustomEventGET(SDL_Event const& event) {
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Player() const {
-    if (mCurrAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+    if (mCurrAnimationType != AnimationType::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -55,7 +55,7 @@ void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Play
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackInitiate_GHE_Player() const {
-    if (mCurrAnimationType == AnimationType::kAttack) return;
+    if (mCurrAnimationType == AnimationType::kAttackMeele) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -92,7 +92,7 @@ void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GH
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_AttackInitiate_GHE_Player() {
     if (pNextAnimationType != nullptr) return;
-    pNextAnimationType = new AnimationType(AnimationType::kAttack);
+    pNextAnimationType = new AnimationType(AnimationType::kAttackMeele);
     mIsAnimationOnProgress = false;
 }
 

@@ -133,8 +133,7 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
 }
 
 void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
-    // if (event.type != SDL_MOUSEBUTTONDOWN) return;
-    // onLevelChange(); onWindowChange();
+    Player::invoke(&Player::handleMouseEvent, event);
 }
 
 void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {

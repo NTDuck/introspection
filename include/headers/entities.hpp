@@ -37,6 +37,7 @@ class AbstractEntity : public Multiton<T> {
 
         static void initialize();
         static void deinitialize();
+        static void reinitialize(std::filesystem::path path);
 
         /**
          * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
@@ -66,8 +67,8 @@ class AbstractEntity : public Multiton<T> {
 
         const event::ID mID;
 
-        static const std::filesystem::path kTilesetPath;
-        static tile::EntitiesTilesetData* sTilesetData;
+        static std::filesystem::path sTilesetPath;
+        static tile::EntitiesTilesetData sTilesetData;
 
         SDL_Point mDestCoords;
         SDL_Rect mSrcRect;
@@ -107,7 +108,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::mID, AbstractEntity<T>::kTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::pCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::pCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
 
 
 /**
@@ -133,11 +134,11 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(sTilesetData->animationMapping[mCurrAnimationType].startGID);
+            return isAnimationAtSprite(sTilesetData.animationMapping[mCurrAnimationType].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(sTilesetData->animationMapping[mCurrAnimationType].stopGID);
+            return isAnimationAtSprite(sTilesetData.animationMapping[mCurrAnimationType].stopGID);
         }
 
     protected:
@@ -179,7 +180,7 @@ T::T(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {\
 }\
 \
 template <>\
-const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;\
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 
 
 /**
@@ -311,7 +312,7 @@ T::T(SDL_Point const& destCoords) : GenericTeleporterEntity<T>(destCoords) {\
 }\
 \
 template <>\
-const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 
 
 template <typename T>
@@ -375,7 +376,7 @@ template <>\
 SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\
 \
 template <>\
-const std::filesystem::path AbstractEntity<T>::kTilesetPath = ns::path;\
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 
 
 template <typename T>
@@ -435,7 +436,7 @@ template <>\
 SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = config::entities::pentacle_projectile::velocity;\
 \
 template <>\
-const std::filesystem::path AbstractEntity<T>::kTilesetPath = config::entities::pentacle_projectile::path;
+std::filesystem::path AbstractEntity<T>::sTilesetPath = config::entities::pentacle_projectile::path;
 
 
 // template <typename T>
@@ -486,9 +487,11 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         ~Player() = default;
 
         static void deinitialize();
+        static void reinitialize(bool increment);
 
         void onLevelChange(level::Data_Generic const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
+        void handleMouseEvent(SDL_Event const& event);
 
         void handleCustomEventPOST() const override;
         void handleCustomEventGET(SDL_Event const& event) override;
@@ -504,6 +507,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event);
+
+        static const std::vector<std::filesystem::path> sTilesetPaths;
 
         SDL_Point mPrevDirection = { 1, 0 };
 };

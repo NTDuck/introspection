@@ -19,9 +19,21 @@ Player::Player(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Play
 }
 
 void Player::deinitialize() {
-    sTilesetData->deinitialize();
-    sTilesetData = nullptr;
+    sTilesetData.deinitialize();
     Singleton<Player>::deinitialize();
+}
+
+void Player::reinitialize(bool increment) {
+    static unsigned short int tracker = 0;
+    static const unsigned short int size = static_cast<unsigned short int>(sTilesetPaths.size());
+
+    if (increment) {
+        if (tracker == size - 1) tracker = 0; else ++tracker;
+    } else {
+        if (!tracker) tracker = size - 1; else --tracker;
+    }
+
+    AbstractEntity<Player>::reinitialize(sTilesetPaths[tracker]);
 }
 
 void Player::onLevelChange(level::Data_Generic const& player) {
@@ -50,8 +62,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case config::key::PLAYER_ATTACK:
-            if (mCurrAnimationType == AnimationType::kAttack || mCurrAnimationType == AnimationType::kJump) break;
-            resetAnimation(AnimationType::kAttack);
+            if (mCurrAnimationType == AnimationType::kAttackMeele || mCurrAnimationType == AnimationType::kAttackRanged) break;
+            resetAnimation(AnimationType::kAttackMeele);
             break;
 
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE:
@@ -59,9 +71,31 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE:
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE:
         case config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE:
-            if (mCurrAnimationType == AnimationType::kAttack || mCurrAnimationType == AnimationType::kJump) break;
-            resetAnimation(AnimationType::kJump);
+            if (mCurrAnimationType == AnimationType::kAttackMeele || mCurrAnimationType == AnimationType::kAttackRanged) break;
+            resetAnimation(AnimationType::kAttackRanged);
             handleKeyboardEvent_ProjectileAttack(event);
+            break;
+
+        default: break;
+    }
+}
+
+/**
+ * @note Cooldown is not necessary.
+*/
+void Player::handleMouseEvent(SDL_Event const& event) {
+    // static constexpr unsigned short int tempCooldownLimit = config::game::frameRate;
+    // static unsigned short int tempCooldownTracker = tempCooldownLimit;
+
+    // if (tempCooldownTracker) {
+    //     --tempCooldownTracker;
+    //     return;
+    // }
+
+    switch (event.type) {
+        case SDL_MOUSEWHEEL:
+            reinitialize(event.wheel.y > 0);
+            // tempCooldownTracker = tempCooldownLimit;
             break;
 
         default: break;
@@ -135,7 +169,7 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
 }
 
 void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
-    if (mCurrAnimationType != AnimationType::kAttack || !isAnimationAtFinalSprite()) return;
+    if (mCurrAnimationType != AnimationType::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -220,4 +254,6 @@ template <>
 SDL_FPoint AbstractAnimatedDynamicEntity<Player>::sVelocity = config::entities::player::velocity;
 
 template <>
-const std::filesystem::path AbstractEntity<Player>::kTilesetPath = config::entities::player::path;
+std::filesystem::path AbstractEntity<Player>::sTilesetPath = config::entities::player::path;
+
+const std::vector<std::filesystem::path> Player::sTilesetPaths = config::entities::player::paths;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="slime-full" tilewidth="64" tileheight="64" tilecount="30" columns="6">
  <properties>
-  <property name="animation-attack" type="class" propertytype="animation">
+  <property name="animation-attack-meele" type="class" propertytype="animation">
    <properties>
     <property name="animation-update-rate-multiplier" type="float" value="1.5"/>
     <property name="isPermanent" type="bool" value="true"/>

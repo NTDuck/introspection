@@ -37,7 +37,7 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityL
 template <typename T>
 void AbstractAnimatedEntity<T>::handleSFX() const {
     switch (mCurrAnimationType) {
-        case AnimationType::kAttack:
+        case AnimationType::kAttackMeele:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
             break;
@@ -58,17 +58,18 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
 
 /**
  * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
+ * @note The commented-out line is originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`, and later removed due to undefined behaviour with `player-default.tsx`.
  * @see <interface.h> Interface::renderLevelTiles()
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++mCurrAnimationUpdateCount;
     
-    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData->animationUpdateRate * sTilesetData->animationMapping[mCurrAnimationType].animationUpdateRateMultiplier)) {
+    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData.animationMapping[mCurrAnimationType].animationUpdateRateMultiplier)) {
         mCurrAnimationUpdateCount = 0;
-        if (mCurrAnimationGID < sTilesetData->animationMapping[mCurrAnimationType].stopGID) {
-            mCurrAnimationGID += sTilesetData->animationSize.x;
-            if (mCurrAnimationGID / sTilesetData->srcCount.x != (mCurrAnimationGID - sTilesetData->srcCount.x) / sTilesetData->srcCount.x) mCurrAnimationGID += sTilesetData->srcCount.x * (sTilesetData->animationSize.y - 1);   // Behold, heresy!
+        if (mCurrAnimationGID < sTilesetData.animationMapping[mCurrAnimationType].stopGID) {
+            mCurrAnimationGID += sTilesetData.animationSize.x;
+            // if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.srcCount.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);
         } else {
             // Deinitialize `nextAnimationData`
             if (pNextAnimationType != nullptr && mIsAnimationOnProgress) {
@@ -78,12 +79,12 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             }
 
             if (mCurrAnimationType == AnimationType::kDeath) return;   // The real permanent
-            resetAnimation(sTilesetData->animationMapping[mCurrAnimationType].isPermanent ? AnimationType::kIdle : mCurrAnimationType);
+            resetAnimation(sTilesetData.animationMapping[mCurrAnimationType].isPermanent ? AnimationType::kIdle : mCurrAnimationType);
         };
     }
 
-    mSrcRect.x = mCurrAnimationGID % sTilesetData->srcCount.x * sTilesetData->srcSize.x;
-    mSrcRect.y = mCurrAnimationGID / sTilesetData->srcCount.x * sTilesetData->srcSize.y;
+    mSrcRect.x = mCurrAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
+    mSrcRect.y = mCurrAnimationGID / sTilesetData.srcCount.x * sTilesetData.srcSize.y;
 }
 
 /**
@@ -93,7 +94,7 @@ template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, EntityStatusFlag flag) {
     mCurrAnimationType = animationType;
     if (flag == EntityStatusFlag::kContinued) return;
-    mCurrAnimationGID = AbstractEntity<T>::sTilesetData->animationMapping[mCurrAnimationType].startGID;
+    mCurrAnimationGID = AbstractEntity<T>::sTilesetData.animationMapping[mCurrAnimationType].startGID;
 }
 
 /**

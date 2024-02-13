@@ -238,12 +238,9 @@ namespace tile {
         */
         enum class AnimationType {
             kIdle,
-            kAttack,
-            kBlink,
+            kAttackMeele,
+            kAttackRanged,
             kDeath,
-            kDisappear,
-            kDuck,
-            kJump,
             kRun,
             kWalk,
             kDamaged,
@@ -482,10 +479,11 @@ namespace config {
     namespace key {
         constexpr SDL_Keycode EXIT = SDLK_ESCAPE;
 
+        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_F1;
+
         constexpr SDL_Keycode INGAME_LEVEL_RESET = SDLK_F4;
         constexpr SDL_Keycode INGAME_TOGGLE_CAMERA_ANGLE = SDLK_F5;
         constexpr SDL_Keycode INGAME_TOGGLE_GRAYSCALE = SDLK_F6;
-        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_F1;
 
         constexpr SDL_Keycode PLAYER_MOVE_UP = SDLK_w;
         constexpr SDL_Keycode PLAYER_MOVE_DOWN = SDLK_s;
@@ -571,8 +569,13 @@ namespace config {
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
         
         namespace player {
-            const std::filesystem::path path = "assets/.tiled/.tsx/hp-player.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -0.75f, 2, 2 };
+            const std::filesystem::path path = "assets/.tiled/.tsx/player-default.tsx";
+            const std::vector<std::filesystem::path> paths = {
+                path,
+                "assets/.tiled/.tsx/player-premade-19.tsx",
+                "assets/.tiled/.tsx/player-premade-08.tsx",
+            };
+            constexpr SDL_FRect destRectModifier = { 0, -1.125, 1, 1 };
             constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 99, 99 };

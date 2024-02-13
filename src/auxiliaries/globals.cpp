@@ -6,12 +6,9 @@
 
 const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> tile::EntitiesTilesetData::kAnimationTypeConversionMapping = {
     { "animation-idle", AnimationType::kIdle },
-    { "animation-attack", AnimationType::kAttack },
-    { "animation-blink", AnimationType::kBlink },
+    { "animation-attack-meele", AnimationType::kAttackMeele },
+    { "animation-attack-ranged", AnimationType::kAttackRanged },
     { "animation-death", AnimationType::kDeath },
-    { "animation-disappear", AnimationType::kDisappear },
-    { "animation-duck", AnimationType::kDuck },
-    { "animation-jump", AnimationType::kJump },
     { "animation-run", AnimationType::kRun },
     { "animation-walk", AnimationType::kWalk },
     { "animation-damaged", AnimationType::kDamaged },

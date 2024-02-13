@@ -256,7 +256,10 @@ void Game::handleEvents() {
 
             // track mouse motion & buttons only
             // also invoked when mouse focus regained/lost
-            case SDL_MOUSEMOTION: case SDL_MOUSEBUTTONDOWN: case SDL_MOUSEBUTTONUP:
+            case SDL_MOUSEMOTION:
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+            case SDL_MOUSEWHEEL:
                 handleMouseEvent(event);
                 break;
 
@@ -310,6 +313,10 @@ void Game::handleMouseEvent(SDL_Event const& event) const {
     switch (globals::state) {
         case GameState::kMenu:
             MenuInterface::invoke(&MenuInterface::handleMouseEvent, event);
+            break;
+
+        case GameState::kIngamePlaying:
+            IngameInterface::invoke(&IngameInterface::handleMouseEvent, event);
             break;
 
         case GameState::kGameOver:
