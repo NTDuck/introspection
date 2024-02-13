@@ -662,8 +662,9 @@ namespace config {
             constexpr double destRectModifier = 0.125;
         }
 
-        namespace menu_animated_background {
+        namespace menu_parallax {
             constexpr double animationUpdateRate = 0.001;
+            const std::filesystem::path path = "assets/graphics/parallaxes/omori-static.png";
         }
 
         namespace menu_button {
@@ -835,6 +836,8 @@ namespace utils {
     double calculateDistance(SDL_Point const& first, SDL_Point const& second);
     SDL_Color SDL_ColorFromHexString(std::string const& hexString);
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
+
+    SDL_Texture* duplicateTexture(SDL_Renderer* renderer, SDL_Texture* texture);
     SDL_Texture* createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture, double intensity = 1);
 
     template <typename T>

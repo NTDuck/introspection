@@ -176,6 +176,43 @@ void utils::setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color)
 }
 
 /**
+ * @see https://stackoverflow.com/questions/75873908/how-to-copy-a-texture-to-another-texture-without-pointing-to-the-same-texture
+*/
+SDL_Texture* utils::duplicateTexture(SDL_Renderer* renderer, SDL_Texture* texture) {
+    uint32_t format;
+    SDL_Point size;
+    SDL_BlendMode blendMode;
+    SDL_Texture* cachedRenderTarget = nullptr;
+    SDL_Texture* duplicatedTexture = nullptr;
+
+    // Get all properties from the texture we are duplicating
+    SDL_QueryTexture(texture, &format, nullptr, &size.x, &size.y);
+    SDL_GetTextureBlendMode(texture, &blendMode);
+
+    // Save the current rendering target (will be NULL if it is the current window)
+    cachedRenderTarget = SDL_GetRenderTarget(renderer);
+
+    // Create a new texture with the same properties as the one we are duplicating
+    duplicatedTexture = SDL_CreateTexture(renderer, format, SDL_TEXTUREACCESS_TARGET, size.x, size.y);
+
+    // Set its blending mode and make it the render target
+    SDL_SetTextureBlendMode(duplicatedTexture, SDL_BLENDMODE_NONE);
+    SDL_SetRenderTarget(renderer, duplicatedTexture);
+
+    // Render the full original texture onto the new one
+    SDL_RenderCopy(renderer, texture, nullptr, nullptr);
+
+    // Change the blending mode of the new texture to the same as the original one
+    SDL_SetTextureBlendMode(duplicatedTexture, blendMode);
+
+    // Restore the render target
+    SDL_SetRenderTarget(renderer, cachedRenderTarget);
+
+    // Return the new texture
+    return duplicatedTexture;
+}
+
+/**
  * @brief Convert a texture to grayscale.
  * @see https://gigi.nullneuron.net/gigilabs/converting-an-image-to-grayscale-using-sdl2/
  * @see https://en.wikipedia.org/wiki/Grayscale

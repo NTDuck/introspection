@@ -292,25 +292,25 @@ class ExitText final : public Singleton<ExitText>, public GenericTextComponent<E
 /**
  * @brief Represent the animated background on the menu, based on the most recently visited in-game level.
 */
-class MenuAnimatedBackground final : public Singleton<MenuAnimatedBackground> {
+class MenuParallax final : public Singleton<MenuParallax> {
     public:
-        INCL_SINGLETON(MenuAnimatedBackground)
+        INCL_SINGLETON(MenuParallax)
 
-        MenuAnimatedBackground(SDL_Texture*& texture, SDL_Point& srcSize, SDL_Point& destSize);
-        ~MenuAnimatedBackground() = default;
+        MenuParallax();
+        ~MenuParallax();
 
         void updateAnimation();
         void render() const;
         void onWindowChange();
 
     private:
-        static constexpr double kAnimationUpdateRateLimit = 1;
+        const double kAnimationUpdateRateLimit = 1;
         double mCurrAnimationUpdateCount;
-        const double kAnimationUpdateRate = config::components::menu_animated_background::animationUpdateRate;
+        const double kAnimationUpdateRate = config::components::menu_parallax::animationUpdateRate;
 
-        SDL_Texture*& mTexture;
-        SDL_Point& mSrcSize;
-        SDL_Point& mDestSize;
+        SDL_Texture* mTexture;
+        SDL_Point mSrcSize;
+        SDL_Point& mDestSize = globals::windowSize;
         std::pair<SDL_Rect, SDL_Rect> mSrcRects, mDestRects;
 };
 
