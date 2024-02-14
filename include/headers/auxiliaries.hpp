@@ -569,12 +569,29 @@ namespace config {
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
         
         namespace player {
-            const std::filesystem::path path = "assets/.tiled/.tsx/player-default.tsx";
             const std::vector<std::filesystem::path> paths = {
-                path,
-                "assets/.tiled/.tsx/player-premade-19.tsx",
+                "assets/.tiled/.tsx/player-premade-01.tsx",
+                "assets/.tiled/.tsx/player-premade-02.tsx",
+                "assets/.tiled/.tsx/player-premade-03.tsx",
+                "assets/.tiled/.tsx/player-premade-04.tsx",
+                "assets/.tiled/.tsx/player-premade-05.tsx",
+                "assets/.tiled/.tsx/player-premade-06.tsx",
+                "assets/.tiled/.tsx/player-premade-07.tsx",
                 "assets/.tiled/.tsx/player-premade-08.tsx",
+                "assets/.tiled/.tsx/player-premade-09.tsx",
+                "assets/.tiled/.tsx/player-premade-10.tsx",
+                "assets/.tiled/.tsx/player-premade-11.tsx",
+                "assets/.tiled/.tsx/player-premade-12.tsx",
+                "assets/.tiled/.tsx/player-premade-13.tsx",
+                "assets/.tiled/.tsx/player-premade-14.tsx",
+                "assets/.tiled/.tsx/player-premade-15.tsx",
+                "assets/.tiled/.tsx/player-premade-16.tsx",
+                "assets/.tiled/.tsx/player-premade-17.tsx",
+                "assets/.tiled/.tsx/player-premade-18.tsx",
+                "assets/.tiled/.tsx/player-premade-19.tsx",
+                "assets/.tiled/.tsx/player-premade-20.tsx",
             };
+            const std::filesystem::path path = paths[0];
             constexpr SDL_FRect destRectModifier = { 0, -1.125, 1, 1 };
             constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr int moveDelay = 0;

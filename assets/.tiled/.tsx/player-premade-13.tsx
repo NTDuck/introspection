@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="player-premade-19" tilewidth="32" tileheight="32" tilecount="2296" columns="56">
+<tileset version="1.10" tiledversion="1.10.2" name="player-premade-13" tilewidth="32" tileheight="32" tilecount="2296" columns="56">
 <properties>
   <property name="animation-attack-meele" type="class" propertytype="animation">
    <properties>
@@ -53,5 +53,5 @@
   </property>
   <property name="animation-width" type="int" value="1"/>
  </properties>
- <image source="../../graphics/sprites/entities/player/premade-19.png" width="1792" height="1312"/>
+ <image source="../../graphics/sprites/entities/player/premade-13.png" width="1792" height="1312"/>
 </tileset>

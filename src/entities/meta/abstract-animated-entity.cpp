@@ -58,7 +58,6 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
 
 /**
  * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
- * @note The commented-out line is originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`, and later removed due to undefined behaviour with `player-default.tsx`.
  * @see <interface.h> Interface::renderLevelTiles()
 */
 template <typename T>
@@ -69,7 +68,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         mCurrAnimationUpdateCount = 0;
         if (mCurrAnimationGID < sTilesetData.animationMapping[mCurrAnimationType].stopGID) {
             mCurrAnimationGID += sTilesetData.animationSize.x;
-            // if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.srcCount.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);
+            if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
         } else {
             // Deinitialize `nextAnimationData`
             if (pNextAnimationType != nullptr && mIsAnimationOnProgress) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="player-premade-08" tilewidth="32" tileheight="32" tilecount="2296" columns="56">
-<properties>
+ <properties>
   <property name="animation-attack-meele" type="class" propertytype="animation">
    <properties>
     <property name="isPermanent" type="bool" value="true"/>
@@ -10,6 +10,7 @@
   </property>
   <property name="animation-attack-ranged" type="class" propertytype="animation">
    <properties>
+    <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="2016"/>
     <property name="stopGID" type="int" value="2018"/>
    </properties>

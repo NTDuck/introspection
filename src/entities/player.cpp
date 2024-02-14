@@ -24,16 +24,16 @@ void Player::deinitialize() {
 }
 
 void Player::reinitialize(bool increment) {
-    static unsigned short int tracker = 0;
+    static unsigned short int index = 0;
     static const unsigned short int size = static_cast<unsigned short int>(sTilesetPaths.size());
 
     if (increment) {
-        if (tracker == size - 1) tracker = 0; else ++tracker;
+        if (index == size - 1) index = 0; else ++index;
     } else {
-        if (!tracker) tracker = size - 1; else --tracker;
+        if (!index) index = size - 1; else --index;
     }
 
-    AbstractEntity<Player>::reinitialize(sTilesetPaths[tracker]);
+    AbstractEntity<Player>::reinitialize(sTilesetPaths[index]);
 }
 
 void Player::onLevelChange(level::Data_Generic const& player) {
@@ -80,22 +80,10 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
     }
 }
 
-/**
- * @note Cooldown is not necessary.
-*/
 void Player::handleMouseEvent(SDL_Event const& event) {
-    // static constexpr unsigned short int tempCooldownLimit = config::game::frameRate;
-    // static unsigned short int tempCooldownTracker = tempCooldownLimit;
-
-    // if (tempCooldownTracker) {
-    //     --tempCooldownTracker;
-    //     return;
-    // }
-
     switch (event.type) {
         case SDL_MOUSEWHEEL:
             reinitialize(event.wheel.y > 0);
-            // tempCooldownTracker = tempCooldownLimit;
             break;
 
         default: break;
