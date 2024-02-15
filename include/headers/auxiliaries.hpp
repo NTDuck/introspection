@@ -390,19 +390,17 @@ namespace event {
 
     using ID = int;
 
-    namespace data {
-        struct Generic {
-            SDL_Point destCoords;
-            SDL_Point range;
-            EntitySecondaryStats stats;
-        };
+    struct Data_Generic {
+        SDL_Point destCoords;
+        SDL_Point range;
+        EntitySecondaryStats stats;
+    };
 
-        struct Teleporter {
-            SDL_Point destCoords;
-            SDL_Point targetDestCoords;
-            level::Name targetLevel;
-        };
-    }
+    struct Data_Teleporter {
+        SDL_Point destCoords;
+        SDL_Point targetDestCoords;
+        level::Name targetLevel;
+    };
 
     /**
      * The global custom event type. Registered only once.

@@ -49,7 +49,7 @@ void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Play
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_GHE_Player);
-    event::setData(event, event::data::Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -60,7 +60,7 @@ void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackInitiate_GHE_Play
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackInitiate_GHE_Player);
-    event::setData(event, event::data::Generic({ mDestCoords, mAttackInitiateRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, mAttackInitiateRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -69,13 +69,13 @@ void GenericHostileEntity<T>::handleCustomEventPOST_kReq_MoveInitiate_GHE_Player
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_MoveInitiate_GHE_Player);
-    event::setData(event, event::data::Generic({ mDestCoords, mMoveInitiateRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, mMoveInitiateRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GHE(SDL_Event const& event) {
-    auto data = event::getData<event::data::Generic>(event);
+    auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDamaged) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -98,7 +98,7 @@ void GenericHostileEntity<T>::handleCustomEventGET_kResp_AttackInitiate_GHE_Play
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Generic>(event);
+    auto data = event::getData<event::Data_Generic>(event);
     pNextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (data.destCoords.x > mDestCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (data.destCoords.y > mDestCoords.y) * 2 - 1 });
     initiateMove();
 }

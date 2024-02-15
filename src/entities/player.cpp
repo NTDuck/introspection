@@ -162,7 +162,7 @@ void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::data::Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -180,7 +180,7 @@ void Player::handleCustomEventPOST_kReq_Death_Player() const {
 }
 
 void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Generic>(event);
+    auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDamaged) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -195,7 +195,7 @@ void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const
 }
 
 void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Generic>(event);
+    auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDamaged || mCurrAnimationType == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -209,7 +209,7 @@ void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event cons
 }
 
 void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Generic>(event);
+    auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -223,7 +223,7 @@ void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const&
 }
 
 void Player::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Teleporter>(event);
+    auto data = event::getData<event::Data_Teleporter>(event);
 
     if (mDestCoords != data.destCoords) return;
 

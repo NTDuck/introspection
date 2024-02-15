@@ -28,7 +28,7 @@ void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player(
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_Teleport_GTE_Player);
-    event::setData(event, event::data::Teleporter({ mDestCoords, mTargetDestCoords, mTargetLevel }));
+    event::setData(event, event::Data_Teleporter({ mDestCoords, mTargetDestCoords, mTargetLevel }));
     event::enqueue(event);
 }
 

@@ -221,7 +221,7 @@ void IngameInterface::handleEntitiesSFX() const {
 }
 
 void IngameInterface::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const {
-    auto data = event::getData<event::data::Teleporter>(event);
+    auto data = event::getData<event::Data_Teleporter>(event);
     
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, data.targetLevel);
     // globals::currentLevelData.playerLevelData.destCoords = data.targetDestCoords;   // This has no effect if placed here

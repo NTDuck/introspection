@@ -3,8 +3,6 @@
 #include <SDL.h>
 
 
-uint32_t event::type = -1;
-
 void event::initialize() {
     if (event::type != (uint32_t)-1) return;
     event::type = SDL_RegisterEvents(1);
@@ -40,12 +38,12 @@ void event::terminate(SDL_Event const& event) {
         case event::Code::kResp_AttackInitiate_GHE_Player:
         case event::Code::kResp_MoveInitiate_GHE_Player:
         case event::Code::kResp_MoveTerminate_GHE_Player:
-            event::__deallocate__<event::data::Generic>(event);
+            event::__deallocate__<event::Data_Generic>(event);
             break;
 
         case event::Code::kReq_Teleport_GTE_Player:
         case event::Code::kResp_Teleport_GTE_Player:
-            event::__deallocate__<event::data::Teleporter>(event);
+            event::__deallocate__<event::Data_Teleporter>(event);
             break;
         
         default: break;
@@ -75,3 +73,6 @@ event::Code event::getCode(SDL_Event const& event) {
 void event::setCode(SDL_Event& event, event::Code code) {
     event.user.code = static_cast<Sint32>(code);
 }
+
+
+uint32_t event::type = -1;
