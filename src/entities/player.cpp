@@ -19,7 +19,7 @@ Player::Player(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Play
 }
 
 void Player::deinitialize() {
-    sTilesetData.deinitialize();
+    sTilesetData.clear();
     Singleton<Player>::deinitialize();
 }
 
@@ -46,8 +46,8 @@ void Player::onLevelChange(level::Data_Generic const& player) {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
-    if (mCurrAnimationType == AnimationType::kDamaged || (pNextAnimationType != nullptr && *pNextAnimationType == AnimationType::kDamaged)) return;
-    if (mCurrAnimationType == AnimationType::kDeath || (pNextAnimationType != nullptr && *pNextAnimationType == AnimationType::kDeath)) return;
+    if (mCurrAnimationType == Animation::kDamaged || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDamaged)) return;
+    if (mCurrAnimationType == Animation::kDeath || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDeath)) return;
 
     switch (event.key.keysym.sym) {
         case config::key::PLAYER_MOVE_UP:
@@ -62,8 +62,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case config::key::PLAYER_ATTACK:
-            if (mCurrAnimationType == AnimationType::kAttackMeele || mCurrAnimationType == AnimationType::kAttackRanged) break;
-            resetAnimation(AnimationType::kAttackMeele);
+            if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
+            resetAnimation(Animation::kAttackMeele);
             break;
 
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE:
@@ -71,8 +71,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE:
         case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE:
         case config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE:
-            if (mCurrAnimationType == AnimationType::kAttackMeele || mCurrAnimationType == AnimationType::kAttackRanged) break;
-            resetAnimation(AnimationType::kAttackRanged);
+            if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
+            resetAnimation(Animation::kAttackRanged);
             handleKeyboardEvent_ProjectileAttack(event);
             break;
 
@@ -157,7 +157,7 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
 }
 
 void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
-    if (mCurrAnimationType != AnimationType::kAttackMeele || !isAnimationAtFinalSprite()) return;
+    if (mCurrAnimationType != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -167,7 +167,7 @@ void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
 }
 
 void Player::handleCustomEventPOST_kReq_Death_Player() const {
-    if (mCurrAnimationType != AnimationType::kDeath) return;
+    if (mCurrAnimationType != Animation::kDeath) return;
 
     static int counter = config::entities::player::waitingFramesAfterDeath;
     if (counter > 0) --counter;
@@ -182,14 +182,14 @@ void Player::handleCustomEventPOST_kReq_Death_Player() const {
 void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event) {
     auto data = event::getData<event::data::Generic>(event);
 
-    if (mCurrAnimationType == AnimationType::kDamaged) return;
+    if (mCurrAnimationType == Animation::kDamaged) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
 
     if (pNextAnimationType == nullptr) {
-        pNextAnimationType = new AnimationType(mSecondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
+        pNextAnimationType = new Animation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
         mIsAnimationOnProgress = false;
     }
 }
@@ -197,7 +197,7 @@ void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const
 void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event) {
     auto data = event::getData<event::data::Generic>(event);
 
-    if (mCurrAnimationType == AnimationType::kDamaged || mCurrAnimationType == AnimationType::kDeath) return;
+    if (mCurrAnimationType == Animation::kDamaged || mCurrAnimationType == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
@@ -211,7 +211,7 @@ void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event cons
 void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
     auto data = event::getData<event::data::Generic>(event);
 
-    if (mCurrAnimationType == AnimationType::kDeath) return;
+    if (mCurrAnimationType == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
 
     auto followupEvent = event::instantiate();

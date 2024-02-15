@@ -69,7 +69,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
          * @brief Maps a level's name with its corresponding relative file path.
          * @see <src/interface.cpp> Interface.loadLevel() (classmethod)
         */
-        static level::LevelMapping sLevelMapping;
+        static level::Map sLevelMap;
 
         /**
          * A grayscaled version of `texture`.

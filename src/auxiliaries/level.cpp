@@ -1,6 +1,46 @@
 #include <auxiliaries.hpp>
 
 
+level::Name level::stoln(std::string const& s) {
+    static const std::unordered_map<std::string, level::Name> stoln_ump = {
+        { "level-equilibrium", level::Name::kLevelEquilibrium },
+        { "level-valley-of-despair", level::Name::kLevelValleyOfDespair },
+        { "level-white-space", level::Name::kLevelWhiteSpace },
+    };
+    auto it = stoln_ump.find(s);
+    return it != stoln_ump.end() ? it->second : Name::null;
+}
+
+void level::Map::load(json const& JSONLevelMapData) {
+    // json data;
+    // utils::readJSON(config::interface::path.string(), data);
+
+    auto levels_j = JSONLevelMapData.find("levels"); if (levels_j == JSONLevelMapData.end()) return;
+    auto levels_v = levels_j.value(); if (!levels_v.is_array()) return;
+
+    for (const auto& level : levels_v) {
+        if (!level.is_object()) continue;
+
+        auto name_j = level.find("name"); if (name_j == level.end()) continue;
+        auto source_j = level.find("source"); if (source_j == level.end()) continue;
+        auto name_v = name_j.value(); if (!name_v.is_string()) continue;
+        auto source_v = source_j.value(); if (!source_v.is_string()) continue;
+
+        Name ln = stoln(name_v);
+        if (ln == Name::null) continue;
+
+        // ump[source] = source_j.value();
+        ump.insert(std::make_pair(ln, source_v));
+    }
+}
+
+std::filesystem::path level::Map::operator[](Name ln) const {
+    static const std::filesystem::path root = config::path::asset_tiled;
+
+    auto it = ump.find(ln);
+    return it != ump.end() ? root / it->second : "";
+}
+
 /**
  * @brief An alternative to the constructor. Populate data members based on JSON data.
  * @note Requires JSON data to be in proper format before being called.
@@ -50,8 +90,8 @@ void level::Data_Teleporter::load(json const& JSONObjectData) {
             case hs("target-level"): {
                 if (!value_v.is_string()) break;
 
-                auto it = level::kLevelNameConversionMapping.find(value_v); if (it == level::kLevelNameConversionMapping.end()) break;
-                targetLevel = it->second;
+                level::Name ln = level::stoln(value_v);
+                if (ln != Name::null) targetLevel = ln;
                 break; }
 
             default: break;
@@ -95,14 +135,8 @@ void level::Data::eraseProperty(std::string const& key) {
 }
 
 void level::Data::load(json const& JSONLevelData) {
-    // Prevent undefined behaviours
-    clear();
-
-    loadGlobalDependencies(JSONLevelData);
-
-    // Emplace gids into `tileCollection`. Executed per layer.
-    tiles.resize(globals::tileDestCount.y);
-    for (auto& row : tiles) row.resize(globals::tileDestCount.x);
+    clear();   // Prevent undefined behaviour
+    loadMembers(JSONLevelData);
 
     auto layers_j = JSONLevelData.find("layers"); if (layers_j == JSONLevelData.end()) return;
     auto layers_v = layers_j.value(); if (!layers_v.is_array()) return;
@@ -112,31 +146,28 @@ void level::Data::load(json const& JSONLevelData) {
         auto type_v = type_j.value(); if (!type_v.is_string()) continue;
 
         switch (hs(static_cast<std::string>(type_v).c_str())) {
-            case hs("tilelayer"):
-                loadTileLayer(layer);
-                break;
-
-            case hs("objectgroup"):
-                loadObjectLayer(layer);
-                break;
-
+            case hs("tilelayer"): loadTileLayer(layer); break;
+            case hs("objectgroup"): loadObjectLayer(layer); break;
             default: break;
         }
     }
 }
 
-void level::Data::loadGlobalDependencies(json const& JSONLevelData) {
+void level::Data::loadMembers(json const& JSONLevelData) {
     auto tileDestCountWidth_j = JSONLevelData.find("width"); if (tileDestCountWidth_j == JSONLevelData.end()) return;
     auto tileDestCountWidth_v = tileDestCountWidth_j.value(); if (!tileDestCountWidth_v.is_number_integer()) return;
     auto tileDestCountHeight_j = JSONLevelData.find("height"); if (tileDestCountHeight_j == JSONLevelData.end()) return;
     auto tileDestCountHeight_v = tileDestCountHeight_j.value(); if (!tileDestCountHeight_v.is_number_integer()) return;
-    globals::tileDestCount = { tileDestCountWidth_v, tileDestCountHeight_v };
+    tileDestCount = { tileDestCountWidth_v, tileDestCountHeight_v };
+
+    tiles.resize(tileDestCount.y);
+    for (auto& row : tiles) row.resize(tileDestCount.x);
 
     auto tileDestSizeWidth_j = JSONLevelData.find("width"); if (tileDestSizeWidth_j == JSONLevelData.end()) return;
     auto tileDestSizeWidth_v = tileDestSizeWidth_j.value(); if (!tileDestSizeWidth_v.is_number_integer()) return;
     auto tileDestSizeHeight_j = JSONLevelData.find("height"); if (tileDestSizeHeight_j == JSONLevelData.end()) return;
     auto tileDestSizeHeight_v = tileDestSizeHeight_j.value(); if (!tileDestSizeHeight_v.is_number_integer()) return;
-    globals::tileDestSize = { tileDestSizeWidth_v, tileDestSizeHeight_v };
+    tileDestSize = { tileDestSizeWidth_v, tileDestSizeHeight_v };
 
     auto backgroundColor_j = JSONLevelData.find("backgroundcolor"); if (backgroundColor_j == JSONLevelData.end()) return;
     auto backgroundColor_v = backgroundColor_j.value(); if (!backgroundColor_v.is_string()) return;
@@ -163,7 +194,7 @@ void level::Data::loadTileLayer(json const& JSONLayerData) {
         } else return;
     } else return;
 
-    for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) tiles[y][x].emplace_back(GIDs[y * globals::tileDestCount.x + x]);
+    for (int y = 0; y < tileDestCount.y; ++y) for (int x = 0; x < tileDestCount.x; ++x) tiles[y][x].emplace_back(GIDs[y * tileDestCount.x + x]);
 }
 
 /**

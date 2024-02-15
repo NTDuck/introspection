@@ -175,11 +175,11 @@ namespace tile {
      * @note Not to be confused with `TilelayerTilesetData`.
      * @note Recommended implementation: instances should only be instantiated immediately before rendering and should be destantiated immediately afterwards.
     */
-    struct TilelayerRenderData {
+    struct Data_Tile_RenderOnly {
         /**
-         * A 2-dimensional iterable of `TileRenderData`. `TilelayerRenderData::Collection[i][j]` corresponds to `TileCollection[i][j]` and is used in conjunction to determine the rendering data.
+         * A 2-dimensional iterable of `TileRenderData`. `Data_Tile_RenderOnly::Collection[i][j]` corresponds to `TileCollection[i][j]` and is used in conjunction to determine the rendering data.
         */
-        using Collection = std::vector<std::vector<TilelayerRenderData>>;
+        using Collection = std::vector<std::vector<Data_Tile_RenderOnly>>;
 
         std::vector<SDL_Texture*> textures;
         std::vector<SDL_Rect> srcRects;
@@ -196,9 +196,9 @@ namespace tile {
      * 
      * @note `initialize()` method of this and derived classes are implemented in elsewhere - `<utils.h>`'s source file.
     */
-    struct BaseTilesetData {
-        void initialize(pugi::xml_document& document, SDL_Renderer* renderer);
-        void deinitialize();
+    struct Data_Generic {
+        void load(pugi::xml_document& XMLTilesetData, SDL_Renderer* renderer);
+        void clear();
 
         SDL_Texture* texture;
         SDL_Point srcCount;
@@ -212,13 +212,13 @@ namespace tile {
      * @param firstGID represents the first tile in the tileset. Regulated by the level configuration file. Should be treated as a constant as manipulation could lead to undefined behaviors.
      * @see <globals.h> tile::BaseTilesetData
     */
-    struct TilelayerTilesetData : public BaseTilesetData {
+    struct Data_Tilelayer : public Data_Generic {
         /**
          * An ordered iterable of `TilelayerTilesetData`, sorted by `firstGID`.
          * @note Recommended implementation: instances should be (re)initialized once per `IngameMapHandler::loadLevel()` call, should be treated as a constant otherwise, its lifespan should not exceed beyond the scope of the aforementioned classmethod.
          * @see <interface.h> IngameMapHandler::loadLevel()
         */
-        using Collection = std::vector<TilelayerTilesetData>;
+        using Collection = std::vector<Data_Tilelayer>;
 
         void initialize(json const& tileset, SDL_Renderer* renderer);
 
@@ -232,11 +232,11 @@ namespace tile {
      * @param animationUpdateRate the number of frames a sprite should last before switching to the next. Should be treated as a constant.
      * @param animationSize represents the ratio between the size of one single animation/sprite and the size of a `Tile` on the tileset, per dimension. Should be implemented alongside `globals::tileDestSize`.
     */
-    struct EntitiesTilesetData : public BaseTilesetData {
+    struct Data_Entity : public Data_Generic {
         /**
          * Register animation types as enumeration constants for maintainability.
         */
-        enum class AnimationType {
+        enum class Animation {
             kIdle,
             kAttackMeele,
             kAttackRanged,
@@ -249,7 +249,7 @@ namespace tile {
         /**
          * Convert raw `std::string` (from configuration files) into `AnimationType`.
         */
-        static const std::unordered_map<std::string, AnimationType> kAnimationTypeConversionMapping;
+        static const std::unordered_map<std::string, Animation> kAnimationTypeConversionMapping;
 
         /**
          * @brief Contain data associated with an animation i.e. a series of sprites.
@@ -258,7 +258,7 @@ namespace tile {
          * @param stopGID the last `GID` of the animation. Defaults to `0`.
          * @param isPermanent specifies whether the animation should be a loop i.e. whether external calls should be performed when the animation reaches its end. Defaults to `false`.
         */
-        struct Animation {
+        struct Data_Animation {
             int startGID = 0;
             int stopGID = 0;
             bool isPermanent = false;
@@ -267,7 +267,7 @@ namespace tile {
 
         void initialize(pugi::xml_document& document, SDL_Renderer* renderer);
 
-        std::unordered_map<AnimationType, Animation> animationMapping;
+        std::unordered_map<Animation, Data_Animation> animationMapping;
         int animationUpdateRate = 64;
         SDL_Point animationSize = {1, 1};
     };
@@ -282,23 +282,25 @@ namespace level {
      * Register level names as enumeration constants for maintainability.
     */
     enum class Name {
+        null = -1,
+
         kLevelEquilibrium,
         kLevelValleyOfDespair,
 
         kLevelWhiteSpace,
     };
 
-    /**
-     * Convert raw `std::string` (from configuration files) into `LevelName`.
-    */
-    extern const std::unordered_map<std::string, Name> kLevelNameConversionMapping;
+    Name stoln(std::string const& s);
 
-    /**
-     * Map a level name to the corresponding relative file path.
-     * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameMapHandler::initialize()` and should henceforth be treated as a constant. Additionally, `Collection` must be re-declared in every derived class declaration.
-     * @note For optimized memory usage, this approach does not encapsulate `LevelData`, instead `globals::currentLevelData` is loaded via `<interface.h> IngameMapHandler::loadLevel()` based on file path.
-    */
-    using LevelMapping = std::unordered_map<Name, std::string>;
+    struct Map {
+        void load(json const& JSONLevelMapData);
+        inline void clear() { ump.clear(); }
+
+        std::filesystem::path operator[](Name ln) const;   // Supports only index-based search
+
+        private:
+            std::unordered_map<Name, std::string> ump;
+    };
 
     /**
      * @brief Contain data associated with an entity, used in level-loading.
@@ -324,12 +326,6 @@ namespace level {
     };
 
     struct Data {
-        tile::TileCollection tiles;
-        SDL_Color backgroundColor;
-
-        std::unordered_map<std::string, std::vector<Data_Generic*>> dependencies;
-        std::unordered_map<std::string, std::string> properties;
-
         Data() = default;
         ~Data() { clear(); }
 
@@ -342,18 +338,27 @@ namespace level {
         void eraseProperty(std::string const& key);
 
         void load(json const& JSONLevelData);
-        void loadGlobalDependencies(json const& JSONLevelData);
+        void loadMembers(json const& JSONLevelData);
         void loadTileLayer(json const& JSONLayerData);
         void loadObjectLayer(json const& JSONLayerData);
 
         void clear();
+
+        tile::TileCollection tiles;
+
+        SDL_Point tileDestSize;
+        SDL_Point tileDestCount;
+        SDL_Color backgroundColor;
+
+        std::unordered_map<std::string, std::vector<Data_Generic*>> dependencies;
+        std::unordered_map<std::string, std::string> properties;
     };
 
     extern Data data;
 }
 
 
-using AnimationType = tile::EntitiesTilesetData::AnimationType;
+using Animation = tile::Data_Entity::Animation;
 
 
 /**
@@ -748,16 +753,6 @@ namespace globals {
     extern SDL_Point windowSize;
 
     /**
-     * The maximum dimension of each `Tile` on the window, in pixels.
-    */
-    extern SDL_Point tileDestSize;
-
-    /**
-     * The maximum number of `Tile` on the window, per dimension.
-    */
-    extern SDL_Point tileDestCount;
-
-    /**
      * The current position of the mouse relative to the window.
     */
     extern SDL_Point mouseState;
@@ -765,7 +760,7 @@ namespace globals {
     /**
      * Store data associated with tilelayer tilesets of the current level.
     */
-    extern tile::TilelayerTilesetData::Collection tilelayerTilesetDataCollection;
+    extern tile::Data_Tilelayer::Collection tilelayerTilesetDataCollection;
 
     extern GameState state;
 }
@@ -863,10 +858,10 @@ namespace utils {
     void readJSON(std::filesystem::path const& path, json& data);
     void cleanRelativePath(std::filesystem::path& path);
 
-    void loadLevelsData(level::LevelMapping& mapping);
-    void loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, json const& jsonData);
+    // void loadLevelsData(level::LevelMapping& mapping);
+    void loadTilesetsData(SDL_Renderer* renderer, tile::Data_Tilelayer::Collection& tilesetDataCollection, json const& jsonData);
 
-    tile::TilelayerTilesetData const* getTilesetData(tile::TilelayerTilesetData::Collection const& tilesetDataCollection, int gid);
+    tile::Data_Tilelayer const* getTilesetData(tile::Data_Tilelayer::Collection const& tilesetDataCollection, int gid);
 
     void setTextureRGB(SDL_Texture*& texture, SDL_Color const& color);
     void setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color);  

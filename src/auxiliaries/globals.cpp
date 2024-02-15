@@ -4,29 +4,21 @@
 #include <SDL.h>
 
 
-const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> tile::EntitiesTilesetData::kAnimationTypeConversionMapping = {
-    { "animation-idle", AnimationType::kIdle },
-    { "animation-attack-meele", AnimationType::kAttackMeele },
-    { "animation-attack-ranged", AnimationType::kAttackRanged },
-    { "animation-death", AnimationType::kDeath },
-    { "animation-run", AnimationType::kRun },
-    { "animation-walk", AnimationType::kWalk },
-    { "animation-damaged", AnimationType::kDamaged },
-};
-
-const std::unordered_map<std::string, level::Name> level::kLevelNameConversionMapping = {
-    { "level-equilibrium", Name::kLevelEquilibrium },
-    { "level-valley-of-despair", Name::kLevelValleyOfDespair },
-    { "level-white-space", Name::kLevelWhiteSpace },
+const std::unordered_map<std::string, tile::Data_Entity::Animation> tile::Data_Entity::kAnimationTypeConversionMapping = {
+    { "animation-idle", Animation::kIdle },
+    { "animation-attack-meele", Animation::kAttackMeele },
+    { "animation-attack-ranged", Animation::kAttackRanged },
+    { "animation-death", Animation::kDeath },
+    { "animation-run", Animation::kRun },
+    { "animation-walk", Animation::kWalk },
+    { "animation-damaged", Animation::kDamaged },
 };
 
 
 SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
-SDL_Point globals::tileDestSize;
-SDL_Point globals::tileDestCount;
 SDL_Point globals::mouseState;
-tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
+tile::Data_Tilelayer::Collection globals::tilelayerTilesetDataCollection;
 GameState globals::state = GameState::kMenu;
 
 
@@ -40,7 +32,7 @@ void globals::deinitialize() {
         globals::renderer = nullptr;
     }
     
-    for (auto& tilesetData : globals::tilelayerTilesetDataCollection) tilesetData.deinitialize();
+    for (auto& tilesetData : globals::tilelayerTilesetDataCollection) tilesetData.clear();
 }
 
 void EntitySecondaryStats::initialize(EntityPrimaryStats const& entityPrimaryStats) {

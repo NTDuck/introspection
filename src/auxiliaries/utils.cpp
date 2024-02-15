@@ -371,43 +371,43 @@ void utils::cleanRelativePath(std::filesystem::path& path) {
     path = s;
 }
 
-/**
- * @brief Register data associated with levels initialization to a temporary storage.
- * @param mapping the aforementioned storage.
-*/
-void utils::loadLevelsData(level::LevelMapping& mapping) {
-    json data;
-    utils::readJSON(config::interface::path.string(), data);
+// /**
+//  * @brief Register data associated with levels initialization to a temporary storage.
+//  * @param mapping the aforementioned storage.
+// */
+// void utils::loadLevelsData(level::LevelMapping& mapping) {
+//     json data;
+//     utils::readJSON(config::interface::path.string(), data);
 
-    auto levels = data.find("levels");
-    if (levels == data.end() || !levels.value().is_array()) return;
+//     auto levels = data.find("levels");
+//     if (levels == data.end() || !levels.value().is_array()) return;
 
-    for (const auto& level : levels.value()) {
-        if (!level.is_object()) continue;
+//     for (const auto& level : levels.value()) {
+//         if (!level.is_object()) continue;
 
-        auto name = level.find("name");
-        auto source = level.find("source");
-        if (name == level.end() || source == level.end() || !name.value().is_string() || !source.value().is_string()) continue;
+//         auto name = level.find("name");
+//         auto source = level.find("source");
+//         if (name == level.end() || source == level.end() || !name.value().is_string() || !source.value().is_string()) continue;
 
-        auto result = level::kLevelNameConversionMapping.find(name.value());
-        if (result == level::kLevelNameConversionMapping.end()) continue;
+//         auto result = level::stoln(name.value());
+//         if (result == level::Name::null) continue;
 
-        mapping[result->second] = source.value();
-    }
-}
+//         mapping[result] = source.value();
+//     }
+// }
 
 /**
  * @brief Initialize all tilelayer tilesets associated with the current level.
 */
-void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, json const& data) {
-    for (auto& tilesetData : tilesetDataCollection) tilesetData.deinitialize();   // Prevent memory leak
+void utils::loadTilesetsData(SDL_Renderer* renderer, tile::Data_Tilelayer::Collection& tilesetDataCollection, json const& data) {
+    for (auto& tilesetData : tilesetDataCollection) tilesetData.clear();   // Prevent memory leak
     tilesetDataCollection.clear();
 
     auto tilesets = data.find("tilesets");
     if (tilesets == data.end() || !tilesets.value().is_array()) return;
 
     for (const auto& tileset : tilesets.value()) {
-        tile::TilelayerTilesetData tilesetData;
+        tile::Data_Tilelayer tilesetData;
         tilesetData.initialize(tileset, renderer);
         tilesetDataCollection.emplace_back(tilesetData);
     }
@@ -417,7 +417,7 @@ void utils::loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData:
  * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
  * @todo Optimization should be made to reduce time complexity. Try binary search.
 */
-tile::TilelayerTilesetData const* utils::getTilesetData(const tile::TilelayerTilesetData::Collection& tilesetDataCollection, int gid) {
+tile::Data_Tilelayer const* utils::getTilesetData(const tile::Data_Tilelayer::Collection& tilesetDataCollection, int gid) {
     auto it = std::find_if(tilesetDataCollection.begin(), tilesetDataCollection.end(), [&](const auto tilesetData) {
         return tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y;
     });

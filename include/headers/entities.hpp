@@ -69,7 +69,7 @@ class AbstractEntity : public Multiton<T> {
         const int mID;
 
         static std::filesystem::path sTilesetPath;
-        static tile::EntitiesTilesetData sTilesetData;
+        static tile::Data_Entity sTilesetData;
 
         SDL_Point mDestCoords;
         SDL_Rect mSrcRect;
@@ -128,7 +128,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         void initiateAnimation();
         virtual void updateAnimation();
-        void resetAnimation(AnimationType animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        void resetAnimation(Animation animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
 
         inline bool isAnimationAtSprite(int GID) const {
             return mCurrAnimationGID == GID;
@@ -145,8 +145,8 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
     protected:
         AbstractAnimatedEntity(SDL_Point const& destCoords);
 
-        AnimationType mCurrAnimationType;
-        AnimationType* pNextAnimationType = nullptr;
+        Animation mCurrAnimationType;
+        Animation* pNextAnimationType = nullptr;
         bool mIsAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
 
         SDL_Point mAttackRegisterRange;

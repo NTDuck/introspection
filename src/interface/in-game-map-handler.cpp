@@ -18,8 +18,10 @@ IngameMapHandler::~IngameMapHandler() {
 }
 
 void IngameMapHandler::initialize() {
-    if (!std::filesystem::exists(config::interface::path)) return;
-    utils::loadLevelsData(sLevelMapping);
+    // utils::loadLevelsData(sLevelMap);
+    json data;
+    utils::readJSON(config::interface::path, data);
+    sLevelMap.load(data);
 }
 
 void IngameMapHandler::render() const {
@@ -35,8 +37,8 @@ void IngameMapHandler::onLevelChange() {
 
     if (mTexture != nullptr) SDL_DestroyTexture(mTexture);
     mTextureSize = {
-        globals::tileDestCount.x * globals::tileDestSize.x,
-        globals::tileDestCount.y * globals::tileDestSize.y,
+        level::data.tileDestCount.x * level::data.tileDestSize.x,
+        level::data.tileDestCount.y * level::data.tileDestSize.y,
     };
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
 
@@ -81,8 +83,9 @@ void IngameMapHandler::changeLevel(const level::Name levelName_) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameMapHandler::loadLevel() {
-    std::filesystem::path kLevelPath = config::path::asset_tiled / sLevelMapping[mLevelName];
+    std::filesystem::path kLevelPath = sLevelMap[mLevelName];
     if (!std::filesystem::exists(kLevelPath)) return;
+    
     json JSONLevelData;
     utils::readJSON(kLevelPath.string(), JSONLevelData);
 
@@ -104,21 +107,20 @@ void IngameMapHandler::renderBackground() const {
 
 /**
  * @brief Render the static portions of a level to `texture`.
+ * @note Needs optimization. Perhaps load only 1 `Data_Tile_RenderOnly` then immediately render then deallocate?
 */
 void IngameMapHandler::renderLevelTiles() const {
-    tile::TilelayerRenderData::Collection tileRenderDataCollection(globals::tileDestCount.y, std::vector<tile::TilelayerRenderData>(globals::tileDestCount.x));
+    tile::Data_Tile_RenderOnly::Collection tileRenderDataCollection(level::data.tileDestCount.y, std::vector<tile::Data_Tile_RenderOnly>(level::data.tileDestCount.x));
 
     // Populate render data 
-    for (int y = 0; y < globals::tileDestCount.y; ++y) {
-        for (int x = 0; x < globals::tileDestCount.x; ++x) {
-            tile::TilelayerRenderData& data = tileRenderDataCollection[y][x];
+    for (int y = 0; y < level::data.tileDestCount.y; ++y) {
+        for (int x = 0; x < level::data.tileDestCount.x; ++x) {
+            tile::Data_Tile_RenderOnly& data = tileRenderDataCollection[y][x];
 
-            // data.destRect.x = globals::tileDestSize.x * x + globals::windowOffset.x;
-            // data.destRect.y = globals::tileDestSize.y * y + globals::windowOffset.y;
-            data.destRect.x = globals::tileDestSize.x * x;
-            data.destRect.y = globals::tileDestSize.y * y;
-            data.destRect.w = globals::tileDestSize.x;
-            data.destRect.h = globals::tileDestSize.y;
+            data.destRect.x = level::data.tileDestSize.x * x;
+            data.destRect.y = level::data.tileDestSize.y * y;
+            data.destRect.w = level::data.tileDestSize.x;
+            data.destRect.h = level::data.tileDestSize.y;
 
             for (const auto& gid : level::data.tiles[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
@@ -154,4 +156,4 @@ void IngameMapHandler::renderLevelTiles() const {
 }
 
 
-level::LevelMapping IngameMapHandler::sLevelMapping;
+level::Map IngameMapHandler::sLevelMap;

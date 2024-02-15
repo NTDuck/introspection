@@ -44,7 +44,7 @@ void GenericHostileEntity<T>::handleCustomEventGET(SDL_Event const& event) {
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Player() const {
-    if (mCurrAnimationType != AnimationType::kAttackMeele || !isAnimationAtFinalSprite()) return;
+    if (mCurrAnimationType != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -55,7 +55,7 @@ void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackRegister_GHE_Play
 
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventPOST_kReq_AttackInitiate_GHE_Player() const {
-    if (mCurrAnimationType == AnimationType::kAttackMeele) return;
+    if (mCurrAnimationType == Animation::kAttackMeele) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -77,14 +77,14 @@ template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GHE(SDL_Event const& event) {
     auto data = event::getData<event::data::Generic>(event);
 
-    if (mCurrAnimationType == AnimationType::kDamaged) return;
+    if (mCurrAnimationType == Animation::kDamaged) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
 
     if (pNextAnimationType == nullptr) {
-        pNextAnimationType = new AnimationType(mSecondaryStats.HP > 0 ? AnimationType::kDamaged : AnimationType::kDeath);
+        pNextAnimationType = new Animation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
         mIsAnimationOnProgress = false;
     }
 }
@@ -92,7 +92,7 @@ void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GH
 template <typename T>
 void GenericHostileEntity<T>::handleCustomEventGET_kResp_AttackInitiate_GHE_Player() {
     if (pNextAnimationType != nullptr) return;
-    pNextAnimationType = new AnimationType(AnimationType::kAttackMeele);
+    pNextAnimationType = new Animation(Animation::kAttackMeele);
     mIsAnimationOnProgress = false;
 }
 

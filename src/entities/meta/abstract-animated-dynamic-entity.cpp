@@ -128,7 +128,7 @@ template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
     if (
         pNextDestCoords != nullptr   // Another move is on progress
-        || mCurrAnimationType == AnimationType::kDeath   // Cannot move if is already dead
+        || mCurrAnimationType == Animation::kDeath   // Cannot move if is already dead
         // || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
     ) return;
 
@@ -150,7 +150,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
 */
 template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
-    if (pNextDestCoords == nullptr || pNextDestCoords -> x < 0 || pNextDestCoords -> y < 0 || pNextDestCoords -> x >= globals::tileDestCount.x || pNextDestCoords -> y >= globals::tileDestCount.y) return false;
+    if (pNextDestCoords == nullptr || pNextDestCoords -> x < 0 || pNextDestCoords -> y < 0 || pNextDestCoords -> x >= level::data.tileDestCount.x || pNextDestCoords -> y >= level::data.tileDestCount.y) return false;
 
     // Prevent `destCoords` overlap
     // Warning: expensive operation
@@ -193,7 +193,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
 
     if (mCurrVelocity.x) mFlip = (mCurrVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? AnimationType::kRun : AnimationType::kWalk), flag);
+    AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? Animation::kRun : Animation::kWalk), flag);
     
     if constexpr(std::is_same_v<T, Player>) Mixer::invoke(&Mixer::playSFX, mIsRunning ? Mixer::SFXName::kPlayerRun : Mixer::SFXName::kPlayerWalk);
 }
@@ -222,7 +222,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
     mFractionalVelocityCounter = {0, 0};
 
     if (flag == EntityStatusFlag::kContinued) return;
-    AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kIdle, flag);
+    AbstractAnimatedEntity<T>::resetAnimation(Animation::kIdle, flag);
 }
 
 /**
@@ -239,8 +239,8 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
     calculateVelocityDependencies();
 
     // Switch to proper animation type
-    if (mCurrAnimationType == AnimationType::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kRun);
-    else if (mCurrAnimationType == AnimationType::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(AnimationType::kWalk);
+    if (mCurrAnimationType == Animation::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(Animation::kRun);
+    else if (mCurrAnimationType == Animation::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(Animation::kWalk);
 
     // Don't forget to change this
     mIsRunning = onRunningStart;
@@ -251,14 +251,14 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::calculateVelocityDependencies() {
-    // Each frame, for dimension `i`, the entity moves `globals::tileDestSize.i / kVelocity.i` (pixels), rounded down
+    // Each frame, for dimension `i`, the entity moves `level::data.tileDestSize.i / kVelocity.i` (pixels), rounded down
     mIntegralVelocity = {
-        utils::castFloatToInt(globals::tileDestSize.x / sVelocity.x),
-        utils::castFloatToInt(globals::tileDestSize.y / sVelocity.y),
+        utils::castFloatToInt(level::data.tileDestSize.x / sVelocity.x),
+        utils::castFloatToInt(level::data.tileDestSize.y / sVelocity.y),
     };
     mFractionalVelocity = {
-        globals::tileDestSize.x / sVelocity.x - mIntegralVelocity.x,
-        globals::tileDestSize.y / sVelocity.y - mIntegralVelocity.y,
+        level::data.tileDestSize.x / sVelocity.x - mIntegralVelocity.x,
+        level::data.tileDestSize.y / sVelocity.y - mIntegralVelocity.y,
     };
 }
 

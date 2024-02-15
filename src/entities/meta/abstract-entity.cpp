@@ -34,7 +34,7 @@ void AbstractEntity<T>::initialize() {
 
 template <typename T>
 void AbstractEntity<T>::deinitialize() {
-    sTilesetData.deinitialize();
+    sTilesetData.clear();
     Multiton<T>::deinitialize();
     sID_Counter = 0;
 }
@@ -45,7 +45,7 @@ void AbstractEntity<T>::deinitialize() {
 */
 template <typename T>
 void AbstractEntity<T>::reinitialize(std::filesystem::path path) {
-    sTilesetData.deinitialize();
+    sTilesetData.clear();
     sTilesetPath = path;
     AbstractEntity<T>::initialize();
 }
@@ -86,12 +86,12 @@ void AbstractEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData
 template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
-        coords.x * globals::tileDestSize.x + utils::castFloatToInt(mDestRectModifier.x * globals::tileDestSize.x)
-        - (sTilesetData.animationSize.x - 1) / 2 * globals::tileDestSize.x
-        - utils::castFloatToInt(globals::tileDestSize.x * sTilesetData.animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
-        coords.y * globals::tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * globals::tileDestSize.y) - (sTilesetData.animationSize.y - 1) / 2 * globals::tileDestSize.y - utils::castFloatToInt(globals::tileDestSize.y * sTilesetData.animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
-        utils::castFloatToInt(globals::tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
-        utils::castFloatToInt(globals::tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
+        coords.x * level::data.tileDestSize.x + utils::castFloatToInt(mDestRectModifier.x * level::data.tileDestSize.x)
+        - (sTilesetData.animationSize.x - 1) / 2 * level::data.tileDestSize.x
+        - utils::castFloatToInt(level::data.tileDestSize.x * sTilesetData.animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        coords.y * level::data.tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * level::data.tileDestSize.y) - (sTilesetData.animationSize.y - 1) / 2 * level::data.tileDestSize.y - utils::castFloatToInt(level::data.tileDestSize.y * sTilesetData.animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
+        utils::castFloatToInt(level::data.tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
+        utils::castFloatToInt(level::data.tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
     };
 }
 
@@ -107,7 +107,7 @@ bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& firs
 
 
 template <typename T>
-tile::EntitiesTilesetData AbstractEntity<T>::sTilesetData;
+tile::Data_Entity AbstractEntity<T>::sTilesetData;
 
 template <typename T>
 int AbstractEntity<T>::sID_Counter = 0;

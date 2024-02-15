@@ -6,21 +6,14 @@
 #include <SDL.h>
 
 
-void tile::BaseTilesetData::deinitialize() {
-    if (texture != nullptr) {
-        SDL_DestroyTexture(texture);
-        texture = nullptr;
-    }
-}
-
 /**
  * @brief Read data associated with a tileset from loaded XML data.
  * @note Also loads the `texture`.
  * @note Requires `document` to be successfully loaded from a XML file.
 */
-void tile::BaseTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
+void tile::Data_Generic::load(pugi::xml_document& XMLTilesetData, SDL_Renderer* renderer) {
     // Parse nodes
-    pugi::xml_node tilesetNode = document.child("tileset");
+    pugi::xml_node tilesetNode = XMLTilesetData.child("tileset");
     pugi::xml_node imageNode = tilesetNode.child("image");
 
     if (tilesetNode.empty() || imageNode.empty()) return;   // A tileset can have no properties
@@ -45,12 +38,19 @@ void tile::BaseTilesetData::initialize(pugi::xml_document& document, SDL_Rendere
     texture = IMG_LoadTexture(renderer, (config::path::asset / path).string().c_str());   // Should also check whether path exists
 }
 
+void tile::Data_Generic::clear() {
+    if (texture != nullptr) {
+        SDL_DestroyTexture(texture);
+        texture = nullptr;
+    }
+}
+
 /**
  * @brief Read data associated with a tilelayer tileset from loaded JSON data.
  * @note Also loads the `texture` and populate `firstGID`.
  * @note `firstGID` is contained only in Tiled Map JSON files.
 */
-void tile::TilelayerTilesetData::initialize(json const& tileset, SDL_Renderer* renderer) {
+void tile::Data_Tilelayer::initialize(json const& tileset, SDL_Renderer* renderer) {
     auto firstGID_ = tileset.find("firstgid");
     if (firstGID_ == tileset.end() || !firstGID_.value().is_number_integer()) return;
     firstGID = firstGID_.value();
@@ -64,7 +64,7 @@ void tile::TilelayerTilesetData::initialize(json const& tileset, SDL_Renderer* r
     pugi::xml_parse_result result = document.load_file((config::path::asset_tiled / xmlPath).c_str());   // All tilesets should be located in "assets/.tiled/"
     if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
 
-    BaseTilesetData::initialize(document, renderer);
+    Data_Generic::load(document, renderer);
 
     // Properties
     pugi::xml_node propertiesNode = document.child("tileset").child("properties");
@@ -90,8 +90,8 @@ void tile::TilelayerTilesetData::initialize(json const& tileset, SDL_Renderer* r
  * @brief Read data associated with a tileset used for an entity or an animated object from loaded XML data.
  * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
 */
-void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
-    BaseTilesetData::initialize(document, renderer);
+void tile::Data_Entity::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
+    Data_Generic::load(document, renderer);
 
     pugi::xml_node propertiesNode = document.child("tileset").child("properties");
     if (propertiesNode.empty()) return;
@@ -120,10 +120,10 @@ void tile::EntitiesTilesetData::initialize(pugi::xml_document& document, SDL_Ren
             pugi::xml_node animationsNode = propertyNode.child("properties");
             if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
 
-            auto animationType = EntitiesTilesetData::kAnimationTypeConversionMapping.find(name.as_string());
-            if (animationType == EntitiesTilesetData::kAnimationTypeConversionMapping.end()) continue;
+            auto animationType = Data_Entity::kAnimationTypeConversionMapping.find(name.as_string());
+            if (animationType == Data_Entity::kAnimationTypeConversionMapping.end()) continue;
 
-            EntitiesTilesetData::Animation animation;
+            Data_Entity::Data_Animation animation;
 
             for (pugi::xml_node animationNode = animationsNode.child("property"); animationNode; animationNode = animationNode.next_sibling("property")) {
                 if (animationNode.empty()) continue;

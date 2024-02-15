@@ -12,7 +12,7 @@
 
 template <typename T>
 AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords) {
-    resetAnimation(AnimationType::kIdle);
+    resetAnimation(Animation::kIdle);
 }
 
 /**
@@ -37,17 +37,17 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityL
 template <typename T>
 void AbstractAnimatedEntity<T>::handleSFX() const {
     switch (mCurrAnimationType) {
-        case AnimationType::kAttackMeele:
+        case Animation::kAttackMeele:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
             break;
 
-        case AnimationType::kDamaged:
+        case Animation::kDamaged:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kEntityDamaged);
             break;
 
-        case AnimationType::kDeath:
+        case Animation::kDeath:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerDeath : Mixer::SFXName::kEntityDeath);
             break;
@@ -77,8 +77,8 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
                 mIsAnimationOnProgress = false;
             }
 
-            if (mCurrAnimationType == AnimationType::kDeath) return;   // The real permanent
-            resetAnimation(sTilesetData.animationMapping[mCurrAnimationType].isPermanent ? AnimationType::kIdle : mCurrAnimationType);
+            if (mCurrAnimationType == Animation::kDeath) return;   // The real permanent
+            resetAnimation(sTilesetData.animationMapping[mCurrAnimationType].isPermanent ? Animation::kIdle : mCurrAnimationType);
         };
     }
 
@@ -90,7 +90,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, EntityStatusFlag flag) {
+void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatusFlag flag) {
     mCurrAnimationType = animationType;
     if (flag == EntityStatusFlag::kContinued) return;
     mCurrAnimationGID = AbstractEntity<T>::sTilesetData.animationMapping[mCurrAnimationType].startGID;
@@ -102,7 +102,7 @@ void AbstractAnimatedEntity<T>::resetAnimation(AnimationType animationType, Enti
 template <typename T>
 void AbstractAnimatedEntity<T>::initiateAnimation() {
     // Check for priority overlap
-    if (mCurrAnimationType == AnimationType::kDeath) return;
+    if (mCurrAnimationType == Animation::kDeath) return;
     if (pNextAnimationType == nullptr || mIsAnimationOnProgress) return;
 
     resetAnimation(*pNextAnimationType);
