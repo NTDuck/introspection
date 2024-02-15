@@ -18,7 +18,6 @@ const std::unordered_map<std::string, tile::Data_Entity::Animation> tile::Data_E
 SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
 SDL_Point globals::mouseState;
-tile::Data_Tilelayer::Collection globals::tilelayerTilesetDataCollection;
 GameState globals::state = GameState::kMenu;
 
 
@@ -31,8 +30,6 @@ void globals::deinitialize() {
         SDL_DestroyRenderer(globals::renderer);
         globals::renderer = nullptr;
     }
-    
-    for (auto& tilesetData : globals::tilelayerTilesetDataCollection) tilesetData.clear();
 }
 
 void EntitySecondaryStats::initialize(EntityPrimaryStats const& entityPrimaryStats) {

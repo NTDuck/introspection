@@ -94,7 +94,7 @@ void IngameMapHandler::loadLevel() {
     level::data.load(JSONLevelData);
 
     // Reset `globals::tilelayerTilesetDataCollection`
-    utils::loadTilesetsData(globals::renderer, globals::tilelayerTilesetDataCollection, JSONLevelData);
+    // utils::loadTilesetsData(globals::renderer, globals::tilelayerTilesetDataCollection, JSONLevelData);
 }
 
 /**
@@ -125,7 +125,7 @@ void IngameMapHandler::renderLevelTiles() const {
             for (const auto& gid : level::data.tiles[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
-                auto tilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
+                auto tilesetData = level::data.tilesets[gid];
 
                 // Identify the tileset to which the tile, per layer, belongs to.
                 if (tilesetData == nullptr) continue;

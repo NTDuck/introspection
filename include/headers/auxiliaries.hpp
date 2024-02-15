@@ -154,16 +154,21 @@ struct ComponentPreset {
 */
 namespace tile {
     /**
-     * The base unit used for manipulation and retrieval of a level's data. Contains `GID`s. ("Global Tile IDs" in Tiled terminology, essentially non-negative integers)
+     * "Global Tile IDs" in Tiled terminology.
      * @see https://doc.mapeditor.org/en/stable/reference/tmx-map-format/#data
     */
-    using Tile = std::vector<int>;
+    using GID = int;
+    
+    /**
+     * Imagine a level comprised of `Z` layers, which are essentially 2D `X x Y` arrays of `GID`. The combination of coordinate `x,y` from each layer, in order, forms an `Z`-sized array of `GID`. We call that array `Slice`.
+    */
+    using Slice = std::vector<GID>;
 
     /**
-     * A 2-dimensional iterable of `Tile`. Represents a 2-dimensional tiled surface.
+     * Imagine `X x Y` `Z`-sized `Slice` placed next to each other, in order, forming a `X x Y x Z` 3D array of `GID`. We call that `Tensor`.
      * @todo Separate into layers for dynamic manipulation mid-runtime.
     */
-    using TileCollection = std::vector<std::vector<Tile>>;
+    using Tensor = std::vector<std::vector<Slice>>;
 
     /**
      * @brief Contains data associated with the tilelayer used for rendering.
@@ -177,7 +182,7 @@ namespace tile {
     */
     struct Data_Tile_RenderOnly {
         /**
-         * A 2-dimensional iterable of `TileRenderData`. `Data_Tile_RenderOnly::Collection[i][j]` corresponds to `TileCollection[i][j]` and is used in conjunction to determine the rendering data.
+         * A 2-dimensional iterable of `TileRenderData`. `Data_Tile_RenderOnly::Collection[i][j]` corresponds to `Tensor[i][j]` and is used in conjunction to determine the rendering data.
         */
         using Collection = std::vector<std::vector<Data_Tile_RenderOnly>>;
 
@@ -188,16 +193,10 @@ namespace tile {
 
     /**
      * @brief Contain data associated with a generic tileset.
-     * 
-     * @param texture represents the tileset.
-     * @param srcCount the number of `Tile` per dimension in the tileset.
-     * @param srcSize the maximum dimension of a `Tile` in the tileset.
      * @param properties maps the tileset's properties to their stringified values. Properties are Tiled standard types only e.g., `string`, `bool`, `int`. Registered values: `"norender"` prevents the tileset from being rendered; `"collision"` enables the tileset to be used in collision detection.
-     * 
-     * @note `initialize()` method of this and derived classes are implemented in elsewhere - `<utils.h>`'s source file.
     */
     struct Data_Generic {
-        void load(pugi::xml_document& XMLTilesetData, SDL_Renderer* renderer);
+        void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
         void clear();
 
         SDL_Texture* texture;
@@ -208,21 +207,26 @@ namespace tile {
 
     /**
      * @brief Contain data associated with a tilelayer's tileset.
-     * 
      * @param firstGID represents the first tile in the tileset. Regulated by the level configuration file. Should be treated as a constant as manipulation could lead to undefined behaviors.
      * @see <globals.h> tile::BaseTilesetData
     */
-    struct Data_Tilelayer : public Data_Generic {
-        /**
-         * An ordered iterable of `TilelayerTilesetData`, sorted by `firstGID`.
-         * @note Recommended implementation: instances should be (re)initialized once per `IngameMapHandler::loadLevel()` call, should be treated as a constant otherwise, its lifespan should not exceed beyond the scope of the aforementioned classmethod.
-         * @see <interface.h> IngameMapHandler::loadLevel()
-        */
-        using Collection = std::vector<Data_Tilelayer>;
+    struct Data_TilelayerTileset : public Data_Generic {
+        void load(json const& JSONTileLayerData, SDL_Renderer* renderer);   // Does not override
 
-        void initialize(json const& tileset, SDL_Renderer* renderer);
+        GID firstGID = 0;
+    };
 
-        int firstGID = 0;
+    /**
+     * An ordered iterable of `TilelayerTilesetData`, sorted by `firstGID`.
+     * @note Recommended implementation: instances should be (re)initialized once per `IngameMapHandler::loadLevel()` call, should be treated as a constant otherwise, its lifespan should not exceed beyond the scope of the aforementioned classmethod.
+     * @see <interface.h> IngameMapHandler::loadLevel()
+    */
+    struct Data_TilelayerTilesets {
+        void load(json const& JSONLevelData, SDL_Renderer* renderer);
+        Data_TilelayerTileset const* operator[](GID gid) const;
+
+        private:
+            std::vector<Data_TilelayerTileset> mData;
     };
 
     /**
@@ -294,12 +298,12 @@ namespace level {
 
     struct Map {
         void load(json const& JSONLevelMapData);
-        inline void clear() { ump.clear(); }
+        inline void clear() { mUMap.clear(); }
 
         std::filesystem::path operator[](Name ln) const;   // Supports only index-based search
 
         private:
-            std::unordered_map<Name, std::string> ump;
+            std::unordered_map<Name, std::string> mUMap;
     };
 
     /**
@@ -338,13 +342,10 @@ namespace level {
         void eraseProperty(std::string const& key);
 
         void load(json const& JSONLevelData);
-        void loadMembers(json const& JSONLevelData);
-        void loadTileLayer(json const& JSONLayerData);
-        void loadObjectLayer(json const& JSONLayerData);
-
         void clear();
 
-        tile::TileCollection tiles;
+        tile::Tensor tiles;
+        tile::Data_TilelayerTilesets tilesets;
 
         SDL_Point tileDestSize;
         SDL_Point tileDestCount;
@@ -352,6 +353,12 @@ namespace level {
 
         std::unordered_map<std::string, std::vector<Data_Generic*>> dependencies;
         std::unordered_map<std::string, std::string> properties;
+
+        private:
+            void loadMembers(json const& JSONLevelData);
+            void loadTileLayer(json const& JSONLayerData);
+            void loadObjectLayer(json const& JSONLayerData);
+            void loadTilelayerTilesets(json const& JSONLevelData);
     };
 
     extern Data data;
@@ -755,11 +762,6 @@ namespace globals {
     */
     extern SDL_Point mouseState;
 
-    /**
-     * Store data associated with tilelayer tilesets of the current level.
-    */
-    extern tile::Data_Tilelayer::Collection tilelayerTilesetDataCollection;
-
     extern GameState state;
 }
 
@@ -854,12 +856,7 @@ namespace utils {
     std::string base64Decode(std::string const& s);
 
     void readJSON(std::filesystem::path const& path, json& data);
-    void cleanRelativePath(std::filesystem::path& path);
-
-    // void loadLevelsData(level::LevelMapping& mapping);
-    void loadTilesetsData(SDL_Renderer* renderer, tile::Data_Tilelayer::Collection& tilesetDataCollection, json const& jsonData);
-
-    tile::Data_Tilelayer const* getTilesetData(tile::Data_Tilelayer::Collection const& tilesetDataCollection, int gid);
+    std::filesystem::path cleanRelativePath(std::filesystem::path const& path);
 
     void setTextureRGB(SDL_Texture*& texture, SDL_Color const& color);
     void setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color);  

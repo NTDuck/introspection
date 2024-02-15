@@ -359,69 +359,19 @@ void utils::readJSON(std::filesystem::path const& path, json& data) {
  * @brief Remove leading dots (`.`) and slashes (`/` `\`) in a `std::filesystem::path`.
  * @note Fall back to string manipulation since `std::filesystem` methods (`canonical()`, `lexically_normal()`, etc.) fails inexplicably.
 */
-void utils::cleanRelativePath(std::filesystem::path& path) {
-    std::string s = path.string();
+std::filesystem::path utils::cleanRelativePath(std::filesystem::path const& path) {
+    static constexpr const char* junk = "../";
+    static constexpr const int junk_size = 3;
 
-    size_t found = s.find("../");
+    std::string repr = path.string();
+
+    size_t found = repr.find(junk);
     while (found != std::string::npos) {
-        s = s.substr(found + 3);
-        found = s.find("../");
+        repr = repr.substr(found + junk_size);
+        found = repr.find(junk);
     }
 
-    path = s;
-}
-
-// /**
-//  * @brief Register data associated with levels initialization to a temporary storage.
-//  * @param mapping the aforementioned storage.
-// */
-// void utils::loadLevelsData(level::LevelMapping& mapping) {
-//     json data;
-//     utils::readJSON(config::interface::path.string(), data);
-
-//     auto levels = data.find("levels");
-//     if (levels == data.end() || !levels.value().is_array()) return;
-
-//     for (const auto& level : levels.value()) {
-//         if (!level.is_object()) continue;
-
-//         auto name = level.find("name");
-//         auto source = level.find("source");
-//         if (name == level.end() || source == level.end() || !name.value().is_string() || !source.value().is_string()) continue;
-
-//         auto result = level::stoln(name.value());
-//         if (result == level::Name::null) continue;
-
-//         mapping[result] = source.value();
-//     }
-// }
-
-/**
- * @brief Initialize all tilelayer tilesets associated with the current level.
-*/
-void utils::loadTilesetsData(SDL_Renderer* renderer, tile::Data_Tilelayer::Collection& tilesetDataCollection, json const& data) {
-    for (auto& tilesetData : tilesetDataCollection) tilesetData.clear();   // Prevent memory leak
-    tilesetDataCollection.clear();
-
-    auto tilesets = data.find("tilesets");
-    if (tilesets == data.end() || !tilesets.value().is_array()) return;
-
-    for (const auto& tileset : tilesets.value()) {
-        tile::Data_Tilelayer tilesetData;
-        tilesetData.initialize(tileset, renderer);
-        tilesetDataCollection.emplace_back(tilesetData);
-    }
-}
-
-/**
- * @brief Retrieve the `TilelayerTilesetData` associated with a `GID`.
- * @todo Optimization should be made to reduce time complexity. Try binary search.
-*/
-tile::Data_Tilelayer const* utils::getTilesetData(const tile::Data_Tilelayer::Collection& tilesetDataCollection, int gid) {
-    auto it = std::find_if(tilesetDataCollection.begin(), tilesetDataCollection.end(), [&](const auto tilesetData) {
-        return tilesetData.firstGID <= gid && gid < tilesetData.firstGID + tilesetData.srcCount.x * tilesetData.srcCount.y;
-    });
-    return it != tilesetDataCollection.end() ? &*it : nullptr;
+    return repr;   // Implicit
 }
 
 /**

@@ -29,16 +29,16 @@ void level::Map::load(json const& JSONLevelMapData) {
         Name ln = stoln(name_v);
         if (ln == Name::null) continue;
 
-        // ump[source] = source_j.value();
-        ump.insert(std::make_pair(ln, source_v));
+        // mUMap[source] = source_j.value();
+        mUMap.insert(std::make_pair(ln, source_v));
     }
 }
 
 std::filesystem::path level::Map::operator[](Name ln) const {
     static const std::filesystem::path root = config::path::asset_tiled;
 
-    auto it = ump.find(ln);
-    return it != ump.end() ? root / it->second : "";
+    auto it = mUMap.find(ln);
+    return it != mUMap.end() ? root / it->second : "";
 }
 
 /**
@@ -151,6 +151,8 @@ void level::Data::load(json const& JSONLevelData) {
             default: break;
         }
     }
+
+    loadTilelayerTilesets(JSONLevelData);
 }
 
 void level::Data::loadMembers(json const& JSONLevelData) {
@@ -181,7 +183,7 @@ void level::Data::loadTileLayer(json const& JSONLayerData) {
     auto layer_j = JSONLayerData.find("data"); if (layer_j == JSONLayerData.end()) return;
     auto layer_v = layer_j.value(); if (!(layer_v.is_string() || layer_v.is_array())) return;
 
-    tile::Tile GIDs;
+    tile::Slice GIDs;
     auto encoding_j = JSONLayerData.find("encoding");
     auto compression_j = JSONLayerData.find("compression");
 
@@ -223,6 +225,10 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
         data->load(object);
         insert(type_v, data);
     }
+}
+
+void level::Data::loadTilelayerTilesets(json const& JSONLevelData) {
+    tilesets.load(JSONLevelData, globals::renderer);
 }
 
 /**
