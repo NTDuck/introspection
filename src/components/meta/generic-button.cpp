@@ -71,6 +71,8 @@ void GenericButtonComponent<T>::onClick() {
     if (kTargetGameState == nullptr) return;
     Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kButtonClick);
     globals::state = *kTargetGameState;
+
+    SDL_SetCursor(sOnMouseOutCursor);
 }
 
 
