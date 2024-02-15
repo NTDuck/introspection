@@ -43,7 +43,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
     public:
         INCL_ABSTRACT_INTERFACE(IngameMapHandler)
 
-        IngameMapHandler(const level::LevelName levelName);
+        IngameMapHandler(const level::Name levelName);
         ~IngameMapHandler();
 
         static void initialize();
@@ -53,8 +53,8 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
 
-        inline level::LevelName getLevel() { return mLevelName; }
-        void changeLevel(const level::LevelName levelName);
+        inline level::Name getLevel() { return mLevelName; }
+        void changeLevel(const level::Name levelName);
 
         bool isOnGrayscale = false;
 
@@ -63,7 +63,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         void renderBackground() const;
         void renderLevelTiles() const;
 
-        level::LevelName mLevelName;
+        level::Name mLevelName;
 
         /**
          * @brief Maps a level's name with its corresponding relative file path.

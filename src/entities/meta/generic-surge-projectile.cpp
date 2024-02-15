@@ -102,7 +102,7 @@ void GenericSurgeProjectile<T>::handleCustomEventPOST_kReq_AttackRegister_Player
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::data::Mob({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::data::Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -112,3 +112,6 @@ std::queue<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
 
 
 template class GenericSurgeProjectile<PentacleProjectile>;
+
+
+DEFINE_GENERIC_SURGE_PROJECTILE(PentacleProjectile, config::entities::pentacle_projectile)

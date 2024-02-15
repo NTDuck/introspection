@@ -8,7 +8,7 @@
 #include <auxiliaries.hpp>
 
 
-IngameMapHandler::IngameMapHandler(const level::LevelName levelName) : AbstractInterface<IngameMapHandler>(), mLevelName(levelName) {}
+IngameMapHandler::IngameMapHandler(const level::Name levelName) : AbstractInterface<IngameMapHandler>(), mLevelName(levelName) {}
 
 IngameMapHandler::~IngameMapHandler() {
     if (mGrayscaleTexture != nullptr) {
@@ -71,7 +71,7 @@ void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
 /**
  * @brief Force load level after changes.
 */
-void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
+void IngameMapHandler::changeLevel(const level::Name levelName_) {
     mLevelName = levelName_;
     onLevelChange();
 }
@@ -83,21 +83,22 @@ void IngameMapHandler::changeLevel(const level::LevelName levelName_) {
 void IngameMapHandler::loadLevel() {
     std::filesystem::path kLevelPath = config::path::asset_tiled / sLevelMapping[mLevelName];
     if (!std::filesystem::exists(kLevelPath)) return;
-    json data;
-    utils::readJSON(kLevelPath.string(), data);
+    json JSONLevelData;
+    utils::readJSON(kLevelPath.string(), JSONLevelData);
 
     // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
-    utils::loadLevelData(globals::currentLevelData, data);
+    // utils::loadLevelData(globals::currentLevelData, data);
+    level::data.load(JSONLevelData);
 
     // Reset `globals::tilelayerTilesetDataCollection`
-    utils::loadTilesetsData(globals::renderer, globals::tilelayerTilesetDataCollection, data);
+    utils::loadTilesetsData(globals::renderer, globals::tilelayerTilesetDataCollection, JSONLevelData);
 }
 
 /**
  * @brief Fill the window with the tileset's black to achieve a seamless feel.
 */
 void IngameMapHandler::renderBackground() const {
-    utils::setRendererDrawColor(globals::renderer, globals::currentLevelData.backgroundColor);
+    utils::setRendererDrawColor(globals::renderer, level::data.backgroundColor);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
@@ -119,7 +120,7 @@ void IngameMapHandler::renderLevelTiles() const {
             data.destRect.w = globals::tileDestSize.x;
             data.destRect.h = globals::tileDestSize.y;
 
-            for (const auto& gid : globals::currentLevelData.tileCollection[y][x]) {
+            for (const auto& gid : level::data.tiles[y][x]) {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
                 auto tilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);

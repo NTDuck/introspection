@@ -39,7 +39,7 @@ class Mixer final : Singleton<Mixer> {
 
         void playSFX(SFXName SFX) const;
 
-        void onLevelChange(level::LevelName newLevel) const;
+        void onLevelChange(level::Name newLevel) const;
         void handleGameStateChange();
 
     private:
@@ -54,10 +54,10 @@ class Mixer final : Singleton<Mixer> {
             // { GameState::kLoading, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-013-a-home-for-flowers-tulip.mp3") },
         };
 
-        std::unordered_map<level::LevelName, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
-            { level::LevelName::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
-            { level::LevelName::kLevelEquilibrium, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-012-home.mp3") },
-            { level::LevelName::kLevelValleyOfDespair, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-063-its-raining-somewhere-else.mp3") },
+        std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
+            { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
+            { level::Name::kLevelEquilibrium, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-012-home.mp3") },
+            { level::Name::kLevelValleyOfDespair, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-063-its-raining-somewhere-else.mp3") },
         };
 
         std::unordered_map<SFXName, std::pair<Mix_Chunk*, std::filesystem::path>> kSFXMapping = {

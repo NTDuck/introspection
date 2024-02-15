@@ -40,7 +40,7 @@ void event::terminate(SDL_Event const& event) {
         case event::Code::kResp_AttackInitiate_GHE_Player:
         case event::Code::kResp_MoveInitiate_GHE_Player:
         case event::Code::kResp_MoveTerminate_GHE_Player:
-            event::__deallocate__<event::data::Mob>(event);
+            event::__deallocate__<event::data::Generic>(event);
             break;
 
         case event::Code::kReq_Teleport_GTE_Player:

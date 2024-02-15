@@ -37,7 +37,7 @@ void Player::reinitialize(bool increment) {
 }
 
 void Player::onLevelChange(level::Data_Generic const& player) {
-    auto data = *reinterpret_cast<const level::Data_Player*>(&player);
+    auto data = *reinterpret_cast<const level::Data_Generic*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
 }
 
@@ -162,7 +162,7 @@ void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::data::Mob({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::data::Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
 
@@ -180,7 +180,7 @@ void Player::handleCustomEventPOST_kReq_Death_Player() const {
 }
 
 void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Mob>(event);
+    auto data = event::getData<event::data::Generic>(event);
 
     if (mCurrAnimationType == AnimationType::kDamaged) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -195,7 +195,7 @@ void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const
 }
 
 void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Mob>(event);
+    auto data = event::getData<event::data::Generic>(event);
 
     if (mCurrAnimationType == AnimationType::kDamaged || mCurrAnimationType == AnimationType::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -209,7 +209,7 @@ void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event cons
 }
 
 void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
-    auto data = event::getData<event::data::Mob>(event);
+    auto data = event::getData<event::data::Generic>(event);
 
     if (mCurrAnimationType == AnimationType::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
@@ -240,6 +240,9 @@ int AbstractAnimatedDynamicEntity<Player>::sMoveDelay = config::entities::player
 
 template <>
 SDL_FPoint AbstractAnimatedDynamicEntity<Player>::sVelocity = config::entities::player::velocity;
+
+template <>
+const char* AbstractEntity<Player>::sTypeID = config::entities::player::typeID;
 
 template <>
 std::filesystem::path AbstractEntity<Player>::sTilesetPath = config::entities::player::path;

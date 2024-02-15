@@ -14,10 +14,10 @@ const std::unordered_map<std::string, tile::EntitiesTilesetData::AnimationType> 
     { "animation-damaged", AnimationType::kDamaged },
 };
 
-const std::unordered_map<std::string, level::LevelName> level::kLevelNameConversionMapping = {
-    { "level-equilibrium", LevelName::kLevelEquilibrium },
-    { "level-valley-of-despair", LevelName::kLevelValleyOfDespair },
-    { "level-white-space", LevelName::kLevelWhiteSpace },
+const std::unordered_map<std::string, level::Name> level::kLevelNameConversionMapping = {
+    { "level-equilibrium", Name::kLevelEquilibrium },
+    { "level-valley-of-despair", Name::kLevelValleyOfDespair },
+    { "level-white-space", Name::kLevelWhiteSpace },
 };
 
 
@@ -27,7 +27,6 @@ SDL_Point globals::tileDestSize;
 SDL_Point globals::tileDestCount;
 SDL_Point globals::mouseState;
 tile::TilelayerTilesetData::Collection globals::tilelayerTilesetDataCollection;
-level::LevelData globals::currentLevelData;
 GameState globals::state = GameState::kMenu;
 
 

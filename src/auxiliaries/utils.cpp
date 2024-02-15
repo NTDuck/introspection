@@ -308,6 +308,8 @@ std::vector<T> utils::zlibDecompress(std::string const& s) {
     return decompressed;
 }
 
+template std::vector<int> utils::zlibDecompress<int>(std::string const& s);
+
 /**
  * @brief Decrypt a base64-encrypted string.
  * @param s the base-64 encrypted string.
@@ -391,70 +393,6 @@ void utils::loadLevelsData(level::LevelMapping& mapping) {
         if (result == level::kLevelNameConversionMapping.end()) continue;
 
         mapping[result->second] = source.value();
-    }
-}
-
-/**
- * @brief Read data associated with a level from a JSON file (preferrably converted from a Tiled TMX file).
- * @note Only `csv` and `zlib-compressed base64` are supported.
- * @todo Reimplementation should be made to adhere to SoC. (this is a true mess)
-*/
-void utils::loadLevelData(level::LevelData& currentLevelData, json const& JSONLevelData) {
-    // Clear current level data
-    currentLevelData.deinitialize();
-
-    // Update global variables
-    auto tileDestCountWidth = JSONLevelData.find("width");
-    auto tileDestCountHeight = JSONLevelData.find("height");
-    if (tileDestCountWidth == JSONLevelData.end() || tileDestCountHeight == JSONLevelData.end() || !tileDestCountWidth.value().is_number_integer() || !tileDestCountHeight.value().is_number_integer()) return;
-    globals::tileDestCount = { tileDestCountWidth.value(), tileDestCountHeight.value() };
-
-    auto tileDestSizeWidth = JSONLevelData.find("tilewidth");
-    auto tileDestSizeHeight = JSONLevelData.find("tileheight");
-    if (tileDestSizeWidth == JSONLevelData.end() || tileDestSizeHeight == JSONLevelData.end() || !tileDestSizeWidth.value().is_number_integer() || !tileDestSizeHeight.value().is_number_integer()) return;
-    globals::tileDestSize = { tileDestSizeWidth.value(), tileDestSizeHeight.value() };
-    // globals::tileDestSize.x = globals::tileDestSize.y = 1 << int(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));   // The closest power of 2
-
-    auto backgroundColor = JSONLevelData.find("backgroundcolor");
-    if (backgroundColor != JSONLevelData.end() && !backgroundColor.value().is_string()) return;
-    currentLevelData.backgroundColor = (backgroundColor != JSONLevelData.end() ? utils::SDL_ColorFromHexString(backgroundColor.value()) : config::color::offblack);
-
-    // Emplace gids into `tileCollection`. Executed per layer.
-    currentLevelData.tileCollection.resize(globals::tileDestCount.y);
-    for (auto& tileRow : currentLevelData.tileCollection) tileRow.resize(globals::tileDestCount.x);
-
-    auto layers = JSONLevelData.find("layers");
-    if (layers == JSONLevelData.end() || !layers.value().is_array()) return;
-
-    for (const auto& layer : layers.value()) {
-        // Prevent registering non-tilelayers e.g. object layers
-        auto type = layer.find("type");
-        if (type == layer.end() || !type.value().is_string()) continue;
-
-        // Could use `std::unordered_map` for cleaner implementation
-        if (type.value() == "tilelayer") {
-            // Load GIDs
-            auto layerData = layer.find("data");
-            if (layerData == layer.end() || !(layerData.value().is_string() || layerData.value().is_array())) continue;
-
-            std::vector<int> GIDsCollection;
-            auto encoding = layer.find("encoding");
-            auto compression = layer.find("compression");
-
-            if ((encoding == layer.end() || encoding.value() == "csv") && compression == layer.end()) {   // csv
-                for (const auto& GID : layerData.value()) GIDsCollection.emplace_back(GID);
-            } else if (encoding != layer.end() && encoding.value() == "base64") {
-                std::string decoded = utils::base64Decode(layerData.value());
-                if (compression.value() == "zlib") {   // zlib-compressed base64
-                    GIDsCollection = utils::zlibDecompress<int>(decoded);
-                } else return;
-            } else return;
-
-            for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) currentLevelData.tileCollection[y][x].emplace_back(GIDsCollection[y * globals::tileDestCount.x + x]);
-
-        } else if (type.value() == "objectgroup") {
-            currentLevelData.initialize(layer);
-        }
     }
 }
 

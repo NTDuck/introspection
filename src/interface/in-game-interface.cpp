@@ -79,19 +79,23 @@ void IngameInterface::onLevelChange() const {
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
     IngameViewHandler::invoke(&IngameViewHandler::onLevelChange);
     
-    if (mCachedTargetDestCoords != nullptr) globals::currentLevelData.playerLevelData.destCoords = *mCachedTargetDestCoords;   // Do we need to also delete its value here?
+    if (mCachedTargetDestCoords != nullptr) {
+        auto data = new level::Data_Generic();
+        data->destCoords = *mCachedTargetDestCoords;
+        level::data.insert(config::entities::player::typeID, data);
+    }
 
     PentacleProjectile::onLevelChangeAll();
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
-    Player::invoke(&Player::onLevelChange, globals::currentLevelData.playerLevelData);
-    Teleporter::onLevelChangeAll(globals::currentLevelData.teleportersLevelData);
-    RedHandThroneTeleporter::onLevelChangeAll(globals::currentLevelData.redHandThroneTeleportersLevelData);
-    Slime::onLevelChangeAll(globals::currentLevelData.slimesLevelData);
+    Player::invoke(&Player::onLevelChange, *(level::data.get(config::entities::player::typeID)[0]));
+    Teleporter::onLevelChangeAll(level::data.get(config::entities::teleporter::typeID));
+    RedHandThroneTeleporter::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
+    Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
 
-    OmoriLaptop::onLevelChangeAll(globals::currentLevelData.omoriLaptopLevelData);
-    OmoriLightBulb::onLevelChangeAll(globals::currentLevelData.omoriLightBulbLevelData);
-    OmoriMewO::onLevelChangeAll(globals::currentLevelData.omoriMewOLevelData);
+    OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
+    OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
+    OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
 
     Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
@@ -202,7 +206,7 @@ void IngameInterface::handleEntitiesInteraction() const {
 
 void IngameInterface::handleLevelSpecifics() const {
     switch (IngameMapHandler::instance->getLevel()) {
-        case level::LevelName::kLevelWhiteSpace:
+        case level::Name::kLevelWhiteSpace:
             handleLevelSpecifics_kLevelWhiteSpace();
             break;
 
@@ -259,12 +263,12 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
 
     if (borderTraversedTracker == 1) {
         // Hard-coded unfortunately, will have to change in future commits
-        level::Data_Teleporter data;
-        data.destCoords = { 52, 43 };
-        data.targetDestCoords = { 20, 8 };
-        data.targetLevel = level::LevelName::kLevelEquilibrium;
-        globals::currentLevelData.redHandThroneTeleportersLevelData.insert(data);
-        RedHandThroneTeleporter::onLevelChangeAll(globals::currentLevelData.redHandThroneTeleportersLevelData);
+        auto data = new level::Data_Teleporter();
+        data->destCoords = { 52, 43 };
+        data->targetDestCoords = { 20, 8 };
+        data->targetLevel = level::Name::kLevelEquilibrium;
+        level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
+        RedHandThroneTeleporter::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
         RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
 
         ++borderTraversedTracker;

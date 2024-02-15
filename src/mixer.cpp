@@ -51,7 +51,7 @@ void Mixer::playSFX(SFXName SFX) const {
  * @brief Change BGM upon entering new level.
  * @note Manually called.
 */
-void Mixer::onLevelChange(level::LevelName newLevel) const {
+void Mixer::onLevelChange(level::Name newLevel) const {
     stopBGM();
     auto it = kLevelBGMMapping.find(newLevel);
     if (it != kLevelBGMMapping.end()) playBGM(it->second.first);

@@ -1,110 +1,210 @@
 #include <auxiliaries.hpp>
 
 
-std::size_t level::Data_Generic::hash::operator()(level::Data_Generic const& instance) const {
-    return std::hash<SDL_Point>{}(instance.destCoords);
-}
-
-bool level::Data_Generic::equal_to::operator()(level::Data_Generic const& first, level::Data_Generic const& second) const {
-    return first.destCoords == second.destCoords;
-}
-
 /**
  * @brief An alternative to the constructor. Populate data members based on JSON data.
  * @note Requires JSON data to be in proper format before being called.
 */
-void level::Data_Generic::initialize(json const& entityJSONLeveData) {
-    auto destCoordsX = entityJSONLeveData.find("x");
-    auto destCoordsY = entityJSONLeveData.find("y");
-    auto destSizeWidth = entityJSONLeveData.find("width");
-    auto destSizeHeight = entityJSONLeveData.find("height");
+void level::Data_Generic::load(json const& JSONObjectData) {
+    auto destCoordsX_j = JSONObjectData.find("x"); if (destCoordsX_j == JSONObjectData.end()) return;
+    auto destCoordsY_j = JSONObjectData.find("y"); if (destCoordsY_j == JSONObjectData.end()) return;
+    auto destSizeWidth_j = JSONObjectData.find("width"); if (destSizeWidth_j == JSONObjectData.end()) return;
+    auto destSizeHeight_j = JSONObjectData.find("height"); if (destSizeHeight_j == JSONObjectData.end()) return;
 
     // Also check for division by zero
-    if (destCoordsX == entityJSONLeveData.end() || destCoordsY == entityJSONLeveData.end() || destSizeWidth == entityJSONLeveData.end() || destSizeHeight == entityJSONLeveData.end() || !destCoordsX.value().is_number_integer() || !destCoordsY.value().is_number_integer() || !destSizeWidth.value().is_number_integer() || !destSizeHeight.value().is_number_integer()) return;
+    auto destCoordsX_v = destCoordsX_j.value(); if (!destCoordsX_v.is_number_integer()) return;
+    auto destCoordsY_v = destCoordsY_j.value(); if (!destCoordsY_v.is_number_integer()) return;
+    auto destSizeWidth_v = destSizeWidth_j.value(); if (!destSizeWidth_v.is_number_integer()) return;
+    auto destSizeHeight_v = destSizeHeight_j.value(); if (!destSizeHeight_v.is_number_integer()) return;
 
     destCoords = {
-        int(destCoordsX.value()) / int(destSizeWidth.value()),
-        int(destCoordsY.value()) / int(destSizeHeight.value()),
+        static_cast<int>(destCoordsX_v) / static_cast<int>(destSizeWidth_v),
+        static_cast<int>(destCoordsY_v) / static_cast<int>(destSizeHeight_v),
     };
 }
 
-void level::Data_Teleporter::initialize(json const& entityJSONLevelData) {
-    Data_Generic::initialize(entityJSONLevelData);
+void level::Data_Teleporter::load(json const& JSONObjectData) {
+    Data_Generic::load(JSONObjectData);
 
-    auto teleporterProperties = entityJSONLevelData.find("properties");
-    if (teleporterProperties == entityJSONLevelData.end() || !teleporterProperties.value().is_array()) return;
+    auto properties_j = JSONObjectData.find("properties"); if (properties_j == JSONObjectData.end()) return;
+    auto properties_v = properties_j.value(); if (!properties_v.is_array()) return;
 
-    for (const auto& property : teleporterProperties.value()) {
-        auto name = property.find("name");
-        auto value = property.find("value");
+    for (const auto& property : properties_v) {
+        auto name_j = property.find("name"); if (name_j == property.end()) continue;
+        auto value_j = property.find("value"); if (value_j == property.end()) continue;
+        auto name_v = name_j.value(); if (!name_v.is_string()) continue;
+        auto value_v = value_j.value();
 
-        if (name == property.end() || value == property.end()) continue;
+        switch (hs(static_cast<std::string>(name_v).c_str())) {
+            case hs("target-dest-coords"): {
+                if (!value_v.is_object()) break;
 
-        if (name.value() == "target-dest-coords") {
-            auto& value_ = value.value();
-            if (!value_.is_object()) continue;
+                auto targetDestCoordsX_j = value_v.find("x"); if (targetDestCoordsX_j == value_v.end()) break;
+                auto targetDestCoordsY_j = value_v.find("y"); if (targetDestCoordsY_j == value_v.end()) break;
+                auto targetDestCoordsX_v = targetDestCoordsX_j.value(); if (!targetDestCoordsX_v.is_number_integer()) break;
+                auto targetDestCoordsY_v = targetDestCoordsY_j.value(); if (!targetDestCoordsY_v.is_number_integer()) break;
 
-            auto targetDestCoordsX = value_.find("x");
-            auto targetDestCoordsY = value_.find("y");
-            if (targetDestCoordsX == value_.end() || targetDestCoordsY == value_.end() || !targetDestCoordsX.value().is_number() || !targetDestCoordsY.value().is_number()) continue;
+                targetDestCoords = { targetDestCoordsX_v, targetDestCoordsY_v };
+                break; }
 
-            targetDestCoords = {targetDestCoordsX.value(), targetDestCoordsY.value()};
+            case hs("target-level"): {
+                if (!value_v.is_string()) break;
 
-        } else if (name.value() == "target-level") {
-            if (!value.value().is_string()) continue;
-            auto result = level::kLevelNameConversionMapping.find(value.value());
-            if (result == level::kLevelNameConversionMapping.end()) continue;
-            targetLevel = result->second;
+                auto it = level::kLevelNameConversionMapping.find(value_v); if (it == level::kLevelNameConversionMapping.end()) break;
+                targetLevel = it->second;
+                break; }
+
+            default: break;
         }
     }
 }
 
-void level::LevelData::initialize(json const& JSONLayerData) {
-    auto objects = JSONLayerData.find("objects");
-    if (objects == JSONLayerData.end() || !objects.value().is_array()) return;
-    
-    for (const auto& object : objects.value()) {
-        auto type = object.find("type");
-        if (type == object.end() || !type.value().is_string()) continue;
+std::vector<level::Data_Generic*> level::Data::get(std::string const& key) {
+    auto it = dependencies.find(key);
+    return it != dependencies.end() ? it->second : std::vector<level::Data_Generic*>{};
+}
 
-        if (type.value() == "player") {
-            level::Data_Player data;
-            data.initialize(object);
-            playerLevelData = data;
-        } else if (type.value() == "teleporter") {
-            level::Data_Teleporter data;
-            data.initialize(object);
-            teleportersLevelData.insert(data);
-        } else if (type.value() == "slime") {
-            level::Data_Generic data;
-            data.initialize(object);
-            slimesLevelData.insert(data);
+void level::Data::insert(std::string const& key, Data_Generic* data) {
+    auto it = dependencies.find(key);
+    if (it == dependencies.end()) dependencies.insert(std::make_pair(key, std::vector<Data_Generic*>{ data }));
+    else it->second.push_back(data);
+}
 
-        } else if (type.value() == "omori-laptop") {
-            level::Data_Generic data;
-            data.initialize(object);
-            omoriLaptopLevelData.insert(data);
-        } else if (type.value() == "omori-light-bulb") {
-            level::Data_Generic data;
-            data.initialize(object);
-            omoriLightBulbLevelData.insert(data);
-        } else if (type.value() == "omori-mewo") {
-            level::Data_Generic data;
-            data.initialize(object);
-            omoriMewOLevelData.insert(data);
+void level::Data::erase(std::string const& key) {
+    auto it = dependencies.find(key);
+    if (it == dependencies.end()) return;
+    for (auto& p : it->second) delete p;
+    dependencies.erase(it);
+}
+
+std::string level::Data::getProperty(std::string const& key) {
+    auto it = properties.find(key);
+    return it != properties.end() ? it->second : std::string{};
+}
+
+void level::Data::setProperty(std::string const& key, std::string const& property) {
+    auto it = properties.find(key);
+    if (it == properties.end()) properties.insert(std::make_pair(key, property));
+    else it->second = property;
+}
+
+void level::Data::eraseProperty(std::string const& key) {
+    auto it = properties.find(key);
+    if (it == properties.end()) return;
+    properties.erase(it);
+}
+
+void level::Data::load(json const& JSONLevelData) {
+    // Prevent undefined behaviours
+    clear();
+
+    loadGlobalDependencies(JSONLevelData);
+
+    // Emplace gids into `tileCollection`. Executed per layer.
+    tiles.resize(globals::tileDestCount.y);
+    for (auto& row : tiles) row.resize(globals::tileDestCount.x);
+
+    auto layers_j = JSONLevelData.find("layers"); if (layers_j == JSONLevelData.end()) return;
+    auto layers_v = layers_j.value(); if (!layers_v.is_array()) return;
+
+    for (const auto& layer : layers_v) {
+        auto type_j = layer.find("type"); if (type_j == layer.end()) continue;
+        auto type_v = type_j.value(); if (!type_v.is_string()) continue;
+
+        switch (hs(static_cast<std::string>(type_v).c_str())) {
+            case hs("tilelayer"):
+                loadTileLayer(layer);
+                break;
+
+            case hs("objectgroup"):
+                loadObjectLayer(layer);
+                break;
+
+            default: break;
         }
     }
 }
 
-void level::LevelData::deinitialize() {
-    for (auto& tileRow : tileCollection) for (auto& tile : tileRow) tile.clear();
-    backgroundColor = config::color::offblack;
-    
-    teleportersLevelData.clear();
-    redHandThroneTeleportersLevelData.clear();
-    slimesLevelData.clear();
+void level::Data::loadGlobalDependencies(json const& JSONLevelData) {
+    auto tileDestCountWidth_j = JSONLevelData.find("width"); if (tileDestCountWidth_j == JSONLevelData.end()) return;
+    auto tileDestCountWidth_v = tileDestCountWidth_j.value(); if (!tileDestCountWidth_v.is_number_integer()) return;
+    auto tileDestCountHeight_j = JSONLevelData.find("height"); if (tileDestCountHeight_j == JSONLevelData.end()) return;
+    auto tileDestCountHeight_v = tileDestCountHeight_j.value(); if (!tileDestCountHeight_v.is_number_integer()) return;
+    globals::tileDestCount = { tileDestCountWidth_v, tileDestCountHeight_v };
 
-    omoriLaptopLevelData.clear();
-    omoriLightBulbLevelData.clear();
-    omoriMewOLevelData.clear();
+    auto tileDestSizeWidth_j = JSONLevelData.find("width"); if (tileDestSizeWidth_j == JSONLevelData.end()) return;
+    auto tileDestSizeWidth_v = tileDestSizeWidth_j.value(); if (!tileDestSizeWidth_v.is_number_integer()) return;
+    auto tileDestSizeHeight_j = JSONLevelData.find("height"); if (tileDestSizeHeight_j == JSONLevelData.end()) return;
+    auto tileDestSizeHeight_v = tileDestSizeHeight_j.value(); if (!tileDestSizeHeight_v.is_number_integer()) return;
+    globals::tileDestSize = { tileDestSizeWidth_v, tileDestSizeHeight_v };
+
+    auto backgroundColor_j = JSONLevelData.find("backgroundcolor"); if (backgroundColor_j == JSONLevelData.end()) return;
+    auto backgroundColor_v = backgroundColor_j.value(); if (!backgroundColor_v.is_string()) return;
+    backgroundColor = utils::SDL_ColorFromHexString(backgroundColor_v);
 }
+
+/**
+ * @brief Load GIDs of a layer.
+*/
+void level::Data::loadTileLayer(json const& JSONLayerData) {
+    auto layer_j = JSONLayerData.find("data"); if (layer_j == JSONLayerData.end()) return;
+    auto layer_v = layer_j.value(); if (!(layer_v.is_string() || layer_v.is_array())) return;
+
+    tile::Tile GIDs;
+    auto encoding_j = JSONLayerData.find("encoding");
+    auto compression_j = JSONLayerData.find("compression");
+
+    if ((encoding_j == JSONLayerData.end() || encoding_j.value() == "csv") && compression_j == JSONLayerData.end()) {   // csv
+        for (const auto& GID : layer_j.value()) GIDs.emplace_back(GID);
+    } else if (encoding_j != JSONLayerData.end() && encoding_j.value() == "base64") {
+        std::string decoded = utils::base64Decode(layer_j.value());
+        if (compression_j.value() == "zlib") {   // zlib-compressed base64
+            GIDs = utils::zlibDecompress<int>(decoded);
+        } else return;
+    } else return;
+
+    for (int y = 0; y < globals::tileDestCount.y; ++y) for (int x = 0; x < globals::tileDestCount.x; ++x) tiles[y][x].emplace_back(GIDs[y * globals::tileDestCount.x + x]);
+}
+
+/**
+ * @brief Load entity info.
+*/
+void level::Data::loadObjectLayer(json const& JSONLayerData) {
+    auto objects_j = JSONLayerData.find("objects"); if (objects_j == JSONLayerData.end()) return;
+    auto objects_v = objects_j.value(); if (!objects_v.is_array()) return;
+
+    for (const auto& object : objects_v) {
+        auto type_j = object.find("type"); if (type_j == object.end()) continue;
+        auto type_v = type_j.value(); if (!type_v.is_string()) continue;
+
+        Data_Generic* data = nullptr;
+
+        switch (hs(static_cast<std::string>(type_v).c_str())) {
+            case hs(config::entities::teleporter::typeID):
+            case hs(config::entities::teleporter_red_hand_throne::typeID):
+                data = new Data_Teleporter();
+                break;
+
+            default:
+                data = new Data_Generic();   // Assumes that all, unless specified, uses `Data_Generic`
+        }
+
+        data->load(object);
+        insert(type_v, data);
+    }
+}
+
+/**
+ * @note When entry `key` is removed via `erase(key)`, iterators pointing to next entries are invalidated i.e. undefined behaviour with `for (auto& pair : dependencies) erase(pair.first);`
+*/
+void level::Data::clear() {
+    for (auto& row : tiles) for (auto& tile : row) tile.clear();
+    backgroundColor = config::color::offblack;   // Default
+
+    for (auto& pair : dependencies) for (auto& p : pair.second) delete p;
+    dependencies.clear();
+    properties.clear();
+}
+
+
+level::Data level::data;

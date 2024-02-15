@@ -281,7 +281,7 @@ namespace level {
     /**
      * Register level names as enumeration constants for maintainability.
     */
-    enum class LevelName {
+    enum class Name {
         kLevelEquilibrium,
         kLevelValleyOfDespair,
 
@@ -291,79 +291,65 @@ namespace level {
     /**
      * Convert raw `std::string` (from configuration files) into `LevelName`.
     */
-    extern const std::unordered_map<std::string, LevelName> kLevelNameConversionMapping;
+    extern const std::unordered_map<std::string, Name> kLevelNameConversionMapping;
 
     /**
      * Map a level name to the corresponding relative file path.
      * @note Recommended implementation: instances should only be initialized once during `<interface.h> IngameMapHandler::initialize()` and should henceforth be treated as a constant. Additionally, `Collection` must be re-declared in every derived class declaration.
      * @note For optimized memory usage, this approach does not encapsulate `LevelData`, instead `globals::currentLevelData` is loaded via `<interface.h> IngameMapHandler::loadLevel()` based on file path.
     */
-    using LevelMapping = std::unordered_map<LevelName, std::string>;
+    using LevelMapping = std::unordered_map<Name, std::string>;
 
     /**
      * @brief Contain data associated with an entity, used in level-loading.
      * @param destCoords the new `destCoords` of the entity upon entering new level.
     */
     struct Data_Generic {
-        struct hash {
-            std::size_t operator()(Data_Generic const& instance) const;
-        };
-
-        struct equal_to {
-            bool operator()(Data_Generic const& first, Data_Generic const& second) const;
-        };
-
-        /**
-         * Denecessitate duplicated declaration of `EntityLevelData::Collection` per derived class.
-        */
-        template <typename T>
-        using Collection = std::unordered_set<T, hash, equal_to>;
-
-        virtual void initialize(json const& entityJSONLevelData);
         virtual ~Data_Generic() = default;   // Virtual destructor, required for polymorphism
+        virtual void load(json const& JSONObjectData);
         
         SDL_Point destCoords;
     };
 
     /**
-     * @brief Contain data associated with a player entity, used in level-loading.
-    */
-    struct Data_Player : public Data_Generic {};
-
-    /**
-     * @brief Contain data associated with a teleporter entity, used in level-loading.
+     * @brief Contain data associated with a teleporter-type entity, used in level-loading.
      * @param targetDestCoords the new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
     struct Data_Teleporter : public Data_Generic {
-        void initialize(json const& entityJSONLevelData) override;
+        void load(json const& JSONObjectData) override;
 
         SDL_Point targetDestCoords;
-        level::LevelName targetLevel;
+        level::Name targetLevel;
     };
 
-    /**
-     * @brief Contain data associated with a level.
-     * 
-     * @param tileCollection the 2-dimensional tiled surface.
-     * @param backgroundColor the background color.
-     * @param playerLevelData data associated with the player entity.
-     * @param teleportersLevelData data associated with the teleporter entities.
-    */
-    struct LevelData {
-        tile::TileCollection tileCollection;
+    struct Data {
+        tile::TileCollection tiles;
         SDL_Color backgroundColor;
-        level::Data_Player playerLevelData;
-        level::Data_Generic::Collection<level::Data_Teleporter> teleportersLevelData;
-        level::Data_Generic::Collection<level::Data_Teleporter> redHandThroneTeleportersLevelData;
-        level::Data_Generic::Collection<level::Data_Generic> slimesLevelData;
-        level::Data_Generic::Collection<level::Data_Generic> omoriLaptopLevelData;
-        level::Data_Generic::Collection<level::Data_Generic> omoriLightBulbLevelData;
-        level::Data_Generic::Collection<level::Data_Generic> omoriMewOLevelData;
 
-        void initialize(json const& JSONLayerData);
-        void deinitialize();
+        std::unordered_map<std::string, std::vector<Data_Generic*>> dependencies;
+        std::unordered_map<std::string, std::string> properties;
+
+        Data() = default;
+        ~Data() { clear(); }
+
+        std::vector<Data_Generic*> get(std::string const& key);
+        void insert(std::string const& key, Data_Generic* data);
+        void erase(std::string const& key);
+
+        std::string getProperty(std::string const& key);
+        void setProperty(std::string const& key, std::string const& property);
+        void eraseProperty(std::string const& key);
+
+        void load(json const& JSONLevelData);
+        void loadGlobalDependencies(json const& JSONLevelData);
+        void loadTileLayer(json const& JSONLayerData);
+        void loadObjectLayer(json const& JSONLayerData);
+
+        void clear();
     };
+
+    extern Data data;
 }
 
 
@@ -383,7 +369,7 @@ namespace event {
         kReq_DeathPending_Player,
         kReq_DeathFinalized_Player,
 
-        // Uses `Mob`
+        // Uses `Generic`
         kReq_AttackRegister_Player_GHE,
         kReq_AttackRegister_GHE_Player,
         kReq_AttackInitiate_GHE_Player,
@@ -400,7 +386,7 @@ namespace event {
     using ID = int;
 
     namespace data {
-        struct Mob {
+        struct Generic {
             SDL_Point destCoords;
             SDL_Point range;
             EntitySecondaryStats stats;
@@ -409,7 +395,7 @@ namespace event {
         struct Teleporter {
             SDL_Point destCoords;
             SDL_Point targetDestCoords;
-            level::LevelName targetLevel;
+            level::Name targetLevel;
         };
     }
 
@@ -557,18 +543,22 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::LevelName levelName = level::LevelName::kLevelWhiteSpace;
+        constexpr level::Name levelName = level::Name::kLevelWhiteSpace;
         constexpr int idleFrames = 16;
 
         constexpr double tileCountHeight = 24;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 
+    /**
+     * @see https://stackoverflow.com/questions/54258241/warning-iso-c-forbids-converting-a-string-constant-to-char-for-a-static-c
+    */
     namespace entities {
         constexpr double runVelocityModifier = 4;
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
         
         namespace player {
+            constexpr const char* typeID = "player";
             const std::vector<std::filesystem::path> paths = {
                 "assets/.tiled/.tsx/player-premade-01.tsx",
                 "assets/.tiled/.tsx/player-premade-02.tsx",
@@ -601,16 +591,19 @@ namespace config {
         }
 
         namespace teleporter {
+            constexpr const char* typeID = "teleporter";
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
         }
 
         namespace teleporter_red_hand_throne {
+            constexpr const char* typeID = "teleporter-red-hand-throne";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-red-hand-throne.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -0.25, 1, 1 };
         }
 
         namespace slime {
+            constexpr const char* typeID = "slime";
             const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
             constexpr SDL_FPoint velocity = { 128, 128 };
@@ -622,6 +615,7 @@ namespace config {
         }
 
         namespace pentacle_projectile {
+            constexpr const char* typeID = "pentacle-projectile";
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
             constexpr SDL_FPoint velocity = { 0, 0 };
@@ -630,26 +624,20 @@ namespace config {
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }
 
-        // namespace haunted_bookcase_projectile {
-        //     const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-haunted-bookcase.tsx";
-        //     constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
-        //     constexpr SDL_FPoint velocity = { 16, 16 };
-        //     constexpr int moveDelay = 0;
-        //     constexpr SDL_Point attackRegisterRange = { 1, 1 };
-        //     constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
-        // }
-
         namespace omori_laptop {
+            constexpr const char* typeID = "omori-laptop";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -0.125, 1, 1 };
         }
 
         namespace omori_light_bulb {
+            constexpr const char* typeID = "omori-light-bulb";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-light-bulb.tsx";
             constexpr SDL_FRect destRectModifier = { 0.5, 0, 1, 1 };
         }
 
         namespace omori_mewo {
+            constexpr const char* typeID = "omori-mewo";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
         }        
@@ -778,7 +766,6 @@ namespace globals {
      * Store data associated with tilelayer tilesets of the current level.
     */
     extern tile::TilelayerTilesetData::Collection tilelayerTilesetDataCollection;
-    extern level::LevelData currentLevelData;
 
     extern GameState state;
 }
@@ -798,6 +785,15 @@ SDL_Point operator>>(SDL_Point const& instance, unsigned int times);
 bool operator==(SDL_FPoint const& first, SDL_FPoint const& second);
 SDL_FPoint operator<<(SDL_FPoint const& instance, float rad);
 SDL_FPoint operator>>(SDL_FPoint const& instance, float rad);
+
+/**
+ * @brief Enable `switch` on `std::string`.
+ * @note Abbreviation for "hash(ed) string".
+ * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
+*/
+constexpr unsigned int hs(const char* s, int hash = 0) {
+    return !s[hash] ? 5381 : (hs(s, hash + 1) * 33) ^ s[hash];
+}
 
 namespace std {
     template <>
@@ -868,7 +864,6 @@ namespace utils {
     void cleanRelativePath(std::filesystem::path& path);
 
     void loadLevelsData(level::LevelMapping& mapping);
-    void loadLevelData(level::LevelData& currentLevelData, json const& JSONLevelData);
     void loadTilesetsData(SDL_Renderer* renderer, tile::TilelayerTilesetData::Collection& tilesetDataCollection, json const& jsonData);
 
     tile::TilelayerTilesetData const* getTilesetData(tile::TilelayerTilesetData::Collection const& tilesetDataCollection, int gid);

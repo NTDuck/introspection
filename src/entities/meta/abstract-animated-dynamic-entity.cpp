@@ -165,7 +165,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
-        for (const auto& gid : globals::currentLevelData.tileCollection[coords.y][coords.x]) {
+        for (const auto& gid : level::data.tiles[coords.y][coords.x]) {
             auto tilelayerTilesetData = utils::getTilesetData(globals::tilelayerTilesetDataCollection, gid);
             if (tilelayerTilesetData == nullptr) continue;
 
@@ -270,3 +270,8 @@ const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::
 template class AbstractAnimatedDynamicEntity<PentacleProjectile>;
 template class AbstractAnimatedDynamicEntity<Player>;
 template class AbstractAnimatedDynamicEntity<Slime>;
+
+
+DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLaptop, config::entities::omori_laptop)
+DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::omori_light_bulb)
+DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriMewO, config::entities::omori_mewo)

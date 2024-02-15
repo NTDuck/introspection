@@ -43,14 +43,14 @@ class AbstractEntity : public Multiton<T> {
          * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
          * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
         */
-        template <typename LevelData>
-        static inline void onLevelChangeAll(typename level::Data_Generic::Collection<LevelData> const& entityLevelDataCollection) {
+        static inline void onLevelChangeAll(std::vector<level::Data_Generic*> const& levelData) {
             Multiton<T>::deinitialize();
             sID_Counter = 0;
 
-            for (const auto& entityLevelData : entityLevelDataCollection) {
-                auto instance = instantiate(entityLevelData.destCoords);
-                instance->onLevelChange(entityLevelData);
+            for (const auto data : levelData) {
+                if (data == nullptr) continue;
+                auto instance = instantiate(data->destCoords);
+                instance->onLevelChange(*data);
             }
         }
 
@@ -65,7 +65,8 @@ class AbstractEntity : public Multiton<T> {
         AbstractEntity(SDL_Point const& destCoords);
         SDL_Rect getDestRectFromCoords(SDL_Point const& coords) const;
 
-        const event::ID mID;
+        static const char* sTypeID;
+        const int mID;
 
         static std::filesystem::path sTilesetPath;
         static tile::EntitiesTilesetData sTilesetData;
@@ -180,6 +181,9 @@ T::T(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {\
 }\
 \
 template <>\
+const char* AbstractEntity<T>::sTypeID = ns::typeID;\
+\
+template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 
 
@@ -291,7 +295,7 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
         /**
          * The new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
         */
-        level::LevelName mTargetLevel;
+        level::Name mTargetLevel;
 };
 
 #define INCL_GENERIC_TELEPORTER_ENTITY(T) using GenericTeleporterEntity<T>::onLevelChange, GenericTeleporterEntity<T>::handleCustomEventPOST;
@@ -310,6 +314,9 @@ class T final : public GenericTeleporterEntity<T> {\
 T::T(SDL_Point const& destCoords) : GenericTeleporterEntity<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
 }\
+\
+template <>\
+const char* AbstractEntity<T>::sTypeID = ns::typeID;\
 \
 template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
@@ -376,6 +383,9 @@ template <>\
 SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\
 \
 template <>\
+const char* AbstractEntity<T>::sTypeID = ns::typeID;\
+\
+template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 
 
@@ -411,72 +421,41 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
 #define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;
 
+/**
+ * @note Second parameter `direction` of constructor is provided with a decoy value to prevent a specific compilation error.
+*/
 #define DECLARE_GENERIC_SURGE_PROJECTILE(T) \
 class T final : public GenericSurgeProjectile<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
         INCL_GENERIC_SURGE_PROJECTILE(T)\
         \
-        T(SDL_Point const& destCoords, SDL_Point const& direction);\
+        T(SDL_Point const& destCoords, SDL_Point const& direction = {});\
         ~T() = default;\
 };
 
 #define DEFINE_GENERIC_SURGE_PROJECTILE(T, ns) \
 T::T(SDL_Point const& destCoords, SDL_Point const& direction) : GenericSurgeProjectile<T>(destCoords, direction) {\
-    mDestRectModifier = config::entities::pentacle_projectile::destRectModifier;\
-    mAttackRegisterRange = config::entities::pentacle_projectile::attackRegisterRange;\
-    mPrimaryStats = config::entities::pentacle_projectile::primaryStats;\
+    mDestRectModifier = ns::destRectModifier;\
+    mAttackRegisterRange = ns::attackRegisterRange;\
+    mPrimaryStats = ns::primaryStats;\
     onWindowChange();\
 }\
 \
 template <>\
-int AbstractAnimatedDynamicEntity<T>::sMoveDelay = config::entities::pentacle_projectile::moveDelay;\
+int AbstractAnimatedDynamicEntity<T>::sMoveDelay = ns::moveDelay;\
 \
 template <>\
-SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = config::entities::pentacle_projectile::velocity;\
+SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\
 \
 template <>\
-std::filesystem::path AbstractEntity<T>::sTilesetPath = config::entities::pentacle_projectile::path;
-
-
-// template <typename T>
-// class GenericAerialProjectile : public AbstractAnimatedDynamicEntity<T> {
-//     public:
-//         INCL_MULTITON(T)
-//         INCL_ABSTRACT_ENTITY(T)
-//         INCL_ABSTRACT_ANIMATED_ENTITY(T)
-//         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
-
-//         virtual ~GenericAerialProjectile() = default;
-
-//         static void onLevelChangeAll();
-//         static void initiateLinearAttack(SDL_Point const& destCoords, SDL_Point const& direction);
-
-//         void updateAnimation() override;
-
-//     protected:
-//         GenericAerialProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
-
-//     private:
-//         void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault) override;
-//         void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault) override; 
-// };
-
-// #define INCL_GENERIC_AERIAL_PROJECTILE(T) using GenericAerialProjectile<T>::onLevelChangeAll, GenericAerialProjectile<T>::initiateLinearAttack, GenericAerialProjectile<T>::updateAnimation;
+const char* AbstractEntity<T>::sTypeID = ns::typeID;\
+\
+template <>\
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 
 
 /* Derived implementations */
-
-
-// class HauntedBookcaseProjectile final : public GenericAerialProjectile<HauntedBookcaseProjectile> {
-//     public:
-//         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(HauntedBookcaseProjectile)
-//         INCL_GENERIC_AERIAL_PROJECTILE(HauntedBookcaseProjectile)
-
-//         HauntedBookcaseProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
-//         ~HauntedBookcaseProjectile() = default;
-// };
-
 
 class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
     public:
@@ -512,6 +491,7 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         SDL_Point mPrevDirection = { 1, 0 };
 };
+
 
 DECLARE_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
 
