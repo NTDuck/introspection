@@ -69,7 +69,7 @@ class AbstractEntity : public Multiton<T> {
         const int mID;
 
         static std::filesystem::path sTilesetPath;
-        static tile::Data_Entity sTilesetData;
+        static tile::Data_EntityTileset sTilesetData;
 
         SDL_Point mDestCoords;
         SDL_Rect mSrcRect;
@@ -135,11 +135,11 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(sTilesetData.animationMapping[mCurrAnimationType].startGID);
+            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(sTilesetData.animationMapping[mCurrAnimationType].stopGID);
+            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].stopGID);
         }
 
     protected:

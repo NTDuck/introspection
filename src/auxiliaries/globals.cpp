@@ -4,17 +4,6 @@
 #include <SDL.h>
 
 
-const std::unordered_map<std::string, tile::Data_Entity::Animation> tile::Data_Entity::kAnimationTypeConversionMapping = {
-    { "animation-idle", Animation::kIdle },
-    { "animation-attack-meele", Animation::kAttackMeele },
-    { "animation-attack-ranged", Animation::kAttackRanged },
-    { "animation-death", Animation::kDeath },
-    { "animation-run", Animation::kRun },
-    { "animation-walk", Animation::kWalk },
-    { "animation-damaged", Animation::kDamaged },
-};
-
-
 SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
 SDL_Point globals::mouseState;

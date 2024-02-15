@@ -2,19 +2,16 @@
 
 
 level::Name level::stoln(std::string const& s) {
-    static const std::unordered_map<std::string, level::Name> stoln_ump = {
+    static const std::unordered_map<std::string, level::Name> ump = {
         { "level-equilibrium", level::Name::kLevelEquilibrium },
         { "level-valley-of-despair", level::Name::kLevelValleyOfDespair },
         { "level-white-space", level::Name::kLevelWhiteSpace },
     };
-    auto it = stoln_ump.find(s);
-    return it != stoln_ump.end() ? it->second : Name::null;
+    auto it = ump.find(s);
+    return it != ump.end() ? it->second : Name::null;
 }
 
 void level::Map::load(json const& JSONLevelMapData) {
-    // json data;
-    // utils::readJSON(config::interface::path.string(), data);
-
     auto levels_j = JSONLevelMapData.find("levels"); if (levels_j == JSONLevelMapData.end()) return;
     auto levels_v = levels_j.value(); if (!levels_v.is_array()) return;
 
@@ -29,7 +26,6 @@ void level::Map::load(json const& JSONLevelMapData) {
         Name ln = stoln(name_v);
         if (ln == Name::null) continue;
 
-        // mUMap[source] = source_j.value();
         mUMap.insert(std::make_pair(ln, source_v));
     }
 }
@@ -38,7 +34,7 @@ std::filesystem::path level::Map::operator[](Name ln) const {
     static const std::filesystem::path root = config::path::asset_tiled;
 
     auto it = mUMap.find(ln);
-    return it != mUMap.end() ? root / it->second : "";
+    return it != mUMap.end() ? root / it->second : std::filesystem::path{};
 }
 
 /**

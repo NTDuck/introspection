@@ -26,10 +26,9 @@ AbstractEntity<T>::AbstractEntity(SDL_Point const& destCoords) : mID(++sID_Count
 template <typename T>
 void AbstractEntity<T>::initialize() {
     pugi::xml_document document;
-    pugi::xml_parse_result result = document.load_file(sTilesetPath.c_str());
-    if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
+    pugi::xml_parse_result result = document.load_file(sTilesetPath.c_str()); if (!result) return;   // Should be replaced with `result.status` or `pugi::xml_parse_status`
     
-    sTilesetData.initialize(document, globals::renderer);
+    sTilesetData.load(document, globals::renderer);
 }
 
 template <typename T>
@@ -107,7 +106,7 @@ bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& firs
 
 
 template <typename T>
-tile::Data_Entity AbstractEntity<T>::sTilesetData;
+tile::Data_EntityTileset AbstractEntity<T>::sTilesetData;
 
 template <typename T>
 int AbstractEntity<T>::sID_Counter = 0;

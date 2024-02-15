@@ -64,9 +64,9 @@ template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++mCurrAnimationUpdateCount;
     
-    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData.animationMapping[mCurrAnimationType].animationUpdateRateMultiplier)) {
+    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData[mCurrAnimationType].updateRateMultiplier)) {
         mCurrAnimationUpdateCount = 0;
-        if (mCurrAnimationGID < sTilesetData.animationMapping[mCurrAnimationType].stopGID) {
+        if (mCurrAnimationGID < sTilesetData[mCurrAnimationType].stopGID) {
             mCurrAnimationGID += sTilesetData.animationSize.x;
             if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
         } else {
@@ -78,7 +78,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             }
 
             if (mCurrAnimationType == Animation::kDeath) return;   // The real permanent
-            resetAnimation(sTilesetData.animationMapping[mCurrAnimationType].isPermanent ? Animation::kIdle : mCurrAnimationType);
+            resetAnimation(sTilesetData[mCurrAnimationType].isPermanent ? Animation::kIdle : mCurrAnimationType);
         };
     }
 
@@ -93,7 +93,7 @@ template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatusFlag flag) {
     mCurrAnimationType = animationType;
     if (flag == EntityStatusFlag::kContinued) return;
-    mCurrAnimationGID = AbstractEntity<T>::sTilesetData.animationMapping[mCurrAnimationType].startGID;
+    mCurrAnimationGID = AbstractEntity<T>::sTilesetData[mCurrAnimationType].startGID;
 }
 
 /**

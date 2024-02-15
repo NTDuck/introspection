@@ -196,6 +196,9 @@ namespace tile {
      * @param properties maps the tileset's properties to their stringified values. Properties are Tiled standard types only e.g., `string`, `bool`, `int`. Registered values: `"norender"` prevents the tileset from being rendered; `"collision"` enables the tileset to be used in collision detection.
     */
     struct Data_Generic {
+        std::string getProperty(std::string const& key);
+        void setProperty(std::string const& key, std::string const& property);
+
         void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
         void clear();
 
@@ -231,16 +234,18 @@ namespace tile {
 
     /**
      * @brief Contain data associated with a tileset for an entity or an animated object.
-     * 
      * @param animationMapping maps an animation type to the associated data.
      * @param animationUpdateRate the number of frames a sprite should last before switching to the next. Should be treated as a constant.
      * @param animationSize represents the ratio between the size of one single animation/sprite and the size of a `Tile` on the tileset, per dimension. Should be implemented alongside `globals::tileDestSize`.
+     * @note `clear()` method unnecessary since its lifespan (and its dependencies') should persist along with an `AbstractAnimatedEntity<T>`-derived as a static member.
     */
-    struct Data_Entity : public Data_Generic {
+    struct Data_EntityTileset : public Data_Generic {
         /**
          * Register animation types as enumeration constants for maintainability.
         */
         enum class Animation {
+            null = -1,
+
             kIdle,
             kAttackMeele,
             kAttackRanged,
@@ -250,10 +255,7 @@ namespace tile {
             kDamaged,
         };
 
-        /**
-         * Convert raw `std::string` (from configuration files) into `AnimationType`.
-        */
-        static const std::unordered_map<std::string, Animation> kAnimationTypeConversionMapping;
+        Animation stoan(std::string const& s);
 
         /**
          * @brief Contain data associated with an animation i.e. a series of sprites.
@@ -263,17 +265,22 @@ namespace tile {
          * @param isPermanent specifies whether the animation should be a loop i.e. whether external calls should be performed when the animation reaches its end. Defaults to `false`.
         */
         struct Data_Animation {
+            void load(pugi::xml_node const& XMLAnimationNode);
+
             int startGID = 0;
             int stopGID = 0;
             bool isPermanent = false;
-            double animationUpdateRateMultiplier = 1;
+            double updateRateMultiplier = 1;
         };
 
-        void initialize(pugi::xml_document& document, SDL_Renderer* renderer);
+        void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
+        Data_Animation const& operator[](Animation animation) const;
 
-        std::unordered_map<Animation, Data_Animation> animationMapping;
         int animationUpdateRate = 64;
         SDL_Point animationSize = {1, 1};
+
+        private:
+            std::unordered_map<Animation, Data_Animation> ump;
     };
 }
 
@@ -365,7 +372,7 @@ namespace level {
 }
 
 
-using Animation = tile::Data_Entity::Animation;
+using Animation = tile::Data_EntityTileset::Animation;
 
 
 /**

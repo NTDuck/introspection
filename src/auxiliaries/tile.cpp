@@ -6,6 +6,17 @@
 #include <SDL.h>
 
 
+std::string tile::Data_Generic::getProperty(std::string const& key) {
+    auto it = properties.find(key);
+    return it != properties.end() ? it->second : std::string{};
+}
+
+void tile::Data_Generic::setProperty(std::string const& key, std::string const& property) {
+    auto it = properties.find(key);
+    if (it == properties.end()) properties.insert(std::make_pair(key, property));
+    else it->second = property;
+}
+
 /**
  * @brief Read data associated with a tileset from loaded XML data.
  * @note Also loads the `texture`.
@@ -50,14 +61,14 @@ void tile::Data_Generic::clear() {
  * @note Also loads the `texture` and populate `firstGID`.
  * @note `firstGID` is contained only in Tiled Map JSON files.
 */
-void tile::Data_TilelayerTileset::load(json const& tileset, SDL_Renderer* renderer) {
-    auto firstGID_ = tileset.find("firstgid");
-    if (firstGID_ == tileset.end() || !firstGID_.value().is_number_integer()) return;
-    firstGID = firstGID_.value();
+void tile::Data_TilelayerTileset::load(json const& JSONTileLayerData, SDL_Renderer* renderer) {
+    auto firstGID_j = JSONTileLayerData.find("firstgid"); if (firstGID_j == JSONTileLayerData.end()) return;
+    auto firstGID_v = firstGID_j.value(); if (!firstGID_v.is_number_integer()) return;
+    firstGID = firstGID_j.value();
 
-    auto src = tileset.find("source");
-    if (src == tileset.end() || !src.value().is_string()) return;
-    std::filesystem::path xmlPath(src.value());
+    auto source_j = JSONTileLayerData.find("source"); if (source_j == JSONTileLayerData.end()) return;
+    auto source_v = source_j.value(); if (!source_v.is_string()) return;
+    std::filesystem::path xmlPath(source_j.value());
 
     pugi::xml_document document;
     pugi::xml_parse_result result = document.load_file((config::path::asset_tiled / utils::cleanRelativePath(xmlPath)).c_str());   // All tilesets should be located in "assets/.tiled/"
@@ -66,21 +77,19 @@ void tile::Data_TilelayerTileset::load(json const& tileset, SDL_Renderer* render
     Data_Generic::load(document, renderer);
 
     // Properties
-    pugi::xml_node propertiesNode = document.child("tileset").child("properties");
-    if (propertiesNode.empty()) return;
+    auto tileset_n = document.child("tileset");
+    auto properties_n = tileset_n.child("properties"); if (properties_n.empty()) return;
 
-    for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
-        if (propertyNode.empty()) continue;
+    for (auto property_n = properties_n.child("property"); property_n; property_n = property_n.next_sibling("property")) {
+        if (property_n.empty()) continue;
 
-        auto name = propertyNode.attribute("name");
-        auto type = propertyNode.attribute("type");
+        auto name_a = property_n.attribute("name"); if (name_a == nullptr) continue;
+        auto type_a = property_n.attribute("type");
 
-        if (name == nullptr) continue;
-
-        if (type == nullptr || std::strcmp(type.as_string(), "class")) {
-            auto value = propertyNode.attribute("value");
-            if (value == nullptr) continue;
-            properties.insert(std::make_pair(name.as_string(), value.as_string()));
+        if (type_a == nullptr || std::strcmp(type_a.as_string(), "class")) {
+            auto value_a = property_n.attribute("value");
+            if (value_a == nullptr) continue;
+            setProperty(name_a.as_string(), value_a.as_string());
         }
     }
 }
@@ -106,65 +115,96 @@ tile::Data_TilelayerTileset const* tile::Data_TilelayerTilesets::operator[](GID 
     return it != mData.end() ? &*it : nullptr;
 }
 
+tile::Data_EntityTileset::Animation tile::Data_EntityTileset::stoan(std::string const& s) {
+    static const std::unordered_map<std::string, Animation> ump = {
+        { "animation-idle", Animation::kIdle },
+        { "animation-attack-meele", Animation::kAttackMeele },
+        { "animation-attack-ranged", Animation::kAttackRanged },
+        { "animation-death", Animation::kDeath },
+        { "animation-run", Animation::kRun },
+        { "animation-walk", Animation::kWalk },
+        { "animation-damaged", Animation::kDamaged },
+    };
+    auto it = ump.find(s);
+    return it != ump.end() ? it->second : Animation::null;
+}
+
+void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAnimationNode) {
+    for (auto animation_n = XMLAnimationNode.child("property"); animation_n; animation_n = animation_n.next_sibling("property")) {
+        if (animation_n.empty()) continue;
+
+        auto name_a = animation_n.attribute("name"); if (name_a == nullptr) continue;
+        auto value_a = animation_n.attribute("value"); if (value_a == nullptr) continue;
+        
+        std::string name_v = name_a.as_string();
+        switch (hs(name_v.c_str())) {
+            case hs("startGID"):
+                startGID = value_a.as_int();
+                break;
+            case hs("stopGID"):
+                stopGID = value_a.as_int();
+                break;
+            case hs("isPermanent"):
+                isPermanent = value_a.as_bool();
+                break;
+            case hs("animation-update-rate-multiplier"):
+                updateRateMultiplier = value_a.as_double();
+                break;
+            default: break;
+        }
+    }
+}
+
 /**
  * @brief Read data associated with a tileset used for an entity or an animated object from loaded XML data.
  * @note Use `std::strcmp()` instead of `std::string()` in C-string comparison for slight performance gains.
 */
-void tile::Data_Entity::initialize(pugi::xml_document& document, SDL_Renderer* renderer) {
-    Data_Generic::load(document, renderer);
+void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer) {
+    Data_Generic::load(XMLTilesetData, renderer);
 
-    pugi::xml_node propertiesNode = document.child("tileset").child("properties");
-    if (propertiesNode.empty()) return;
+    auto tileset_n = XMLTilesetData.child("tileset"); if (tileset_n.empty()) return;
+    auto properties_n = tileset_n.child("properties"); if (properties_n.empty()) return;
 
-    for (pugi::xml_node propertyNode = document.child("tileset").child("properties").child("property"); propertyNode; propertyNode = propertyNode.next_sibling("property")) {
-        if (propertyNode.empty()) continue;
+    for (auto property_n = properties_n.child("property"); property_n; property_n = property_n.next_sibling("property")) {
+        if (property_n.empty()) continue;
 
-        auto name = propertyNode.attribute("name");
-        auto type = propertyNode.attribute("type");
-
-        if (name == nullptr) continue;
+        auto name_a = property_n.attribute("name"); if (name_a == nullptr) continue;
+        auto type_a = property_n.attribute("type");
         
-        if (type == nullptr || std::strcmp(type.as_string(), "class")) {
-            auto value = propertyNode.attribute("value");
-            if (value == nullptr) continue;
-            if (!std::strcmp(name.as_string(), "animation-update-rate")) {
-                animationUpdateRate = value.as_int();
-            } else if (!std::strcmp(name.as_string(), "animation-width")) {
-                animationSize.x = value.as_int();
-            } else if (!std::strcmp(name.as_string(), "animation-height")) {
-                animationSize.y = value.as_int();
-            } else properties.insert(std::make_pair(name.as_string(), value.as_string()));
+        if (type_a == nullptr || std::strcmp(type_a.as_string(), "class")) {
+            auto value_a = property_n.attribute("value"); if (value_a == nullptr) continue;
+            std::string name_v = name_a.as_string();
 
-        } else {
-            auto propertytype = propertyNode.attribute("propertytype");
-            pugi::xml_node animationsNode = propertyNode.child("properties");
-            if (propertytype == nullptr || std::strcmp(propertytype.as_string(), "animation") || animationsNode.empty()) continue;
-
-            auto animationType = Data_Entity::kAnimationTypeConversionMapping.find(name.as_string());
-            if (animationType == Data_Entity::kAnimationTypeConversionMapping.end()) continue;
-
-            Data_Entity::Data_Animation animation;
-
-            for (pugi::xml_node animationNode = animationsNode.child("property"); animationNode; animationNode = animationNode.next_sibling("property")) {
-                if (animationNode.empty()) continue;
-
-                auto name_ = animationNode.attribute("name");
-                auto value_ = animationNode.attribute("value");
-                if (name_ == nullptr || value_ == nullptr) continue;
-                
-                if (!std::strcmp(name_.as_string(), "startGID")) {
-                    animation.startGID = value_.as_int();
-                } else if (!std::strcmp(name_.as_string(), "stopGID")) {
-                    animation.stopGID = value_.as_int();
-                } else if (!std::strcmp(name_.as_string(), "isPermanent")) {
-                    animation.isPermanent = value_.as_bool();
-                } else if (!std::strcmp(name_.as_string(), "animation-update-rate-multiplier")) {
-                    animation.animationUpdateRateMultiplier = value_.as_double();
-                }
+            switch (hs(name_v.c_str())) {
+                case hs("animation-update-rate"):
+                    animationUpdateRate = value_a.as_int();
+                    break;
+                case hs("animation-width"):
+                    animationSize.x = value_a.as_int();
+                    break;
+                case hs("animation-height"):
+                    animationSize.y = value_a.as_int();
+                    break;
+                default:
+                    setProperty(name_v, value_a.as_string());
             }
+        } else {
+            auto propertytype_a = property_n.attribute("propertytype"); if (propertytype_a == nullptr || std::strcmp(propertytype_a.as_string(), "animation")) continue;
+            auto animations_n = property_n.child("properties"); if (animations_n.empty()) continue;
 
-            // Does this need to be inserted instead?
-            animationMapping.emplace(std::make_pair(animationType->second, animation));
+            auto animation = stoan(name_a.as_string()); if (animation == Animation::null) continue;
+
+            Data_Animation data;
+            data.load(animations_n);
+            ump.emplace(std::make_pair(animation, data));
         }
     }
+
+    // Insert null-representative value for index-based search
+    ump.emplace(std::make_pair(Animation::null, Data_Animation{}));
+}
+
+tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::operator[](Animation animation) const {
+    auto it = ump.find(animation);
+    return it != ump.end() ? it->second : operator[](Animation::null);
 }
