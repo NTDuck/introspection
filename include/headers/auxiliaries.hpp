@@ -483,6 +483,7 @@ namespace config {
         kPlayerMoveDown = SDLK_s,
         kPlayerMoveRight = SDLK_a,
         kPlayerMoveLeft = SDLK_d,
+        kPlayerInteract = SDLK_e,   // Used for entities & dialogues
         kPlayerRunToggle = SDLK_LSHIFT,
         kPlayerAttackMeele = SDLK_SPACE,
         kPlayerAttackSurgeProjectileOrthogonalSingle = SDLK_1,
@@ -529,15 +530,16 @@ namespace config {
         constexpr ComponentPreset frameRateOverlay = {
             config::color::smoky_black, config::color::transparent, config::color::offwhite, 0, 0,
         };
+        constexpr ComponentPreset dialogue = {
+            config::color::offwhite, config::color::black, config::color::black, 0.25f / 32.0f, 1.0f / 32.0f,
+        };
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
         };
-        constexpr ComponentPreset exitText = title;
-        constexpr ComponentPreset loadingMessage = title;
     }
 
     namespace game {
-        constexpr int frameRate = 60;
+        constexpr int FPS = 60;
         const std::filesystem::path windowIconPath = config::path::asset / "icon/brain.ico";
 
         const std::tuple<GameInitFlag, SDL_Rect, int, std::string> initializer = {
@@ -551,7 +553,7 @@ namespace config {
                 }
             },
             { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720 },
-            frameRate,
+            FPS,
             "",
         };
     }
@@ -610,7 +612,7 @@ namespace config {
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 99, 99 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-            constexpr int waitingFramesAfterDeath = 6.66 * config::game::frameRate;
+            constexpr int waitingFramesAfterDeath = 6.66 * config::game::FPS;
         }
 
         namespace teleporter {
@@ -681,18 +683,18 @@ namespace config {
         }
 
         namespace exit_text {
-            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.05f }, config::preset::exitText, "quitting~");
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.05f }, config::preset::title, "quitting~");
             constexpr double destSizeModifier = 0.5;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
             constexpr double progressUpdateRateLimit = 1;
-            constexpr double progressUpdateRate = progressUpdateRateLimit / static_cast<double>(config::game::frameRate >> 2);
+            constexpr double progressUpdateRate = progressUpdateRateLimit / static_cast<double>(config::game::FPS >> 2);
         }
 
         namespace dialogue_box {
-            const std::tuple<SDL_FPoint, ComponentPreset> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.75f }, config::preset::lightButton);
-            constexpr double destSizeModifier = 1;
-            constexpr SDL_Point destRectRatio = { 6, 1 };
+            const std::tuple<SDL_FPoint, ComponentPreset> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.85f }, config::preset::dialogue);
+            constexpr double destSizeModifier = 3;
+            constexpr SDL_Point destRectRatio = { 5, 1 };
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
         }
 
@@ -725,7 +727,7 @@ namespace config {
         }
 
         namespace loading_message {
-            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::loadingMessage, "loading");
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 4.0f / 9.0f }, config::preset::title, "loading");
             constexpr double destSizeModifier = 2;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;

@@ -121,6 +121,7 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 
 /**
  * @brief Represent the in-game interface.
+ * @note Governs both `GameState::kIngamePlaying` and `GameState::kIngameDialogue`.
 */
 class IngameInterface final : public Singleton<IngameInterface> {
     public:
@@ -142,7 +143,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleCustomEventPOST() const;
         void handleCustomEventGET(SDL_Event const& event) const;
 
-        void handleEntities() const;
+        void handleDependencies() const;
 
     private:
         void handleEntitiesInteraction() const;

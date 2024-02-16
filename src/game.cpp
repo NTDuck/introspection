@@ -15,22 +15,20 @@
 #include <auxiliaries.hpp>
 
 
-Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title) : flags(flags), windowDimension(windowDimension), frameRate(frameRate), windowTitle(title) {}
+Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int FPS, const std::string title) : mFlags(flags), mWindowDimension(windowDimension), mFPS(FPS), mWindowTitle(title) {}
 
 Game::~Game() {
-    if (windowSurface != nullptr) {
-        SDL_FreeSurface(windowSurface);
-        windowSurface = nullptr;
+    if (mWindowSurface != nullptr) {
+        SDL_FreeSurface(mWindowSurface);
+        mWindowSurface = nullptr;
     }
-
-    if (windowIcon != nullptr) {
-        SDL_FreeSurface(windowIcon);
-        windowIcon = nullptr;
+    if (mWindowIcon != nullptr) {
+        SDL_FreeSurface(mWindowIcon);
+        mWindowIcon = nullptr;
     }
-    
-    if (window != nullptr) {
-        SDL_DestroyWindow(window);
-        window = nullptr;
+    if (mWindow != nullptr) {
+        SDL_DestroyWindow(mWindow);
+        mWindow = nullptr;
     }
 
     globals::deinitialize();
@@ -68,18 +66,18 @@ void Game::start() {
 */
 void Game::initialize() {
     // Initialize SDL subsystems
-    SDL_Init(flags.lSDL);
-    IMG_Init(flags.lIMG);
+    SDL_Init(mFlags.lSDL);
+    IMG_Init(mFlags.lIMG);
     TTF_Init();
     Mix_OpenAudio(config::mixer::frequency, config::mixer::format, config::mixer::channels, config::mixer::chunkSize);
 
-    for (const auto& pair: flags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
+    for (const auto& pair: mFlags.hints) SDL_SetHint(pair.first.c_str(), pair.second.c_str());
 
-    window = SDL_CreateWindow(windowTitle.c_str(), windowDimension.x, windowDimension.y, windowDimension.w, windowDimension.h, flags.window);
-    windowIcon = IMG_Load(kWindowIconPath.generic_string().c_str());
-    SDL_SetWindowIcon(window, windowIcon);
-    windowID = SDL_GetWindowID(window);
-    globals::renderer = SDL_CreateRenderer(window, -1, flags.renderer);
+    mWindow = SDL_CreateWindow(mWindowTitle.c_str(), mWindowDimension.x, mWindowDimension.y, mWindowDimension.w, mWindowDimension.h, mFlags.window);
+    mWindowIcon = IMG_Load(mWindowIconPath.generic_string().c_str());
+    SDL_SetWindowIcon(mWindow, mWindowIcon);
+    mWindowID = SDL_GetWindowID(mWindow);
+    globals::renderer = SDL_CreateRenderer(mWindow, -1, mFlags.renderer);
 
     event::initialize();
     
@@ -142,6 +140,7 @@ void Game::render() const {
 
     switch (globals::state) {
         case GameState::kIngamePlaying:
+        case GameState::kIngameDialogue:
             IngameInterface::invoke(&IngameInterface::render);
             break;
 
@@ -178,8 +177,8 @@ void Game::onLevelChange() {
  * @brief Called should `window` change e.g. is resized.
 */
 void Game::onWindowChange() {
-    windowSurface = SDL_GetWindowSurface(window);
-    SDL_GetWindowSize(window, &globals::windowSize.x, &globals::windowSize.y);
+    mWindowSurface = SDL_GetWindowSurface(mWindow);
+    SDL_GetWindowSize(mWindow, &globals::windowSize.x, &globals::windowSize.y);
 
     FPSOverlay::invoke(&FPSOverlay::onWindowChange);
     ExitText::invoke(&ExitText::onWindowChange);
@@ -190,7 +189,7 @@ void Game::onWindowChange() {
     LoadingInterface::invoke(&LoadingInterface::onWindowChange);
     GameOverInterface::invoke(&GameOverInterface::onWindowChange);
 
-    SDL_UpdateWindowSurface(window);
+    SDL_UpdateWindowSurface(mWindow);
 }
 
 /**
@@ -202,7 +201,8 @@ void Game::handleDependencies() {
 
     switch (globals::state) {
         case GameState::kIngamePlaying:
-            IngameInterface::invoke(&IngameInterface::handleEntities);
+        case GameState::kIngameDialogue:
+            IngameInterface::invoke(&IngameInterface::handleDependencies);
             break;
 
         case GameState::kMenu:
@@ -238,8 +238,7 @@ void Game::handleDependencies() {
  * @note All `handleEvent()` methods should go here.
 */
 void Game::handleEvents() {
-    // Totally necessary
-    if (globals::state == GameState::kIngamePlaying) IngameInterface::invoke(&IngameInterface::handleCustomEventPOST);
+    handleCustomEventPOST();
 
     SDL_Event event;
     
@@ -254,8 +253,6 @@ void Game::handleEvents() {
                 handleWindowEvent(event);
                 break;
 
-            // track mouse motion & buttons only
-            // also invoked when mouse focus regained/lost
             case SDL_MOUSEMOTION:
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
@@ -279,7 +276,7 @@ void Game::handleEvents() {
  * @bug Event `SDL_WINDOWEVENT_SIZE_CHANGED` causes temporary undefined behavior for non-stationary entities.
 */
 void Game::handleWindowEvent(SDL_Event const& event) {
-    if (event.window.windowID != windowID) return;
+    if (event.window.windowID != mWindowID) return;
     switch (event.window.event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
             onWindowChange();
@@ -295,6 +292,7 @@ void Game::handleWindowEvent(SDL_Event const& event) {
 void Game::handleKeyBoardEvent(SDL_Event const& event) const {
     switch (globals::state) {
         case GameState::kIngamePlaying:
+        case GameState::kIngameDialogue:
             IngameInterface::invoke(&IngameInterface::handleKeyBoardEvent, event);
             break;
 
@@ -316,6 +314,7 @@ void Game::handleMouseEvent(SDL_Event const& event) const {
             break;
 
         case GameState::kIngamePlaying:
+        case GameState::kIngameDialogue:
             IngameInterface::invoke(&IngameInterface::handleMouseEvent, event);
             break;
 
@@ -337,4 +336,14 @@ void Game::handleCustomEventGET(SDL_Event const& event) const {
     }
 
     event::terminate(event);
+}
+
+void Game::handleCustomEventPOST() const {
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            IngameInterface::invoke(&IngameInterface::handleCustomEventPOST);
+            break;
+
+        default: break;
+    }
 }

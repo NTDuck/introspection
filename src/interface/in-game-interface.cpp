@@ -27,6 +27,8 @@ IngameInterface::IngameInterface() {
         Player::invoke(&Player::render);
     };
 
+    IngameDialogueBox::instantiate(config::components::dialogue_box::initializer);
+
     Player::instantiate(SDL_Point{});   // This is required for below instantiations
     IngameMapHandler::instantiate(config::interface::levelName);
     IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect);
@@ -53,6 +55,8 @@ void IngameInterface::deinitialize() {
     OmoriLaptop::deinitialize();
     OmoriLightBulb::deinitialize();
     OmoriMewO::deinitialize();
+
+    IngameDialogueBox::deinitialize();
 }
 
 void IngameInterface::initialize() {
@@ -72,6 +76,14 @@ void IngameInterface::initialize() {
 
 void IngameInterface::render() const {
     IngameViewHandler::invoke(&IngameViewHandler::render);
+
+    switch (globals::state) {
+        case GameState::kIngameDialogue:
+            IngameDialogueBox::invoke(&IngameDialogueBox::render);
+            break;
+
+        default: break;
+    }
 }
 
 void IngameInterface::onLevelChange() const {
@@ -114,6 +126,8 @@ void IngameInterface::onWindowChange() const {
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
     OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
     OmoriMewO::invoke(&OmoriMewO::onWindowChange);
+
+    IngameDialogueBox::invoke(&IngameDialogueBox::onWindowChange);
 }
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
@@ -128,18 +142,42 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
             onLevelChange(); onWindowChange();
             break;
 
+        case ~config::Key::kIngameDialogueTest:
+            IngameDialogueBox::invoke(&IngameDialogueBox::editContent, "Push pedestrians into oncoming traffic.");
+            break;
+
         default: break;
     }
 
     IngameViewHandler::invoke(&IngameViewHandler::handleKeyBoardEvent, event);
     IngameMapHandler::invoke(&IngameMapHandler::handleKeyBoardEvent, event);
-    Player::invoke(&Player::handleKeyboardEvent, event);
+
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            Player::invoke(&Player::handleKeyboardEvent, event);
+            break;
+
+        case GameState::kIngameDialogue:
+            IngameDialogueBox::invoke(&IngameDialogueBox::handleKeyBoardEvent, event);
+            break;
+
+        default: break;   // Unnecessary?
+    }
 }
 
 void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
-    Player::invoke(&Player::handleMouseEvent, event);
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            Player::invoke(&Player::handleMouseEvent, event);
+            break;
+
+        default: break;
+    }
 }
 
+/**
+ * @note `GameState::kIngamePlaying` only.
+*/
 void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     switch (static_cast<event::Code>(event.user.code)) {
         case event::Code::kResp_Teleport_GTE_Player:
@@ -165,6 +203,9 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     Slime::invoke(&Slime::handleCustomEventGET, event);
 }
 
+/**
+ * @note `GameState::kIngamePlaying` only.
+*/
 void IngameInterface::handleCustomEventPOST() const {
     PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
 
@@ -174,10 +215,20 @@ void IngameInterface::handleCustomEventPOST() const {
     Slime::invoke(&Slime::handleCustomEventPOST);
 }
 
-void IngameInterface::handleEntities() const {
-    handleEntitiesInteraction();
-    handleLevelSpecifics();
-    handleEntitiesSFX();
+void IngameInterface::handleDependencies() const {
+    switch (globals::state) {
+        case GameState::kIngamePlaying:
+            handleEntitiesInteraction();
+            handleLevelSpecifics();
+            handleEntitiesSFX();
+            break;
+
+        case GameState::kIngameDialogue:
+            IngameDialogueBox::invoke(&IngameDialogueBox::updateContent);
+            break;
+
+        default: break;
+    }
 }
 
 /**

@@ -27,7 +27,7 @@ class Game final : public Singleton<Game> {
         void start();
 
     private:
-        Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int frameRate, const std::string title);
+        Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int FPS, const std::string title);
 
         void initialize();
         void startGameLoop();
@@ -43,29 +43,19 @@ class Game final : public Singleton<Game> {
         void handleKeyBoardEvent(SDL_Event const& event) const;
         void handleMouseEvent(SDL_Event const& event) const;
         void handleCustomEventGET(SDL_Event const& event) const;
+        void handleCustomEventPOST() const;
 
-        const std::filesystem::path kWindowIconPath = config::game::windowIconPath;
-        SDL_Surface* windowIcon = nullptr;
+        const std::filesystem::path mWindowIconPath = config::game::windowIconPath;
+        SDL_Surface* mWindowIcon = nullptr;
 
-        /**
-         * The pointer to the main window.
-        */
-        SDL_Window* window = nullptr;
+        SDL_Window* mWindow = nullptr;
+        SDL_Surface* mWindowSurface = nullptr;
+        Uint32 mWindowID;
 
-        /**
-         * The pointer to the `SDL_Surface` bound to the main window.
-        */
-        SDL_Surface* windowSurface = nullptr;
-
-        /**
-         * The ID of the main window. Used to determine certain interactions.
-        */
-        Uint32 windowID;
-
-        const GameInitFlag flags;
-        SDL_Rect windowDimension;
-        const int frameRate;
-        const std::string windowTitle;
+        const GameInitFlag mFlags;
+        SDL_Rect mWindowDimension;
+        const int mFPS;
+        const std::string mWindowTitle;
 };
 
 

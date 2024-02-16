@@ -17,16 +17,27 @@ void IngameDialogueBox::onWindowChange() {
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
-        
+        case ~config::Key::kPlayerInteract:
+            if (!isFinished()) return;
+            globals::state = GameState::kIngamePlaying;
+            break;
+            
+        default: break;
     }
 }
 
 void IngameDialogueBox::updateContent() {
-    // Conditional check ...
+    if (isFinished()) return;
+
+    // Really funny things gonna happen here
+    std::cout << mContent[mCurrProgress] << std::endl;
+
+    ++mCurrProgress;
 }
 
 void IngameDialogueBox::editContent(std::string const& content) {
-    if (isFinished()) return;
+    if (!isFinished()) return;
+    globals::state = GameState::kIngameDialogue;
     mCurrProgress = 0;
     mContent = content;
 }

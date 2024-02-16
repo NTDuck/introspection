@@ -75,7 +75,7 @@ class FPSControlTimer final : public GenericTimer<FPSControlTimer> {
         void controlFPS();
 
     private:
-        static constexpr int kTicksPerFrame = 1000 / config::game::frameRate;
+        static constexpr int kTicksPerFrame = 1000 / config::game::FPS;
 };
 
 

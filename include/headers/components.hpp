@@ -288,8 +288,8 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
             return mCurrProgress == static_cast<unsigned short int>(mContent.size()) - 1;
         }
         
-        unsigned short int mCurrProgress;
-        std::string mContent;
+        std::string mContent = "watermelon";   // Decoy
+        unsigned short int mCurrProgress = static_cast<unsigned short int>(mContent.size()) - 1;   // Undefined behaviour if uninitialized
 };
 
 
