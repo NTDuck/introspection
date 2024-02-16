@@ -528,10 +528,10 @@ namespace config {
             config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
         };
         constexpr ComponentPreset frameRateOverlay = {
-            config::color::smoky_black, config::color::transparent, config::color::offwhite, 0, 0,
+            config::color::smoky_black, config::color::offwhite, config::color::offwhite, 0.125f / 32.0f, 1.0f / 32.0f,
         };
         constexpr ComponentPreset dialogue = {
-            config::color::offwhite, config::color::black, config::color::black, 0.25f / 32.0f, 1.0f / 32.0f,
+            config::color::black, config::color::offwhite, config::color::offwhite, 0.375f / 32.0f, 1.25f / 32.0f,
         };
         constexpr ComponentPreset title = {
             config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
@@ -693,7 +693,7 @@ namespace config {
 
         namespace dialogue_box {
             const std::tuple<SDL_FPoint, ComponentPreset> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.85f }, config::preset::dialogue);
-            constexpr double destSizeModifier = 3;
+            constexpr double destSizeModifier = 2.25;
             constexpr SDL_Point destRectRatio = { 5, 1 };
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
         }
