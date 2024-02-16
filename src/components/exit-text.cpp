@@ -10,9 +10,9 @@ ExitText::ExitText(SDL_FPoint const& center, ComponentPreset const& preset, std:
 
 void ExitText::deinitialize() {
     Singleton<ExitText>::deinitialize();
-    if (font != nullptr) {
-        TTF_CloseFont(font);
-        font = nullptr;
+    if (sFont != nullptr) {
+        TTF_CloseFont(sFont);
+        sFont = nullptr;
     }
 }
 
@@ -27,7 +27,7 @@ void ExitText::onWindowChange() {
 }
 
 void ExitText::handleKeyBoardEvent(SDL_Event const& event) {
-    if (event.key.keysym.sym != config::key::EXIT || event.type != SDL_KEYDOWN) {
+    if (event.key.keysym.sym != ~config::Key::kExit || event.type != SDL_KEYDOWN) {
         // Reset
         mCurrProgress = 0;
         return;
@@ -50,7 +50,7 @@ void ExitText::registerProgress() {
     auto eq = [](double progress) {
         return std::sqrt(1.0 - pow(progress - 1.0, 2));
     };
-    SDL_SetTextureAlphaMod(textTexture, SDL_ALPHA_OPAQUE * eq(mCurrProgress));
+    SDL_SetTextureAlphaMod(mTextTexture, SDL_ALPHA_OPAQUE * eq(mCurrProgress));
 }
 
 
@@ -61,4 +61,4 @@ template <>
 const SDL_Point GenericComponent<ExitText>::kDestRectRatio = config::components::exit_text::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<ExitText>::fontPath = config::components::exit_text::fontPath;
+const std::filesystem::path GenericTextComponent<ExitText>::sFontPath = config::components::exit_text::fontPath;

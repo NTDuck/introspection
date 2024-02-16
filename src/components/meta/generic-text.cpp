@@ -5,44 +5,44 @@
 
 
 template <typename T>
-GenericTextComponent<T>::GenericTextComponent(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content) : GenericComponent<T>(center, preset), content(content) {}
+GenericTextComponent<T>::GenericTextComponent(SDL_FPoint const& center, ComponentPreset const& preset, std::string const& content) : GenericComponent<T>(center, preset), mContent(content) {}
 
 template <typename T>
 GenericTextComponent<T>::~GenericTextComponent() {
-    if (textTexture != nullptr) {
-        SDL_DestroyTexture(textTexture);
-        textTexture = nullptr;
+    if (mTextTexture != nullptr) {
+        SDL_DestroyTexture(mTextTexture);
+        mTextTexture = nullptr;
     }
 }
 
 template <typename T>
 void GenericTextComponent<T>::deinitialize() {
     Multiton<T>::deinitialize();
-    if (font != nullptr) {
-        TTF_CloseFont(font);
-        font = nullptr;
+    if (sFont != nullptr) {
+        TTF_CloseFont(sFont);
+        sFont = nullptr;
     }
 }
 
 template <typename T>
 void GenericTextComponent<T>::render() const {
-    SDL_RenderCopy(globals::renderer, textTexture, nullptr, &textDestRect);
+    SDL_RenderCopy(globals::renderer, mTextTexture, nullptr, &mTextDestRect);
 }
 
 template <typename T>
 void GenericTextComponent<T>::onWindowChange() {
     auto loadFont = [&]() {
-        if (font != nullptr) {
-            if (TTF_FontHeight(font) == sDestSize) return;
-            TTF_CloseFont(font);
+        if (sFont != nullptr) {
+            if (TTF_FontHeight(sFont) == sDestSize) return;
+            TTF_CloseFont(sFont);
         }
 
-        font = TTF_OpenFont(fontPath.generic_string().c_str(), sDestSize);   // Prevent `error: cannot convert 'const std::filesystem::__cxx11::path::value_type*' {aka 'const wchar_t*'} to 'const char*'`
+        sFont = TTF_OpenFont(sFontPath.generic_string().c_str(), sDestSize);   // Prevent `error: cannot convert 'const std::filesystem::__cxx11::path::value_type*' {aka 'const wchar_t*'} to 'const char*'`
     };
 
     GenericComponent<T>::onWindowChange();
     loadFont();
-    loadTextTexture(textTexture, kPreset);
+    loadTextTexture(mTextTexture, kPreset);
 }
 
 template <typename T>
@@ -50,29 +50,29 @@ void GenericTextComponent<T>::loadTextTexture(SDL_Texture*& texture, ComponentPr
     if (texture != nullptr) SDL_DestroyTexture(texture);
 
     // Render text at high quality
-    SDL_Surface* surface = TTF_RenderUTF8_Blended(font, content.c_str(), preset.textColor);
+    SDL_Surface* surface = TTF_RenderUTF8_Blended(sFont, mContent.c_str(), preset.textColor);
     if (surface == nullptr) return;
 
     texture = SDL_CreateTextureFromSurface(globals::renderer, surface);
     
     // Register `innerSurface` dimensions to `innerDestRect`
-    textDestRect.w = surface->w;
-    textDestRect.h = surface->h;
-    textDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - textDestRect.w / 2);
-    textDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - textDestRect.h / 2);
+    mTextDestRect.w = surface->w;
+    mTextDestRect.h = surface->h;
+    mTextDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - mTextDestRect.w / 2);
+    mTextDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - mTextDestRect.h / 2);
 
     SDL_FreeSurface(surface);
 }
 
 template <typename T>
 void GenericTextComponent<T>::editContent(std::string const& nextContent) {
-    content = nextContent;
-    loadTextTexture(textTexture, kPreset);
+    mContent = nextContent;
+    loadTextTexture(mTextTexture, kPreset);
 }
 
 
 template <typename T>
-TTF_Font* GenericTextComponent<T>::font = nullptr;
+TTF_Font* GenericTextComponent<T>::sFont = nullptr;
 
 
 template class GenericTextComponent<FPSOverlay>;

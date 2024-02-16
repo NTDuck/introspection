@@ -118,12 +118,12 @@ void IngameInterface::onWindowChange() const {
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
     switch (event.key.keysym.sym) {
-        case config::key::INGAME_RETURN_MENU:
+        case ~config::Key::kIngameReturnMenu:
             if (event.type != SDL_KEYDOWN) break;
             globals::state = GameState::kLoading | GameState::kMenu;
             break;
 
-        case config::key::INGAME_LEVEL_RESET:
+        case ~config::Key::kIngameLevelReset:
             if (event.type != SDL_KEYDOWN) break;
             onLevelChange(); onWindowChange();
             break;

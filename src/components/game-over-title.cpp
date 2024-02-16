@@ -10,9 +10,9 @@ GameOverTitle::GameOverTitle(SDL_FPoint const& center, ComponentPreset const& pr
 
 void GameOverTitle::deinitialize() {
     Singleton<MenuTitle>::deinitialize();
-    if (font != nullptr) {
-        TTF_CloseFont(font);
-        font = nullptr;
+    if (sFont != nullptr) {
+        TTF_CloseFont(sFont);
+        sFont = nullptr;
     }
 }
 
@@ -24,4 +24,4 @@ template <>
 const SDL_Point GenericComponent<GameOverTitle>::kDestRectRatio = config::components::game_over_title::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<GameOverTitle>::fontPath = config::components::game_over_title::fontPath;
+const std::filesystem::path GenericTextComponent<GameOverTitle>::sFontPath = config::components::game_over_title::fontPath;

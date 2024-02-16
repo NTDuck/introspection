@@ -10,9 +10,9 @@ LoadingMessage::LoadingMessage(SDL_FPoint const& center, ComponentPreset const& 
 
 void LoadingMessage::deinitialize() {
     Singleton<LoadingMessage>::deinitialize();
-    if (font != nullptr) {
-        TTF_CloseFont(font);
-        font = nullptr;
+    if (sFont != nullptr) {
+        TTF_CloseFont(sFont);
+        sFont = nullptr;
     }
 }
 
@@ -24,4 +24,4 @@ template <>
 const SDL_Point GenericComponent<LoadingMessage>::kDestRectRatio = config::components::loading_message::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<LoadingMessage>::fontPath = config::components::loading_message::fontPath;
+const std::filesystem::path GenericTextComponent<LoadingMessage>::sFontPath = config::components::loading_message::fontPath;

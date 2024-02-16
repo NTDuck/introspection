@@ -50,27 +50,27 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
     if (mCurrAnimationType == Animation::kDeath || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDeath)) return;
 
     switch (event.key.keysym.sym) {
-        case config::key::PLAYER_MOVE_UP:
-        case config::key::PLAYER_MOVE_DOWN:
-        case config::key::PLAYER_MOVE_RIGHT:
-        case config::key::PLAYER_MOVE_LEFT:
+        case ~config::Key::kPlayerMoveUp:
+        case ~config::Key::kPlayerMoveDown:
+        case ~config::Key::kPlayerMoveRight:
+        case ~config::Key::kPlayerMoveLeft:
             handleKeyboardEvent_Movement(event);
             break;
 
-        case config::key::PLAYER_RUN_TOGGLE:
+        case ~config::Key::kPlayerRunToggle:
             onRunningToggled(event.type == SDL_KEYDOWN);
             break;
 
-        case config::key::PLAYER_ATTACK:
+        case ~config::Key::kPlayerAttackMeele:
             if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackMeele);
             break;
 
-        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE:
-        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE:
-        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE:
-        case config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE:
-        case config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE:
+        case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalSingle:
+        case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalDouble:
+        case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalTriple:
+        case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalQuadruple:
+        case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
             if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackRanged);
             handleKeyboardEvent_ProjectileAttack(event);
@@ -119,10 +119,10 @@ void Player::handleCustomEventGET(SDL_Event const& event) {
 
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
-        { config::key::PLAYER_MOVE_UP, {0, -1} },
-        { config::key::PLAYER_MOVE_DOWN, {0, 1} },
-        { config::key::PLAYER_MOVE_RIGHT, {-1, 0} },
-        { config::key::PLAYER_MOVE_LEFT, {1, 0} },
+        { ~config::Key::kPlayerMoveUp, {0, -1} },
+        { ~config::Key::kPlayerMoveDown, {0, 1} },
+        { ~config::Key::kPlayerMoveRight, {-1, 0} },
+        { ~config::Key::kPlayerMoveLeft, {1, 0} },
     };
 
     auto it = mapping.find(event.key.keysym.sym);
@@ -141,11 +141,11 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
 
 void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
     static const std::unordered_map<SDL_Keycode, ProjectileType> mapping = {
-        { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE, ProjectileType::kOrthogonalSingle },
-        { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE, ProjectileType::kOrthogonalDouble },
-        { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE, ProjectileType::kOrthogonalTriple },
-        { config::key::PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE, ProjectileType::kOrthogonalQuadruple },
-        { config::key::PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE, ProjectileType::kDiagonalQuadruple },
+        { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalSingle, ProjectileType::kOrthogonalSingle },
+        { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalDouble, ProjectileType::kOrthogonalDouble },
+        { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalTriple, ProjectileType::kOrthogonalTriple },
+        { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalQuadruple, ProjectileType::kOrthogonalQuadruple },
+        { ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple, ProjectileType::kDiagonalQuadruple },
     };
 
     auto it = mapping.find(event.key.keysym.sym);

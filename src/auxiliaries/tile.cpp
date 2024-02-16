@@ -196,15 +196,15 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
 
             Data_Animation data;
             data.load(animations_n);
-            ump.emplace(std::make_pair(animation, data));
+            mUMap.emplace(std::make_pair(animation, data));
         }
     }
 
     // Insert null-representative value for index-based search
-    ump.emplace(std::make_pair(Animation::null, Data_Animation{}));
+    mUMap.emplace(std::make_pair(Animation::null, Data_Animation{}));
 }
 
 tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::operator[](Animation animation) const {
-    auto it = ump.find(animation);
-    return it != ump.end() ? it->second : operator[](Animation::null);
+    auto it = mUMap.find(animation);
+    return it != mUMap.end() ? it->second : operator[](Animation::null);
 }

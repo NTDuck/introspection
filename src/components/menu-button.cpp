@@ -16,4 +16,4 @@ template <>
 const SDL_Point GenericComponent<MenuButton>::kDestRectRatio = config::components::menu_button::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<MenuButton>::fontPath = config::components::menu_button::fontPath;
+const std::filesystem::path GenericTextComponent<MenuButton>::sFontPath = config::components::menu_button::fontPath;

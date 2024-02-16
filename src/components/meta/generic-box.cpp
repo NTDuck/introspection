@@ -66,6 +66,7 @@ void GenericBoxComponent<T>::loadBoxTexture(SDL_Texture*& texture, ComponentPres
 
 
 template class GenericBoxComponent<FPSOverlay>;
+template class GenericBoxComponent<IngameDialogueBox>;
 template class GenericBoxComponent<MenuButton>;
 template class GenericBoxComponent<LoadingProgressBar>;
 template class GenericBoxComponent<GameOverButton>;

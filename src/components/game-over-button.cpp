@@ -21,4 +21,4 @@ template <>
 const SDL_Point GenericComponent<GameOverButton>::kDestRectRatio = config::components::game_over_button::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<GameOverButton>::fontPath = config::components::game_over_button::fontPath;
+const std::filesystem::path GenericTextComponent<GameOverButton>::sFontPath = config::components::game_over_button::fontPath;

@@ -80,7 +80,7 @@ void IngameViewHandler::onLevelChange() {
 */
 void IngameViewHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
-        case config::key::INGAME_TOGGLE_CAMERA_ANGLE:
+        case ~config::Key::kIngameCameraAngleToggle:
             if (event.type != SDL_KEYDOWN) break;
             switchView();
             break;

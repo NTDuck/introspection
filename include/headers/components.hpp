@@ -99,16 +99,16 @@ class GenericTextComponent : virtual public GenericComponent<T> {
 
         void loadTextTexture(SDL_Texture*& texture, ComponentPreset const& preset);
 
-        static TTF_Font* font;
-        static const std::filesystem::path fontPath;
+        static TTF_Font* sFont;
+        static const std::filesystem::path sFontPath;
 
-        SDL_Texture* textTexture = nullptr;
-        SDL_Rect textDestRect;
+        SDL_Texture* mTextTexture = nullptr;
+        SDL_Rect mTextDestRect;
 
-        std::string content;
+        std::string mContent;
 };
 
-#define INCL_GENERIC_TEXT_COMPONENT(T) using GenericTextComponent<T>::deinitialize, GenericTextComponent<T>::render, GenericTextComponent<T>::onWindowChange, GenericTextComponent<T>::editContent, GenericTextComponent<T>::loadTextTexture, GenericTextComponent<T>::font, GenericTextComponent<T>::fontPath, GenericTextComponent<T>::textTexture, GenericTextComponent<T>::textDestRect, GenericTextComponent<T>::content;
+#define INCL_GENERIC_TEXT_COMPONENT(T) using GenericTextComponent<T>::deinitialize, GenericTextComponent<T>::render, GenericTextComponent<T>::onWindowChange, GenericTextComponent<T>::editContent, GenericTextComponent<T>::loadTextTexture, GenericTextComponent<T>::sFont, GenericTextComponent<T>::sFontPath, GenericTextComponent<T>::mTextTexture, GenericTextComponent<T>::mTextDestRect, GenericTextComponent<T>::mContent;
 
 
 /**
@@ -265,6 +265,31 @@ class ExitText final : public Singleton<ExitText>, public GenericTextComponent<E
         const double kProgressUpdateRate = config::components::exit_text::progressUpdateRate;
 
         double mCurrProgress;
+};
+
+
+class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBoxComponent<IngameDialogueBox> {
+    public:
+        INCL_GENERIC_BOX_COMPONENT(IngameDialogueBox)
+        INCL_SINGLETON(IngameDialogueBox)
+
+        IngameDialogueBox(SDL_FPoint const& center, ComponentPreset const& preset);
+        ~IngameDialogueBox() = default;
+
+        void render() const override;
+        void onWindowChange() override;
+        void handleKeyBoardEvent(SDL_Event const& event);
+
+        void updateContent();
+        void editContent(std::string const& content);
+        
+    private:
+        inline bool isFinished() const {
+            return mCurrProgress == static_cast<unsigned short int>(mContent.size()) - 1;
+        }
+        
+        unsigned short int mCurrProgress;
+        std::string mContent;
 };
 
 

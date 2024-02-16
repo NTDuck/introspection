@@ -61,7 +61,7 @@ void IngameMapHandler::onWindowChange() { onLevelChange(); }
 
 void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
-        case config::key::INGAME_TOGGLE_GRAYSCALE:
+        case ~config::Key::kIngameGrayscaleToggle:
             if (event.type != SDL_KEYDOWN) break;
             isOnGrayscale ^= true;
             break;

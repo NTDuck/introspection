@@ -30,6 +30,7 @@ int GenericComponent<T>::sDestSize;
 
 template class GenericComponent<FPSOverlay>;
 template class GenericComponent<ExitText>;
+template class GenericComponent<IngameDialogueBox>;
 template class GenericComponent<MenuButton>;
 template class GenericComponent<MenuTitle>;
 template class GenericComponent<LoadingMessage>;

@@ -37,7 +37,7 @@ void GenericButtonComponent<T>::deinitialize() {
 template <typename T>
 void GenericButtonComponent<T>::render() const {
     SDL_RenderCopy(globals::renderer, (mIsMouseOut ? mBoxTexture : mBoxTextureOnMouseOver), nullptr, &mBoxDestRect);
-    SDL_RenderCopy(globals::renderer, (mIsMouseOut ? textTexture : mTextTextureOnMouseOver), nullptr, &textDestRect);
+    SDL_RenderCopy(globals::renderer, (mIsMouseOut ? mTextTexture : mTextTextureOnMouseOver), nullptr, &mTextDestRect);
 }
 
 template <typename T>

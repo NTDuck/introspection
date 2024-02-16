@@ -10,9 +10,9 @@ MenuTitle::MenuTitle(SDL_FPoint const& center, ComponentPreset const& preset, st
 
 void MenuTitle::deinitialize() {
     Singleton<MenuTitle>::deinitialize();
-    if (font != nullptr) {
-        TTF_CloseFont(font);
-        font = nullptr;
+    if (sFont != nullptr) {
+        TTF_CloseFont(sFont);
+        sFont = nullptr;
     }
 }
 
@@ -24,4 +24,4 @@ template <>
 const SDL_Point GenericComponent<MenuTitle>::kDestRectRatio = config::components::menu_title::destRectRatio;
 
 template <>
-const std::filesystem::path GenericTextComponent<MenuTitle>::fontPath = config::components::menu_title::fontPath;
+const std::filesystem::path GenericTextComponent<MenuTitle>::sFontPath = config::components::menu_title::fontPath;

@@ -35,7 +35,8 @@ enum class GameState {
     kMenu = 2,
     kLoading = 4,
     kIngamePlaying = 8,
-    kGameOver = 16,
+    kIngameDialogue = 16,
+    kGameOver = 32,
     // kIngamePaused,
     // kIngameDialogue,
     // kIngameCutscene,
@@ -280,7 +281,7 @@ namespace tile {
         SDL_Point animationSize = {1, 1};
 
         private:
-            std::unordered_map<Animation, Data_Animation> ump;
+            std::unordered_map<Animation, Data_Animation> mUMap;
     };
 }
 
@@ -466,6 +467,33 @@ namespace event {
 namespace config {
     constexpr bool audioEnabled = false;
 
+    /**
+     * Uses `operator~` for static conversion to `SDL_Keycode`.
+    */
+    enum class Key : SDL_Keycode {
+        kExit = SDLK_ESCAPE,
+
+        kIngameReturnMenu = SDLK_F1,
+        kIngameDialogueTest = SDLK_F2,
+        kIngameLevelReset = SDLK_F4,
+        kIngameCameraAngleToggle = SDLK_F5,
+        kIngameGrayscaleToggle = SDLK_F6,
+
+        kPlayerMoveUp = SDLK_w,
+        kPlayerMoveDown = SDLK_s,
+        kPlayerMoveRight = SDLK_a,
+        kPlayerMoveLeft = SDLK_d,
+        kPlayerRunToggle = SDLK_LSHIFT,
+        kPlayerAttackMeele = SDLK_SPACE,
+        kPlayerAttackSurgeProjectileOrthogonalSingle = SDLK_1,
+        kPlayerAttackSurgeProjectileOrthogonalDouble = SDLK_2,
+        kPlayerAttackSurgeProjectileOrthogonalTriple = SDLK_3,
+        kPlayerAttackSurgeProjectileOrthogonalQuadruple = SDLK_4,
+        kPlayerAttackSurgeProjectileDiagonalQuadruple = SDLK_5,
+    };
+
+    constexpr SDL_Keycode operator~(Key key) { return static_cast<SDL_Keycode>(key); }
+
     namespace path {
         const std::filesystem::path asset = "assets";
         const std::filesystem::path asset_tiled = asset / ".tiled";
@@ -477,28 +505,6 @@ namespace config {
             const std::filesystem::path OmoriHarmonic = asset_font / "omori-game-2.ttf";
             const std::filesystem::path Phorssa = asset_font / "phorssa.ttf";   // Bizarre
         }
-    }
-
-    namespace key {
-        constexpr SDL_Keycode EXIT = SDLK_ESCAPE;
-
-        constexpr SDL_Keycode INGAME_RETURN_MENU = SDLK_F1;
-
-        constexpr SDL_Keycode INGAME_LEVEL_RESET = SDLK_F4;
-        constexpr SDL_Keycode INGAME_TOGGLE_CAMERA_ANGLE = SDLK_F5;
-        constexpr SDL_Keycode INGAME_TOGGLE_GRAYSCALE = SDLK_F6;
-
-        constexpr SDL_Keycode PLAYER_MOVE_UP = SDLK_w;
-        constexpr SDL_Keycode PLAYER_MOVE_DOWN = SDLK_s;
-        constexpr SDL_Keycode PLAYER_MOVE_RIGHT = SDLK_a;
-        constexpr SDL_Keycode PLAYER_MOVE_LEFT = SDLK_d;
-        constexpr SDL_Keycode PLAYER_RUN_TOGGLE = SDLK_LSHIFT;
-        constexpr SDL_Keycode PLAYER_ATTACK = SDLK_SPACE;
-        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_SINGLE = SDLK_1;
-        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_DOUBLE = SDLK_2;
-        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_TRIPLE = SDLK_3;
-        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_ORTHOGONAL_QUADRUPLE = SDLK_4;
-        constexpr SDL_Keycode PLAYER_SURGE_ATTACK_DIAGONAL_QUADRUPLE = SDLK_5;
     }
 
     namespace color {
@@ -681,6 +687,13 @@ namespace config {
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
             constexpr double progressUpdateRateLimit = 1;
             constexpr double progressUpdateRate = progressUpdateRateLimit / static_cast<double>(config::game::frameRate >> 2);
+        }
+
+        namespace dialogue_box {
+            const std::tuple<SDL_FPoint, ComponentPreset> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.75f }, config::preset::lightButton);
+            constexpr double destSizeModifier = 1;
+            constexpr SDL_Point destRectRatio = { 6, 1 };
+            const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
         }
 
         namespace menu_avatar {
