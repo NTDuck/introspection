@@ -18,7 +18,8 @@ void IngameDialogueBox::onWindowChange() {
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
         case ~config::Key::kPlayerInteract:
-            if (!isFinished()) return;
+            if (mStatus != Status::kUpdateComplete) break;
+            mStatus = Status::kInactive;
             globals::state = GameState::kIngamePlaying;
             break;
             
@@ -27,19 +28,22 @@ void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
 }
 
 void IngameDialogueBox::updateContent() {
-    if (isFinished()) return;
+    if (mStatus != Status::kUpdateInProgress) return;
 
     // Really funny things gonna happen here
     std::cout << mContent[mCurrProgress] << std::endl;
 
-    ++mCurrProgress;
+    if (mCurrProgress == static_cast<unsigned short int>(mContent.size()) - 1) mStatus = Status::kUpdateComplete; else ++mCurrProgress;
 }
 
 void IngameDialogueBox::editContent(std::string const& content) {
-    if (!isFinished()) return;
-    globals::state = GameState::kIngameDialogue;
+    if (mStatus != Status::kInactive || content.empty()) return;
+
+    mStatus = Status::kUpdateInProgress;
     mCurrProgress = 0;
     mContent = content;
+
+    globals::state = GameState::kIngameDialogue;
 }
 
 

@@ -284,12 +284,16 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void editContent(std::string const& content);
         
     private:
-        inline bool isFinished() const {
-            return mCurrProgress == static_cast<unsigned short int>(mContent.size()) - 1;
-        }
-        
-        std::string mContent = "watermelon";   // Decoy
-        unsigned short int mCurrProgress = static_cast<unsigned short int>(mContent.size()) - 1;   // Undefined behaviour if uninitialized
+        enum class Status : unsigned char {
+            kInactive,
+            kUpdateInProgress,
+            kUpdateComplete,
+        };
+
+        Status mStatus = Status::kInactive;
+
+        std::string mContent;
+        unsigned short int mCurrProgress;
 };
 
 

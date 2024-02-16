@@ -90,9 +90,9 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatusFlag flag) {
+void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatus flag) {
     mCurrAnimationType = animationType;
-    if (flag == EntityStatusFlag::kContinued) return;
+    if (flag == EntityStatus::kContinued) return;
     mCurrAnimationGID = AbstractEntity<T>::sTilesetData[mCurrAnimationType].startGID;
 }
 

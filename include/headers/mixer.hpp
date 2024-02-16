@@ -15,7 +15,7 @@
 */
 class Mixer final : Singleton<Mixer> {
     public:
-        enum class SFXName {
+        enum class SFXName : unsigned char {
             kButtonClick,
             kSurgeAttack,
             kPlayerWalk,

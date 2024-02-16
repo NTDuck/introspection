@@ -30,7 +30,7 @@ using json = nlohmann::json;
 
 /* Enumerations & Structs */
 
-enum class GameState {
+enum class GameState : unsigned short int {
     kExit = 1,
     kMenu = 2,
     kLoading = 4,
@@ -51,11 +51,13 @@ constexpr GameState operator|(GameState const& first, GameState const& second) {
 /**
  * @brief Provide flexible handling base on an entity movement's status.
 */
-enum class EntityStatusFlag {
-    kDefault, kInvalidated, kContinued,
+enum class EntityStatus : unsigned char {
+    kDefault,
+    kInvalidated,
+    kContinued,
 };
 
-enum class ProjectileType {
+enum class ProjectileType : unsigned char {
     kOrthogonalSingle,
     kOrthogonalDouble,
     kOrthogonalTriple,
@@ -244,7 +246,7 @@ namespace tile {
         /**
          * Register animation types as enumeration constants for maintainability.
         */
-        enum class Animation {
+        enum class Animation : char {
             null = -1,
 
             kIdle,
@@ -293,7 +295,7 @@ namespace level {
     /**
      * Register level names as enumeration constants for maintainability.
     */
-    enum class Name {
+    enum class Name : char {
         null = -1,
 
         kLevelEquilibrium,

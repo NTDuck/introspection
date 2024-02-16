@@ -115,8 +115,8 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     if (pNextVelocity == nullptr) onMoveEnd();
     // If new move has been initiated, do this to avoid switching back to original GID
     else {
-        onMoveEnd(EntityStatusFlag::kContinued);
-        initiateMove(EntityStatusFlag::kContinued);
+        onMoveEnd(EntityStatus::kContinued);
+        initiateMove(EntityStatus::kContinued);
     }
 }
 
@@ -125,7 +125,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
  * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
+void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
     if (
         pNextDestCoords != nullptr   // Another move is on progress
         || mCurrAnimationType == Animation::kDeath   // Cannot move if is already dead
@@ -133,14 +133,14 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatusFlag flag) {
     ) return;
 
     if (pNextVelocity == nullptr) {
-        onMoveEnd(EntityStatusFlag::kInvalidated);
+        onMoveEnd(EntityStatus::kInvalidated);
         return;
     }
 
     pNextDestCoords = new SDL_Point(mDestCoords + *pNextVelocity);
     pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
 
-    if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatusFlag::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
+    if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatus::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
 
 /**
@@ -189,7 +189,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
  * @note Called when a move is initiated after successful validation.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
+void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
     mCurrVelocity = *pNextVelocity;
 
     if (mCurrVelocity.x) mFlip = (mCurrVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
@@ -203,13 +203,13 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatusFlag flag) {
  * @note Called when a validated move is finalized, or when a move is invalidated.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatus flag) {
     // Terminate movement when reached new `Tile`
-    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != EntityStatusFlag::kInvalidated) {
+    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != EntityStatus::kInvalidated) {
         mDestCoords = *pNextDestCoords;
         mDestRect = *pNextDestRect;
 
-        if (flag == EntityStatusFlag::kInvalidated) {
+        if (flag == EntityStatus::kInvalidated) {
             delete pNextDestCoords;
             delete pNextDestRect;
         }
@@ -222,7 +222,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatusFlag flag) {
     mMoveDelayCounter = sMoveDelay;
     mFractionalVelocityCounter = {0, 0};
 
-    if (flag == EntityStatusFlag::kContinued) return;
+    if (flag == EntityStatus::kContinued) return;
     AbstractAnimatedEntity<T>::resetAnimation(Animation::kIdle, flag);
 }
 

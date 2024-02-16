@@ -128,7 +128,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         void initiateAnimation();
         virtual void updateAnimation();
-        void resetAnimation(Animation animationType, EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        void resetAnimation(Animation animationType, EntityStatus flag = EntityStatus::kDefault);
 
         inline bool isAnimationAtSprite(int GID) const {
             return mCurrAnimationGID == GID;
@@ -203,13 +203,13 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         void onLevelChange(level::Data_Generic const& entityLevelData) override;
 
         virtual void move();
-        virtual void initiateMove(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void initiateMove(EntityStatus flag = EntityStatus::kDefault);
 
     protected:
         AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
 
-        virtual void onMoveStart(EntityStatusFlag flag = EntityStatusFlag::kDefault);
-        virtual void onMoveEnd(EntityStatusFlag flag = EntityStatusFlag::kDefault);
+        virtual void onMoveStart(EntityStatus flag = EntityStatus::kDefault);
+        virtual void onMoveEnd(EntityStatus flag = EntityStatus::kDefault);
         virtual void onRunningToggled(bool onRunningStart);
 
         virtual bool validateMove() const;

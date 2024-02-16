@@ -83,8 +83,8 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
 */
 class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {      
     enum class View : bool {
-        kTargetEntity = false,
-        kFullScreen = true,
+        kTargetEntity,
+        kFullScreen,
     };
 
     public:
