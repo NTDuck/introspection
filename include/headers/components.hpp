@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <filesystem>
+#include <map>
 #include <unordered_map>
 #include <type_traits>
 
@@ -269,28 +270,86 @@ class ExitText final : public Singleton<ExitText>, public GenericTextComponent<E
 
 
 class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBoxComponent<IngameDialogueBox> {
+    enum class Status : unsigned char {
+        kInactive,
+        kUpdateInProgress,
+        kUpdateComplete,
+    };
+    
+    class BMPFont {
+        class Map {
+            public:
+                using Unit = unsigned char;   // Assume that a char's width does not exceed 255
+
+                Map() = default;
+                inline ~Map() { clear(); }
+
+                void insert(char c, Unit glyphWidth);
+                inline void clear() { data.clear(); }
+                SDL_Rect operator[](char c) const;
+
+                void setGlyphHeight(Unit height) { glyphHeight = height; }
+
+            private:
+                Unit glyphHeight;
+                std::map<char, Unit> data;
+        };
+
+        public:
+            BMPFont(ComponentPreset const& preset, SDL_Point const& spacing = { 0, 0 });
+            ~BMPFont();
+
+            void load(TTF_Font* font);
+
+            void setRenderTarget(SDL_Texture* targetTexture);
+            void render(char c) const;
+            void clear() const;
+
+        private:
+            std::string getChars() const; 
+            void registerCharToMap(char c);
+            void registerCharToTexture(char c) const;
+
+            SDL_Texture* mTexture = nullptr;
+            SDL_Point mSrcSize;
+            Map mSrcRectsMap;
+
+            SDL_Texture* mTargetTexture = nullptr;
+            SDL_Point mTargetTextureSize;
+            mutable SDL_Point mTargetTextureOrigin = { 0, 0 };
+
+            ComponentPreset mPreset;
+            SDL_Point mSpacing;
+    };
+
     public:
         INCL_GENERIC_BOX_COMPONENT(IngameDialogueBox)
         INCL_SINGLETON(IngameDialogueBox)
 
         IngameDialogueBox(SDL_FPoint const& center, ComponentPreset const& preset);
-        ~IngameDialogueBox() = default;
+        ~IngameDialogueBox();
+
+        static void initialize();
+        static void deinitialize();
 
         void render() const override;
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
 
-        void updateContent();
+        void updateProgress();
         void editContent(std::string const& content);
         
     private:
-        enum class Status : unsigned char {
-            kInactive,
-            kUpdateInProgress,
-            kUpdateComplete,
-        };
+        static TTF_Font* sFont;
+        static constexpr int sFontSize = config::components::dialogue_box::fontSize;
+        static const std::filesystem::path sFontPath;
 
         Status mStatus = Status::kInactive;
+
+        BMPFont mBMPFont;
+        SDL_Texture* mTextTexture = nullptr;
+        SDL_Rect mTextDestRect;
+        static constexpr inline double mTextTextureOffsetRatio = config::components::dialogue_box::destOffsetRatio;
 
         std::string mContent;
         unsigned short int mCurrProgress;

@@ -31,7 +31,7 @@ void GenericTextComponent<T>::render() const {
 
 template <typename T>
 void GenericTextComponent<T>::onWindowChange() {
-    auto loadFont = [&]() {
+    static constexpr auto loadFont = [&]() {
         if (sFont != nullptr) {
             if (TTF_FontHeight(sFont) == sDestSize) return;
             TTF_CloseFont(sFont);

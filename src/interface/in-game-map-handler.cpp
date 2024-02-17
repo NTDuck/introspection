@@ -88,13 +88,7 @@ void IngameMapHandler::loadLevel() {
     
     json JSONLevelData;
     utils::readJSON(kLevelPath.string(), JSONLevelData);
-
-    // Several attributes shall be assumed e.g. orthogonal orientation, right-down renderorder, tilerendersize = grid
-    // utils::loadLevelData(globals::currentLevelData, data);
     level::data.load(JSONLevelData);
-
-    // Reset `globals::tilelayerTilesetDataCollection`
-    // utils::loadTilesetsData(globals::renderer, globals::tilelayerTilesetDataCollection, JSONLevelData);
 }
 
 /**
