@@ -1,5 +1,5 @@
 
-# Introspection
+# introspection
 
 a RPG made without a game engine.
 

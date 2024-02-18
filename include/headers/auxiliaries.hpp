@@ -481,11 +481,13 @@ namespace config {
         kIngameCameraAngleToggle = SDLK_F5,
         kIngameGrayscaleToggle = SDLK_F6,
 
+        kAffirmative = SDLK_e,
+        kNegative = SDLK_q,
+
         kPlayerMoveUp = SDLK_w,
         kPlayerMoveDown = SDLK_s,
         kPlayerMoveRight = SDLK_a,
         kPlayerMoveLeft = SDLK_d,
-        kPlayerInteract = SDLK_e,   // Used for entities & dialogues
         kPlayerRunToggle = SDLK_LSHIFT,
         kPlayerAttackMeele = SDLK_SPACE,
         kPlayerAttackSurgeProjectileOrthogonalSingle = SDLK_1,

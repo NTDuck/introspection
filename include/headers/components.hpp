@@ -311,7 +311,7 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
             void clear() const;
             void render(char c) const;
 
-            void setRenderTarget(SDL_Texture* targetTexture);
+            void setRenderTarget(SDL_Texture*& targetTexture);
             inline void setSpacing(SDL_Point spacing) { mSpacing = spacing; }
 
         private:
@@ -351,6 +351,9 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void editContent(std::string const& content);
         
     private:
+        void terminate();
+        void skip();
+
         static TTF_Font* sFont;
         static constexpr int sFontSize = config::components::dialogue_box::fontSize;
         static const std::filesystem::path sFontPath;
