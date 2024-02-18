@@ -106,7 +106,7 @@ void Game::initialize() {
 */
 void Game::startGameLoop() {
     // Serve as partial initialization for certain attributes of certain classes
-    onLevelChange();
+    // onLevelChange();
     onWindowChange();
 
     FPSDisplayTimer::invoke(&FPSDisplayTimer::start);
@@ -281,6 +281,7 @@ void Game::handleWindowEvent(SDL_Event const& event) {
         case SDL_WINDOWEVENT_SIZE_CHANGED:
             onWindowChange();
             break;
+
         default: break;
     }
 }

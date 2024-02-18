@@ -60,12 +60,8 @@ void IngameDialogueBox::BMPFont::load(TTF_Font* font) {
 }
 
 void IngameDialogueBox::BMPFont::setRenderTarget(SDL_Texture*& targetTexture) {
-    if (targetTexture == nullptr) return;
-    
     mTargetTexture = targetTexture;
     SDL_QueryTexture(mTargetTexture, nullptr, nullptr, &mTargetTextureSize.x, &mTargetTextureSize.y);
-
-    std::cout << "queried: " << mTargetTextureSize.x << ' ' << mTargetTextureSize.y << std::endl;
 
     clear();
 }
@@ -88,7 +84,10 @@ void IngameDialogueBox::BMPFont::render(char c) const {
             endOfLine();
             return;
 
-        case '\0': return;
+        case '\0':
+            clear();
+            return;
+
         default: break;
     }
 
@@ -105,7 +104,7 @@ void IngameDialogueBox::BMPFont::render(char c) const {
     chrDestRect.y = mGlyphOrigin.y;
     mGlyphOrigin.x += data.advance + mSpacing.x;
 
-    std::cout << c << " | " << data.srcRect.x << ' ' << data.srcRect.y << ' ' << data.srcRect.w << ' ' << data.srcRect.h << " | " << chrDestRect.x << ' ' << chrDestRect.y << ' ' << chrDestRect.w << ' ' << chrDestRect.h << " | " << data.advance << std::endl;
+    // std::cout << c << " | " << data.srcRect.x << ' ' << data.srcRect.y << ' ' << data.srcRect.w << ' ' << data.srcRect.h << " | " << chrDestRect.x << ' ' << chrDestRect.y << ' ' << chrDestRect.w << ' ' << chrDestRect.h << " | " << data.advance << std::endl;
 
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTargetTexture);
@@ -116,9 +115,8 @@ void IngameDialogueBox::BMPFont::render(char c) const {
 void IngameDialogueBox::BMPFont::clear() const {
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTargetTexture);
-    SDL_RenderClear(globals::renderer);
     utils::setRendererDrawColor(globals::renderer, mPreset.backgroundColor);
-    SDL_RenderFillRect(globals::renderer, nullptr);
+    SDL_RenderClear(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
 
     mGlyphOrigin = { 0, 0 };
@@ -216,14 +214,16 @@ void IngameDialogueBox::onWindowChange() {
         mBoxDestRect.h - 2 * destOffset,
     };
 
-    if (mTextTexture != nullptr) SDL_DestroyTexture(mTextTexture);
-    mTextTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextDestRect.w, mTextDestRect.h);
+    static bool initialized = false;
+    if (!initialized) {
+        if (mTextTexture != nullptr) SDL_DestroyTexture(mTextTexture);
+        mTextTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextDestRect.w, mTextDestRect.h);
 
-    assert(mTextTexture != nullptr);
-    std::cout << mTextDestRect.x << ' ' << mTextDestRect.y << ' ' << mTextDestRect.w << ' ' << mTextDestRect.h << std::endl;
+        mBMPFont.setRenderTarget(mTextTexture);
+        if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
 
-    mBMPFont.setRenderTarget(mTextTexture);
-    for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
+        initialized = true;
+    }
 }
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {

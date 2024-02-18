@@ -467,7 +467,7 @@ namespace event {
  * @note All namespace members, even without Google's recommended `"k"` prefix, are `const`/`constexpr`.
 */
 namespace config {
-    constexpr bool audioEnabled = false;
+    constexpr bool enable_audio = true;
 
     /**
      * Uses `operator~` for static conversion to `SDL_Keycode`.

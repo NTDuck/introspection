@@ -19,30 +19,30 @@ Mixer::~Mixer() {
 }
 
 void Mixer::playBGM(Mix_Music* BGM) const {
-    if constexpr(!config::audioEnabled) return;
+    if constexpr(!config::enable_audio) return;
     if (Mix_PlayingMusic()) return;
     Mix_PlayMusic(BGM, -1);
 }
 
 void Mixer::stopBGM() const {
-    if constexpr(!config::audioEnabled) return;
+    if constexpr(!config::enable_audio) return;
     Mix_HaltMusic();
 }
 
 void Mixer::pauseBGM() const {
-    if constexpr(!config::audioEnabled) return;
+    if constexpr(!config::enable_audio) return;
     if (!Mix_PlayingMusic() || Mix_PausedMusic()) return;
     Mix_PauseMusic();
 }
 
 void Mixer::unpauseBGM() const {
-    if constexpr(!config::audioEnabled) return;
+    if constexpr(!config::enable_audio) return;
     if (!Mix_PlayingMusic() || !Mix_PausedMusic()) return;
     Mix_ResumeMusic();
 }
 
 void Mixer::playSFX(SFXName SFX) const {
-    if constexpr(!config::audioEnabled) return;
+    if constexpr(!config::enable_audio) return;
     auto it = kSFXMapping.find(SFX);
     if (it != kSFXMapping.end()) Mix_PlayChannel(-1, it->second.first, 0);
 }
@@ -68,19 +68,36 @@ void Mixer::handleGameStateChange() {
 }
 
 void Mixer::onGameStateChange(GameState const prev, GameState const next) {
+    if (prev == next) return;   // Prevent redundant calls
+
     switch (next) {
-        case (GameState::kLoading | GameState::kIngamePlaying) : case (GameState::kLoading | GameState::kMenu): return;   // Prevent calls on "arbitrary" states
+        case (GameState::kLoading | GameState::kIngamePlaying):
+        case (GameState::kLoading | GameState::kMenu):
+            return;   // Prevent calls on "arbitrary" states
 
         // Prevent overlap with `onLevelChange()`
-        case GameState::kLoading: if (prev == (GameState::kLoading | GameState::kIngamePlaying)) return;   // This is where `onLevelChange()` gets called
-            break;
-        case GameState::kIngamePlaying: if (prev == GameState::kLoading) return;
-            break;
+        case GameState::kLoading: switch (prev) {
+            case (GameState::kLoading | GameState::kIngamePlaying):
+                // This is where `onLevelChange()` gets called
+                return;
 
-        default: break;
+            default: break;
+        } break;
+
+        // Dialogues should not interrupt in-game BGM
+        case GameState::kIngamePlaying: switch (prev) {
+            case GameState::kLoading:
+            case GameState::kIngameDialogue:
+                return;
+            
+            default: break;
+        } break;
+
+        case GameState::kIngameDialogue: return;
+
+        default: break;            
     }
 
-    if (prev == next) return;   // Prevent redundant calls
 
     stopBGM();
     auto it = kGameStateBGMMapping.find(next);
