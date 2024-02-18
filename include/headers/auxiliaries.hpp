@@ -697,9 +697,9 @@ namespace config {
             const std::tuple<SDL_FPoint, ComponentPreset> initializer = std::make_tuple(SDL_FPoint{ 0.5f, 0.85f }, config::preset::dialogue);
             constexpr double destSizeModifier = 2.25;
             constexpr SDL_Point destRectRatio = { 5, 1 };
-            constexpr double destOffsetRatio = 0.05;
+            constexpr double destOffsetRatio = 0.1;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
-            constexpr int fontSize = 36;
+            constexpr int fontSize = 28;   // Should be one of the following: 12, 18, 24, 36, 48, 60, 72
         }
 
         namespace menu_avatar {

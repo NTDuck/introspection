@@ -277,38 +277,49 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
     };
     
     class BMPFont {
+        struct Data_Glyph_Storage {
+            int width;
+            int advance;
+        };
+
+        struct Data_Glyph_Query {
+            SDL_Rect srcRect;
+            int advance;
+        };
+
         class Map {
             public:
-                using Unit = unsigned char;   // Assume that a char's width does not exceed 255
-
                 Map() = default;
                 inline ~Map() { clear(); }
 
-                void insert(char c, Unit glyphWidth);
-                inline void clear() { data.clear(); }
-                SDL_Rect operator[](char c) const;
+                void insert(char c, Data_Glyph_Storage const& data);
+                inline void clear() { mGlyphDataUMap.clear(); }
+                Data_Glyph_Query operator[](char c) const;
 
-                void setGlyphHeight(Unit height) { glyphHeight = height; }
+                inline void setGlyphHeight(int height) { mGlyphHeight = height; }
 
             private:
-                Unit glyphHeight;
-                std::map<char, Unit> data;
+                int mGlyphHeight;
+                std::map<char, Data_Glyph_Storage> mGlyphDataUMap;
         };
 
         public:
-            BMPFont(ComponentPreset const& preset, SDL_Point const& spacing = { 0, 0 });
+            BMPFont(ComponentPreset const& preset);
             ~BMPFont();
 
             void load(TTF_Font* font);
+            void clear() const;
+            void render(char c) const;
 
             void setRenderTarget(SDL_Texture* targetTexture);
-            void render(char c) const;
-            void clear() const;
+            inline void setSpacing(SDL_Point spacing) { mSpacing = spacing; }
 
         private:
             std::string getChars() const; 
-            void registerCharToMap(char c);
-            void registerCharToTexture(char c) const;
+            void registerCharToMap(TTF_Font* font, char c);
+            void registerCharToTexture(TTF_Font* font, char c) const;
+
+            static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_LCD;
 
             SDL_Texture* mTexture = nullptr;
             SDL_Point mSrcSize;
@@ -316,10 +327,10 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
 
             SDL_Texture* mTargetTexture = nullptr;
             SDL_Point mTargetTextureSize;
-            mutable SDL_Point mTargetTextureOrigin = { 0, 0 };
 
             ComponentPreset mPreset;
-            SDL_Point mSpacing;
+            mutable SDL_Point mGlyphOrigin;
+            SDL_Point mSpacing = { 0, 0 };
     };
 
     public:

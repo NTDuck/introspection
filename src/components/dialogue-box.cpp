@@ -5,27 +5,35 @@
 #include <auxiliaries.hpp>
 
 
-void IngameDialogueBox::BMPFont::Map::insert(char c, Unit glyphWidth) {
-    data.insert(std::make_pair(c, glyphWidth));
+void IngameDialogueBox::BMPFont::Map::insert(char c, Data_Glyph_Storage const& data) {
+    mGlyphDataUMap.insert(std::make_pair(c, data));
 }
 
-SDL_Rect IngameDialogueBox::BMPFont::Map::operator[](char c) const {
-    // Consider index-based for loop instead?
-    auto it = data.find(c);
-    if (it == data.end()) return {};
-    int glyphWidth = it->second;
+IngameDialogueBox::BMPFont::Data_Glyph_Query IngameDialogueBox::BMPFont::Map::operator[](char c) const {
+    Data_Glyph_Query data;
 
-    int glyphPos = 0;   // The sum of all "previous" glyphWidths
-    for (const auto& pair : data) {
-        if (pair.first >= c) break;
-        glyphPos += pair.second;
+    // Same for every glyph
+    data.srcRect.y = 0;
+    data.srcRect.h = mGlyphHeight;
+
+    auto it = mGlyphDataUMap.find(c);
+    if (it != mGlyphDataUMap.end()) {
+        data.srcRect.w = it->second.width;
+        data.advance = it->second.advance;
     }
 
-    return { glyphPos, 0, glyphWidth, glyphHeight };
+    // The sum of all "previous" glyphWidths
+    data.srcRect.x = 0;
+    for (const auto& pair : mGlyphDataUMap) {
+        if (pair.first >= c) break;
+        data.srcRect.x += pair.second.width;
+    }
+
+    return data;
 }
 
 
-IngameDialogueBox::BMPFont::BMPFont(ComponentPreset const& preset, SDL_Point const& spacing) : mPreset(preset), mSpacing(spacing) {}
+IngameDialogueBox::BMPFont::BMPFont(ComponentPreset const& preset) : mPreset(preset) {}
 
 IngameDialogueBox::BMPFont::~BMPFont() {
     // `~Map()` automatically called
@@ -40,19 +48,20 @@ void IngameDialogueBox::BMPFont::load(TTF_Font* font) {
     mSrcRectsMap.setGlyphHeight(mSrcSize.y);
 
     const std::string chars = getChars();
-    for (const auto& c : chars) if (TTF_GlyphIsProvided32(font, c) != 0) registerCharToMap(c);
+    for (const auto& c : chars) registerCharToMap(font, c);
 
     if (mTexture != nullptr) SDL_DestroyTexture(mTexture);
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mSrcSize.x, mSrcSize.y);
 
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTexture);
-    for (const auto& c : chars) registerCharToTexture(c);
+    for (const auto& c : chars) registerCharToTexture(font, c);
     SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
 }
 
 void IngameDialogueBox::BMPFont::setRenderTarget(SDL_Texture* targetTexture) {
     if (targetTexture == nullptr) return;
+    
     mTargetTexture = targetTexture;
     SDL_QueryTexture(mTargetTexture, nullptr, nullptr, &mTargetTextureSize.x, &mTargetTextureSize.y);
 
@@ -61,34 +70,35 @@ void IngameDialogueBox::BMPFont::setRenderTarget(SDL_Texture* targetTexture) {
 
 /**
  * @brief Render char `c` to `texture` in common dialogue text style.
- * @note Do not ever use a different `target`.
 */
 void IngameDialogueBox::BMPFont::render(char c) const {
+    if (mTargetTexture == nullptr) return;
+
     if (c == ' ') {
-        mTargetTextureOrigin.x += mSrcSize.y / 2 + mSpacing.x;
+        mGlyphOrigin.x += mSrcSize.y / 2 + mSpacing.x;
         return;
     }
 
-    SDL_Rect chrSrcRect = mSrcRectsMap[c];
-    if (!chrSrcRect.w) return;
+    const auto data = mSrcRectsMap[c];
+    if (!data.srcRect.w) return;
 
     SDL_Rect chrDestRect;
-    chrDestRect.w = chrSrcRect.w;
-    chrDestRect.h = chrSrcRect.h;
+    chrDestRect.w = data.srcRect.w;
+    chrDestRect.h = data.srcRect.h;
 
-    if (mTargetTextureOrigin.x + chrDestRect.w > mTargetTextureSize.x) {   // End of line
-        if (mTargetTextureOrigin.y + chrDestRect.h > mTargetTextureSize.y) { clear(); return; }   // End of space
-        mTargetTextureOrigin.x = 0;
-        mTargetTextureOrigin.y += chrDestRect.h + mSpacing.y;
+    if (mGlyphOrigin.x + chrDestRect.w > mTargetTextureSize.x) {   // End of line
+        if (mGlyphOrigin.y + 2 * chrDestRect.h > mTargetTextureSize.y) { clear(); return; }   // End of space
+        mGlyphOrigin.x = 0;
+        mGlyphOrigin.y += chrDestRect.h + mSpacing.y;
     }
 
-    mTargetTextureOrigin.x += chrDestRect.w + mSpacing.x;
-    chrDestRect.x = mTargetTextureOrigin.x;
-    chrDestRect.y = mTargetTextureOrigin.y;
+    chrDestRect.x = mGlyphOrigin.x;
+    chrDestRect.y = mGlyphOrigin.y;
+    mGlyphOrigin.x += data.advance + mSpacing.x;
 
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTargetTexture);
-    SDL_RenderCopy(globals::renderer, mTexture, &chrSrcRect, &chrDestRect);
+    SDL_RenderCopy(globals::renderer, mTexture, &data.srcRect, &chrDestRect);
     SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
 }
 
@@ -100,7 +110,7 @@ void IngameDialogueBox::BMPFont::clear() const {
     SDL_RenderFillRect(globals::renderer, nullptr);
     SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
 
-    mTargetTextureOrigin = { 0, 0 };
+    mGlyphOrigin = { 0, 0 };
 }
 
 /**
@@ -122,25 +132,35 @@ std::string IngameDialogueBox::BMPFont::getChars() const {
     return chars;
 }
 
-void IngameDialogueBox::BMPFont::registerCharToMap(char c) {
-    SDL_Surface* surface = TTF_RenderUTF8_Solid(sFont, &c, config::preset::dialogue.textColor);   // This is non-deterministic, which is really weird
-    if (surface == nullptr) return;
-    
-    mSrcRectsMap.insert(c, surface->w);
-    mSrcSize.x += surface->w;
+/**
+ * @see https://freetype.sourceforge.net/freetype2/docs/tutorial/step2.html
+*/
+void IngameDialogueBox::BMPFont::registerCharToMap(TTF_Font* font, char c) {
+    if (TTF_GlyphIsProvided32(font, c) == 0) return;
 
+    Data_Glyph_Storage data;
+
+    // Query glyph width
+    SDL_Surface* surface = sTextRenderMethod(font, c, mPreset.textColor, mPreset.backgroundColor);
+    data.width = surface->w;
     SDL_FreeSurface(surface);
+
+    // Query glyph advance i.e. distance between 2 adjacent origins
+    TTF_GlyphMetrics32(font, c, nullptr, nullptr, nullptr, nullptr, &data.advance);
+
+    mSrcRectsMap.insert(c, data);
+    mSrcSize.x += data.width;
 }
 
-void IngameDialogueBox::BMPFont::registerCharToTexture(char c) const {
-    SDL_Surface* surface = TTF_RenderUTF8_Blended(sFont, &c, mPreset.textColor);
+void IngameDialogueBox::BMPFont::registerCharToTexture(TTF_Font* font, char c) const {
+    SDL_Surface* surface = sTextRenderMethod(font, c, mPreset.textColor, mPreset.backgroundColor);
     if (surface == nullptr) return;
+
     SDL_Texture* texture = SDL_CreateTextureFromSurface(globals::renderer, surface);
-
-    auto srcRect = mSrcRectsMap[c];
-    SDL_RenderCopy(globals::renderer, texture, nullptr, &srcRect);
-
     SDL_FreeSurface(surface);
+
+    auto srcRect = mSrcRectsMap[c].srcRect;
+    SDL_RenderCopy(globals::renderer, texture, nullptr, &srcRect);
     SDL_DestroyTexture(texture);
 }
 
