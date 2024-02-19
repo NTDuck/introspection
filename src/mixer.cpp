@@ -9,7 +9,10 @@
 Mixer::Mixer() : Singleton<Mixer>() {
     for (auto& pair : kGameStateBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
     for (auto& pair : kLevelBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
+
+    #if !defined(__linux__)
     for (auto& pair : kSFXMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadWAV(pair.second.second.string().c_str());
+    #endif
 }
 
 Mixer::~Mixer() {
@@ -43,8 +46,11 @@ void Mixer::unpauseBGM() const {
 
 void Mixer::playSFX(SFXName SFX) const {
     if constexpr(!config::enable_audio) return;
+
+    #if !defined(__linux__)
     auto it = kSFXMapping.find(SFX);
     if (it != kSFXMapping.end()) Mix_PlayChannel(-1, it->second.first, 0);
+    #endif
 }
 
 /**

@@ -206,7 +206,6 @@ void IngameDialogueBox::onWindowChange() {
     GenericBoxComponent<IngameDialogueBox>::onWindowChange();
 
     const int destOffset = static_cast<double>(std::min(mBoxDestRect.w, mBoxDestRect.h)) * mTextTextureOffsetRatio;
-    std::cout << destOffset << std::endl;
     mTextDestRect = {
         mBoxDestRect.x + destOffset,
         mBoxDestRect.y + destOffset,
@@ -214,16 +213,11 @@ void IngameDialogueBox::onWindowChange() {
         mBoxDestRect.h - 2 * destOffset,
     };
 
-    static bool initialized = false;
-    if (!initialized) {
-        if (mTextTexture != nullptr) SDL_DestroyTexture(mTextTexture);
-        mTextTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextDestRect.w, mTextDestRect.h);
+    if (mTextTexture != nullptr) SDL_DestroyTexture(mTextTexture);
+    mTextTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextDestRect.w, mTextDestRect.h);
 
-        mBMPFont.setRenderTarget(mTextTexture);
-        if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
-
-        initialized = true;
-    }
+    mBMPFont.setRenderTarget(mTextTexture);
+    if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
 }
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {

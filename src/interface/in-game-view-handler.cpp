@@ -12,6 +12,7 @@ IngameViewHandler::IngameViewHandler(std::function<void()> const& callable, SDL_
 
 void IngameViewHandler::render() const {
     // Focus on player entity
+    auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTexture);
 
     // Render dependencies
@@ -19,7 +20,7 @@ void IngameViewHandler::render() const {
 
     switch (mView) {
         case View::kFullScreen:
-            SDL_SetRenderTarget(globals::renderer, nullptr);
+            SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
             SDL_RenderCopy(globals::renderer, mTexture, nullptr, &mDestRect);
             break;
 
@@ -34,7 +35,7 @@ void IngameViewHandler::render() const {
             if (mViewport.y < 0) mViewport.y = 0;
             else if (mViewport.y + mViewport.h > mTextureSize.y) mViewport.y = mTextureSize.y - mViewport.h;
 
-            SDL_SetRenderTarget(globals::renderer, nullptr);
+            SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
             SDL_RenderCopy(globals::renderer, mTexture, &mViewport, nullptr);
             break;
     }
@@ -61,7 +62,6 @@ void IngameViewHandler::onWindowChange() {
     mDestRect.h = level::data.tileDestCount.y * mTileDestSize.y;
     mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
     mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
-
 }
 
 void IngameViewHandler::onLevelChange() {

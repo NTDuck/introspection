@@ -25,7 +25,7 @@ void IngameMapHandler::initialize() {
 }
 
 void IngameMapHandler::render() const {
-    SDL_RenderCopy(globals::renderer, (isOnGrayscale ? mGrayscaleTexture : mTexture), nullptr, nullptr);
+    SDL_RenderCopy(globals::renderer, isOnGrayscale ? mGrayscaleTexture : mTexture, nullptr, nullptr);
 }
 
 /**
@@ -42,22 +42,15 @@ void IngameMapHandler::onLevelChange() {
     };
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
 
-    SDL_SetRenderTarget(globals::renderer, mTexture);
-    SDL_RenderClear(globals::renderer);
-
-    renderBackground();
-    renderLevelTiles();
-
-    if (mGrayscaleTexture != nullptr) SDL_DestroyTexture(mGrayscaleTexture);
-    mGrayscaleTexture = utils::createGrayscaleTexture(globals::renderer, mTexture, config::interface::grayscaleIntensity);
-
-    SDL_SetRenderTarget(globals::renderer, nullptr);
+    renderToTexture();
 }
 
-/**
- * @note Last resort.
-*/
-void IngameMapHandler::onWindowChange() { onLevelChange(); }
+void IngameMapHandler::onWindowChange() {
+    #if defined(_WIN64) || defined(_WIN32) || defined(_WIN16)
+    // Weird windows-specific bug, don't know how to fix, temporary patch adversely affects performance (which scales proportionally with level size)
+    renderToTexture();
+    #endif
+}
 
 void IngameMapHandler::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
@@ -82,13 +75,27 @@ void IngameMapHandler::changeLevel(const level::Name levelName_) {
  * @brief Populate `level` members with relevant data.
  * @note Should be called once during initialization or whenever `level` changes.
 */
-void IngameMapHandler::loadLevel() {
+void IngameMapHandler::loadLevel() const {
     std::filesystem::path kLevelPath = sLevelMap[mLevelName];
     if (!std::filesystem::exists(kLevelPath)) return;
     
     json JSONLevelData;
     utils::readJSON(kLevelPath.string(), JSONLevelData);
     level::data.load(JSONLevelData);
+}
+
+void IngameMapHandler::renderToTexture() {
+    auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
+    SDL_SetRenderTarget(globals::renderer, mTexture);
+    SDL_RenderClear(globals::renderer);
+
+    renderBackground();
+    renderLevelTilelayers();
+
+    if (mGrayscaleTexture != nullptr) SDL_DestroyTexture(mGrayscaleTexture);
+    mGrayscaleTexture = utils::createGrayscaleTexture(globals::renderer, mTexture, config::interface::grayscaleIntensity);
+
+    SDL_SetRenderTarget(globals::renderer, cachedRenderTarget);
 }
 
 /**
@@ -103,7 +110,7 @@ void IngameMapHandler::renderBackground() const {
  * @brief Render the static portions of a level to `texture`.
  * @note Needs optimization. Perhaps load only 1 `Data_Tile_RenderOnly` then immediately render then deallocate?
 */
-void IngameMapHandler::renderLevelTiles() const {
+void IngameMapHandler::renderLevelTilelayers() const {
     tile::Data_Tile_RenderOnly::Collection tileRenderDataCollection(level::data.tileDestCount.y, std::vector<tile::Data_Tile_RenderOnly>(level::data.tileDestCount.x));
 
     // Populate render data 

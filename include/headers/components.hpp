@@ -319,7 +319,11 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
             void registerCharToMap(TTF_Font* font, char c);
             void registerCharToTexture(TTF_Font* font, char c) const;
 
+            #if defined(__linux__)
+            static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_Solid;
+            #else
             static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_LCD;
+            #endif
 
             SDL_Texture* mTexture = nullptr;
             SDL_Point mSrcSize;
@@ -368,27 +372,6 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         std::string mContent;
         unsigned short int mCurrProgress;
 };
-
-
-// /**
-//  * @brief Represent the avatar visible on the menu.
-// */
-// class MenuAvatar final : public Singleton<MenuAvatar> {
-//     public:
-//         INCL_SINGLETON(MenuAvatar)
-
-//         MenuAvatar(tile::EntitiesTilesetData& tilesetData, const double destRectModifier);
-//         ~MenuAvatar() = default;
-
-//         void render() const;
-//         void onWindowChange();
-
-//     private:
-//         SDL_Texture*& texture;
-//         const SDL_Rect srcRect;
-//         SDL_Rect destRect;
-//         const double destRectModifier;
-// };
 
 
 /**

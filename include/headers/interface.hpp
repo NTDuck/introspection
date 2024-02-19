@@ -59,9 +59,11 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
         bool isOnGrayscale = false;
 
     private:
-        void loadLevel();
+        void loadLevel() const;
+
+        void renderToTexture();
         void renderBackground() const;
-        void renderLevelTiles() const;
+        void renderLevelTilelayers() const;
 
         level::Name mLevelName;
 

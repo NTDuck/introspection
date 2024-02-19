@@ -464,7 +464,7 @@ namespace event {
 /**
  * @brief Group components that are used for configuration.
  * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
- * @note All namespace members, even without Google's recommended `"k"` prefix, are `const`/`constexpr`.
+ * @see https://sourceforge.net/p/precleardef/wiki/OperatingSystems/
 */
 namespace config {
     constexpr bool enable_audio = true;
