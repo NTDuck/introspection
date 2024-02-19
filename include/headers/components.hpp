@@ -344,9 +344,6 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         IngameDialogueBox(SDL_FPoint const& center, ComponentPreset const& preset);
         ~IngameDialogueBox();
 
-        static void initialize();
-        static void deinitialize();
-
         void render() const override;
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
@@ -355,11 +352,12 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void editContent(std::string const& content);
         
     private:
+        static int getFontSize(const double destSize);
+
         void terminate();
         void skip();
 
-        static TTF_Font* sFont;
-        static constexpr int sFontSize = config::components::dialogue_box::fontSize;
+        TTF_Font* mFont = nullptr;
         static const std::filesystem::path sFontPath;
 
         Status mStatus = Status::kInactive;

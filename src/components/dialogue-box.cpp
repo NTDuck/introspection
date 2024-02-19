@@ -1,5 +1,10 @@
 #include <components.hpp>
 
+#include <algorithm>
+#include <array>
+#include <cmath>
+#include <string>
+
 #include <SDL.h>
 
 #include <auxiliaries.hpp>
@@ -174,25 +179,16 @@ void IngameDialogueBox::BMPFont::registerCharToTexture(TTF_Font* font, char c) c
 }
 
 
-IngameDialogueBox::IngameDialogueBox(SDL_FPoint const& center, ComponentPreset const& preset) : GenericComponent<IngameDialogueBox>(center, preset), GenericBoxComponent<IngameDialogueBox>(center, preset), mBMPFont(preset) {
-    mBMPFont.load(sFont);
-}
+IngameDialogueBox::IngameDialogueBox(SDL_FPoint const& center, ComponentPreset const& preset) : GenericComponent<IngameDialogueBox>(center, preset), GenericBoxComponent<IngameDialogueBox>(center, preset), mBMPFont(preset) {}
 
 IngameDialogueBox::~IngameDialogueBox() {
     if (mTextTexture != nullptr) {
         SDL_DestroyTexture(mTextTexture);
         mTextTexture = nullptr;
     }
-}
-
-void IngameDialogueBox::initialize() {
-    sFont = TTF_OpenFont(sFontPath.generic_string().c_str(), sFontSize);
-}
-
-void IngameDialogueBox::deinitialize() {
-    if (sFont != nullptr) {
-        TTF_CloseFont(sFont);
-        sFont = nullptr;
+    if (mFont != nullptr) {
+        TTF_CloseFont(mFont);
+        mFont = nullptr;
     }
 }
 
@@ -216,6 +212,11 @@ void IngameDialogueBox::onWindowChange() {
     if (mTextTexture != nullptr) SDL_DestroyTexture(mTextTexture);
     mTextTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextDestRect.w, mTextDestRect.h);
 
+    if (mFont != nullptr) TTF_CloseFont(mFont);
+    mFont = TTF_OpenFont(sFontPath.generic_string().c_str(), getFontSize(sDestSize));
+
+    mBMPFont.clear();
+    mBMPFont.load(mFont);
     mBMPFont.setRenderTarget(mTextTexture);
     if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
 }
@@ -249,6 +250,17 @@ void IngameDialogueBox::editContent(std::string const& content) {
     globals::state = GameState::kIngameDialogue;
 }
 
+int IngameDialogueBox::getFontSize(const double destSize) {
+    int size = static_cast<int>(destSize * 0.2);   // Accommodate as needed
+
+    // The "recommended" sizes are: 12, 18, 24, 36, 48, 60, 72
+    // So we're just gonna make it divisible to 6
+    int lower_limit = static_cast<int>(size / 6) * 6;
+    int upper_limit = lower_limit + 6;
+    
+    return abs(size - lower_limit) > abs(size - upper_limit) ? lower_limit : upper_limit;   // Return whichever is closer
+}
+
 void IngameDialogueBox::terminate() {
     if (mStatus != Status::kUpdateComplete) return;
 
@@ -271,7 +283,5 @@ const double GenericComponent<IngameDialogueBox>::kDestSizeModifier = config::co
 
 template <>
 const SDL_Point GenericComponent<IngameDialogueBox>::kDestRectRatio = config::components::dialogue_box::destRectRatio;
-
-TTF_Font* IngameDialogueBox::sFont = nullptr;
 
 const std::filesystem::path IngameDialogueBox::sFontPath = config::components::dialogue_box::fontPath;

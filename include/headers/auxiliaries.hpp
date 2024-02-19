@@ -701,7 +701,6 @@ namespace config {
             constexpr SDL_Point destRectRatio = { 5, 1 };
             constexpr double destOffsetRatio = 0.1;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
-            constexpr int fontSize = 28;   // Should be one of the following: 12, 18, 24, 36, 48, 60, 72
         }
 
         namespace menu_avatar {

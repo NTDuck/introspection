@@ -27,7 +27,6 @@ IngameInterface::IngameInterface() {
         Player::invoke(&Player::render);
     };
 
-    IngameDialogueBox::initialize();
     IngameDialogueBox::instantiate(config::components::dialogue_box::initializer);
 
     Player::instantiate(SDL_Point{});   // This is required for below instantiations
