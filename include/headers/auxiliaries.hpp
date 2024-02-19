@@ -701,6 +701,13 @@ namespace config {
             constexpr SDL_Point destRectRatio = { 5, 1 };
             constexpr double destOffsetRatio = 0.1;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
+
+            const std::vector<std::string> test = {
+                "Steady your heartbeat....\nDon't be afraid. It's not as scary as you think.",
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "Thread 1 received signal SIGTRAP, Trace/breakpoint trap. 0x00007fff6bf7c733 in ntdll!RtlIsZeroMemory () from C:\\WINDOWS\\SYSTEM32\\ntdll.dll",
+                "Apathy's a tragedy, and boredom is a crime.\nAnything and everything, all of the time.",
+            };
         }
 
         namespace menu_avatar {

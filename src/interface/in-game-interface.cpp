@@ -143,7 +143,7 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
             break;
 
         case ~config::Key::kIngameDialogueTest:
-            IngameDialogueBox::invoke(&IngameDialogueBox::editContent, "Steady your heartbeat....\nDon't be afraid. It's not as scary as you think.\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, config::components::dialogue_box::test);
             break;
 
         default: break;

@@ -7,6 +7,7 @@
 #include <map>
 #include <unordered_map>
 #include <type_traits>
+#include <queue>
 
 #include <SDL.h>
 #include <SDL_ttf.h>
@@ -349,12 +350,13 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void handleKeyBoardEvent(SDL_Event const& event);
 
         void updateProgress();
-        void editContent(std::string const& content);
+        void enqueueContent(std::string const& content);
+        void enqueueContents(std::vector<std::string> const& contents);
         
     private:
         static int getFontSize(const double destSize);
 
-        void terminate();
+        void close();
         void skip();
 
         TTF_Font* mFont = nullptr;
@@ -367,7 +369,7 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         SDL_Rect mTextDestRect;
         static constexpr inline double mTextTextureOffsetRatio = config::components::dialogue_box::destOffsetRatio;
 
-        std::string mContent;
+        std::queue<std::string> mContents;
         unsigned short int mCurrProgress;
 };
 

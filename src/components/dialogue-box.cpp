@@ -49,6 +49,7 @@ IngameDialogueBox::BMPFont::~BMPFont() {
 }
 
 void IngameDialogueBox::BMPFont::load(TTF_Font* font) {
+    mSrcSize.x = 0;
     mSrcSize.y = TTF_FontHeight(font);
     mSrcRectsMap.setGlyphHeight(mSrcSize.y);
 
@@ -103,13 +104,11 @@ void IngameDialogueBox::BMPFont::render(char c) const {
     chrDestRect.w = data.srcRect.w;
     chrDestRect.h = data.srcRect.h;
 
-    if (mGlyphOrigin.x + chrDestRect.w > mTargetTextureSize.x) { if (mGlyphOrigin.y + 2 * chrDestRect.h > mTargetTextureSize.y) clear(); else endOfLine(); }
+    if (mGlyphOrigin.x + chrDestRect.w > mTargetTextureSize.x) { if (mGlyphOrigin.y + chrDestRect.h > mTargetTextureSize.y) clear(); else endOfLine(); }
 
     chrDestRect.x = mGlyphOrigin.x;
     chrDestRect.y = mGlyphOrigin.y;
     mGlyphOrigin.x += data.advance + mSpacing.x;
-
-    // std::cout << c << " | " << data.srcRect.x << ' ' << data.srcRect.y << ' ' << data.srcRect.w << ' ' << data.srcRect.h << " | " << chrDestRect.x << ' ' << chrDestRect.y << ' ' << chrDestRect.w << ' ' << chrDestRect.h << " | " << data.advance << std::endl;
 
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTargetTexture);
@@ -194,7 +193,7 @@ IngameDialogueBox::~IngameDialogueBox() {
 
 void IngameDialogueBox::render() const {
     GenericBoxComponent<IngameDialogueBox>::render();
-    if (mStatus == Status::kUpdateInProgress) mBMPFont.render(mContent[mCurrProgress]);
+    if (mStatus == Status::kUpdateInProgress) mBMPFont.render(mContents.front()[mCurrProgress]);
     SDL_RenderCopy(globals::renderer, mTextTexture, nullptr, &mTextDestRect);
 }
 
@@ -218,13 +217,13 @@ void IngameDialogueBox::onWindowChange() {
     mBMPFont.clear();
     mBMPFont.load(mFont);
     mBMPFont.setRenderTarget(mTextTexture);
-    if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);   // Retain progress
+    if (mStatus == Status::kUpdateInProgress) for (unsigned short int progress = 0; progress <= mCurrProgress; ++progress) mBMPFont.render(mContents.front()[progress]);   // Retain progress
 }
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
     switch (event.key.keysym.sym) {
         case ~config::Key::kAffirmative:
-            terminate();
+            close();
             break;
 
         case ~config::Key::kNegative:
@@ -237,15 +236,25 @@ void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
 
 void IngameDialogueBox::updateProgress() {
     if (mStatus != Status::kUpdateInProgress) return;
-    if (mCurrProgress == static_cast<unsigned short int>(mContent.size()) - 1) mStatus = Status::kUpdateComplete; else ++mCurrProgress;
+    if (mCurrProgress == static_cast<unsigned short int>(mContents.front().size()) - 1) mStatus = Status::kUpdateComplete; else ++mCurrProgress;
 }
 
-void IngameDialogueBox::editContent(std::string const& content) {
+void IngameDialogueBox::enqueueContent(std::string const& content) {
     if (mStatus != Status::kInactive || content.empty()) return;
 
-    mCurrProgress = 0;
-    mContent = content;
+    mContents.push(content);
 
+    mCurrProgress = 0;
+    mStatus = Status::kUpdateInProgress;
+    globals::state = GameState::kIngameDialogue;
+}
+
+void IngameDialogueBox::enqueueContents(std::vector<std::string> const& contents) {
+    if (mStatus != Status::kInactive) return;
+
+    for (const auto& content : contents) if (!content.empty()) mContents.push(content);
+
+    mCurrProgress = 0;
     mStatus = Status::kUpdateInProgress;
     globals::state = GameState::kIngameDialogue;
 }
@@ -261,20 +270,27 @@ int IngameDialogueBox::getFontSize(const double destSize) {
     return abs(size - lower_limit) > abs(size - upper_limit) ? lower_limit : upper_limit;   // Return whichever is closer
 }
 
-void IngameDialogueBox::terminate() {
+void IngameDialogueBox::close() {
     if (mStatus != Status::kUpdateComplete) return;
 
     mBMPFont.clear();
-    mStatus = Status::kInactive;
-    globals::state = GameState::kIngamePlaying;
+    mContents.pop();
+
+    if (!mContents.empty()) {
+        mCurrProgress = 0;
+        mStatus = Status::kUpdateInProgress;
+    } else {
+        mStatus = Status::kInactive;
+        globals::state = GameState::kIngamePlaying;
+    }
 }
 
 void IngameDialogueBox::skip() {
     if (mStatus != Status::kUpdateInProgress) return;
 
     const auto prevProgress = mCurrProgress;
-    mCurrProgress = static_cast<unsigned short int>(mContent.size()) - 1;
-    for (auto progress = prevProgress; progress < mCurrProgress; ++progress) mBMPFont.render(mContent[progress]);
+    mCurrProgress = static_cast<unsigned short int>(mContents.front().size()) - 1;
+    for (auto progress = prevProgress; progress < mCurrProgress; ++progress) mBMPFont.render(mContents.front()[progress]);
 }
 
 
