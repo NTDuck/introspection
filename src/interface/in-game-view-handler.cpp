@@ -44,13 +44,18 @@ void IngameViewHandler::render() const {
 void IngameViewHandler::onWindowChange() {
     mTileCountWidth = static_cast<double>(globals::windowSize.x) / static_cast<double>(globals::windowSize.y) * mTileCountHeight;   // `mTileCountHeight` is immutable
 
-    mViewport.w = mTileCountWidth * level::data.tileDestSize.x;
-    mViewport.h = mTileCountHeight * level::data.tileDestSize.y;
+    mViewport.w = mTileCountWidth * static_cast<double>(level::data.tileDestSize.x);
+    mViewport.h = mTileCountHeight * static_cast<double>(level::data.tileDestSize.y);
 
     switch (mView) {
         case View::kFullScreen:
             // mTileDestSize = 1 << static_cast<int>(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));
             mTileDestSize.x = mTileDestSize.y = std::min(globals::windowSize.x / level::data.tileDestCount.x, globals::windowSize.y / level::data.tileDestCount.y);   // Sacrifice absolute "powers of 2" for decreased offset
+
+            mDestRect.w = level::data.tileDestCount.x * mTileDestSize.x;
+            mDestRect.h = level::data.tileDestCount.y * mTileDestSize.y;
+            mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
+            mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
             break;
 
         case View::kTargetEntity:
@@ -58,10 +63,6 @@ void IngameViewHandler::onWindowChange() {
             break;
     }
 
-    mDestRect.w = level::data.tileDestCount.x * mTileDestSize.x;
-    mDestRect.h = level::data.tileDestCount.y * mTileDestSize.y;
-    mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
-    mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
 }
 
 void IngameViewHandler::onLevelChange() {

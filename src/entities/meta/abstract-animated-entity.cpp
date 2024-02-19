@@ -36,6 +36,15 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityL
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::handleSFX() const {
+    // Separate for different `T`
+    static constexpr int idleFrames = config::game::FPS >> 2;   // Magic number
+    static int idleFramesTracker = idleFrames;
+
+    if (idleFramesTracker) {
+        --idleFramesTracker;
+        return;
+    }
+
     switch (mCurrAnimationType) {
         case Animation::kAttackMeele:
             if (!isAnimationAtFirstSprite()) return;
@@ -52,8 +61,10 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerDeath : Mixer::SFXName::kEntityDeath);
             break;
 
-        default: break;
+        default: return;
     }
+    
+    idleFramesTracker = idleFrames;
 }
 
 /**

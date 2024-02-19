@@ -568,6 +568,10 @@ namespace config {
         constexpr uint16_t format = MIX_DEFAULT_FORMAT;
         constexpr int channels = MIX_DEFAULT_CHANNELS;
         constexpr int chunkSize = 2048;   // 2 KB
+
+        constexpr int masterVolume = 66;
+        constexpr int BGM_Volume = 25;
+        constexpr int SFX_Volume = 50;
     }
 
     namespace interface {

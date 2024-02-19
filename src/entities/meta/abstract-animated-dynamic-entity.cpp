@@ -195,8 +195,6 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
     if (mCurrVelocity.x) mFlip = (mCurrVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
     AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? Animation::kRun : Animation::kWalk), flag);
-    
-    if constexpr(std::is_same_v<T, Player>) Mixer::invoke(&Mixer::playSFX, mIsRunning ? Mixer::SFXName::kPlayerRun : Mixer::SFXName::kPlayerWalk);
 }
 
 /**

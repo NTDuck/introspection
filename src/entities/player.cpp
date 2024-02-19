@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -115,6 +116,32 @@ void Player::handleCustomEventGET(SDL_Event const& event) {
 
         default: break;
     }
+}
+
+void Player::handleSFX() const {
+    AbstractAnimatedDynamicEntity<Player>::handleSFX();
+
+    static constexpr int idleFrames = config::game::FPS >> 2;   // Magic number
+    static int idleFramesTracker = idleFrames;
+
+    if (idleFramesTracker) {
+        --idleFramesTracker;
+        return;
+    }
+
+    switch (mCurrAnimationType) {
+        case Animation::kWalk:
+            Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kPlayerWalk);
+            break;
+
+        case Animation::kRun:
+            Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kPlayerRun);
+            break;
+        
+        default: return;
+    }
+
+    idleFramesTracker = idleFrames;
 }
 
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {

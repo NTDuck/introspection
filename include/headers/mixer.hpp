@@ -32,6 +32,14 @@ class Mixer final : Singleton<Mixer> {
         Mixer();
         ~Mixer();
 
+        int getMasterVolume() const;
+        int getBGMVolume() const;
+        int getSFXVolume() const;
+
+        void setMasterVolume(int volume) const;
+        void setBGMVolume(int volume) const;
+        void setSFXVolume(int volume) const;
+
         void playBGM(Mix_Music* BGM) const;
         void stopBGM() const;
         void pauseBGM() const;

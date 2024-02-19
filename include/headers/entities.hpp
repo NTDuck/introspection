@@ -475,6 +475,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleCustomEventPOST() const override;
         void handleCustomEventGET(SDL_Event const& event) override;
 
+        void handleSFX() const override;
+
     private:
         void handleKeyboardEvent_Movement(SDL_Event const& event);
         void handleKeyboardEvent_ProjectileAttack(SDL_Event const& event);

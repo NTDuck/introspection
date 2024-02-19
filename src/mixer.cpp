@@ -7,10 +7,15 @@
 
 
 Mixer::Mixer() : Singleton<Mixer>() {
+    setMasterVolume(config::mixer::masterVolume);
+    setBGMVolume(config::mixer::BGM_Volume);
+
     for (auto& pair : kGameStateBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
     for (auto& pair : kLevelBGMMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadMUS(pair.second.second.string().c_str());
 
     #if !defined(__linux__)
+    setSFXVolume(config::mixer::SFX_Volume);
+
     for (auto& pair : kSFXMapping) if (pair.second.first == nullptr) pair.second.first = Mix_LoadWAV(pair.second.second.string().c_str());
     #endif
 }
@@ -19,6 +24,37 @@ Mixer::~Mixer() {
     for (auto& pair : kGameStateBGMMapping) if (pair.second.first != nullptr) Mix_FreeMusic(pair.second.first);
     for (auto& pair : kLevelBGMMapping) if (pair.second.first != nullptr) Mix_FreeMusic(pair.second.first);
     for (auto& pair : kSFXMapping) if (pair.second.first != nullptr) Mix_FreeChunk(pair.second.first);
+}
+
+int Mixer::getMasterVolume() const {
+    return Mix_MasterVolume(-1);
+}
+
+int Mixer::getBGMVolume() const {
+    return Mix_VolumeMusic(-1);
+}
+
+int Mixer::getSFXVolume() const {
+    #if !defined(__linux__)
+    return Mix_Volume(-1, -1);
+    #endif
+}
+
+void Mixer::setMasterVolume(int volume) const {
+    if (volume < 0 || volume > MIX_MAX_VOLUME) return; 
+    Mix_MasterVolume(volume);
+}
+
+void Mixer::setBGMVolume(int volume) const {
+    if (volume < 0 || volume > MIX_MAX_VOLUME) return; 
+    Mix_VolumeMusic(volume);
+}
+
+void Mixer::setSFXVolume(int volume) const {
+    #if !defined(__linux__)
+    if (volume < 0 || volume > MIX_MAX_VOLUME) return;
+    Mix_Volume(-1, volume);
+    #endif
 }
 
 void Mixer::playBGM(Mix_Music* BGM) const {
