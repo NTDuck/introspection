@@ -27,7 +27,11 @@ Mixer::~Mixer() {
 }
 
 int Mixer::getMasterVolume() const {
+    #if !defined(__linux__)
     return Mix_MasterVolume(-1);
+    #else
+    return -1;
+    #endif
 }
 
 int Mixer::getBGMVolume() const {
@@ -41,8 +45,10 @@ int Mixer::getSFXVolume() const {
 }
 
 void Mixer::setMasterVolume(int volume) const {
+    #if !defined(__linux__)
     if (volume < 0 || volume > MIX_MAX_VOLUME) return; 
     Mix_MasterVolume(volume);
+    #endif
 }
 
 void Mixer::setBGMVolume(int volume) const {

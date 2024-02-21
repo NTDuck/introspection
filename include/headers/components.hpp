@@ -321,7 +321,7 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
             void registerCharToTexture(TTF_Font* font, char c) const;
 
             #if defined(__linux__)
-            static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_Solid;
+            static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_Blended;
             #else
             static constexpr auto sTextRenderMethod = TTF_RenderGlyph32_LCD;
             #endif
