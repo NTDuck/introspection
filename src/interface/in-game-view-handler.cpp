@@ -26,8 +26,8 @@ void IngameViewHandler::render() const {
 
         case View::kTargetEntity:
             // Calculate rendered portion
-            mViewport.x = mTargetedEntityDestRect.x + mTargetedEntityDestRect.w / 2 - mViewport.w / 2;
-            mViewport.y = mTargetedEntityDestRect.y + mTargetedEntityDestRect.h / 2 - mViewport.h / 2;
+            mViewport.x = mTargetedEntityDestRect.x + (mTargetedEntityDestRect.w - mViewport.w) / 2;
+            mViewport.y = mTargetedEntityDestRect.y + (mTargetedEntityDestRect.h - mViewport.h) / 2;
 
             // "Fix" out-of-bound cases
             if (mViewport.x < 0) mViewport.x = 0;
@@ -51,11 +51,6 @@ void IngameViewHandler::onWindowChange() {
         case View::kFullScreen:
             // mTileDestSize = 1 << static_cast<int>(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));
             mTileDestSize.x = mTileDestSize.y = std::min(globals::windowSize.x / level::data.tileDestCount.x, globals::windowSize.y / level::data.tileDestCount.y);   // Sacrifice absolute "powers of 2" for decreased offset
-
-            mDestRect.w = level::data.tileDestCount.x * mTileDestSize.x;
-            mDestRect.h = level::data.tileDestCount.y * mTileDestSize.y;
-            mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
-            mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
             break;
 
         case View::kTargetEntity:
@@ -63,6 +58,10 @@ void IngameViewHandler::onWindowChange() {
             break;
     }
 
+    mDestRect.w = level::data.tileDestCount.x * mTileDestSize.x;
+    mDestRect.h = level::data.tileDestCount.y * mTileDestSize.y;
+    mDestRect.x = (globals::windowSize.x - mDestRect.w) / 2;
+    mDestRect.y = (globals::windowSize.y - mDestRect.h) / 2;
 }
 
 void IngameViewHandler::onLevelChange() {
@@ -74,6 +73,10 @@ void IngameViewHandler::onLevelChange() {
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
     
     onWindowChange();
+
+    // Switch view based on level size
+    bool isLevelSizeSmallEnough = level::data.tileDestCount.x < mTileCountWidth && level::data.tileDestCount.y < mTileCountHeight;
+    if ((mView == View::kFullScreen && !isLevelSizeSmallEnough) || (mView == View::kTargetEntity && isLevelSizeSmallEnough)) switchView();
 }
 
 /**

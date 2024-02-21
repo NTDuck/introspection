@@ -544,7 +544,7 @@ namespace config {
 
     namespace game {
         constexpr int FPS = 60;
-        const std::filesystem::path windowIconPath = config::path::asset / "icon/brain.ico";
+        const std::filesystem::path windowIconPath = config::path::asset / "icon/light.png";
 
         const std::tuple<GameInitFlag, SDL_Rect, int, std::string> initializer = {
             {
