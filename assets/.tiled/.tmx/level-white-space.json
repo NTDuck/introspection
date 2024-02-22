@@ -53,8 +53,19 @@
                  "height":32,
                  "id":1,
                  "name":"monika",
+                 "properties":[
+                        {
+                         "name":"dialogue-0",
+                         "type":"string",
+                         "value":"You booted up your laptop. What would you like to do?"
+                        }, 
+                        {
+                         "name":"dialogue-1",
+                         "type":"string",
+                         "value":"You've been overworking, please give it some rest."
+                        }],
                  "rotation":0,
-                 "type":"omori-laptop",
+                 "type":"interactable-omori-laptop",
                  "visible":true,
                  "width":32,
                  "x":1728,
@@ -75,8 +86,44 @@
                  "height":32,
                  "id":3,
                  "name":"car",
+                 "properties":[
+                        {
+                         "name":"dialogue-0",
+                         "type":"string",
+                         "value":"Meow? (Waiting for something to happen?)"
+                        }, 
+                        {
+                         "name":"dialogue-1",
+                         "type":"string",
+                         "value":"Meow? (Not much to do around here, is there?)"
+                        }, 
+                        {
+                         "name":"dialogue-2",
+                         "type":"string",
+                         "value":"Meow? (Or is there?)"
+                        }, 
+                        {
+                         "name":"dialogue-3",
+                         "type":"string",
+                         "value":"Meow? (Are you looking for a way out?)"
+                        }, 
+                        {
+                         "name":"dialogue-4",
+                         "type":"string",
+                         "value":"Meow... (There always is one... but...)"
+                        }, 
+                        {
+                         "name":"dialogue-5",
+                         "type":"string",
+                         "value":"Puuuuuurrrr..."
+                        }, 
+                        {
+                         "name":"dialogue-6",
+                         "type":"string",
+                         "value":"Good kitty."
+                        }],
                  "rotation":0,
-                 "type":"omori-mewo",
+                 "type":"interactable-omori-mewo",
                  "visible":true,
                  "width":32,
                  "x":1664,
@@ -103,6 +150,45 @@
                  "width":32,
                  "x":1664,
                  "y":1376
+                }, 
+                {
+                 "height":32,
+                 "id":6,
+                 "name":"sketchbook",
+                 "properties":[
+                        {
+                         "name":"dialogue-0",
+                         "type":"string",
+                         "value":"Your sketchbook. Take a look inside?"
+                        }, 
+                        {
+                         "name":"dialogue-1",
+                         "type":"string",
+                         "value":"Nothing but scribbles."
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":32,
+                 "x":1824,
+                 "y":1472
+                }, 
+                {
+                 "height":32,
+                 "id":7,
+                 "name":"tissue box",
+                 "properties":[
+                        {
+                         "name":"dialogue-0",
+                         "type":"string",
+                         "value":"A tissue box for wiping your sorrows away."
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":32,
+                 "x":1824,
+                 "y":1568
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -111,7 +197,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":6,
+ "nextobjectid":8,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

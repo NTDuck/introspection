@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="8">
  <editorsettings>
   <export target="level-white-space.json" format="json"/>
  </editorsettings>
@@ -27,10 +27,36 @@
   </data>
  </layer>
  <objectgroup id="4" name="entities">
-  <object id="1" name="monika" type="omori-laptop" x="1728" y="1472" width="32" height="32"/>
+  <object id="1" name="monika" type="interactable-omori-laptop" x="1728" y="1472" width="32" height="32">
+   <properties>
+    <property name="dialogue-0" value="You booted up your laptop. What would you like to do?"/>
+    <property name="dialogue-1" value="You've been overworking, please give it some rest."/>
+   </properties>
+  </object>
   <object id="2" name="null" type="player" x="1728" y="1568" width="32" height="32"/>
-  <object id="3" name="car" type="omori-mewo" x="1664" y="1600" width="32" height="32"/>
+  <object id="3" name="car" type="interactable-omori-mewo" x="1664" y="1600" width="32" height="32">
+   <properties>
+    <property name="dialogue-0" value="Meow? (Waiting for something to happen?)"/>
+    <property name="dialogue-1" value="Meow? (Not much to do around here, is there?)"/>
+    <property name="dialogue-2" value="Meow? (Or is there?)"/>
+    <property name="dialogue-3" value="Meow? (Are you looking for a way out?)"/>
+    <property name="dialogue-4" value="Meow... (There always is one... but...)"/>
+    <property name="dialogue-5" value="Puuuuuurrrr..."/>
+    <property name="dialogue-6" value="Good kitty."/>
+   </properties>
+  </object>
   <object id="4" name="darkness" type="omori-light-bulb" x="1760" y="1408" width="32" height="32"/>
   <object id="5" name="kid named finger" type="pending-red-hand-throne-teleporter" x="1664" y="1376" width="32" height="32"/>
+  <object id="6" name="sketchbook" type="interactable" x="1824" y="1472" width="32" height="32">
+   <properties>
+    <property name="dialogue-0" value="Your sketchbook. Take a look inside?"/>
+    <property name="dialogue-1" value="Nothing but scribbles."/>
+   </properties>
+  </object>
+  <object id="7" name="tissue box" type="interactable" x="1824" y="1568" width="32" height="32">
+   <properties>
+    <property name="dialogue-0" value="A tissue box for wiping your sorrows away."/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

@@ -359,6 +359,10 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void close();
         void skip();
 
+        // Prevent "inescapable" dialogue
+        static constexpr unsigned short int sDelayCounterLimit = config::components::dialogue_box::delayCounterLimit;
+        unsigned short int mDelayCounter = sDelayCounterLimit;
+
         TTF_Font* mFont = nullptr;
         static const std::filesystem::path sFontPath;
 

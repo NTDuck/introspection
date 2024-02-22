@@ -327,6 +327,12 @@ namespace level {
         SDL_Point destCoords;
     };
 
+    struct Data_Interactable : public Data_Generic {
+        void load(json const& JSONObjectData) override;
+
+        std::vector<std::string> dialogues;
+    };
+
     /**
      * @brief Contain data associated with a teleporter-type entity, used in level-loading.
      * @param targetDestCoords the new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
@@ -400,6 +406,9 @@ namespace event {
         kResp_MoveInitiate_GHE_Player,
         kResp_MoveTerminate_GHE_Player,
 
+        // Uses `Interactable`
+        kReq_Interact_Player_GIE,
+
         // Uses `Teleporter`
         kReq_Teleport_GTE_Player,
         kResp_Teleport_GTE_Player,
@@ -411,6 +420,10 @@ namespace event {
         SDL_Point destCoords;
         SDL_Point range;
         EntitySecondaryStats stats;
+    };
+
+    struct Data_Interactable {
+        SDL_Point targetDestCoords;
     };
 
     struct Data_Teleporter {
@@ -623,6 +636,12 @@ namespace config {
             constexpr int waitingFramesAfterDeath = 6.66 * config::game::FPS;
         }
 
+        namespace interactable {
+            constexpr const char* typeID = "interactable";
+            const std::filesystem::path path{};
+            constexpr SDL_FRect destRectModifier{};
+        }
+
         namespace teleporter {
             constexpr const char* typeID = "teleporter";
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
@@ -658,7 +677,7 @@ namespace config {
         }
 
         namespace omori_laptop {
-            constexpr const char* typeID = "omori-laptop";
+            constexpr const char* typeID = "interactable-omori-laptop";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -0.125, 1, 1 };
         }
@@ -670,7 +689,7 @@ namespace config {
         }
 
         namespace omori_mewo {
-            constexpr const char* typeID = "omori-mewo";
+            constexpr const char* typeID = "interactable-omori-mewo";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
         }        
@@ -705,6 +724,7 @@ namespace config {
             constexpr SDL_Point destRectRatio = { 5, 1 };
             constexpr double destOffsetRatio = 0.1;
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
+            constexpr unsigned short int delayCounterLimit = config::game::FPS >> 2;
 
             const std::vector<std::string> test = {
                 "Steady your heartbeat....\nDon't be afraid. It's not as scary as you think.",

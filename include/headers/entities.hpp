@@ -270,6 +270,51 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
 
 
 template <typename T>
+class GenericInteractable : public AbstractAnimatedEntity<T> {
+    public:
+        INCL_MULTITON(T)
+        INCL_ABSTRACT_ENTITY(T)
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)
+
+        virtual ~GenericInteractable() = default;
+
+        void onLevelChange(level::Data_Generic const& interactableData) override;
+        void handleCustomEventGET(SDL_Event const& event) override;
+
+    protected:
+        GenericInteractable(SDL_Point const& destCoords);
+
+    private:
+        void handleCustomEventGET_kReq_Interact_Player_GIE(SDL_Event const& event);
+
+        std::vector<std::string> mDialogues;
+};
+
+#define INCL_GENERIC_INTERACTABLE(T) using GenericInteractable<T>::onLevelChange, GenericInteractable<T>::handleCustomEventGET;
+
+#define DECLARE_GENERIC_INTERACTABLE(T) \
+class T final : public GenericInteractable<T> {\
+    public:\
+        INCL_ABSTRACT_ANIMATED_ENTITY(T)\
+        INCL_GENERIC_INTERACTABLE(T)\
+        \
+        T(SDL_Point const& destCoords);\
+        ~T() = default;\
+};
+
+#define DEFINE_GENERIC_INTERACTABLE(T, ns) \
+T::T(SDL_Point const& destCoords) : GenericInteractable<T>(destCoords) {\
+    mDestRectModifier = ns::destRectModifier;\
+}\
+\
+template <>\
+const char* AbstractEntity<T>::sTypeID = ns::typeID;\
+\
+template <>\
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
+
+
+template <typename T>
 class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
     public:
         INCL_MULTITON(T)
@@ -457,6 +502,25 @@ std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 
 /* Derived implementations */
 
+/**
+ * @brief An interactable "entity" with no sprite, so certain methods will be emptied.
+*/
+class Interactable : public GenericInteractable<Interactable> {
+    public:
+        INCL_ABSTRACT_ANIMATED_ENTITY(Interactable)
+        INCL_GENERIC_INTERACTABLE(Interactable)
+
+        Interactable(SDL_Point const& destCoords);
+        ~Interactable() = default;
+
+        static void initialize() {}
+
+        void render() const override {}
+        void onWindowChange() override {}
+        void updateAnimation() override {}
+};
+
+
 class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEntity<Player> {
     public:
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(Player)
@@ -483,6 +547,7 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
         void handleCustomEventPOST_kReq_Death_Player() const;
+        void handleCustomEventPOST_kReq_Interact_Player_GIE() const;
 
         void handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event);
@@ -495,16 +560,17 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 };
 
 
-DECLARE_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
+DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
+
+DECLARE_GENERIC_INTERACTABLE(OmoriLaptop)
+DECLARE_GENERIC_INTERACTABLE(OmoriMewO)
 
 DECLARE_GENERIC_TELEPORTER_ENTITY(Teleporter)
 DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThroneTeleporter)
 
 DECLARE_GENERIC_HOSTILE_ENTITY(Slime)
 
-DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLaptop)
-DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
-DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriMewO)
+DECLARE_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
 
 
 #endif

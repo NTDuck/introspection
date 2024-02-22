@@ -12,7 +12,7 @@
 
 template <typename T>
 AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) : AbstractEntity<T>(destCoords) {
-    resetAnimation(Animation::kIdle);
+    if (!sTilesetPath.empty()) resetAnimation(Animation::kIdle);
 }
 
 /**
@@ -104,7 +104,7 @@ template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatus flag) {
     mCurrAnimationType = animationType;
     if (flag == EntityStatus::kContinued) return;
-    mCurrAnimationGID = AbstractEntity<T>::sTilesetData[mCurrAnimationType].startGID;
+    mCurrAnimationGID = sTilesetData[mCurrAnimationType].startGID;
 }
 
 /**
@@ -125,6 +125,8 @@ template class AbstractAnimatedEntity<PentacleProjectile>;
 
 template class AbstractAnimatedEntity<Player>;
 
+template class AbstractAnimatedEntity<Interactable>;
+
 template class AbstractAnimatedEntity<Teleporter>;
 template class AbstractAnimatedEntity<RedHandThroneTeleporter>;
 
@@ -133,3 +135,6 @@ template class AbstractAnimatedEntity<Slime>;
 template class AbstractAnimatedEntity<OmoriLaptop>;
 template class AbstractAnimatedEntity<OmoriLightBulb>;
 template class AbstractAnimatedEntity<OmoriMewO>;
+
+
+DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::omori_light_bulb)

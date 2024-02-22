@@ -121,6 +121,8 @@ template class AbstractEntity<PentacleProjectile>;
 
 template class AbstractEntity<Player>;
 
+template class AbstractEntity<Interactable>;
+
 template class AbstractEntity<Teleporter>;
 template class AbstractEntity<RedHandThroneTeleporter>;
 

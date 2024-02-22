@@ -132,10 +132,9 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
         // || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
     ) return;
 
-    if (pNextVelocity == nullptr) {
-        onMoveEnd(EntityStatus::kInvalidated);
-        return;
-    }
+    if (pNextVelocity == nullptr) { onMoveEnd(EntityStatus::kInvalidated); return; }
+
+    if (pNextVelocity->x) mFlip = (pNextVelocity->x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
     pNextDestCoords = new SDL_Point(mDestCoords + *pNextVelocity);
     pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
@@ -191,8 +190,6 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
     mCurrVelocity = *pNextVelocity;
-
-    if (mCurrVelocity.x) mFlip = (mCurrVelocity.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
     AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? Animation::kRun : Animation::kWalk), flag);
 }
@@ -269,8 +266,3 @@ const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::
 template class AbstractAnimatedDynamicEntity<PentacleProjectile>;
 template class AbstractAnimatedDynamicEntity<Player>;
 template class AbstractAnimatedDynamicEntity<Slime>;
-
-
-DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLaptop, config::entities::omori_laptop)
-DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::omori_light_bulb)
-DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriMewO, config::entities::omori_mewo)

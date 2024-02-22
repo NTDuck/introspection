@@ -221,6 +221,8 @@ void IngameDialogueBox::onWindowChange() {
 }
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
+    if (event.key.repeat != 0) return;
+
     switch (event.key.keysym.sym) {
         case ~config::Key::kAffirmative:
             close();
@@ -235,8 +237,18 @@ void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
 }
 
 void IngameDialogueBox::updateProgress() {
-    if (mStatus != Status::kUpdateInProgress) return;
-    if (mCurrProgress == static_cast<unsigned short int>(mContents.front().size()) - 1) mStatus = Status::kUpdateComplete; else ++mCurrProgress;
+    switch (mStatus) {
+        case Status::kUpdateInProgress:
+            if (mCurrProgress == static_cast<unsigned short int>(mContents.front().size()) - 1) mStatus = Status::kUpdateComplete;
+            else ++mCurrProgress;
+            break;
+
+        case Status::kInactive:
+            if (mDelayCounter) --mDelayCounter;
+            break;
+
+        default: break;
+    }
 }
 
 void IngameDialogueBox::enqueueContent(std::string const& content) {
@@ -250,11 +262,12 @@ void IngameDialogueBox::enqueueContent(std::string const& content) {
 }
 
 void IngameDialogueBox::enqueueContents(std::vector<std::string> const& contents) {
-    if (mStatus != Status::kInactive) return;
+    if (mStatus != Status::kInactive || mDelayCounter) return;
 
     for (const auto& content : contents) if (!content.empty()) mContents.push(content);
 
     mCurrProgress = 0;
+    mDelayCounter = sDelayCounterLimit;   // Reset
     mStatus = Status::kUpdateInProgress;
     globals::state = GameState::kIngameDialogue;
 }

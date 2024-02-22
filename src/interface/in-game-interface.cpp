@@ -10,10 +10,13 @@ IngameInterface::IngameInterface() {
         // Static assets
         IngameMapHandler::invoke(&IngameMapHandler::render);
 
-        // Non-interactible entities
+        // Interactables
+        // Interactable::invoke(&Interactable::render);
         OmoriLaptop::invoke(&OmoriLaptop::render);
-        OmoriLightBulb::invoke(&OmoriLightBulb::render);
         OmoriMewO::invoke(&OmoriMewO::render);
+
+        // Non-interactible entities
+        OmoriLightBulb::invoke(&OmoriLightBulb::render);
 
         // Entities
         Teleporter::invoke(&Teleporter::render);
@@ -52,6 +55,8 @@ void IngameInterface::deinitialize() {
     RedHandThroneTeleporter::deinitialize();
     Slime::deinitialize();
 
+    Interactable::deinitialize();
+
     OmoriLaptop::deinitialize();
     OmoriLightBulb::deinitialize();
     OmoriMewO::deinitialize();
@@ -63,6 +68,8 @@ void IngameInterface::initialize() {
     IngameMapHandler::initialize();
 
     PentacleProjectile::initialize();
+
+    Interactable::initialize();
 
     Player::initialize();
     Teleporter::initialize();
@@ -105,6 +112,7 @@ void IngameInterface::onLevelChange() const {
     RedHandThroneTeleporter::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
     Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
 
+    Interactable::onLevelChangeAll(level::data.get(config::entities::interactable::typeID));
     OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
     OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
     OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
@@ -123,6 +131,7 @@ void IngameInterface::onWindowChange() const {
     RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
     Slime::invoke(&Slime::onWindowChange);
 
+    // Interactable::invoke(&Interactable::onWindowChange);
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
     OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
     OmoriMewO::invoke(&OmoriMewO::onWindowChange);
@@ -201,6 +210,11 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
     RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::handleCustomEventGET, event);
     Slime::invoke(&Slime::handleCustomEventGET, event);
+
+    // Dialogues!
+    Interactable::invoke(&Interactable::handleCustomEventGET, event);
+    OmoriLaptop::invoke(&OmoriLaptop::handleCustomEventGET, event);
+    OmoriMewO::invoke(&OmoriMewO::handleCustomEventGET, event);
 }
 
 /**
@@ -221,10 +235,10 @@ void IngameInterface::handleDependencies() const {
             handleEntitiesInteraction();
             handleLevelSpecifics();
             handleEntitiesSFX();
-            break;
+            [[fallthrough]];
 
         case GameState::kIngameDialogue:
-            IngameDialogueBox::invoke(&IngameDialogueBox::updateProgress);
+        IngameDialogueBox::invoke(&IngameDialogueBox::updateProgress);
             break;
 
         default: break;

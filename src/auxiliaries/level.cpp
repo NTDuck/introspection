@@ -59,6 +59,24 @@ void level::Data_Generic::load(json const& JSONObjectData) {
     };
 }
 
+void level::Data_Interactable::load(json const& JSONObjectData) {
+    Data_Generic::load(JSONObjectData);
+
+    auto properties_j = JSONObjectData.find("properties"); if (properties_j == JSONObjectData.end()) return;
+    auto properties_v = properties_j.value(); if (!properties_v.is_array()) return;
+
+    for (const auto& property : properties_v) {
+        auto name_j = property.find("name"); if (name_j == property.end()) continue;
+        auto value_j = property.find("value"); if (value_j == property.end()) continue;
+
+        auto name_v = name_j.value(); if (!name_v.is_string()) continue;
+        auto value_v = value_j.value(); if (!value_v.is_string()) continue;
+
+        if (static_cast<std::string>(name_v).find("dialogue")) continue;   // != 0
+        dialogues.push_back(value_v);
+    }
+}
+
 void level::Data_Teleporter::load(json const& JSONObjectData) {
     Data_Generic::load(JSONObjectData);
 
@@ -209,6 +227,12 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
         Data_Generic* data = nullptr;
 
         switch (hs(static_cast<std::string>(type_v).c_str())) {
+            case hs(config::entities::interactable::typeID):
+            case hs(config::entities::omori_laptop::typeID):
+            case hs(config::entities::omori_mewo::typeID):
+                data = new Data_Interactable();
+                break;
+
             case hs(config::entities::teleporter::typeID):
             case hs(config::entities::teleporter_red_hand_throne::typeID):
                 data = new Data_Teleporter();

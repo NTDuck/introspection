@@ -77,6 +77,10 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             handleKeyboardEvent_ProjectileAttack(event);
             break;
 
+        case ~config::Key::kAffirmative:
+            handleCustomEventPOST_kReq_Interact_Player_GIE();
+            break;
+
         default: break;
     }
 }
@@ -203,6 +207,16 @@ void Player::handleCustomEventPOST_kReq_Death_Player() const {
     event::setID(event, mID);
     event::setCode(event, counter == 0 ? event::Code::kReq_DeathFinalized_Player : event::Code::kReq_DeathPending_Player);
     event::setData(event, counter);
+    event::enqueue(event);
+}
+
+void Player::handleCustomEventPOST_kReq_Interact_Player_GIE() const {
+    if (mCurrAnimationType == Animation::kDeath) return;
+
+    auto event = event::instantiate();
+    event::setID(event, mID);
+    event::setCode(event, event::Code::kReq_Interact_Player_GIE);
+    event::setData(event, event::Data_Interactable({ mDestCoords + mPrevDirection }));
     event::enqueue(event);
 }
 
