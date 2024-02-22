@@ -348,6 +348,7 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
         void render() const override;
         void onWindowChange() override;
         void handleKeyBoardEvent(SDL_Event const& event);
+        void handleSFX() const;
 
         void updateProgress();
         void enqueueContent(std::string const& content);

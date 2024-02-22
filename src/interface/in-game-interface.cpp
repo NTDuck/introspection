@@ -238,7 +238,8 @@ void IngameInterface::handleDependencies() const {
             [[fallthrough]];
 
         case GameState::kIngameDialogue:
-        IngameDialogueBox::invoke(&IngameDialogueBox::updateProgress);
+            IngameDialogueBox::invoke(&IngameDialogueBox::updateProgress);
+            IngameDialogueBox::invoke(&IngameDialogueBox::handleSFX);
             break;
 
         default: break;

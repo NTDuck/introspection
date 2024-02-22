@@ -7,6 +7,7 @@
 
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <auxiliaries.hpp>
 
 
@@ -234,6 +235,26 @@ void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
             
         default: break;
     }
+}
+
+void IngameDialogueBox::handleSFX() const {
+    static Status prevStatus = mStatus;
+    if (prevStatus == mStatus) return;
+
+    switch (mStatus) {
+        case Status::kUpdateInProgress:
+            // SFX should suffice when a dialogue box fully loads
+            Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kDialogue);
+            break;
+
+        case Status::kUpdateComplete:
+            Mixer::invoke(&Mixer::stopSFX);
+            break;
+
+        default: break;
+    }
+
+    prevStatus = mStatus;
 }
 
 void IngameDialogueBox::updateProgress() {

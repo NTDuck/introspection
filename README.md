@@ -110,15 +110,12 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 - [credits song for my death](https://youtu.be/urxeNbBc1nk) by [vivivivivi](https://www.youtube.com/@vivivivivi)
 - [Your Reality - DDLC](https://youtu.be/GU2D4zmhvbo) by [Artemisia](https://www.youtube.com/@ArtemisiaBeats)
 - [Inabakumori-styled な - instrumental](https://youtu.be/p0s0_4KO9t4) by [いめ44](https://www.youtube.com/@ime44)
-- [White Space - OMORI OST 002](https://youtu.be/wtVHR_1fS5k) and [A Home For Flowers - OMORI OST 013](https://youtu.be/u2xW23u4qEY) by [OMOCAT](https://www.youtube.com/@OMOCAT143)
-- [it's safe here - OMORI](https://youtu.be/sg712AWBaSI) by [404p](https://www.youtube.com/@p404p)
-- [it means everything - OMORI](https://youtu.be/zUtIcrbhhPA) by [Solus](https://www.youtube.com/@strujilz)
 - [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [
 Angelina2 RedRevo-Scarlet](https://www.youtube.com/@angelinaflan58)
 - [Determination - UNDERTALE OST 011](https://youtu.be/W1i4mTyidOc), [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc), and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
-- [Mewo - OMORI SFX](https://youtu.be/UsGB7UvESWc?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Swish - OMORI SFX](https://youtu.be/VLRwSnPu2IU?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Beep - OMORI SFX](https://youtu.be/setW3lBbnAc?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Omori attack - OMORI SFX](https://youtu.be/bHwXmfWeN34?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Bite - OMORI SFX](https://youtu.be/3wVWKTyVWYE?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo), [Death by Experiment 667 - OMORI SFX](https://youtu.be/WIefFWfwdoY?list=PL7fbkTB94WJgsaBqxeqN8DGkDYZBxdMuo) by [Home_Video](https://www.youtube.com/@home_video3)
 - [Wilhelm Scream SFX](https://youtu.be/r6JK-gRELI0)
 - [Shoe on Wet Ground SFX](https://www.zapsplat.com/music/footstep-single-shoe-on-wet-ground-very-light-puddles-of-water-5/), [Heavy Clump on Gravel SFX](https://www.zapsplat.com/music/single-boot-footstep-heavy-clump-on-gravel-2/)
+- Numerous BGM & SFX from OMORI
 - [Lucky Star PS2 Bonus Disc](https://archive.org/details/lucky-star-ps-2-bonus-disc)
 >
 > We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).

@@ -95,6 +95,14 @@ void Mixer::playSFX(SFXName SFX) const {
     #endif
 }
 
+void Mixer::stopSFX() const {
+    if constexpr(!config::enable_audio) return;
+
+    #if !defined(__linux__)
+    Mix_HaltChannel(-1);
+    #endif
+}
+
 /**
  * @brief Change BGM upon entering new level.
  * @note Manually called.
