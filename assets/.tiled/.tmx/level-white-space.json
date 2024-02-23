@@ -55,14 +55,26 @@
                  "name":"monika",
                  "properties":[
                         {
-                         "name":"dialogue-0",
-                         "type":"string",
-                         "value":"You booted up your laptop. What would you like to do?"
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"You booted up your laptop. What would you like to do?",
+                             "group-index":0,
+                             "index":0
+                            }
                         }, 
                         {
-                         "name":"dialogue-1",
-                         "type":"string",
-                         "value":"You've been overworking, please give it some rest."
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"You've been overworking, please give it some rest.",
+                             "group-index":0,
+                             "index":1
+                            }
                         }],
                  "rotation":0,
                  "type":"interactable-omori-laptop",
@@ -88,39 +100,92 @@
                  "name":"car",
                  "properties":[
                         {
-                         "name":"dialogue-0",
-                         "type":"string",
-                         "value":"Meow? (Waiting for something to happen?)"
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Waiting for something to happen?)",
+                             "group-index":0,
+                             "index":0
+                            }
                         }, 
                         {
-                         "name":"dialogue-1",
-                         "type":"string",
-                         "value":"Meow? (Not much to do around here, is there?)"
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Not much to do around here, is there?)",
+                             "group-index":0,
+                             "index":1
+                            }
                         }, 
                         {
-                         "name":"dialogue-2",
-                         "type":"string",
-                         "value":"Meow? (Or is there?)"
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Or is there?)",
+                             "group-index":0,
+                             "index":2
+                            }
                         }, 
                         {
-                         "name":"dialogue-3",
-                         "type":"string",
-                         "value":"Meow? (Are you looking for a way out?)"
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Are you looking for a way out?)",
+                             "group-index":0,
+                             "index":3
+                            }
                         }, 
                         {
-                         "name":"dialogue-4",
-                         "type":"string",
-                         "value":"Meow... (There always is one... but...)"
+                         "name":"dialogue-E",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (There always is one... but...)",
+                             "group-index":0,
+                             "index":4
+                            }
                         }, 
                         {
-                         "name":"dialogue-5",
-                         "type":"string",
-                         "value":"Puuuuuurrrr..."
+                         "name":"dialogue-F",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Puuuuuurrrr...",
+                             "group-index":1,
+                             "index":0
+                            }
                         }, 
                         {
-                         "name":"dialogue-6",
-                         "type":"string",
-                         "value":"Good kitty."
+                         "name":"dialogue-G",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Good kitty.",
+                             "group-index":2,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-H",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Waiting for something to happen?)",
+                             "group-index":3,
+                             "index":0
+                            }
                         }],
                  "rotation":0,
                  "type":"interactable-omori-mewo",
@@ -157,14 +222,26 @@
                  "name":"sketchbook",
                  "properties":[
                         {
-                         "name":"dialogue-0",
-                         "type":"string",
-                         "value":"Your sketchbook. Take a look inside?"
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Your sketchbook. Take a look inside?",
+                             "group-index":0,
+                             "index":0
+                            }
                         }, 
                         {
-                         "name":"dialogue-1",
-                         "type":"string",
-                         "value":"Nothing but scribbles."
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Scribbles.",
+                             "group-index":0,
+                             "index":1
+                            }
                         }],
                  "rotation":0,
                  "type":"interactable",
@@ -179,9 +256,15 @@
                  "name":"tissue box",
                  "properties":[
                         {
-                         "name":"dialogue-0",
-                         "type":"string",
-                         "value":"A tissue box for wiping your sorrows away."
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A tissue box for wiping your sorrows away.",
+                             "group-index":0,
+                             "index":0
+                            }
                         }],
                  "rotation":0,
                  "type":"interactable",

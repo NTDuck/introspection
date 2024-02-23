@@ -34,8 +34,8 @@ void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player(
 
 
 template class GenericTeleporterEntity<Teleporter>;
-template class GenericTeleporterEntity<RedHandThroneTeleporter>;
+template class GenericTeleporterEntity<RedHandThrone>;
 
 
 DEFINE_GENERIC_TELEPORTER_ENTITY(Teleporter, config::entities::teleporter)
-DEFINE_GENERIC_TELEPORTER_ENTITY(RedHandThroneTeleporter, config::entities::teleporter_red_hand_throne)
+DEFINE_GENERIC_TELEPORTER_ENTITY(RedHandThrone, config::entities::teleporter_red_hand_throne)

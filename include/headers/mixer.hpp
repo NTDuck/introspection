@@ -17,6 +17,7 @@ class Mixer final : Singleton<Mixer> {
     public:
         enum class SFXName : unsigned char {
             kDialogue,
+            kMewo,
             kButtonClick,
             kSurgeAttack,
             kPlayerWalk,
@@ -72,6 +73,7 @@ class Mixer final : Singleton<Mixer> {
 
         std::unordered_map<SFXName, std::pair<Mix_Chunk*, std::filesystem::path>> kSFXMapping = {
             { SFXName::kDialogue, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-talking.mp3") },
+            { SFXName::kMewo, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-mewo.mp3") },
             { SFXName::kButtonClick, std::make_pair(nullptr, config::path::asset_audio / "sfx/一般の警告音.mp3") },
             { SFXName::kSurgeAttack, std::make_pair(nullptr, config::path::asset_audio / "sfx/omori-beep.mp3") },
             { SFXName::kPlayerWalk, std::make_pair(nullptr, config::path::asset_audio / "sfx/zapsplat-foley-footstep-single-wet-ground-light-puddles.mp3") },

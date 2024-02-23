@@ -263,6 +263,8 @@ template <typename T>
 const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::runVelocityModifier;
 
 
-template class AbstractAnimatedDynamicEntity<PentacleProjectile>;
 template class AbstractAnimatedDynamicEntity<Player>;
+
 template class AbstractAnimatedDynamicEntity<Slime>;
+
+template class AbstractAnimatedDynamicEntity<PentacleProjectile>;

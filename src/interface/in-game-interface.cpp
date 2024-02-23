@@ -10,17 +10,18 @@ IngameInterface::IngameInterface() {
         // Static assets
         IngameMapHandler::invoke(&IngameMapHandler::render);
 
+        // Non-interactible entities
+        OmoriLightBulb::invoke(&OmoriLightBulb::render);
+
         // Interactables
         // Interactable::invoke(&Interactable::render);
         OmoriLaptop::invoke(&OmoriLaptop::render);
         OmoriMewO::invoke(&OmoriMewO::render);
 
-        // Non-interactible entities
-        OmoriLightBulb::invoke(&OmoriLightBulb::render);
-
         // Entities
         Teleporter::invoke(&Teleporter::render);
-        RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::render);
+        RedHandThrone::invoke(&RedHandThrone::render);
+
         Slime::invoke(&Slime::render);
 
         // Projectiles
@@ -48,18 +49,20 @@ void IngameInterface::deinitialize() {
     IngameMapHandler::deinitialize();
     IngameViewHandler::deinitialize();
 
-    PentacleProjectile::deinitialize();
-
     Player::deinitialize();
-    Teleporter::deinitialize();
-    RedHandThroneTeleporter::deinitialize();
-    Slime::deinitialize();
+
+    OmoriLightBulb::deinitialize();
 
     Interactable::deinitialize();
-
     OmoriLaptop::deinitialize();
-    OmoriLightBulb::deinitialize();
     OmoriMewO::deinitialize();
+
+    Teleporter::deinitialize();
+    RedHandThrone::deinitialize();
+
+    Slime::deinitialize();
+
+    PentacleProjectile::deinitialize();
 
     IngameDialogueBox::deinitialize();
 }
@@ -67,18 +70,20 @@ void IngameInterface::deinitialize() {
 void IngameInterface::initialize() {
     IngameMapHandler::initialize();
 
-    PentacleProjectile::initialize();
+    Player::initialize();
+
+    OmoriLightBulb::initialize();
 
     Interactable::initialize();
+    OmoriMewO::initialize();
+    OmoriLaptop::initialize();
 
-    Player::initialize();
     Teleporter::initialize();
-    RedHandThroneTeleporter::initialize();
+    RedHandThrone::initialize();
+
     Slime::initialize();
 
-    OmoriLaptop::initialize();
-    OmoriLightBulb::initialize();
-    OmoriMewO::initialize();
+    PentacleProjectile::initialize();
 }
 
 void IngameInterface::render() const {
@@ -104,18 +109,21 @@ void IngameInterface::onLevelChange() const {
         level::data.insert(config::entities::player::typeID, data);
     }
 
-    PentacleProjectile::onLevelChangeAll();
-
     // Make changes to dependencies based on populated `globals::currentLevelData` members
     Player::invoke(&Player::onLevelChange, *(level::data.get(config::entities::player::typeID)[0]));
-    Teleporter::onLevelChangeAll(level::data.get(config::entities::teleporter::typeID));
-    RedHandThroneTeleporter::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
-    Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+
+    OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
 
     Interactable::onLevelChangeAll(level::data.get(config::entities::interactable::typeID));
     OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
-    OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
     OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
+
+    Teleporter::onLevelChangeAll(level::data.get(config::entities::teleporter::typeID));
+    RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
+
+    Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+
+    PentacleProjectile::onLevelChangeAll();
 
     Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
@@ -124,17 +132,20 @@ void IngameInterface::onWindowChange() const {
     IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
     IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
 
-    PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
-
     Player::invoke(&Player::onWindowChange);
-    Teleporter::invoke(&Teleporter::onWindowChange);
-    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
-    Slime::invoke(&Slime::onWindowChange);
+
+    OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
 
     // Interactable::invoke(&Interactable::onWindowChange);
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
-    OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
     OmoriMewO::invoke(&OmoriMewO::onWindowChange);
+
+    Teleporter::invoke(&Teleporter::onWindowChange);
+    RedHandThrone::invoke(&RedHandThrone::onWindowChange);
+
+    Slime::invoke(&Slime::onWindowChange);
+
+    PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
 
     IngameDialogueBox::invoke(&IngameDialogueBox::onWindowChange);
 }
@@ -204,29 +215,34 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
         default: break;
     }
 
-    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
 
     Player::invoke(&Player::handleCustomEventGET, event);
-    Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
-    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::handleCustomEventGET, event);
-    Slime::invoke(&Slime::handleCustomEventGET, event);
 
     // Dialogues!
     Interactable::invoke(&Interactable::handleCustomEventGET, event);
     OmoriLaptop::invoke(&OmoriLaptop::handleCustomEventGET, event);
     OmoriMewO::invoke(&OmoriMewO::handleCustomEventGET, event);
+
+    Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
+    RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
+
+    Slime::invoke(&Slime::handleCustomEventGET, event);
+
+    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
 }
 
 /**
  * @note `GameState::kIngamePlaying` only.
 */
 void IngameInterface::handleCustomEventPOST() const {
-    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
-
     Player::invoke(&Player::handleCustomEventPOST);
+    
     Teleporter::invoke(&Teleporter::handleCustomEventPOST);
-    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::handleCustomEventPOST);
+    RedHandThrone::invoke(&RedHandThrone::handleCustomEventPOST);
+
     Slime::invoke(&Slime::handleCustomEventPOST);
+
+    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
 }
 
 void IngameInterface::handleDependencies() const {
@@ -250,24 +266,25 @@ void IngameInterface::handleDependencies() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesInteraction() const {
-    PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
-    PentacleProjectile::handleTermination();
-    PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
-
     Player::invoke(&Player::initiateAnimation);
     Player::invoke(&Player::move);
     Player::invoke(&Player::updateAnimation);
 
+    OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
+
+    OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
+    OmoriMewO::invoke(&OmoriMewO::updateAnimation);
+
     Teleporter::invoke(&Teleporter::updateAnimation);
-    RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::updateAnimation);
+    RedHandThrone::invoke(&RedHandThrone::updateAnimation);
 
     Slime::invoke(&Slime::initiateAnimation);
     Slime::invoke(&Slime::move);
     Slime::invoke(&Slime::updateAnimation);
 
-    OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
-    OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
-    OmoriMewO::invoke(&OmoriMewO::updateAnimation);
+    PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
+    PentacleProjectile::handleTermination();
+    PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
 }
 
 void IngameInterface::handleLevelSpecifics() const {
@@ -334,8 +351,8 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         data->targetDestCoords = { 20, 8 };
         data->targetLevel = level::Name::kLevelEquilibrium;
         level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
-        RedHandThroneTeleporter::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
-        RedHandThroneTeleporter::invoke(&RedHandThroneTeleporter::onWindowChange);
+        RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
+        RedHandThrone::invoke(&RedHandThrone::onWindowChange);
 
         ++borderTraversedTracker;
     }

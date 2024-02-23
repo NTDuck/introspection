@@ -121,20 +121,20 @@ void AbstractAnimatedEntity<T>::initiateAnimation() {
 }
 
 
-template class AbstractAnimatedEntity<PentacleProjectile>;
-
 template class AbstractAnimatedEntity<Player>;
 
+template class AbstractAnimatedEntity<OmoriLightBulb>;
+
 template class AbstractAnimatedEntity<Interactable>;
+template class AbstractAnimatedEntity<OmoriLaptop>;
+template class AbstractAnimatedEntity<OmoriMewO>;
 
 template class AbstractAnimatedEntity<Teleporter>;
-template class AbstractAnimatedEntity<RedHandThroneTeleporter>;
+template class AbstractAnimatedEntity<RedHandThrone>;
 
 template class AbstractAnimatedEntity<Slime>;
 
-template class AbstractAnimatedEntity<OmoriLaptop>;
-template class AbstractAnimatedEntity<OmoriLightBulb>;
-template class AbstractAnimatedEntity<OmoriMewO>;
+template class AbstractAnimatedEntity<PentacleProjectile>;
 
 
 DEFINE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::omori_light_bulb)

@@ -69,11 +69,26 @@ void level::Data_Interactable::load(json const& JSONObjectData) {
         auto name_j = property.find("name"); if (name_j == property.end()) continue;
         auto value_j = property.find("value"); if (value_j == property.end()) continue;
 
-        auto name_v = name_j.value(); if (!name_v.is_string()) continue;
-        auto value_v = value_j.value(); if (!value_v.is_string()) continue;
+        auto name_v = name_j.value(); if (!name_v.is_string() || static_cast<std::string>(name_v).find("dialogue")) continue;   // != 0
+        // propertytype: "dialogue"
+        auto value_v = value_j.value(); if (!value_v.is_object()) continue;
 
-        if (static_cast<std::string>(name_v).find("dialogue")) continue;   // != 0
-        dialogues.push_back(value_v);
+        auto content_j = value_v.find("content"); if (content_j == value_v.end()) continue;
+        auto group_index_j = value_v.find("group-index"); if (group_index_j == value_v.end()) continue;
+        auto index_j = value_v.find("index"); if (index_j == value_v.end()) continue;
+
+        auto content_v = content_j.value(); if (!content_v.is_string()) continue;
+        auto group_index_v = group_index_j.value();
+        auto index_v = index_j.value();
+
+        const unsigned short int group_index = static_cast<unsigned short int>(group_index_v);
+        const unsigned short int index = static_cast<unsigned short int>(index_v);
+
+        // Prevent segmentation fault
+        if (group_index > static_cast<unsigned short int>(dialogues.size()) - 1) dialogues.resize(group_index + 1);
+        if (index > static_cast<unsigned short int>(dialogues[group_index].size()) - 1) dialogues[group_index].resize(index + 1);
+
+        dialogues[group_index][index] = content_v;
     }
 }
 

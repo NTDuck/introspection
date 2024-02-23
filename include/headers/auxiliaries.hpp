@@ -330,7 +330,7 @@ namespace level {
     struct Data_Interactable : public Data_Generic {
         void load(json const& JSONObjectData) override;
 
-        std::vector<std::string> dialogues;
+        std::vector<std::vector<std::string>> dialogues;
     };
 
     /**

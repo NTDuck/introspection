@@ -12,6 +12,7 @@
 
 #include <SDL.h>
 
+#include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
 
@@ -278,19 +279,23 @@ class GenericInteractable : public AbstractAnimatedEntity<T> {
 
         virtual ~GenericInteractable() = default;
 
+        static void deinitialize();
         void onLevelChange(level::Data_Generic const& interactableData) override;
         void handleCustomEventGET(SDL_Event const& event) override;
 
     protected:
         GenericInteractable(SDL_Point const& destCoords);
 
+        unsigned short int mProgress = 0;
+
     private:
         void handleCustomEventGET_kReq_Interact_Player_GIE(SDL_Event const& event);
 
-        std::vector<std::string> mDialogues;
+        static Mixer::SFXName* sSFXName;
+        std::vector<std::vector<std::string>> mDialogues;
 };
 
-#define INCL_GENERIC_INTERACTABLE(T) using GenericInteractable<T>::onLevelChange, GenericInteractable<T>::handleCustomEventGET;
+#define INCL_GENERIC_INTERACTABLE(T) using GenericInteractable<T>::deinitialize, GenericInteractable<T>::onLevelChange, GenericInteractable<T>::handleCustomEventGET, GenericInteractable<T>::mProgress;
 
 #define DECLARE_GENERIC_INTERACTABLE(T) \
 class T final : public GenericInteractable<T> {\
@@ -302,7 +307,7 @@ class T final : public GenericInteractable<T> {\
         ~T() = default;\
 };
 
-#define DEFINE_GENERIC_INTERACTABLE(T, ns) \
+#define DEFINE_GENERIC_INTERACTABLE_SFX(T, ns, sfx) \
 T::T(SDL_Point const& destCoords) : GenericInteractable<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
 }\
@@ -311,7 +316,12 @@ template <>\
 const char* AbstractEntity<T>::sTypeID = ns::typeID;\
 \
 template <>\
-std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
+std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
+\
+template <>\
+Mixer::SFXName* GenericInteractable<T>::sSFXName = sfx;
+
+#define DEFINE_GENERIC_INTERACTABLE(T, ns) DEFINE_GENERIC_INTERACTABLE_SFX(T, ns, nullptr);
 
 
 template <typename T>
@@ -566,7 +576,7 @@ DECLARE_GENERIC_INTERACTABLE(OmoriLaptop)
 DECLARE_GENERIC_INTERACTABLE(OmoriMewO)
 
 DECLARE_GENERIC_TELEPORTER_ENTITY(Teleporter)
-DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThroneTeleporter)
+DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 
 DECLARE_GENERIC_HOSTILE_ENTITY(Slime)
 
