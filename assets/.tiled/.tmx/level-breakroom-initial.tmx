@@ -1,36 +1,117 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="9" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="4">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="41" height="21" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="3">
  <editorsettings>
   <export target="level-breakroom-initial.json" format="json"/>
  </editorsettings>
- <tileset firstgid="1" source="../.tsx/mi-rb-walls-3d.tsx"/>
- <tileset firstgid="1321" source="../.tsx/mi-rb-floors.tsx"/>
- <tileset firstgid="1921" source="../.tsx/omori-black-space.tsx"/>
- <tileset firstgid="4993" source="../.tsx/collision.tsx"/>
- <tileset firstgid="5009" source="../.tsx/mi-living-room.tsx"/>
- <layer id="5" name="static-collision" width="9" height="9">
+ <tileset firstgid="1" source="../.tsx/mi-rb-floors.tsx"/>
+ <tileset firstgid="601" source="../.tsx/mi-rb-walls-3d.tsx"/>
+ <tileset firstgid="1921" source="../.tsx/mi-hospital.tsx"/>
+ <tileset firstgid="3681" source="../.tsx/mi-ui.tsx"/>
+ <tileset firstgid="3969" source="../.tsx/omori-black-space.tsx"/>
+ <tileset firstgid="7041" source="../.tsx/collision.tsx"/>
+ <layer id="5" name="static-collision" width="41" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYBgY0CiMSiOL48LYzKCXGnwAAKzGDeE=
+   eJztzrENACAIAEH2YFo3N8RSqLW4S77/CAA4Vr4+uNXT1G88AtDZh5oK+Q==
   </data>
  </layer>
- <layer id="2" name="floors" width="9" height="9">
+ <layer id="1" name="floors" width="41" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYKA/UGdnYNBAwzAA42sCsTkaRgboctjUgIAZldTgAwAlfQZP
+   eJzt0TEKACAMBMHDRv2A/v+nMYVNeuGQHbh+SSQAwEu9SaPMzTpNu8zFvdk0bky1zbExOf8aAH4V04ICQw==
   </data>
  </layer>
- <layer id="1" name="walls" width="9" height="9">
+ <layer id="2" name="walls" width="41" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYCAOBDMyMLRgwWGMCDXZQPYcLDgPqgakfjYjdvPbcIhjU3MGSG8iwpxTVFJzGsg+C8UgAGOfg/IB+HcS3g==
+   eJxjYBgFo2AUjAJMwMzKwGCCBbOxDrTLEEAa6BYfLFhukLgRFF7eONxiNkjcCAqv5EHuRnxgsLixBuiOpCEQjlVDwI3VrJDwrIG6CcauG0RuHAWjYBSMAlIBAFO9CeA=
   </data>
  </layer>
- <layer id="3" name="props" width="9" height="9">
+ <layer id="4" name="props" width="41" height="21">
   <data encoding="base64" compression="zlib">
-   eJxjYCAefBDBzwcDUQJ8IBAQxc3fJUSCgwYJAAAZWwNJ
+   eJxjYBgFo2AUjIKhC0w4GBhMOTDZgwm4AN3kyoHJHkwgBOimUCDm5kewBwvYJTXQLhgFAwVujMb9KBgFo2CYAABotgV3
   </data>
  </layer>
- <objectgroup id="4" name="entities">
-  <object id="1" name="el gato" type="interactable-omori-cat-6" x="128" y="96" width="32" height="32"/>
-  <object id="3" type="teleporter" x="0" y="128" width="32" height="32">
+ <objectgroup id="3" name="entities">
+  <object id="1" name="wise car" type="interactable-omori-cat-6" x="640" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Waiting for something to happen?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (MEWO does this too, does she not?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Thanks for stopping by though...)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (You must be on your first playthrough)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
+    <property name="dialogue-E" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Or are you just fond of cats?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="4"/>
+     </properties>
+    </property>
+    <property name="dialogue-F" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Anyway, I've got some really, really meaningful quotes. They're one-time though, so make sure not to miss! Come back when you're ready.)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="5"/>
+     </properties>
+    </property>
+    <property name="dialogue-G" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Okay, here goes nothing)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-H" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Lasciate ogne speranza, voi ch'intrate."/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-I" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Oh, you don't know what that means? Pity you!)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-J" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Waiting for something to happen?)"/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-K" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Seriously, you aren't gonna stay here forever, are you?)"/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="2" name="to bedroom" type="teleporter" x="512" y="320" width="32" height="32">
    <properties>
     <property name="target-dest-coords" type="class" propertytype="coords">
      <properties>

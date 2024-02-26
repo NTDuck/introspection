@@ -14,9 +14,17 @@ IngameInterface::IngameInterface() {
         OmoriLightBulb::invoke(&OmoriLightBulb::render);
 
         // Interactables
-        // Interactable::invoke(&Interactable::render);
+        // PlaceholderInteractable::invoke(&PlaceholderInteractable::render);
         OmoriLaptop::invoke(&OmoriLaptop::render);
         OmoriMewO::invoke(&OmoriMewO::render);
+        OmoriCat_0::invoke(&OmoriCat_0::render);
+        OmoriCat_1::invoke(&OmoriCat_1::render);
+        OmoriCat_2::invoke(&OmoriCat_2::render);
+        OmoriCat_3::invoke(&OmoriCat_3::render);
+        OmoriCat_4::invoke(&OmoriCat_4::render);
+        OmoriCat_5::invoke(&OmoriCat_5::render);
+        OmoriCat_6::invoke(&OmoriCat_6::render);
+        OmoriCat_7::invoke(&OmoriCat_7::render);
 
         // Entities
         // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::render);
@@ -56,6 +64,14 @@ void IngameInterface::deinitialize() {
     PlaceholderInteractable::deinitialize();
     OmoriLaptop::deinitialize();
     OmoriMewO::deinitialize();
+    OmoriCat_0::deinitialize();
+    OmoriCat_1::deinitialize();
+    OmoriCat_2::deinitialize();
+    OmoriCat_3::deinitialize();
+    OmoriCat_4::deinitialize();
+    OmoriCat_5::deinitialize();
+    OmoriCat_6::deinitialize();
+    OmoriCat_7::deinitialize();
 
     PlaceholderTeleporter::deinitialize();
     RedHandThrone::deinitialize();
@@ -77,6 +93,14 @@ void IngameInterface::initialize() {
     PlaceholderInteractable::initialize();
     OmoriMewO::initialize();
     OmoriLaptop::initialize();
+    OmoriCat_0::initialize();
+    OmoriCat_1::initialize();
+    OmoriCat_2::initialize();
+    OmoriCat_3::initialize();
+    OmoriCat_4::initialize();
+    OmoriCat_5::initialize();
+    OmoriCat_6::initialize();
+    OmoriCat_7::initialize();
 
     // PlaceholderTeleporter::initialize();
     RedHandThrone::initialize();
@@ -117,6 +141,14 @@ void IngameInterface::onLevelChange() const {
     PlaceholderInteractable::onLevelChangeAll(level::data.get(config::entities::placeholder_interactable::typeID));
     OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
     OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
+    OmoriCat_0::onLevelChangeAll(level::data.get(config::entities::omori_cat_0::typeID));
+    OmoriCat_1::onLevelChangeAll(level::data.get(config::entities::omori_cat_1::typeID));
+    OmoriCat_2::onLevelChangeAll(level::data.get(config::entities::omori_cat_2::typeID));
+    OmoriCat_3::onLevelChangeAll(level::data.get(config::entities::omori_cat_3::typeID));
+    OmoriCat_4::onLevelChangeAll(level::data.get(config::entities::omori_cat_4::typeID));
+    OmoriCat_5::onLevelChangeAll(level::data.get(config::entities::omori_cat_5::typeID));
+    OmoriCat_6::onLevelChangeAll(level::data.get(config::entities::omori_cat_6::typeID));
+    OmoriCat_7::onLevelChangeAll(level::data.get(config::entities::omori_cat_7::typeID));
 
     PlaceholderTeleporter::onLevelChangeAll(level::data.get(config::entities::placeholder_teleporter::typeID));
     RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
@@ -136,11 +168,19 @@ void IngameInterface::onWindowChange() const {
 
     OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
 
-    // Interactable::invoke(&Interactable::onWindowChange);
+    PlaceholderInteractable::invoke(&PlaceholderInteractable::onWindowChange);
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
     OmoriMewO::invoke(&OmoriMewO::onWindowChange);
+    OmoriCat_0::invoke(&OmoriCat_0::onWindowChange);
+    OmoriCat_1::invoke(&OmoriCat_1::onWindowChange);
+    OmoriCat_2::invoke(&OmoriCat_2::onWindowChange);
+    OmoriCat_3::invoke(&OmoriCat_3::onWindowChange);
+    OmoriCat_4::invoke(&OmoriCat_4::onWindowChange);
+    OmoriCat_5::invoke(&OmoriCat_5::onWindowChange);
+    OmoriCat_6::invoke(&OmoriCat_6::onWindowChange);
+    OmoriCat_7::invoke(&OmoriCat_7::onWindowChange);
 
-    // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::onWindowChange);
+    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::onWindowChange);
     RedHandThrone::invoke(&RedHandThrone::onWindowChange);
 
     Slime::invoke(&Slime::onWindowChange);
@@ -222,6 +262,14 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     PlaceholderInteractable::invoke(&PlaceholderInteractable::handleCustomEventGET, event);
     OmoriLaptop::invoke(&OmoriLaptop::handleCustomEventGET, event);
     OmoriMewO::invoke(&OmoriMewO::handleCustomEventGET, event);
+    OmoriCat_0::invoke(&OmoriCat_0::handleCustomEventGET, event);
+    OmoriCat_1::invoke(&OmoriCat_1::handleCustomEventGET, event);
+    OmoriCat_2::invoke(&OmoriCat_2::handleCustomEventGET, event);
+    OmoriCat_3::invoke(&OmoriCat_3::handleCustomEventGET, event);
+    OmoriCat_4::invoke(&OmoriCat_4::handleCustomEventGET, event);
+    OmoriCat_5::invoke(&OmoriCat_5::handleCustomEventGET, event);
+    OmoriCat_6::invoke(&OmoriCat_6::handleCustomEventGET, event);
+    OmoriCat_7::invoke(&OmoriCat_7::handleCustomEventGET, event);
 
     PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventGET, event);
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
@@ -266,14 +314,19 @@ void IngameInterface::handleDependencies() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesInteraction() const {
-    Player::invoke(&Player::initiateAnimation);
-    Player::invoke(&Player::move);
-    Player::invoke(&Player::updateAnimation);
-
     OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
 
+    PlaceholderInteractable::invoke(&PlaceholderInteractable::updateAnimation);
     OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
     OmoriMewO::invoke(&OmoriMewO::updateAnimation);
+    OmoriCat_0::invoke(&OmoriCat_0::updateAnimation);
+    OmoriCat_1::invoke(&OmoriCat_1::updateAnimation);
+    OmoriCat_2::invoke(&OmoriCat_2::updateAnimation);
+    OmoriCat_3::invoke(&OmoriCat_3::updateAnimation);
+    OmoriCat_4::invoke(&OmoriCat_4::updateAnimation);
+    OmoriCat_5::invoke(&OmoriCat_5::updateAnimation);
+    OmoriCat_6::invoke(&OmoriCat_6::updateAnimation);
+    OmoriCat_7::invoke(&OmoriCat_7::updateAnimation);
 
     // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::updateAnimation);
     RedHandThrone::invoke(&RedHandThrone::updateAnimation);
@@ -285,6 +338,10 @@ void IngameInterface::handleEntitiesInteraction() const {
     PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
     PentacleProjectile::handleTermination();
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
+
+    Player::invoke(&Player::initiateAnimation);
+    Player::invoke(&Player::move);
+    Player::invoke(&Player::updateAnimation);
 }
 
 void IngameInterface::handleLevelSpecifics() const {
@@ -348,7 +405,7 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         // Hard-coded unfortunately, will have to change in future commits
         auto data = new level::Data_Teleporter();
         data->destCoords = { 52, 43 };
-        data->targetDestCoords = { 4, 6 };
+        data->targetDestCoords = { 20, 11 };
         data->targetLevel = level::Name::kLevelBreakroomInitial;
         level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
         RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));

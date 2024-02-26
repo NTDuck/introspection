@@ -1,83 +1,205 @@
 { "compressionlevel":-1,
- "height":9,
+ "height":21,
  "infinite":false,
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYBgY0CiMSiOL48LYzKCXGnwAAKzGDeE=",
+         "data":"eJztzrENACAIAEH2YFo3N8RSqLW4S77\/CAA4Vr4+uNXT1G88AtDZh5oK+Q==",
          "encoding":"base64",
-         "height":9,
+         "height":21,
          "id":5,
          "name":"static-collision",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":41,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYKA\/UGdnYNBAwzAA42sCsTkaRgboctjUgIAZldTgAwAlfQZP",
+         "data":"eJzt0TEKACAMBMHDRv2A\/v+nMYVNeuGQHbh+SSQAwEu9SaPMzTpNu8zFvdk0bky1zbExOf8aAH4V04ICQw==",
          "encoding":"base64",
-         "height":9,
-         "id":2,
+         "height":21,
+         "id":1,
          "name":"floors",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":41,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYCAOBDMyMLRgwWGMCDXZQPYcLDgPqgakfjYjdvPbcIhjU3MGSG8iwpxTVFJzGsg+C8UgAGOfg\/IB+HcS3g==",
+         "data":"eJxjYBgFo2AUjAJMwMzKwGCCBbOxDrTLEEAa6BYfLFhukLgRFF7eONxiNkjcCAqv5EHuRnxgsLixBuiOpCEQjlVDwI3VrJDwrIG6CcauG0RuHAWjYBSMAlIBAFO9CeA=",
          "encoding":"base64",
-         "height":9,
-         "id":1,
+         "height":21,
+         "id":2,
          "name":"walls",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":41,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYCAefBDBzwcDUQJ8IBAQxc3fJUSCgwYJAAAZWwNJ",
+         "data":"eJxjYBgFo2AUjIKhC0w4GBhMOTDZgwm4AN3kyoHJHkwgBOimUCDm5kewBwvYJTXQLhgFAwVujMb9KBgFo2CYAABotgV3",
          "encoding":"base64",
-         "height":9,
-         "id":3,
+         "height":21,
+         "id":4,
          "name":"props",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":9,
+         "width":41,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "id":4,
+         "id":3,
          "name":"entities",
          "objects":[
                 {
                  "height":32,
                  "id":1,
-                 "name":"el gato",
+                 "name":"wise car",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Waiting for something to happen?)",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (MEWO does this too, does she not?)",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Thanks for stopping by though...)",
+                             "group-index":0,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (You must be on your first playthrough)",
+                             "group-index":0,
+                             "index":3
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-E",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Or are you just fond of cats?)",
+                             "group-index":0,
+                             "index":4
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-F",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Anyway, I've got some really, really meaningful quotes. They're one-time though, so make sure not to miss! Come back when you're ready.)",
+                             "group-index":0,
+                             "index":5
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-G",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Okay, here goes nothing)",
+                             "group-index":1,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-H",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Lasciate ogne speranza, voi ch'intrate.",
+                             "group-index":1,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-I",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Oh, you don't know what that means? Pity you!)",
+                             "group-index":1,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-J",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Waiting for something to happen?)",
+                             "group-index":2,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-K",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Seriously, you aren't gonna stay here forever, are you?)",
+                             "group-index":2,
+                             "index":1
+                            }
+                        }],
                  "rotation":0,
                  "type":"interactable-omori-cat-6",
                  "visible":true,
                  "width":32,
-                 "x":128,
-                 "y":96
+                 "x":640,
+                 "y":256
                 }, 
                 {
                  "height":32,
-                 "id":3,
-                 "name":"",
+                 "id":2,
+                 "name":"to bedroom",
                  "properties":[
                         {
                          "name":"target-dest-coords",
@@ -98,8 +220,8 @@
                  "type":"teleporter",
                  "visible":true,
                  "width":32,
-                 "x":0,
-                 "y":128
+                 "x":512,
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -108,7 +230,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":4,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -116,26 +238,30 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/.tsx\/mi-rb-walls-3d.tsx"
-        }, 
-        {
-         "firstgid":1321,
          "source":"..\/.tsx\/mi-rb-floors.tsx"
         }, 
         {
+         "firstgid":601,
+         "source":"..\/.tsx\/mi-rb-walls-3d.tsx"
+        }, 
+        {
          "firstgid":1921,
+         "source":"..\/.tsx\/mi-hospital.tsx"
+        }, 
+        {
+         "firstgid":3681,
+         "source":"..\/.tsx\/mi-ui.tsx"
+        }, 
+        {
+         "firstgid":3969,
          "source":"..\/.tsx\/omori-black-space.tsx"
         }, 
         {
-         "firstgid":4993,
+         "firstgid":7041,
          "source":"..\/.tsx\/collision.tsx"
-        }, 
-        {
-         "firstgid":5009,
-         "source":"..\/.tsx\/mi-living-room.tsx"
         }],
  "tilewidth":32,
  "type":"map",
  "version":"1.10",
- "width":9
+ "width":41
 }

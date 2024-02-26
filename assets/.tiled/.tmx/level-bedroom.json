@@ -4,6 +4,20 @@
  "layers":[
         {
          "compression":"zlib",
+         "data":"eJzt0cEJADAIBEF7SMXp3BbiQzQwC\/cfuAhJr90zu9980x6+Xt82Lx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx9fxTvt2e7b\/i9fr0+1EswM4D4=",
+         "encoding":"base64",
+         "height":60,
+         "id":5,
+         "name":"static-collision",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":40,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
          "data":"eJzt0rENgEAIQFE6R1EX0P030\/oatILT9xM6ipdAhKSnrUvEVjhZx71zFs7Y6N+b+SotX\/B1s2bx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx\/cuXeas9M\/g637f7\/83u07suSZid+A==",
          "encoding":"base64",
          "height":60,
@@ -60,8 +74,8 @@
                          "type":"class",
                          "value":
                             {
-                             "x":1,
-                             "y":4
+                             "x":17,
+                             "y":10
                             }
                         }, 
                         {
@@ -87,8 +101,8 @@
                          "type":"class",
                          "value":
                             {
-                             "x":1,
-                             "y":4
+                             "x":17,
+                             "y":10
                             }
                         }, 
                         {
@@ -109,8 +123,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":4,
+ "nextlayerid":6,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -127,6 +141,10 @@
         {
          "firstgid":1921,
          "source":"..\/.tsx\/omori-black-space.tsx"
+        }, 
+        {
+         "firstgid":4993,
+         "source":"..\/.tsx\/collision.tsx"
         }],
  "tilewidth":32,
  "type":"map",
