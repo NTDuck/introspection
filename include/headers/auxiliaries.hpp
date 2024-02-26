@@ -298,10 +298,10 @@ namespace level {
     enum class Name : char {
         null = -1,
 
-        kLevelEquilibrium,
-        kLevelValleyOfDespair,
-
         kLevelWhiteSpace,
+
+        kLevelBreakroomInitial,
+        kLevelBedroom,
     };
 
     Name stoln(std::string const& s);
@@ -636,16 +636,16 @@ namespace config {
             constexpr int waitingFramesAfterDeath = 6.66 * config::game::FPS;
         }
 
-        namespace interactable {
+        namespace placeholder_interactable {
             constexpr const char* typeID = "interactable";
             const std::filesystem::path path{};
             constexpr SDL_FRect destRectModifier{};
         }
 
-        namespace teleporter {
+        namespace placeholder_teleporter {
             constexpr const char* typeID = "teleporter";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-cat.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            const std::filesystem::path path{};
+            constexpr SDL_FRect destRectModifier{};
         }
 
         namespace teleporter_red_hand_throne {
@@ -692,7 +692,23 @@ namespace config {
             constexpr const char* typeID = "interactable-omori-mewo";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
-        }        
+        }
+
+        #define DEFINE_OMORI_CAT_NS(index) \
+        namespace omori_cat_##index {\
+            constexpr const char* typeID = "interactable-omori-cat-" #index;\
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;\
+        }
+
+        DEFINE_OMORI_CAT_NS(0)
+        DEFINE_OMORI_CAT_NS(1)
+        DEFINE_OMORI_CAT_NS(2)
+        DEFINE_OMORI_CAT_NS(3)
+        DEFINE_OMORI_CAT_NS(4)
+        DEFINE_OMORI_CAT_NS(5)
+        DEFINE_OMORI_CAT_NS(6)
+        DEFINE_OMORI_CAT_NS(7)
     }
 
     namespace components {

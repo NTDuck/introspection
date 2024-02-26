@@ -46,6 +46,7 @@ class Singleton : virtual public PolymorphicBase<T> {
         }
 
         static void deinitialize() {
+            if (instance == nullptr) return;
             delete instance;
             instance = nullptr;
         }
@@ -93,7 +94,7 @@ class Multiton : virtual public PolymorphicBase<T> {
             return instance;
         }
 
-        template <size_t N, typename... Args>
+        template <std::size_t N, typename... Args>
         static void instantiate(std::array<std::tuple<Args...>, N> const& container) {
             for (const auto& args : container) T::instantiate(args);
         }
@@ -114,6 +115,7 @@ class Multiton : virtual public PolymorphicBase<T> {
         */
         template <typename Callable, typename... Args>
         static void invoke(Callable&& callable, Args&&... args) {
+            if (instances.empty()) return;
             for (auto& instance : instances) if (instance != nullptr) std::invoke(std::forward<Callable>(callable), *instance, std::forward<Args>(args)...);
         }
 

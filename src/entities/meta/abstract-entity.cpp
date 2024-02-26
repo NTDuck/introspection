@@ -121,11 +121,19 @@ template class AbstractEntity<Player>;
 
 template class AbstractEntity<OmoriLightBulb>;
 
-template class AbstractEntity<Interactable>;
+template class AbstractEntity<PlaceholderInteractable>;
 template class AbstractEntity<OmoriLaptop>;
 template class AbstractEntity<OmoriMewO>;
+template class AbstractEntity<OmoriCat_0>;
+template class AbstractEntity<OmoriCat_1>;
+template class AbstractEntity<OmoriCat_2>;
+template class AbstractEntity<OmoriCat_3>;
+template class AbstractEntity<OmoriCat_4>;
+template class AbstractEntity<OmoriCat_5>;
+template class AbstractEntity<OmoriCat_6>;
+template class AbstractEntity<OmoriCat_7>;
 
-template class AbstractEntity<Teleporter>;
+template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
 template class AbstractEntity<Slime>;

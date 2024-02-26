@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="9" height="9" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="4">
+ <editorsettings>
+  <export target="level-breakroom-initial.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../.tsx/mi-rb-walls-3d.tsx"/>
+ <tileset firstgid="1321" source="../.tsx/mi-rb-floors.tsx"/>
+ <tileset firstgid="1921" source="../.tsx/omori-black-space.tsx"/>
+ <tileset firstgid="4993" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="5009" source="../.tsx/mi-living-room.tsx"/>
+ <layer id="5" name="static-collision" width="9" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgY0CiMSiOL48LYzKCXGnwAAKzGDeE=
+  </data>
+ </layer>
+ <layer id="2" name="floors" width="9" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYKA/UGdnYNBAwzAA42sCsTkaRgboctjUgIAZldTgAwAlfQZP
+  </data>
+ </layer>
+ <layer id="1" name="walls" width="9" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAOBDMyMLRgwWGMCDXZQPYcLDgPqgakfjYjdvPbcIhjU3MGSG8iwpxTVFJzGsg+C8UgAGOfg/IB+HcS3g==
+  </data>
+ </layer>
+ <layer id="3" name="props" width="9" height="9">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAefBDBzwcDUQJ8IBAQxc3fJUSCgwYJAAAZWwNJ
+  </data>
+ </layer>
+ <objectgroup id="4" name="entities">
+  <object id="1" name="el gato" type="interactable-omori-cat-6" x="128" y="96" width="32" height="32"/>
+  <object id="3" type="teleporter" x="0" y="128" width="32" height="32">
+   <properties>
+    <property name="target-dest-coords" type="class" propertytype="coords">
+     <properties>
+      <property name="x" type="int" value="38"/>
+      <property name="y" type="int" value="52"/>
+     </properties>
+    </property>
+    <property name="target-level" value="level-bedroom"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

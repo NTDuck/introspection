@@ -67,8 +67,6 @@ class Mixer final : Singleton<Mixer> {
 
         std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
             { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
-            { level::Name::kLevelEquilibrium, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-012-home.mp3") },
-            { level::Name::kLevelValleyOfDespair, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-063-its-raining-somewhere-else.mp3") },
         };
 
         std::unordered_map<SFXName, std::pair<Mix_Chunk*, std::filesystem::path>> kSFXMapping = {

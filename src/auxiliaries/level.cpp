@@ -3,9 +3,9 @@
 
 level::Name level::stoln(std::string const& s) {
     static const std::unordered_map<std::string, level::Name> ump = {
-        { "level-equilibrium", level::Name::kLevelEquilibrium },
-        { "level-valley-of-despair", level::Name::kLevelValleyOfDespair },
         { "level-white-space", level::Name::kLevelWhiteSpace },
+        { "level-breakroom-initial", level::Name::kLevelBreakroomInitial },
+        { "level-bedroom", level::Name::kLevelBedroom },
     };
     auto it = ump.find(s);
     return it != ump.end() ? it->second : Name::null;
@@ -242,13 +242,21 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
         Data_Generic* data = nullptr;
 
         switch (hs(static_cast<std::string>(type_v).c_str())) {
-            case hs(config::entities::interactable::typeID):
+            case hs(config::entities::placeholder_interactable::typeID):
             case hs(config::entities::omori_laptop::typeID):
             case hs(config::entities::omori_mewo::typeID):
+            case hs(config::entities::omori_cat_0::typeID):
+            case hs(config::entities::omori_cat_1::typeID):
+            case hs(config::entities::omori_cat_2::typeID):
+            case hs(config::entities::omori_cat_3::typeID):
+            case hs(config::entities::omori_cat_4::typeID):
+            case hs(config::entities::omori_cat_5::typeID):
+            case hs(config::entities::omori_cat_6::typeID):
+            case hs(config::entities::omori_cat_7::typeID):
                 data = new Data_Interactable();
                 break;
 
-            case hs(config::entities::teleporter::typeID):
+            case hs(config::entities::placeholder_teleporter::typeID):
             case hs(config::entities::teleporter_red_hand_throne::typeID):
                 data = new Data_Teleporter();
                 break;

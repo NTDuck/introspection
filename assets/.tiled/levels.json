@@ -1,16 +1,16 @@
 {
   "levels": [
     {
-      "name": "level-equilibrium",
-      "source": ".tmx/level-equilibrium.json"
-    },
-    {
-      "name": "level-valley-of-despair",
-      "source": ".tmx/level-valley-of-despair.json"
-    },
-    {
       "name": "level-white-space",
       "source": ".tmx/level-white-space.json"
+    },
+    {
+      "name": "level-breakroom-initial",
+      "source": ".tmx/level-breakroom-initial.json"
+    },
+    {
+      "name": "level-bedroom",
+      "source": ".tmx/level-bedroom.json"
     }
   ]
 }

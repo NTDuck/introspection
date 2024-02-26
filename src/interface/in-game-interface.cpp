@@ -19,7 +19,7 @@ IngameInterface::IngameInterface() {
         OmoriMewO::invoke(&OmoriMewO::render);
 
         // Entities
-        Teleporter::invoke(&Teleporter::render);
+        // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::render);
         RedHandThrone::invoke(&RedHandThrone::render);
 
         Slime::invoke(&Slime::render);
@@ -53,11 +53,11 @@ void IngameInterface::deinitialize() {
 
     OmoriLightBulb::deinitialize();
 
-    Interactable::deinitialize();
+    PlaceholderInteractable::deinitialize();
     OmoriLaptop::deinitialize();
     OmoriMewO::deinitialize();
 
-    Teleporter::deinitialize();
+    PlaceholderTeleporter::deinitialize();
     RedHandThrone::deinitialize();
 
     Slime::deinitialize();
@@ -74,11 +74,11 @@ void IngameInterface::initialize() {
 
     OmoriLightBulb::initialize();
 
-    Interactable::initialize();
+    PlaceholderInteractable::initialize();
     OmoriMewO::initialize();
     OmoriLaptop::initialize();
 
-    Teleporter::initialize();
+    // PlaceholderTeleporter::initialize();
     RedHandThrone::initialize();
 
     Slime::initialize();
@@ -114,11 +114,11 @@ void IngameInterface::onLevelChange() const {
 
     OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
 
-    Interactable::onLevelChangeAll(level::data.get(config::entities::interactable::typeID));
+    PlaceholderInteractable::onLevelChangeAll(level::data.get(config::entities::placeholder_interactable::typeID));
     OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
     OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
 
-    Teleporter::onLevelChangeAll(level::data.get(config::entities::teleporter::typeID));
+    PlaceholderTeleporter::onLevelChangeAll(level::data.get(config::entities::placeholder_teleporter::typeID));
     RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
 
     Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
@@ -140,7 +140,7 @@ void IngameInterface::onWindowChange() const {
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
     OmoriMewO::invoke(&OmoriMewO::onWindowChange);
 
-    Teleporter::invoke(&Teleporter::onWindowChange);
+    // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::onWindowChange);
     RedHandThrone::invoke(&RedHandThrone::onWindowChange);
 
     Slime::invoke(&Slime::onWindowChange);
@@ -219,11 +219,11 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     Player::invoke(&Player::handleCustomEventGET, event);
 
     // Dialogues!
-    Interactable::invoke(&Interactable::handleCustomEventGET, event);
+    PlaceholderInteractable::invoke(&PlaceholderInteractable::handleCustomEventGET, event);
     OmoriLaptop::invoke(&OmoriLaptop::handleCustomEventGET, event);
     OmoriMewO::invoke(&OmoriMewO::handleCustomEventGET, event);
 
-    Teleporter::invoke(&Teleporter::handleCustomEventGET, event);
+    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventGET, event);
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
 
     Slime::invoke(&Slime::handleCustomEventGET, event);
@@ -237,7 +237,7 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
 void IngameInterface::handleCustomEventPOST() const {
     Player::invoke(&Player::handleCustomEventPOST);
     
-    Teleporter::invoke(&Teleporter::handleCustomEventPOST);
+    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventPOST);
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventPOST);
 
     Slime::invoke(&Slime::handleCustomEventPOST);
@@ -275,7 +275,7 @@ void IngameInterface::handleEntitiesInteraction() const {
     OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
     OmoriMewO::invoke(&OmoriMewO::updateAnimation);
 
-    Teleporter::invoke(&Teleporter::updateAnimation);
+    // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::updateAnimation);
     RedHandThrone::invoke(&RedHandThrone::updateAnimation);
 
     Slime::invoke(&Slime::initiateAnimation);
@@ -348,8 +348,8 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         // Hard-coded unfortunately, will have to change in future commits
         auto data = new level::Data_Teleporter();
         data->destCoords = { 52, 43 };
-        data->targetDestCoords = { 20, 8 };
-        data->targetLevel = level::Name::kLevelEquilibrium;
+        data->targetDestCoords = { 4, 6 };
+        data->targetLevel = level::Name::kLevelBreakroomInitial;
         level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
         RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
         RedHandThrone::invoke(&RedHandThrone::onWindowChange);

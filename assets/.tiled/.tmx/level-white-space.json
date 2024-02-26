@@ -172,7 +172,7 @@
                          "value":
                             {
                              "content":"Good kitty.",
-                             "group-index":2,
+                             "group-index":1,
                              "index":1
                             }
                         }, 
@@ -183,7 +183,7 @@
                          "value":
                             {
                              "content":"Meow? (Waiting for something to happen?)",
-                             "group-index":3,
+                             "group-index":2,
                              "index":0
                             }
                         }],
@@ -272,6 +272,73 @@
                  "width":32,
                  "x":1824,
                  "y":1568
+                }, 
+                {
+                 "height":32,
+                 "id":8,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"You can just, uh, step into it.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Go on, don't be shy.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"This is what sets the game apart from OMORI.",
+                             "group-index":0,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"The sprite is from OMORI though...",
+                             "group-index":0,
+                             "index":3
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-E",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Just walk onto the hand and stand still.",
+                             "group-index":1,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":32,
+                 "x":1664,
+                 "y":1376
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -280,7 +347,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":8,
+ "nextobjectid":9,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

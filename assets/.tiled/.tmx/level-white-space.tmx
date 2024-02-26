@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="8">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="9">
  <editorsettings>
   <export target="level-white-space.json" format="json"/>
  </editorsettings>
@@ -93,14 +93,14 @@
     <property name="dialogue-G" type="class" propertytype="dialogue">
      <properties>
       <property name="content" value="Good kitty."/>
-      <property name="group-index" type="int" value="2"/>
+      <property name="group-index" type="int" value="1"/>
       <property name="index" type="int" value="1"/>
      </properties>
     </property>
     <property name="dialogue-H" type="class" propertytype="dialogue">
      <properties>
       <property name="content" value="Meow? (Waiting for something to happen?)"/>
-      <property name="group-index" type="int" value="3"/>
+      <property name="group-index" type="int" value="2"/>
       <property name="index" type="int" value="0"/>
      </properties>
     </property>
@@ -132,6 +132,45 @@
      <properties>
       <property name="content" value="A tissue box for wiping your sorrows away."/>
       <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="8" type="interactable" x="1664" y="1376" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You can just, uh, step into it."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Go on, don't be shy."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="This is what sets the game apart from OMORI."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="The sprite is from OMORI though..."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
+    <property name="dialogue-E" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Just walk onto the hand and stand still."/>
+      <property name="group-index" type="int" value="1"/>
       <property name="index" type="int" value="0"/>
      </properties>
     </property>

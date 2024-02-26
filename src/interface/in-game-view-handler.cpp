@@ -50,7 +50,10 @@ void IngameViewHandler::onWindowChange() {
     switch (mView) {
         case View::kFullScreen:
             // mTileDestSize = 1 << static_cast<int>(log2(std::min(globals::windowSize.x / globals::tileDestCount.x, globals::windowSize.y / globals::tileDestCount.y)));
-            mTileDestSize.x = mTileDestSize.y = std::min(globals::windowSize.x / level::data.tileDestCount.x, globals::windowSize.y / level::data.tileDestCount.y);   // Sacrifice absolute "powers of 2" for decreased offset
+            mTileDestSize.x = mTileDestSize.y = std::min(
+                std::min(globals::windowSize.x / level::data.tileDestCount.x, globals::windowSize.y / level::data.tileDestCount.y) << 1,   // Sacrifice absolute "powers of 2" for decreased offset
+                std::min(level::data.tileDestSize.x, level::data.tileDestSize.y) * 3 / 2
+            );
             break;
 
         case View::kTargetEntity:

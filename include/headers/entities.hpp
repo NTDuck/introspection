@@ -515,13 +515,29 @@ std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 /**
  * @brief An interactable "entity" with no sprite, so certain methods will be emptied.
 */
-class Interactable : public GenericInteractable<Interactable> {
+class PlaceholderInteractable : public GenericInteractable<PlaceholderInteractable> {
     public:
-        INCL_ABSTRACT_ANIMATED_ENTITY(Interactable)
-        INCL_GENERIC_INTERACTABLE(Interactable)
+        INCL_ABSTRACT_ANIMATED_ENTITY(PlaceholderInteractable)
+        INCL_GENERIC_INTERACTABLE(PlaceholderInteractable)
 
-        Interactable(SDL_Point const& destCoords);
-        ~Interactable() = default;
+        PlaceholderInteractable(SDL_Point const& destCoords);
+        ~PlaceholderInteractable() = default;
+
+        static void initialize() {}
+
+        void render() const override {}
+        void onWindowChange() override {}
+        void updateAnimation() override {}
+};
+
+
+class PlaceholderTeleporter : public GenericTeleporterEntity<PlaceholderTeleporter> {
+    public:
+        INCL_ABSTRACT_ANIMATED_ENTITY(PlaceholderTeleporter)
+        INCL_GENERIC_TELEPORTER_ENTITY(PlaceholderTeleporter)
+
+        PlaceholderTeleporter(SDL_Point const& destCoords);
+        ~PlaceholderTeleporter() = default;
 
         static void initialize() {}
 
@@ -574,8 +590,15 @@ DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
 
 DECLARE_GENERIC_INTERACTABLE(OmoriLaptop)
 DECLARE_GENERIC_INTERACTABLE(OmoriMewO)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_0)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_1)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_2)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_3)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_4)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_5)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_6)
+DECLARE_GENERIC_INTERACTABLE(OmoriCat_7)
 
-DECLARE_GENERIC_TELEPORTER_ENTITY(Teleporter)
 DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 
 DECLARE_GENERIC_HOSTILE_ENTITY(Slime)
