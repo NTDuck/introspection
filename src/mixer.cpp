@@ -41,6 +41,8 @@ int Mixer::getBGMVolume() const {
 int Mixer::getSFXVolume() const {
     #if !defined(__linux__)
     return Mix_Volume(-1, -1);
+    #else
+    return -1;
     #endif
 }
 

@@ -115,6 +115,10 @@ all: $(OUTPUT)
 $(OUTPUT): $(SRCS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(WARNINGS) $(LIB_PATH) -o $@ $^ $(LDLIBS)
 
+.PHONY: run
+run:
+	./$(OUTPUT)
+
 .PHONY: clean
 clean:
 	@echo Cleaning $(BUILD_DIR) directory
