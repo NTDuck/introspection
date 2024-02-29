@@ -44,12 +44,14 @@ a RPG made without a game engine.
 - Brain (optional)
 - Compatible hardware
 
+**Build & run:**
 ```bash
 git clone https://github.com/NTDuck/8964 && cd 8964
-.\compile.bat
+make
+make run
 ```
 
-### Ubuntu
+### Debian-based distributions
 
 **Prerequisites**:
 ```
@@ -57,18 +59,19 @@ sudo apt-get update
 sudo apt-get install g++ make libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev libsdl2-mixer-dev zlib1g-dev
 ```
 
+**Build & run:**
+Same as Windows. In case of permission-related issues, try `chmod +x ./build/8964`.
+
+### Arch-based distributions
+
+**Prerequisites**:
 ```
-make
-chmod +x ./build/8964
-./build/8964
+sudo pacman -S gcc make sdl2 sdl2_image sdl2_ttf sdl2_mixer zlib
 ```
 
-Alternatively, in case of weird segmentation fault:
-```
-gdb ./build/8964
-run
-backtrace
-```
+**Build & run:**
+Same as Windows.
+
 
 ### Others:
 
