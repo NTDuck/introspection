@@ -300,6 +300,10 @@ namespace level {
 
         kLevelWhiteSpace,
 
+        kLevelAnte,
+        kLevelPaene,
+        kLevelUmbra,
+
         kLevelBreakroomInitial,
         kLevelBedroom,
     };

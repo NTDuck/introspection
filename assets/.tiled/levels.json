@@ -5,6 +5,10 @@
       "source": ".tmx/level-white-space.json"
     },
     {
+      "name": "level-paene",
+      "source": ".tmx/level-paene.json"
+    },
+    {
       "name": "level-breakroom-initial",
       "source": ".tmx/level-breakroom-initial.json"
     },

@@ -4,9 +4,11 @@
 level::Name level::stoln(std::string const& s) {
     static const std::unordered_map<std::string, level::Name> ump = {
         { "level-white-space", level::Name::kLevelWhiteSpace },
+        { "level-paene", level::Name::kLevelPaene },
         { "level-breakroom-initial", level::Name::kLevelBreakroomInitial },
         { "level-bedroom", level::Name::kLevelBedroom },
     };
+    
     auto it = ump.find(s);
     return it != ump.end() ? it->second : Name::null;
 }

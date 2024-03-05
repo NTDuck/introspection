@@ -85,7 +85,7 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Meow? (MEWO does this too, does she not?)",
+                             "content":"Meow... (Yeah, every cat you meet does talk like this.)",
                              "group-index":0,
                              "index":1
                             }
@@ -107,7 +107,7 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Meow... (You must be on your first playthrough)",
+                             "content":"Meow? (You are on your first playthrough, are you not?)",
                              "group-index":0,
                              "index":3
                             }
@@ -222,6 +222,52 @@
                  "width":32,
                  "x":512,
                  "y":320
+                }, 
+                {
+                 "height":32,
+                 "id":3,
+                 "name":"this is an arrow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"This is an arrow.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":32,
+                 "x":640,
+                 "y":288
+                }, 
+                {
+                 "height":32,
+                 "id":4,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Nope, can't go there.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":32,
+                 "x":640,
+                 "y":416
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -230,7 +276,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":3,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

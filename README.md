@@ -101,10 +101,13 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 
 > We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
 1. Tilesets
-- [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
-- [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) (paid version)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
+
+- [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
+- [Pixel Cats](https://pixelfight.itch.io/cat-pack)
+- [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
+- [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 2. Fonts
 - [Omori](https://dafontonline.com/omori-font/)
 - [Phorssa](https://www.dafont.com/phorssa.font)
