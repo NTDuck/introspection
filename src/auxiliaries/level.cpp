@@ -4,7 +4,11 @@
 level::Name level::stoln(std::string const& s) {
     static const std::unordered_map<std::string, level::Name> ump = {
         { "level-white-space", level::Name::kLevelWhiteSpace },
+        { "level-tutorial-0", level::Name::kLevelTutorial_0 },
+        { "level-tutorial-1", level::Name::kLevelTutorial_1 },
+        { "level-ante", level::Name::kLevelAnte },
         { "level-paene", level::Name::kLevelPaene },
+        { "level-umbra", level::Name::kLevelUmbra },
         { "level-breakroom-initial", level::Name::kLevelBreakroomInitial },
         { "level-bedroom", level::Name::kLevelBedroom },
     };
@@ -281,6 +285,7 @@ void level::Data::loadTilelayerTilesets(json const& JSONLevelData) {
 */
 void level::Data::clear() {
     for (auto& row : tiles) for (auto& tile : row) tile.clear();
+    tiles.shrink_to_fit();
     backgroundColor = config::color::offblack;   // Default
 
     for (auto& pair : dependencies) for (auto& p : pair.second) delete p;

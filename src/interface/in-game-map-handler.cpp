@@ -18,7 +18,6 @@ IngameMapHandler::~IngameMapHandler() {
 }
 
 void IngameMapHandler::initialize() {
-    // utils::loadLevelsData(sLevelMap);
     json data;
     utils::readJSON(config::interface::path, data);
     sLevelMap.load(data);
@@ -40,6 +39,7 @@ void IngameMapHandler::onLevelChange() {
         level::data.tileDestCount.x * level::data.tileDestSize.x,
         level::data.tileDestCount.y * level::data.tileDestSize.y,
     };
+
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
 
     renderToTexture();
@@ -129,8 +129,6 @@ void IngameMapHandler::renderLevelTilelayers() const {
                 auto tilesetData = level::data.tilesets[gid];
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                if (tilesetData == nullptr) continue;
-
                 auto it = tilesetData->properties.find("norender");
                 data.textures.emplace_back(it != tilesetData->properties.end() && it->second == "true" ? nullptr : tilesetData->texture);
 

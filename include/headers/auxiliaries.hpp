@@ -298,6 +298,9 @@ namespace level {
     enum class Name : char {
         null = -1,
 
+        kLevelTutorial_0,
+        kLevelTutorial_1,
+
         kLevelWhiteSpace,
 
         kLevelAnte,
@@ -593,7 +596,7 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelWhiteSpace;
+        constexpr level::Name levelName = level::Name::kLevelTutorial_0;
         constexpr int idleFrames = 16;
 
         constexpr double tileCountHeight = 24;   // OMORI's white space

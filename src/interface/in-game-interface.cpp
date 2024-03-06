@@ -405,8 +405,8 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         // Hard-coded unfortunately, will have to change in future commits
         auto data = new level::Data_Teleporter();
         data->destCoords = { 52, 43 };
-        data->targetDestCoords = { 32, 191 };
-        data->targetLevel = level::Name::kLevelPaene;
+        data->targetDestCoords = { 20, 11 };
+        data->targetLevel = level::Name::kLevelBreakroomInitial;
         level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
         RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
         RedHandThrone::invoke(&RedHandThrone::onWindowChange);

@@ -5,8 +5,24 @@
       "source": ".tmx/level-white-space.json"
     },
     {
+      "name": "level-tutorial-0",
+      "source": ".tmx/level-tutorial-0.json"
+    },
+    {
+      "name": "level-tutorial-1",
+      "source": ".tmx/level-tutorial-1.json"
+    },
+    {
+      "name": "level-ante",
+      "source": ".tmx/level-ante.json"
+    },
+    {
       "name": "level-paene",
       "source": ".tmx/level-paene.json"
+    },
+    {
+      "name": "level-umbra",
+      "source": ".tmx/level-umbra.json"
     },
     {
       "name": "level-breakroom-initial",

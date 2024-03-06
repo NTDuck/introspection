@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="6">
+ <tileset firstgid="1" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="17" source="../.tsx/mi-rb-floors.tsx"/>
+ <tileset firstgid="617" source="../.tsx/mi-rb-walls-3d.tsx"/>
+ <tileset firstgid="1937" source="../.tsx/mi-rb-borders.tsx"/>
+ <tileset firstgid="2387" source="../.tsx/mi-rb-floors-connector.tsx"/>
+ <tileset firstgid="2639" source="../.tsx/mi-rb-arched-entryways.tsx"/>
+ <tileset firstgid="2959" source="../.tsx/mi-rb-walls.tsx"/>
+ <tileset firstgid="4239" source="../.tsx/mi-bedroom.tsx"/>
+ <tileset firstgid="5951" source="../.tsx/mi-living-room.tsx"/>
+ <tileset firstgid="6671" source="../.tsx/mi-museum.tsx"/>
+ <layer id="6" name="static-collision" width="50" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztmF0LgzAMAN3//9N7GgxRk9qvq95BYNDa5GK6B7dtXT6zC2iEHiz0YKEHCz1Y6MFCDxZ6sNCDhR4s9GChBws96vPu43/tznkzeLLHkVPJeTM4q/cNHtHaDFb3iGo/+n22Fp17lv+oH6V3M7rfJZHxaJlvVFx5lFDTy0w/o1xXz7empcfdfC3oPUdn+VZHDxZ6sNCDhR4s9GChBws9WOjBQg8WerDQg4UeLPRgoQeH6Bt35jt47z21HpTQgxV6sEIPVtR6ZDxH7FmV1ev/oUd85oi73PN+zP6v0qOPR00umkfvnuuhx2inke9jxrvJ7Lt6Xo86SuaY7LGvo6TGle7HKh7RXL3JI5ujB1F9mV4TPLJkfAlzFaHHvRnsxVM8ZvEFeP0ESA==
+  </data>
+ </layer>
+ <layer id="1" name="floors" width="50" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztmm1OhDAURSv7UaPG8Y8mmoxrUjegy9DZAG7RNpnGpgHeK/TjAvckN5nQQt4BprzJYMx66S9aV5AHemBBDyzogQU9sKAHFvTAgh5Y0AMLemAxx+Pb7vOjSE1SPZzDyeZXmVqkevQJDnvwuOmMuZ2IZi6Cx7Ot42Uimrn0oAeKx9Hu9zoQR4v1KSaHxzH4rGXonE5tl8boMc/DPwt8TfEzYWz70FhOj4PNQ4KH9P1OicYj7AXDWqdyEOLO4V1GDxdf42nEo4/WIM19JSVn/T7SWtlHY1qPKUp4SMzx0FDq+1Hbozaxx1qhBxb0wIIeWNADC3pgQQ8s6IEFPbCgBxb0wIIeWNCDlGAr16P1/5Y5uOyMeTrnKoofj7fXnqPhMfCI445xPTFea85SD5TQAyv0wAo9/veXPGvMIW3ZynUo4XHfye/E5IjD91feI6W/ktC+F7M0S/srFI+l625Njzd7vK+ROEquu7k8HJ+CR0nosU+P9yBr9gjHSxPXlcraPMbmtPTQ3FcxiB5D9Q3VGPZhfk7cP63BQ7puYZ3I99WePCTokQ/JQ/M7ag0eKc/7luToXz424lGr90XkDwgPzOo=
+  </data>
+ </layer>
+ <layer id="2" name="walls" width="50" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztm89r1EAUx4dpt2vTZcVib6KgFPQiWHrTq+B/of9CUfDouSoIXgQ9+KNi6VqsxZNaf1CLW1QQFRWsWgWt+KMttrV7EfSFuOxLdjI/upPkxc4Xvmx25iWbTyaz85Z9YSyfGuLB6xWe7Xm0KsdBS46DlhwHLTkOWnIctOQ4aMlx0NJ65jgOsZc1fSql62PK4TPcBL/U9EBKLKYclyDuK/iOpi+Chwly3IK4ZwbnNQix9wTxp6FtVOEzXB1bjzHl+LaGa7so2KcCbe8UHuPq2LGMOSahbUrhKlfHVjPmWNI4To2rY2uOw1iOQx27Xjmmioxt2yD22WIj7jVv7l9Ax9ZZN0x8zJDjZzG+r7vU2BZdeyy8FhzsYuxQV/OaENcu6jNdP2Qc/QYceC2oK7omxLWL+lTrx2Eezls3lVis+lDfXR6f+/r55YM1zC+ZHvIgF70dw3EC3k8g75FwYL2K7Ift52Uzljne8yCHexHDMYTeVzrtfe6IxWP5Go4cT8YxDrGTkvkxL+mL6rpljmsGHH6fbJ5PR753f0icBAc+/oIlDtX31VXL86OmOF5SHMvQ/8uiVw05tsas5b63/HudF4xr1opy5FWOg5YcBy05DlpyHLTkOGjJcdCS46Alx0FLjoOWHActOQ5a+h843rQxtgKe8Rh76wXb2OeKzW1ZxMy2yTmWoL+3nbHPwDDnBdvYz0vNbVnE1BQcHsSUwJuBoccLtrFXSs1tWcRsbJdzLKvGS+O/qTRiVhXnqeKgIsdBS46DlhwHLbXKsajxf3kaMSqOvbBO7pPYpJ66VeP8KprvVVu8b/xaZN166lbdjfKraL6nyq9U8muR42phbLsf5Vd16eZXKuHfJkmrr4X8SqU0OUYl9Sh54riREw5RXWZcDWdUlDhUv/17y4x9KgR+Wggz3jeo+xIpTY5dwNHTEfhLwd7n+rLNMQtz4IPAH8H7geN3IfAf4hy6miPO8Qiu+2OBn3SGax9tcxzh4ZpcrAHUF83DzkNOccELtx1VXBO/1m477LPDs89xkodrcrEGUV80DxuBc6l44TbVM2DTCY6H7n0VzcPqwm2iZ8CwkhwP3ftKh1c1z5McD937yhZHUuOhe19RHw+bHLLnE3znZTxkzydM8GTH4zuX17DXbWO93FlObjx0ZYPjQLmxnWcO/OxJnjnGCXDoziNd7+7Q/+y/rm5opQ==
+  </data>
+ </layer>
+ <layer id="3" name="props" width="50" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztl9tvDGEchr+UokNbdKu0dYiqhCKCStSZkHDTKkJbCXqQaLEN6oakjcMV/wN/gGsqcUMPwY1Dq8RNnSq4pbhxeJrZpGOyu7OHbjrdvE/yZL+ZX3f3faffdLfGCCGEEEIIIYQQkekqNKa7MPL8G7PvUeZ+4BL5+rAflxQZU+pyKU7CyXjRx11ukO0DfsR1ZC13uR7zMIDXfdxjrOiiZzfexiC2htY92FuU+ve/yTW+5brODzh+iMP4ozDyzznpI2s/3sd27AitX+KAq8ffIttIx8nylJzP8Dm+wExee0qMrx/u3nLeY05yi20jHSfLINnf4jt8j/m8/5wYe4S7t5z3WKp7/CTvL/wdZc/8YdaDvWN0n6eix1Su1TTMjnLdc0b2OR0GfNyjgIxzcX6UHguYDdHhkw975JJpJs7C2ZiHgQRzDtGz0jKmyrLXXue9ZvGwkMyLsAwXY8nI53moR2eWMfeyYn+tYXLUkKfWstde571m8bCbzKuxAtfgWixP8PeRyZ5oIE+jZa+9znvN4mErmbfhdtyBO3FXgj3yyXGaPGcse+113msmkucxe/yJa59P5zrPwGzMCXPNwz0nVl5l2I+V7KEqPIjVuB8PJPF3dRk5l+MjR66NHG/CzbgFX7syb+Bches58XKUzMewCeuxARtDPWp5rIuh05uM0fUXsnzFz45MZWRcgStxVfH/s3DPGcwwcRMkZyu24Vk8h+dD2Zt5bJkg/2u0k7MDr+FlvIJXJ0h2IYQQQgghhBBCCCFEajlkGXPYGu8UyXOcDvVp0KOFDqfSoEcbHS6kQQ8hhBAiHdD3PX+h73tCTHzuBIzpxLuB8U4ihEiUfXyGVfvsc2xPgTF7C+x1iTWqe+akjvkRn/WoIWdtmKzRZk10OOGzHokQpEOrz3oksq+8GI/PwUT2lR85Sc5mR9bSeZFnQgghIvMPMTCdLQ==
+  </data>
+ </layer>
+ <layer id="4" name="props" width="50" height="100">
+  <data encoding="base64" compression="zlib">
+   eJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAeDBOIAAB
+  </data>
+ </layer>
+ <objectgroup id="7" name="entities">
+  <object id="1" name="wise car" type="interactable-omori-cat-6" x="1024" y="2624" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Waiting for something to happen?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="2" name="wise car" type="interactable-omori-cat-2" x="448" y="2976" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Waiting for something to happen?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="3" name="origin" type="player" x="1024" y="2912" width="32" height="32"/>
+  <object id="5" name="to tutorial 1" type="teleporter" x="1504" y="0" width="32" height="32">
+   <properties>
+    <property name="target-dest-coords" type="class" propertytype="coords">
+     <properties>
+      <property name="x" type="int" value="47"/>
+      <property name="y" type="int" value="98"/>
+     </properties>
+    </property>
+    <property name="target-level" value="level-tutorial-1"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
