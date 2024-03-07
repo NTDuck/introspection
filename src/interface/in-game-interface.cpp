@@ -383,17 +383,18 @@ void IngameInterface::handleCustomEventGET_kReq_DeathFinalized_Player() const {
 }
 
 void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
-    static unsigned int borderTraversedTracker = 0;
-    static constexpr auto kArbitraryClamp = [&](int& i, const double lower, const double upper) {
+    auto borderTraversedTracker = level::data.getProperty<bool>("is-border-traversed");
+
+    auto kArbitraryClamp = [&](int& i, const double lower, const double upper) {
         if (i <= lower) {
-            if (!borderTraversedTracker) ++borderTraversedTracker;
+            if (!borderTraversedTracker) level::data.setProperty("is-border-traversed", "true");
             i = upper;
         } else if (i >= upper) {
-            if (!borderTraversedTracker) ++borderTraversedTracker;
+            if (!borderTraversedTracker) level::data.setProperty("is-border-traversed", "true");
             i = lower;
         }
         // return (i <= lower) ? upper : (i >= upper) ? lower : i;
-    };
+    };   // Declaring as `static` would yield `warning: storing the address of local variable ‘borderTraversedTracker’ in ‘kArbitraryClamp.IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const::<lambda(int&, double, double)>::<borderTraversedTracker capture>’ [-Wdangling-pointer=]`
 
     // "Infinite loop" effect
     if (Player::instance->pNextDestCoords != nullptr) {
@@ -401,7 +402,7 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         kArbitraryClamp(Player::instance->pNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
     }
 
-    if (borderTraversedTracker == 1) {
+    if (borderTraversedTracker && RedHandThrone::instances.empty()) {
         // Hard-coded unfortunately, will have to change in future commits
         auto data = new level::Data_Teleporter();
         data->destCoords = { 52, 43 };
@@ -410,7 +411,5 @@ void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
         level::data.insert(config::entities::teleporter_red_hand_throne::typeID, data);
         RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
         RedHandThrone::invoke(&RedHandThrone::onWindowChange);
-
-        ++borderTraversedTracker;
     }
 }

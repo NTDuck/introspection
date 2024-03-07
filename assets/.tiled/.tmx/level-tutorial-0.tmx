@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="6">
+ <editorsettings>
+  <export target="level-tutorial-0.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/collision.tsx"/>
  <tileset firstgid="17" source="../.tsx/mi-rb-floors.tsx"/>
  <tileset firstgid="617" source="../.tsx/mi-rb-walls-3d.tsx"/>
@@ -12,7 +15,7 @@
  <tileset firstgid="6671" source="../.tsx/mi-museum.tsx"/>
  <layer id="6" name="static-collision" width="50" height="100">
   <data encoding="base64" compression="zlib">
-   eJztmF0LgzAMAN3//9N7GgxRk9qvq95BYNDa5GK6B7dtXT6zC2iEHiz0YKEHCz1Y6MFCDxZ6sNCDhR4s9GChBws96vPu43/tznkzeLLHkVPJeTM4q/cNHtHaDFb3iGo/+n22Fp17lv+oH6V3M7rfJZHxaJlvVFx5lFDTy0w/o1xXz7empcfdfC3oPUdn+VZHDxZ6sNCDhR4s9GChBws9WOjBQg8WerDQg4UeLPRgoQeH6Bt35jt47z21HpTQgxV6sEIPVtR6ZDxH7FmV1ev/oUd85oi73PN+zP6v0qOPR00umkfvnuuhx2inke9jxrvJ7Lt6Xo86SuaY7LGvo6TGle7HKh7RXL3JI5ujB1F9mV4TPLJkfAlzFaHHvRnsxVM8ZvEFeP0ESA==
+   eJztmNEOgyAMALf//+k9LVkWsUWoHNtd0kQD0l4FH3w89uW5uoBJ6MFCDxZ6sNCDhR4s9GChBws9WOjBQg8WerDQYzzvd3yOXVlvBb/sceTUs94KWvX+g0c0toLdPaLaj65bY9G6rfxH/eg9m9H57omMx8x8d8WZRw8jvcz0M8p19vxsZnpczTeD6n3Uyrc7erDQg4UeLPRgoQcLPVjowUIPFnqw0IOFHiz0YKEHCz04RP+4M//Bq+eMelBCD1bowQo9WDHqkfG8Y86u7F7/Gz3iNe84y5XnY/W3So8aj5FcNI/ovpIqj4qe6zHPo9rpzvex4t1k5p09r8cYPfuY7PFdR0+NO52PXTyifbWbRytfxqMnx2yi+jK9JnhkyfgS9lWEHtf2YBW/4rGKF2YtBEY=
   </data>
  </layer>
  <layer id="1" name="floors" width="50" height="100">
@@ -32,7 +35,7 @@
  </layer>
  <layer id="4" name="props" width="50" height="100">
   <data encoding="base64" compression="zlib">
-   eJztwTEBAAAAwqD1T20ND6AAAAAAAAAAAAAAAAAAAAAAAAAAeDBOIAAB
+   eJzt1b1Kw2AUxvF39QJa0FRrQQS1VQQR/Bp0cVAHXZ0UF51ddPYSvANFEVz8qgguurYOurYOurYOegU+hYTS0tY2TdrG/n9wOOENSZ5D3rTGAAAAAAD8cNJnzKlqxzJmRbWr2rOPj6zi+U53o4y3qn1l3lQdqA7t42OreL7T3SljskbOv853u5Teddry/r7Od1DevXZpZ8+oZ63SNS8430F599qjnTmnnrdK17zgfAfl3a0rZbsuyxeNGDNYpWIR98+qd++42WNPmuG5RXM4e6enxnvtcfnb+6rr3lo0h7N3emvMUTjnZo996LrPFs3hp2/N8PMP5mi3uPZPoonfqTO9g/Mq+/TCh/+9guUKeee1ttDgHEPKN2xnTKrfV8n74NMcBSO696hqzH7GqmZYa3COKV077WPGeszo+bOquQo5FrW21OZ8bkWVO2ZnX1ffCOgcE8o9aWffUt8O6BwAAAAAAAAAAAAAAAAAukskbEy/aiDc7iTNiSt/QjUe8DkAAK2VChmTVr2E2p2kORnlz6reAz5HTvnzqq+AzwEA3egXznJbEA==
   </data>
  </layer>
  <objectgroup id="7" name="entities">

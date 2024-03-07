@@ -152,9 +152,46 @@ void level::Data::erase(std::string const& key) {
     dependencies.erase(it);
 }
 
+template <>
 std::string level::Data::getProperty(std::string const& key) {
     auto it = properties.find(key);
     return it != properties.end() ? it->second : std::string{};
+}
+
+template <>
+int level::Data::getProperty(std::string const& key) {
+    return std::stoi(getProperty<std::string>(key));
+}
+
+template <>
+double level::Data::getProperty(std::string const& key) {
+    return std::stod(getProperty<std::string>(key));
+}
+
+template <>
+float level::Data::getProperty(std::string const& key) {
+    return std::stof(getProperty<std::string>(key));
+}
+
+template <>
+long level::Data::getProperty(std::string const& key) {
+    return std::stol(getProperty<std::string>(key));
+}
+
+template <>
+long long level::Data::getProperty(std::string const& key) {
+    return std::stoll(getProperty<std::string>(key));
+}
+
+template <>
+bool level::Data::getProperty(std::string const& key) {
+    switch (hs(getProperty<std::string>(key).c_str())) {
+        case hs("true"):
+        case hs("1"):
+            return true;
+
+        default: return false;
+    }
 }
 
 void level::Data::setProperty(std::string const& key, std::string const& property) {

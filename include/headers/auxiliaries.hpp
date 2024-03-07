@@ -360,7 +360,8 @@ namespace level {
         void insert(std::string const& key, Data_Generic* data);
         void erase(std::string const& key);
 
-        std::string getProperty(std::string const& key);
+        template <typename T = std::string>
+        T getProperty(std::string const& key);
         void setProperty(std::string const& key, std::string const& property);
         void eraseProperty(std::string const& key);
 
