@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="15">
  <editorsettings>
   <export target="level-tutorial-0.json" format="json"/>
  </editorsettings>
@@ -30,12 +30,12 @@
  </layer>
  <layer id="3" name="props" width="50" height="100">
   <data encoding="base64" compression="zlib">
-   eJztl9tvDGEchr+UokNbdKu0dYiqhCKCStSZkHDTKkJbCXqQaLEN6oakjcMV/wN/gGsqcUMPwY1Dq8RNnSq4pbhxeJrZpGOyu7OHbjrdvE/yZL+ZX3f3faffdLfGCCGEEEIIIYQQkekqNKa7MPL8G7PvUeZ+4BL5+rAflxQZU+pyKU7CyXjRx11ukO0DfsR1ZC13uR7zMIDXfdxjrOiiZzfexiC2htY92FuU+ve/yTW+5brODzh+iMP4ozDyzznpI2s/3sd27AitX+KAq8ffIttIx8nylJzP8Dm+wExee0qMrx/u3nLeY05yi20jHSfLINnf4jt8j/m8/5wYe4S7t5z3WKp7/CTvL/wdZc/8YdaDvWN0n6eix1Su1TTMjnLdc0b2OR0GfNyjgIxzcX6UHguYDdHhkw975JJpJs7C2ZiHgQRzDtGz0jKmyrLXXue9ZvGwkMyLsAwXY8nI53moR2eWMfeyYn+tYXLUkKfWstde571m8bCbzKuxAtfgWixP8PeRyZ5oIE+jZa+9znvN4mErmbfhdtyBO3FXgj3yyXGaPGcse+113msmkucxe/yJa59P5zrPwGzMCXPNwz0nVl5l2I+V7KEqPIjVuB8PJPF3dRk5l+MjR66NHG/CzbgFX7syb+Bches58XKUzMewCeuxARtDPWp5rIuh05uM0fUXsnzFz45MZWRcgStxVfH/s3DPGcwwcRMkZyu24Vk8h+dD2Zt5bJkg/2u0k7MDr+FlvIJXJ0h2IYQQQgghhBBCCCFEajlkGXPYGu8UyXOcDvVp0KOFDqfSoEcbHS6kQQ8hhBAiHdD3PX+h73tCTHzuBIzpxLuB8U4ihEiUfXyGVfvsc2xPgTF7C+x1iTWqe+akjvkRn/WoIWdtmKzRZk10OOGzHokQpEOrz3oksq+8GI/PwUT2lR85Sc5mR9bSeZFnQgghIvMPMTCdLQ==
+   eJztl9tvDGEchr+UokNbh61KW4coEooIKlFnQsJNqwhtJehBokUb1A1JG4cr/gf+ANdU4oYeghuHVombOlVwS3Hj8DSzSaeT3Z3d2W463bxP8mS/mV93932n33S3xgghhBBCCCGEENHpLDCmqyD6/DuzHzHmQeAy+XqxD5cUGrPU5TKchJPxUoC73CTbR/yE68la6nIDzsEQ3ghwj7Gik55deAebsSW87saewtS//y2u8W3XdX7I8SMcwp8F0X/OSS9Z+/ABtmF7eP0K+109/hXaRjtOlmfkfI4v8CVm8tpT4nz9SPeW8x5zkltkG+04WQbI/g7f4wfM4/3nxtkj0r3lvMdS3eMXeX/jnxh75i+zbuwZo/s8FT2mcq2mYXaM654zvM/p0B/gHvlknIfzY/RYwGyQDp8D2COXTDNxFs7GORjymXOQnuWWMRWWvfY67zVLhIVkXoQluBiLhz/Pwz06soy5nxX/aw2Ro4o81Za99jrvNUuEPWReg2W4Ftdhqc/fRyZ7oo489Za99jrvNUuEbWTejjtwJ+7C3T575JHjDHnOWvba67zXTCTPE/b4U9c+n851noHZmBPhmkd6Try8zrAfy9lDFXgIK/EAHkzi7+pycq7Ax45cmzjejFtwK75xZd7IuTLXcxLlGJmPYwPWYh3Wh3tU81gTR6e3GSPrr2T5hl8cmUrIuBJX4eqi0bNIzxnIMAnTTM4WbMVzeB4vhLM38tg0Qf7XaCNnO17HK3gVr02Q7EIIIYQQQgghhBBCiNRy2DLmiDXeKZLnBB1q06BHEx1Op0GPVjpcTIMeQgghRDqg73vBQt/3hJj43A0Z04H3QuOdRAjhl/18hlUG7HNsb74x+/LtdbE1onvmpIb50YD1qCJndYSssWYNdDgZsB5+aKZDS8B6+NlXXozH56CffRVETpGzMUrWWDMhhBCj+Q/rq5zv
   </data>
  </layer>
  <layer id="4" name="props" width="50" height="100">
   <data encoding="base64" compression="zlib">
-   eJzt1b1Kw2AUxvF39QJa0FRrQQS1VQQR/Bp0cVAHXZ0UF51ddPYSvANFEVz8qgguurYOurYOurYOegU+hYTS0tY2TdrG/n9wOOENSZ5D3rTGAAAAAAD8cNJnzKlqxzJmRbWr2rOPj6zi+U53o4y3qn1l3lQdqA7t42OreL7T3SljskbOv853u5Teddry/r7Od1DevXZpZ8+oZ63SNS8430F599qjnTmnnrdK17zgfAfl3a0rZbsuyxeNGDNYpWIR98+qd++42WNPmuG5RXM4e6enxnvtcfnb+6rr3lo0h7N3emvMUTjnZo996LrPFs3hp2/N8PMP5mi3uPZPoonfqTO9g/Mq+/TCh/+9guUKeee1ttDgHEPKN2xnTKrfV8n74NMcBSO696hqzH7GqmZYa3COKV077WPGeszo+bOquQo5FrW21OZ8bkWVO2ZnX1ffCOgcE8o9aWffUt8O6BwAAAAAAAAAAAAAAAAAukskbEy/aiDc7iTNiSt/QjUe8DkAAK2VChmTVr2E2p2kORnlz6reAz5HTvnzqq+AzwEA3egXznJbEA==
+   eJzt1btKw2AYxvFv7QVU0BRrQQRPiCCCp0EXB3XQ1Ulx0dlFZy/BO1AUwcVTRXDRtXXQtXXQtXXQK/ApJJSGtrZpkjb2/4OXN3whyfOSL60xAAAAAIAgnPQZc6rasYxZUe2q9uzjI6t8vtPdKOOtal+ZN1UHqkP7+Ngqn+90d8qYrpPzr/PdLqN3nbX8v6/zHbi73y7t7Dn1vFW55gfnO3B3vz3amQvqRatyzQ/Od+DuXl0p27UrXzJhzECNSiW8P6vRveNljz1phueQ5nD2TqzOe415/O191XVvIc3h7J3eOnOUznnZYx+67jOkOYL0rRl+/sEc7Tam/TPewu/Umd7BeY19ehHA/17JcpW881pbaHKOQeUbsjOm1e9r5H0IaI6SYd17RDVqP2NVM6w1OceUrp0OMGMjZvT8WdVclRyLWltqcz6vksqdsrOvq29EdI4J5Z60s2+pb0d0DgAAAAAAAAAAAAAAAADdqb+n3QkAAAhfJm5MVvUSb3eS1uSUP696j/gcBeUvqr4iPgcAdKNffmhZ4g==
   </data>
  </layer>
  <objectgroup id="7" name="entities">
@@ -43,9 +43,107 @@
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
-      <property name="content" value="Meow? (Waiting for something to happen?)"/>
+      <property name="content" value="Meow... (Just a moment...)"/>
       <property name="group-index" type="int" value="0"/>
       <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow! (Howdy! I'm [.-.]. [.-.] the [.-.]!)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Hmmm...)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (You're new to the [.-.], aren'tcha?)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
+    <property name="dialogue-E" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Golly, you must be so confused.)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="4"/>
+     </properties>
+    </property>
+    <property name="dialogue-F" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow! (Someone ought to teach you how things work around here!)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="5"/>
+     </properties>
+    </property>
+    <property name="dialogue-G" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (I guess little old me will have to do.)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="6"/>
+     </properties>
+    </property>
+    <property name="dialogue-H" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Ready? Here we go!)"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="7"/>
+     </properties>
+    </property>
+    <property name="dialogue-I" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Umm...)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-J" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (This is really embarassing.)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-K" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Nah, just kidding. Like, I'm not even able to leave this place. My only mission is to talk with newcomers like you, and then what? Of course you're gonna abandon me. Like, this place is even labeled &quot;level-tutorial-0&quot; because it's a [REDACTED] tutorial, and, like, nobody's ever going back to tutorials, right? Like, even this is scripted. I'm just an instance of `OmoriCat_6` which is derived from `GenericInteractable&lt;OmoriCat_6&gt;` which is derived from `AbstractAnimatedEntity&lt;OmoriCat_6&gt;` which is derived from `AbstractEntity&lt;OmoriCat_6&gt;` which is derived from `Multiton&lt;OmoriCat_6&gt;` which is derived from `PolymorphicBase&lt;OmoriCat_6&gt;`. I only have 3 sprites for idle animation, like, I'm not even allowed to move. That brainless dev who created this whole thing, like, he really, really loves cats, but he couldn't just make them move around? What kind of [REDACTED] is that? All I want is to travel with you, y'know, escaping this neverending torture.)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-L" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Umm, sorry, perhaps I talked too much.)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
+    <property name="dialogue-M" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow? (Let's stick with UNDERTALE references from now on, shall we?)"/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="4"/>
+     </properties>
+    </property>
+    <property name="dialogue-N" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Have you ever tried holding [SHIFT] while moving?)"/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-O" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Meow... (Now that's something useful, is it not?)"/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="1"/>
      </properties>
     </property>
    </properties>

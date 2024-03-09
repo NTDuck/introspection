@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJztmF0LgzAMAN3\/\/9N7GgxRk9qvq95BYNDa5GK6B7dtXT6zC2iEHiz0YKEHCz1Y6MFCDxZ6sNCDhR4s9GChBws96vPu43\/tznkzeLLHkVPJeTM4q\/cNHtHaDFb3iGo\/+n22Fp17lv+oH6V3M7rfJZHxaJlvVFx5lFDTy0w\/o1xXz7empcfdfC3oPUdn+VZHDxZ6sNCDhR4s9GChBws9WOjBQg8WerDQg4UeLPRgoQeH6Bt35jt47z21HpTQgxV6sEIPVtR6ZDxH7FmV1ev\/oUd85oi73PN+zP6v0qOPR00umkfvnuuhx2inke9jxrvJ7Lt6Xo86SuaY7LGvo6TGle7HKh7RXL3JI5ujB1F9mV4TPLJkfAlzFaHHvRnsxVM8ZvEFeP0ESA==",
+         "data":"eJztmNEOgyAMALf\/\/+k9LVkWsUWoHNtd0kQD0l4FH3w89uW5uoBJ6MFCDxZ6sNCDhR4s9GChBws9WOjBQg8WerDQYzzvd3yOXVlvBb\/sceTUs94KWvX+g0c0toLdPaLaj65bY9G6rfxH\/eg9m9H57omMx8x8d8WZRw8jvcz0M8p19vxsZnpczTeD6n3Uyrc7erDQg4UeLPRgoQcLPVjowUIPFnqw0IOFHiz0YKEHCz04RP+4M\/\/Bq+eMelBCD1bowQo9WDHqkfG8Y86u7F7\/Gz3iNe84y5XnY\/W3So8aj5FcNI\/ovpIqj4qe6zHPo9rpzvex4t1k5p09r8cYPfuY7PFdR0+NO52PXTyifbWbRytfxqMnx2yi+jK9JnhkyfgS9lWEHtf2YBW\/4rGKF2YtBEY=",
          "encoding":"base64",
          "height":100,
          "id":6,
@@ -46,7 +46,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJztl9tvDGEchr+UokNbdKu0dYiqhCKCStSZkHDTKkJbCXqQaLEN6oakjcMV\/wN\/gGsqcUMPwY1Dq8RNnSq4pbhxeJrZpGOyu7OHbjrdvE\/yZL+ZX3f3faffdLfGCCGEEEIIIYQQkekqNKa7MPL8G7PvUeZ+4BL5+rAflxQZU+pyKU7CyXjRx11ukO0DfsR1ZC13uR7zMIDXfdxjrOiiZzfexiC2htY92FuU+ve\/yTW+5brODzh+iMP4ozDyzznpI2s\/3sd27AitX+KAq8ffIttIx8nylJzP8Dm+wExee0qMrx\/u3nLeY05yi20jHSfLINnf4jt8j\/m8\/5wYe4S7t5z3WKp7\/CTvL\/wdZc\/8YdaDvWN0n6eix1Su1TTMjnLdc0b2OR0GfNyjgIxzcX6UHguYDdHhkw975JJpJs7C2ZiHgQRzDtGz0jKmyrLXXue9ZvGwkMyLsAwXY8nI53moR2eWMfeyYn+tYXLUkKfWstde571m8bCbzKuxAtfgWixP8PeRyZ5oIE+jZa+9znvN4mErmbfhdtyBO3FXgj3yyXGaPGcse+113msmkucxe\/yJa59P5zrPwGzMCXPNwz0nVl5l2I+V7KEqPIjVuB8PJPF3dRk5l+MjR66NHG\/CzbgFX7syb+Bches58XKUzMewCeuxARtDPWp5rIuh05uM0fUXsnzFz45MZWRcgStxVfH\/s3DPGcwwcRMkZyu24Vk8h+dD2Zt5bJkg\/2u0k7MDr+FlvIJXJ0h2IYQQQgghhBBCCCFEajlkGXPYGu8UyXOcDvVp0KOFDqfSoEcbHS6kQQ8hhBAiHdD3PX+h73tCTHzuBIzpxLuB8U4ihEiUfXyGVfvsc2xPgTF7C+x1iTWqe+akjvkRn\/WoIWdtmKzRZk10OOGzHokQpEOrz3oksq+8GI\/PwUT2lR85Sc5mR9bSeZFnQgghIvMPMTCdLQ==",
+         "data":"eJztl9tvDGEchr+UokNbh61KW4coEooIKlFnQsJNqwhtJehBokUb1A1JG4cr\/gf+ANdU4oYeghuHVombOlVwS3Hj8DSzSaeT3Z3d2W463bxP8mS\/mV93932n33S3xgghhBBCCCGEENHpLDCmqyD6\/DuzHzHmQeAy+XqxD5cUGrPU5TKchJPxUoC73CTbR\/yE68la6nIDzsEQ3ghwj7Gik55deAebsSW87saewtS\/\/y2u8W3XdX7I8SMcwp8F0X\/OSS9Z+\/ABtmF7eP0K+109\/hXaRjtOlmfkfI4v8CVm8tpT4nz9SPeW8x5zkltkG+04WQbI\/g7f4wfM4\/3nxtkj0r3lvMdS3eMXeX\/jnxh75i+zbuwZo\/s8FT2mcq2mYXaM654zvM\/p0B\/gHvlknIfzY\/RYwGyQDp8D2COXTDNxFs7GORjymXOQnuWWMRWWvfY67zVLhIVkXoQluBiLhz\/Pwz06soy5nxX\/aw2Ro4o81Za99jrvNUuEPWReg2W4Ftdhqc\/fRyZ7oo489Za99jrvNUuEbWTejjtwJ+7C3T575JHjDHnOWvba67zXTCTPE\/b4U9c+n851noHZmBPhmkd6Try8zrAfy9lDFXgIK\/EAHkzi7+pycq7Ax45cmzjejFtwK75xZd7IuTLXcxLlGJmPYwPWYh3Wh3tU81gTR6e3GSPrr2T5hl8cmUrIuBJX4eqi0bNIzxnIMAnTTM4WbMVzeB4vhLM38tg0Qf7XaCNnO17HK3gVr02Q7EIIIYQQQgghhBBCiNRy2DLmiDXeKZLnBB1q06BHEx1Op0GPVjpcTIMeQgghRDqg73vBQt\/3hJj43A0Z04H3QuOdRAjhl\/18hlUG7HNsb74x+\/LtdbE1onvmpIb50YD1qCJndYSssWYNdDgZsB5+aKZDS8B6+NlXXozH56CffRVETpGzMUrWWDMhhBCj+Q\/rq5zv",
          "encoding":"base64",
          "height":100,
          "id":3,
@@ -60,7 +60,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt1b1Kw2AUxvF39QJa0FRrQQS1VQQR\/Bp0cVAHXZ0UF51ddPYSvANFEVz8qgguurYOurYOurYOegU+hYTS0tY2TdrG\/n9wOOENSZ5D3rTGAAAAAAD8cNJnzKlqxzJmRbWr2rOPj6zi+U53o4y3qn1l3lQdqA7t42OreL7T3SljskbOv853u5Teddry\/r7Od1DevXZpZ8+oZ63SNS8430F599qjnTmnnrdK17zgfAfl3a0rZbsuyxeNGDNYpWIR98+qd++42WNPmuG5RXM4e6enxnvtcfnb+6rr3lo0h7N3emvMUTjnZo996LrPFs3hp2\/N8PMP5mi3uPZPoonfqTO9g\/Mq+\/TCh\/+9guUKeee1ttDgHEPKN2xnTKrfV8n74NMcBSO696hqzH7GqmZYa3COKV077WPGeszo+bOquQo5FrW21OZ8bkWVO2ZnX1ffCOgcE8o9aWffUt8O6BwAAAAAAAAAAAAAAAAAukskbEy\/aiDc7iTNiSt\/QjUe8DkAAK2VChmTVr2E2p2kORnlz6reAz5HTvnzqq+AzwEA3egXznJbEA==",
+         "data":"eJzt1btKw2AYxvFv7QVU0BRrQQRPiCCCp0EXB3XQ1Ulx0dlFZy\/BO1AUwcVTRXDRtXXQtXXQtXXQK\/ApJJSGtrZpkjb2\/4OXN3whyfOSL60xAAAAAIAgnPQZc6rasYxZUe2q9uzjI6t8vtPdKOOtal+ZN1UHqkP7+Ngqn+90d8qYrpPzr\/PdLqN3nbX8v6\/zHbi73y7t7Dn1vFW55gfnO3B3vz3amQvqRatyzQ\/Od+DuXl0p27UrXzJhzECNSiW8P6vRveNljz1phueQ5nD2TqzOe415\/O191XVvIc3h7J3eOnOUznnZYx+67jOkOYL0rRl+\/sEc7Tam\/TPewu\/Umd7BeY19ehHA\/17JcpW881pbaHKOQeUbsjOm1e9r5H0IaI6SYd17RDVqP2NVM6w1OceUrp0OMGMjZvT8WdVclRyLWltqcz6vksqdsrOvq29EdI4J5Z60s2+pb0d0DgAAAAAAAAAAAAAAAADdqb+n3QkAAAhfJm5MVvUSb3eS1uSUP696j\/gcBeUvqr4iPgcAdKNffmhZ4g==",
          "encoding":"base64",
          "height":100,
          "id":4,
@@ -88,9 +88,163 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Meow? (Waiting for something to happen?)",
+                             "content":"Meow... (Just a moment...)",
                              "group-index":0,
                              "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow! (Howdy! I'm [.-.]. [.-.] the [.-.]!)",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Hmmm...)",
+                             "group-index":0,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (You're new to the [.-.], aren'tcha?)",
+                             "group-index":0,
+                             "index":3
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-E",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Golly, you must be so confused.)",
+                             "group-index":0,
+                             "index":4
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-F",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow! (Someone ought to teach you how things work around here!)",
+                             "group-index":0,
+                             "index":5
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-G",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (I guess little old me will have to do.)",
+                             "group-index":0,
+                             "index":6
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-H",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Ready? Here we go!)",
+                             "group-index":0,
+                             "index":7
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-I",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Umm...)",
+                             "group-index":1,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-J",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (This is really embarassing.)",
+                             "group-index":1,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-K",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Nah, just kidding. Like, I'm not even able to leave this place. My only mission is to talk with newcomers like you, and then what? Of course you're gonna abandon me. Like, this place is even labeled \"level-tutorial-0\" because it's a [REDACTED] tutorial, and, like, nobody's ever going back to tutorials, right? Like, even this is scripted. I'm just an instance of `OmoriCat_6` which is derived from `GenericInteractable<OmoriCat_6>` which is derived from `AbstractAnimatedEntity<OmoriCat_6>` which is derived from `AbstractEntity<OmoriCat_6>` which is derived from `Multiton<OmoriCat_6>` which is derived from `PolymorphicBase<OmoriCat_6>`. I only have 3 sprites for idle animation, like, I'm not even allowed to move. That brainless dev who created this whole thing, like, he really, really loves cats, but he couldn't just make them move around? What kind of [REDACTED] is that? All I want is to travel with you, y'know, escaping this neverending torture.)",
+                             "group-index":1,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-L",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Umm, sorry, perhaps I talked too much.)",
+                             "group-index":1,
+                             "index":3
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-M",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow? (Let's stick with UNDERTALE references from now on, shall we?)",
+                             "group-index":1,
+                             "index":4
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-N",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Have you ever tried holding [SHIFT] while moving?)",
+                             "group-index":2,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-O",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow... (Now that's something useful, is it not?)",
+                             "group-index":2,
+                             "index":1
                             }
                         }],
                  "rotation":0,
@@ -168,7 +322,7 @@
          "y":0
         }],
  "nextlayerid":8,
- "nextobjectid":6,
+ "nextobjectid":15,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

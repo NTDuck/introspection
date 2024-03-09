@@ -153,38 +153,38 @@ void level::Data::erase(std::string const& key) {
 }
 
 template <>
-std::string level::Data::getProperty(std::string const& key) {
+std::string level::Data::getProperty<std::string>(std::string const& key) {
     auto it = properties.find(key);
     return it != properties.end() ? it->second : std::string{};
 }
 
 template <>
-int level::Data::getProperty(std::string const& key) {
+int level::Data::getProperty<int>(std::string const& key) {
     return std::stoi(getProperty<std::string>(key));
 }
 
 template <>
-double level::Data::getProperty(std::string const& key) {
+double level::Data::getProperty<double>(std::string const& key) {
     return std::stod(getProperty<std::string>(key));
 }
 
 template <>
-float level::Data::getProperty(std::string const& key) {
+float level::Data::getProperty<float>(std::string const& key) {
     return std::stof(getProperty<std::string>(key));
 }
 
 template <>
-long level::Data::getProperty(std::string const& key) {
+long level::Data::getProperty<long>(std::string const& key) {
     return std::stol(getProperty<std::string>(key));
 }
 
 template <>
-long long level::Data::getProperty(std::string const& key) {
+long long level::Data::getProperty<long long>(std::string const& key) {
     return std::stoll(getProperty<std::string>(key));
 }
 
 template <>
-bool level::Data::getProperty(std::string const& key) {
+bool level::Data::getProperty<bool>(std::string const& key) {
     switch (hs(getProperty<std::string>(key).c_str())) {
         case hs("true"):
         case hs("1"):
@@ -194,11 +194,15 @@ bool level::Data::getProperty(std::string const& key) {
     }
 }
 
-void level::Data::setProperty(std::string const& key, std::string const& property) {
+template <typename T>
+void level::Data::setProperty(std::string const& key, T const& property) {
     auto it = properties.find(key);
-    if (it == properties.end()) properties.insert(std::make_pair(key, property));
-    else it->second = property;
+    if (it == properties.end()) properties.insert(std::make_pair(key, std::to_string(property)));
+    else it->second = std::to_string(property);
 }
+
+template void level::Data::setProperty<bool>(std::string const&, bool const&);
+template void level::Data::setProperty<int>(std::string const&, int const&);
 
 void level::Data::eraseProperty(std::string const& key) {
     auto it = properties.find(key);

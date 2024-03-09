@@ -14,7 +14,7 @@
  <tileset firstgid="6191" source="../.tsx/omori-black-space.tsx"/>
  <layer id="5" name="static-collision" width="50" height="100">
   <data encoding="base64" compression="zlib">
-   eJztmtEKhSAQBev/f/o+XYho1XRdz9oMCCF51jHtpY4jJ+elZQYPLfDQAg8t8NACDy3w0AIPe8yKNRn1sFo0eOy1r970z+Sr+6o095VOPR7W+KccPN7xZY/Z56MnJ7pea25LnzWXnnoj63Y29L8d17Lvs7S7Rw3rntLY1toj69w6l9o9HmfEi9Icz9u1tSZe536EGedlBavX0Qs8tMBDCzy0wEMLPLTAQws8tMBDCzy0wEMLPLTAQws8tMBDCzy08PZY9U1kVo3obzp42Hnsq7F6s3Lx6Ks3Kzezx07nfMV/AXiUM/HorzkjcwePf27m9+41N5tH7d+yiH3G86jnRnt4t8O49q7hTfQcVjznWdkRZH03PdXJ6HHPxaOvnmfuDu+rp1xrzsoe0eChBR5a4KHFjh4/nDsCBQ==
+   eJztmsEOhCAMBfX/f3pPJmZjEUopD5xJSDZmfWWgctHjWJPzNlYGDy3w0AIPLfDQAg8t8NACD/ueGWvS62GNbPDYq69aro/kq31VmvtMJ4+Hdf9TDh5tfNlj9PPhycmuV5tbc82ai6dez7qdFddb76vp+9re9/Re5CjNsWXtS3tSW9v7H8854/HI5q1n7r+tNYl67nto2UdP32Yxex2jwEMLPLTAQws8tMBDCzy0wEMLPLTAQws8tMBDCzy0wEMLPLTAQ4toj1nvREbVyH6ng4edR1/11RuVi4ev3qjclT12es5nfBeARzkTD3/NEZk7eFy5K5+799zVPN6+LcvoM/bjPTfbI3ocxu/oGtFkz2HGPo/KzmDVs+mpzooe/7l4+OpF5u5wXj3lWnNW9sgGDy3w0AIPLXb0+AHwaAIC
   </data>
  </layer>
  <layer id="1" name="floors" width="50" height="100">

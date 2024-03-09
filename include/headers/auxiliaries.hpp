@@ -362,7 +362,8 @@ namespace level {
 
         template <typename T = std::string>
         T getProperty(std::string const& key);
-        void setProperty(std::string const& key, std::string const& property);
+        template <typename T = std::string>
+        void setProperty(std::string const& key, T const& property);
         void eraseProperty(std::string const& key);
 
         void load(json const& JSONLevelData);
@@ -639,7 +640,7 @@ namespace config {
             constexpr SDL_FRect destRectModifier = { 0, -1.125, 1, 1 };
             constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr int moveDelay = 0;
-            constexpr SDL_Point attackRegisterRange = { 99, 99 };
+            constexpr SDL_Point attackRegisterRange = { 3, 3 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
             constexpr int waitingFramesAfterDeath = 6.66 * config::game::FPS;
         }
@@ -669,8 +670,8 @@ namespace config {
             constexpr SDL_FPoint velocity = { 128, 128 };
             constexpr int moveDelay = 32;
             constexpr SDL_Point moveInitiateRange = { 16, 16 };
-            constexpr SDL_Point attackInitiateRange = { 7, 7 };
-            constexpr SDL_Point attackRegisterRange = { 5, 5 };
+            constexpr SDL_Point attackInitiateRange = { 3, 3 };
+            constexpr SDL_Point attackRegisterRange = { 1, 1 };
             constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
         }
 
@@ -706,7 +707,7 @@ namespace config {
         namespace omori_cat_##index {\
             constexpr const char* typeID = "interactable-omori-cat-" #index;\
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;\
+            constexpr SDL_FRect destRectModifier = { 0, -0.0125, 1, 1 };\
         }
 
         DEFINE_OMORI_CAT_NS(0)

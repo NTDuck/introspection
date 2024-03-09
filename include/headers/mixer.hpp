@@ -60,7 +60,7 @@ class Mixer final : Singleton<Mixer> {
          * @note Should not include in-game states, as those should be governed by `kLevelBGMMapping`.
         */
         std::unordered_map<GameState, std::pair<Mix_Music*, std::filesystem::path>> kGameStateBGMMapping = {
-            { GameState::kMenu, std::make_pair(nullptr, config::path::asset_audio / "bgm/animal-crossing-new-horizons-main-theme.mp3") },
+            { GameState::kMenu, std::make_pair(nullptr, config::path::asset_audio / "bgm/nso-16-no-salvation-no-angels.mp3") },
             { GameState::kGameOver, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-011-determination.mp3") },
             // { GameState::kLoading, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-013-a-home-for-flowers-tulip.mp3") },
         };

@@ -1,5 +1,7 @@
 #include <interface.hpp>
 
+#include <array>
+
 #include <entities.hpp>
 #include <mixer.hpp>
 #include <auxiliaries.hpp>
@@ -126,6 +128,19 @@ void IngameInterface::onLevelChange() const {
     // Populate `globals::currentLevelData` members
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
     IngameViewHandler::invoke(&IngameViewHandler::onLevelChange);
+
+    // Populate `level::data.properties` members
+    switch (IngameMapHandler::instance->getLevel()) {
+        case level::Name::kLevelWhiteSpace:
+            level::data.setProperty<bool>("is-border-traversed", false);
+            break;
+
+        case level::Name::kLevelTutorial_0:
+            level::data.setProperty<int>("progress", -config::game::FPS >> 1);   // Magic number
+            break;
+
+        default: break;
+    }
     
     if (mCachedTargetDestCoords != nullptr) {
         auto data = new level::Data_Generic();
@@ -350,6 +365,10 @@ void IngameInterface::handleLevelSpecifics() const {
             handleLevelSpecifics_kLevelWhiteSpace();
             break;
 
+        case level::Name::kLevelTutorial_0:
+            handleLevelSpecifics_kLevelTutorial_0();
+            break;
+
         default: break;
     }
 }
@@ -382,27 +401,190 @@ void IngameInterface::handleCustomEventGET_kReq_DeathFinalized_Player() const {
     IngameMapHandler::instance->isOnGrayscale = false;
 }
 
-void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
-    auto borderTraversedTracker = level::data.getProperty<bool>("is-border-traversed");
+void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
+    // Shorthand for checking if player is in x & y
+    static constexpr auto isTargetInRange = [](SDL_Point const& targetDestCoords, std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) {
+        return (x_lim.first == -1 || x_lim.first <= targetDestCoords.x)
+        && (x_lim.second == -1 || targetDestCoords.x <= x_lim.second)
+        && (y_lim.first == -1 || y_lim.first <= targetDestCoords.y)
+        && (y_lim.second == -1 || targetDestCoords.y <= y_lim.second);
+    };
 
-    auto kArbitraryClamp = [&](int& i, const double lower, const double upper) {
-        if (i <= lower) {
-            if (!borderTraversedTracker) level::data.setProperty("is-border-traversed", "true");
-            i = upper;
-        } else if (i >= upper) {
-            if (!borderTraversedTracker) level::data.setProperty("is-border-traversed", "true");
-            i = lower;
+    static constexpr auto isPlayerInRange = [](std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) {
+        bool result = isTargetInRange(Player::instance->pNextDestCoords != nullptr ? *Player::instance->pNextDestCoords : Player::instance->mDestCoords, x_lim, y_lim);
+
+        if (result) {
+            Player::invoke(&Player::onMoveEnd, EntityStatus::kInvalidated);
+            Player::invoke(&Player::onRunningToggled, false);
         }
+
+        return result;
+    };
+
+    static int progress;
+    progress = level::data.getProperty<int>("progress");
+    static auto proceed = [&]() {
+        level::data.setProperty<int>("progress", ++progress);
+    };
+
+    switch (progress) {
+        case 0:   // At the very beginning
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (Press [E]. That's all you need to know.)\n(For now.)",
+                "... (Good job! Now...)",
+                "... (Did you know you could move around with [W][A][S][D]?)",
+                "... (C'mon, give it a little try!)",
+            });
+            proceed();
+            break;
+
+        case 1:   // Before leaving the first platform
+            if (!isPlayerInRange({ -1, -1 }, { -1, 89 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (Pssst, hey you!)",
+                "... (Yes, you!)",
+                "... (Do you see that cat up there?)",
+                "... (It says it wanna talk to you!)",
+                "... (So, uh, just go there, I guess?)",
+                "... (You don't want to disappoint a cat, do you?)",
+            });
+            proceed();
+            break;
+
+        case 2:   // Upon entering the first arch door
+            if (!isPlayerInRange({ 23, 24 }, { 88, 89 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (Pssst, hey you!)",
+                "... (Yes, you again! Like, who else is here?)",
+                "... (Do you see that cat on your left?)",
+                "... (It says it wanna talk to you!)",
+                "... (So, uh, just go there, I guess?)",
+                "... (You don't want to disappoint a cat, do you?)",
+            });
+            proceed();
+            break;
+
+        case 3:   // Upon entering the second arch door
+            if (!isPlayerInRange({ 39, 40 }, { 76, 77 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (Pssst, hey you!)",
+                "... (I hope you talked to both cats.)",
+                "... (Like, the developer who created all this didn't really provide me with a proper mechanism to track such interactions, so I really do not know.)",
+                "... (But, uh, if you haven't, can you, like, go back and talk to them?)",
+                "... (Because, uh, you'll never see them again? C'mon, everyone knows that this tutorial is a one-time thing.)",
+                "...",
+                "... (Oh, one more thing.)"
+                "... (Make sure you read the sign before going any further.)",
+            });
+            proceed();
+            break;
+
+        case 4: {   // Pillars 1
+            if (!isPlayerInRange({ -1, 36 }, { 67, 73 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (You might want to press [SPACE].)",
+                "... (Because, uh, you might be dead otherwise.)",
+            });
+
+            level::data.erase(config::entities::slime::typeID);
+            auto data = new level::Data_Generic();
+            data->destCoords = { 27, 70 };
+            level::data.insert(config::entities::slime::typeID, data);
+            Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+            Slime::invoke(&Slime::onWindowChange);
+
+            proceed();
+        } break;
+
+        case 5: {   // Pillars 2
+            if (!isPlayerInRange({ -1, 27 }, { 67, 73 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (You might want to, uh, press [1].)",
+            });
+
+            level::data.erase(config::entities::slime::typeID);
+            for (const auto& destCoords : std::array<SDL_Point, 3>{
+                SDL_Point{ 17, 68 },
+                SDL_Point{ 18, 70 },
+                SDL_Point{ 17, 72 },
+            }) {
+                auto data = new level::Data_Generic();
+                data->destCoords = destCoords;
+                level::data.insert(config::entities::slime::typeID, data);
+            }
+            Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+            Slime::invoke(&Slime::onWindowChange);
+
+            proceed();
+        } break;
+
+        case 6: {   // Pillars 3
+            if (!isPlayerInRange({ -1, 18 }, { 67, 73 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (You might want to, uh, look behind you.)",
+            });
+
+            level::data.erase(config::entities::slime::typeID);
+            for (const auto& destCoords : std::array<SDL_Point, 6>{
+                SDL_Point{ 8, 68 },
+                SDL_Point{ 9, 70 },
+                SDL_Point{ 8, 72 },
+                SDL_Point{ 28, 68 },
+                SDL_Point{ 27, 70 },
+                SDL_Point{ 28, 68 },
+            }) {
+                auto data = new level::Data_Generic();
+                data->destCoords = destCoords;
+                level::data.insert(config::entities::slime::typeID, data);
+            }
+            Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+            Slime::invoke(&Slime::onWindowChange);
+
+            proceed();
+        } break;
+
+        case 7:   // Pillars 4
+            if (!isPlayerInRange({ -1, 9 }, { 67, 73 })) break;
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "... (You might want to, uh, keep going?)",
+                "... (Nothing'll happen this time, I promise!)",
+                "... (You've done well.)",
+            });
+            proceed();
+            break;
+
+        default:
+            if (progress < 0) proceed();
+    }
+}
+
+void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
+    auto isBorderTraversed = level::data.getProperty<bool>("is-border-traversed");
+
+    auto kInternalTeleportHandler = [&](int& i, const double lower, const double upper) {
+        auto kInternalTeleportInitiate = [&]() {
+            if (!isBorderTraversed) level::data.setProperty<bool>("is-border-traversed", true);
+            RedHandThrone::invoke(&RedHandThrone::onWindowChange);
+        };
+
+        if (i <= lower) {
+            i = upper;
+            kInternalTeleportInitiate();
+        } else if (i >= upper) {
+            i = lower;
+            kInternalTeleportInitiate();
+        }
+
         // return (i <= lower) ? upper : (i >= upper) ? lower : i;
-    };   // Declaring as `static` would yield `warning: storing the address of local variable ‘borderTraversedTracker’ in ‘kArbitraryClamp.IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const::<lambda(int&, double, double)>::<borderTraversedTracker capture>’ [-Wdangling-pointer=]`
+    };   // Declaring as `static` would yield `warning: storing the address of local variable ‘isBorderTraversed’ in ‘kInternalTeleportHandler.IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const::<lambda(int&, double, double)>::<isBorderTraversed capture>’ [-Wdangling-pointer=]`
 
     // "Infinite loop" effect
     if (Player::instance->pNextDestCoords != nullptr) {
-        kArbitraryClamp(Player::instance->pNextDestCoords->x, IngameViewHandler::instance->mTileCountWidth / 2 + 1, level::data.tileDestCount.x - IngameViewHandler::instance->mTileCountWidth / 2 - 1);
-        kArbitraryClamp(Player::instance->pNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
+        kInternalTeleportHandler(Player::instance->pNextDestCoords->x, IngameViewHandler::instance->mTileCountWidth / 2 + 1, level::data.tileDestCount.x - IngameViewHandler::instance->mTileCountWidth / 2 - 1);
+        kInternalTeleportHandler(Player::instance->pNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
     }
 
-    if (borderTraversedTracker && RedHandThrone::instances.empty()) {
+    if (isBorderTraversed && RedHandThrone::instances.empty()) {
         // Hard-coded unfortunately, will have to change in future commits
         auto data = new level::Data_Teleporter();
         data->destCoords = { 52, 43 };

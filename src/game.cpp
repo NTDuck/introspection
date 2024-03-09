@@ -291,6 +291,9 @@ void Game::handleWindowEvent(SDL_Event const& event) {
  * @note Scancode denotes physical location and keycode denotes actual meaning (different if remapped)
 */
 void Game::handleKeyBoardEvent(SDL_Event const& event) const {
+    ExitText::invoke(&ExitText::handleKeyBoardEvent, event);
+    if (event.key.repeat != 0) return;
+
     switch (globals::state) {
         case GameState::kIngamePlaying:
         case GameState::kIngameDialogue:
@@ -299,8 +302,6 @@ void Game::handleKeyBoardEvent(SDL_Event const& event) const {
 
         default: break;
     }
-
-    ExitText::invoke(&ExitText::handleKeyBoardEvent, event);
 }
 
 /**

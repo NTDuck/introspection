@@ -156,6 +156,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleCustomEventGET_kReq_DeathPending_Player() const;
         void handleCustomEventGET_kReq_DeathFinalized_Player() const;
 
+        void handleLevelSpecifics_kLevelTutorial_0() const;
         void handleLevelSpecifics_kLevelWhiteSpace() const;
 
         mutable SDL_Point* mCachedTargetDestCoords = nullptr;

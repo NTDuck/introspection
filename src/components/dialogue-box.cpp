@@ -133,7 +133,7 @@ void IngameDialogueBox::BMPFont::clear() const {
 */
 std::string IngameDialogueBox::BMPFont::getChars() const {
     std::string chars;
-    const std::string symbols = "!?#%^/&*()-+,.:;`\\_=<>@\"\'$";
+    const std::string symbols = "!?#%^/&*()-+,.:;`\\_=<>@\"\'$[]{}";
     chars.reserve(26 * 2 + 10 + symbols.size());
 
     for (char c = 'a'; c <= 'z'; ++c) chars += c;

@@ -40,7 +40,7 @@ void IngameMapHandler::onLevelChange() {
         level::data.tileDestCount.y * level::data.tileDestSize.y,
     };
 
-    mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
+    mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET | SDL_TextureAccess::SDL_TEXTUREACCESS_STATIC, mTextureSize.x, mTextureSize.y);
 
     renderToTexture();
 }
