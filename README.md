@@ -4,8 +4,8 @@
 a RPG made without a game engine.
 
 
-## Screenshots
-![](preview.gif)
+## Demo
+https://github.com/NTDuck/8964/assets/105532764/5b78be02-369e-4dea-84d0-2d34e3b53b8e
 
 
 ## Features
