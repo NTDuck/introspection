@@ -309,6 +309,8 @@ namespace level {
 
         kLevelBreakroomInitial,
         kLevelBedroom,
+
+        __kLevelTutorial_0_Combat__,
     };
 
     Name stoln(std::string const& s);
@@ -328,6 +330,8 @@ namespace level {
      * @param destCoords the new `destCoords` of the entity upon entering new level.
     */
     struct Data_Generic {
+        Data_Generic() = default;
+        explicit Data_Generic(SDL_Point const& destCoords) : destCoords(destCoords) {}
         virtual ~Data_Generic() = default;   // Virtual destructor, required for polymorphism
         virtual void load(json const& JSONObjectData);
         
@@ -346,6 +350,8 @@ namespace level {
      * @param targetLevel the new `level::LevelName` to be switched to upon a `destCoords` collision event i.e. "trample".
     */
     struct Data_Teleporter : public Data_Generic {
+        Data_Teleporter() = default;
+        Data_Teleporter(SDL_Point const& destCoords, SDL_Point const& targetDestCoords, level::Name targetLevel) : Data_Generic(destCoords), targetDestCoords(targetDestCoords), targetLevel(targetLevel) {}
         void load(json const& JSONObjectData) override;
 
         SDL_Point targetDestCoords;

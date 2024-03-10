@@ -79,6 +79,11 @@ void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::Data_Generic const& 
     onMoveEnd();
 }
 
+template <typename T>
+bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const {
+    return isTargetWithinRange(pNextDestCoords != nullptr ? *pNextDestCoords : mDestCoords, x_coords_lim, y_coords_lim);
+}
+
 /**
  * @brief Handle the movement of the entity from the current `Tile` to the next.
 */

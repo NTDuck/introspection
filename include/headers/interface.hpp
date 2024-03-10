@@ -126,6 +126,7 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
  * @note Governs both `GameState::kIngamePlaying` and `GameState::kIngameDialogue`.
 */
 class IngameInterface final : public Singleton<IngameInterface> {
+    friend Mixer;
     public:
         INCL_SINGLETON(IngameInterface);
 
@@ -156,7 +157,10 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleCustomEventGET_kReq_DeathPending_Player() const;
         void handleCustomEventGET_kReq_DeathFinalized_Player() const;
 
+        bool isPlayerInRange(std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) const;
+
         void handleLevelSpecifics_kLevelTutorial_0() const;
+        void handleLevelSpecifics_kLevelTutorial_1() const;
         void handleLevelSpecifics_kLevelWhiteSpace() const;
 
         mutable SDL_Point* mCachedTargetDestCoords = nullptr;

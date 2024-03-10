@@ -77,6 +77,11 @@ void AbstractEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData
     mDestCoords = entityLevelData.destCoords;
 }
 
+template <typename T>
+bool AbstractEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const {
+    return isTargetWithinRange(mDestCoords, x_coords_lim, y_coords_lim);
+}
+
 /**
  * Adjust `destRect` based on `tilesetData->animationSize` and `destRectModifier`.
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
@@ -92,6 +97,14 @@ SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const
         utils::castFloatToInt(level::data.tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
         utils::castFloatToInt(level::data.tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
     };
+}
+
+template <typename T>
+bool AbstractEntity<T>::isTargetWithinRange(SDL_Point const& targetDestCoords, std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) {
+    return (x_coords_lim.first == -1 || x_coords_lim.first <= targetDestCoords.x)
+    && (x_coords_lim.second == -1 || targetDestCoords.x <= x_coords_lim.second)
+    && (y_coords_lim.first == -1 || y_coords_lim.first <= targetDestCoords.y)
+    && (y_coords_lim.second == -1 || targetDestCoords.y <= y_coords_lim.second);    
 }
 
 template <typename T>
