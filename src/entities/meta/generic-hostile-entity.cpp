@@ -81,7 +81,10 @@ void GenericHostileEntity<T>::handleCustomEventGET_kReq_AttackRegister_Player_GH
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
+    bool isDeadPrior = mSecondaryStats.HP <= 0;
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
+
+    if (!isDeadPrior && mSecondaryStats.HP <= 0) ++sDeathCount;
 
     if (pNextAnimationType == nullptr) {
         pNextAnimationType = new Animation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
@@ -108,6 +111,10 @@ void GenericHostileEntity<T>::handleCustomEventGET_kResp_MoveTerminate_GHE_Playe
     delete pNextVelocity;
     pNextVelocity = nullptr;
 }
+
+
+template <typename T>
+unsigned int GenericHostileEntity<T>::sDeathCount = 0;
 
 
 template class GenericHostileEntity<Slime>;

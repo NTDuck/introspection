@@ -138,6 +138,9 @@ void IngameInterface::onLevelChange() const {
         case level::Name::kLevelTutorial_0:
         case level::Name::kLevelTutorial_1:
             level::data.setProperty<int>("progress", -config::game::FPS >> 1);   // Magic number
+            level::data.setProperty<int>("progress-arb-1", 0);
+            level::data.setProperty<int>("progress-arb-2", 0);
+            level::data.setProperty<int>("progress-arb-3", 0);
             break;
 
         default: break;
@@ -418,13 +421,11 @@ bool IngameInterface::isPlayerInRange(std::pair<int, int> const& x_lim, std::pai
 }
 
 void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
-    static int progress;
-    progress = level::data.getProperty<int>("progress");
-    static auto proceed = [&]() {
-        level::data.setProperty<int>("progress", ++progress);
+    static auto proceed = [&](std::string const& key = "progress") {
+        level::data.setProperty<int>(key, level::data.getProperty<int>(key) + 1);
     };
 
-    switch (progress) {
+    switch (level::data.getProperty<int>("progress")) {
         case 0:   // At the very beginning
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
                 "... (Press [E]. That's all you need to know.)\n(For now.)",
@@ -502,9 +503,28 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
         case 5:   // Pillars 2
             if (!isPlayerInRange({ -1, 27 }, { 67, 73 })) break;
 
-            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (You might want to, uh, press [1].)",
-            });
+            if (!Slime::isAllDead()) {
+                switch (level::data.getProperty<int>("progress-arb-1")) {
+                    case 0:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (You have to, like, repeatedly hit that moving thing first.)",
+                            "... (Till it stops moving.)",
+                        });
+                        proceed("progress-arb-1");
+                        break;
+
+                    case 1:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (Having difficulties? Try pressing [1].)",
+                        });
+                        break;
+
+                    default: break;
+                } break;
+            }
+
             Slime::instantiateEx({
                 new level::Data_Generic({ 17, 68 }),
                 new level::Data_Generic({ 18, 70 }),
@@ -517,9 +537,37 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
         case 6:   // Pillars 3
             if (!isPlayerInRange({ -1, 18 }, { 67, 73 })) break;
 
-            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (You might want to, uh, look behind you.)",
-            });
+            if (!Slime::isAllDead()) {
+                switch (level::data.getProperty<int>("progress-arb-2")) {
+                    case 0:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (You have to, like, repeatedly hit those moving things first.)",
+                            "... (Till they stop moving.)",
+                        });
+                        proceed("progress-arb-2");
+                        break;
+
+                    case 1:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (Having difficulties? Try pressing [1].)",
+                            "... (And, uh, other numbers too, of course. Some might just work, y'know.)",
+                        });
+                        proceed("progress-arb-2");
+                        break;
+
+                    case 2:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (Try other numbers too. Some might just work, y'know.)",
+                        });
+                        break;
+
+                    default: break;
+                } break;
+            }
+
             Slime::instantiateEx({
                 new level::Data_Generic({ 8, 68 }),
                 new level::Data_Generic({ 9, 70 }),
@@ -533,11 +581,57 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
             break;
 
         case 7:   // Pillars 4
-            if (!isPlayerInRange({ -1, 9 }, { 67, 73 })) break;
+            if (!Slime::isAllDead()) {
+                if (!isPlayerInRange({ -1, 9 }, { 67, 73 })) break;
+                switch (level::data.getProperty<int>("progress-arb-3")) {
+                    case 0:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (You have to, like, repeatedly hit those moving things first.)",
+                            "... (Till they stop moving.)",
+                        });
+                        proceed("progress-arb-3");
+                        break;
+
+                    case 1:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Uh, don't do that.)",
+                            "... (C'mon, we've gone through this so many times already.)",
+                        });
+                        proceed("progress-arb-3");
+                        break;
+
+                    case 2:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Try that one more time and you shall know pain.)",
+                        });
+                        proceed("progress-arb-3");
+                        break;
+
+                    case 3: {
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (Like, really?)",
+                        });
+
+                        std::vector<level::Data_Generic*> instantiationData;
+                        for (int y = 66; y <= 74; ++y) for (int x = 2; x <= 8; ++x) instantiationData.push_back(new level::Data_Generic({ x, y }));
+                        Slime::instantiateEx(instantiationData);
+
+                        proceed("progress-arb-3");
+                    } break;
+
+                    case 4:
+                        IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                            "... (...)",
+                        });
+                        break;
+
+                    default: break;
+                } break;
+            }
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (You might want to, uh, keep going?)",
-                "... (Nothing'll happen this time, I promise!)",
+                "... (Stand proud,)",
                 "... (You've done well.)",
             });
             Mixer::invoke(&Mixer::onLevelChange, level::Name::kLevelTutorial_0);
@@ -546,7 +640,7 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
             break;
 
         default:
-            if (progress < 0) proceed();
+            if (level::data.getProperty<int>("progress") < 0) proceed();
     }
 }
 

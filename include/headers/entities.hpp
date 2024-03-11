@@ -397,10 +397,13 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         INCL_ABSTRACT_ANIMATED_ENTITY(T)
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)
 
-        ~GenericHostileEntity() = default;
+        ~GenericHostileEntity() { --sDeathCount; }
 
         void handleCustomEventPOST() const override;
         void handleCustomEventGET(SDL_Event const& event) override;
+
+        static inline unsigned int getDeathCount() { return sDeathCount; }
+        static inline bool isAllDead() { return sDeathCount == static_cast<unsigned int>(instances.size()); }
 
     protected:
         GenericHostileEntity(SDL_Point const& destCoords);
@@ -420,9 +423,11 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         void handleCustomEventGET_kResp_AttackInitiate_GHE_Player();
         void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
         void handleCustomEventGET_kResp_MoveTerminate_GHE_Player();
+
+        static unsigned int sDeathCount;
 };
 
-#define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
+#define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::getDeathCount, GenericHostileEntity<T>::isAllDead, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
 
 #define DECLARE_GENERIC_HOSTILE_ENTITY(T) \
 class T final : public GenericHostileEntity<T> {\
