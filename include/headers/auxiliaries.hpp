@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <filesystem>
 #include <functional>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -229,7 +230,7 @@ namespace tile {
     */
     struct Data_TilelayerTilesets {
         void load(json const& JSONLevelData, SDL_Renderer* renderer);
-        Data_TilelayerTileset const* operator[](GID gid) const;
+        std::optional<Data_TilelayerTileset> operator[](GID gid) const;
 
         private:
             std::vector<Data_TilelayerTileset> mData;
@@ -247,8 +248,6 @@ namespace tile {
          * Register animation types as enumeration constants for maintainability.
         */
         enum class Animation : char {
-            null = -1,
-
             kIdle,
             kAttackMeele,
             kAttackRanged,
@@ -258,7 +257,7 @@ namespace tile {
             kDamaged,
         };
 
-        Animation stoan(std::string const& s);
+        std::optional<Animation> stoan(std::string const& s);
 
         /**
          * @brief Contain data associated with an animation i.e. a series of sprites.
@@ -277,7 +276,7 @@ namespace tile {
         };
 
         void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
-        Data_Animation const& operator[](Animation animation) const;
+        std::optional<Data_Animation> operator[](Animation animation) const;
 
         int animationUpdateRate = 64;
         SDL_Point animationSize = {1, 1};
@@ -296,8 +295,6 @@ namespace level {
      * Register level names as enumeration constants for maintainability.
     */
     enum class Name : char {
-        null = -1,
-
         kLevelTutorial_0,
         kLevelTutorial_1,
 
@@ -313,13 +310,13 @@ namespace level {
         __kLevelTutorial_0_Combat__,
     };
 
-    Name stoln(std::string const& s);
+    std::optional<Name> stoln(std::string const& s);
 
     struct Map {
         void load(json const& JSONLevelMapData);
         inline void clear() { mUMap.clear(); }
 
-        std::filesystem::path operator[](Name ln) const;   // Supports only index-based search
+        std::optional<std::filesystem::path> operator[](Name ln) const;   // Supports only index-based search
 
         private:
             std::unordered_map<Name, std::string> mUMap;
@@ -607,7 +604,7 @@ namespace config {
         constexpr level::Name levelName = level::Name::kLevelTutorial_0;
         constexpr int idleFrames = 16;
 
-        constexpr double tileCountHeight = 24;   // OMORI's white space
+        constexpr double tileCountHeight = 22.5;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 

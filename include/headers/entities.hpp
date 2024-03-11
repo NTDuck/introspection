@@ -6,7 +6,7 @@
 #include <string>
 #include <tuple>
 #include <vector>
-#include <queue>
+#include <stack>
 #include <unordered_set>
 #include <utility>
 
@@ -147,11 +147,13 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].startGID);
+            auto animationData = sTilesetData[mCurrAnimationType];
+            return animationData.has_value() ? isAnimationAtSprite(sTilesetData[mCurrAnimationType].value().startGID) : false;
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].stopGID);
+            auto animationData = sTilesetData[mCurrAnimationType];
+            return animationData.has_value() ? isAnimationAtSprite(sTilesetData[mCurrAnimationType].value().stopGID) : false;
         }
 
     protected:
@@ -483,7 +485,7 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
         SDL_Point& mDirection = mCurrVelocity;   // Does not allocate additional memory
 
-        static std::queue<T*> sTerminatedInstances;
+        static std::stack<T*> sTerminatedInstances;
 };
 
 #define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;

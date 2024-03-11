@@ -76,11 +76,11 @@ void IngameMapHandler::changeLevel(const level::Name levelName_) {
  * @note Should be called once during initialization or whenever `level` changes.
 */
 void IngameMapHandler::loadLevel() const {
-    std::filesystem::path kLevelPath = sLevelMap[mLevelName];
-    if (!std::filesystem::exists(kLevelPath)) return;
+    auto kLevelPath = sLevelMap[mLevelName];
+    if (!kLevelPath.has_value() || !std::filesystem::exists(kLevelPath.value())) return;
     
     json JSONLevelData;
-    utils::readJSON(kLevelPath.string(), JSONLevelData);
+    utils::readJSON(kLevelPath.value().string(), JSONLevelData);
     level::data.load(JSONLevelData);
 }
 
@@ -127,16 +127,18 @@ void IngameMapHandler::renderLevelTilelayers() const {
                 // A GID value of `0` represents an "empty" tile i.e. associated with no tileset.
                 if (!gid) continue;
                 auto tilesetData = level::data.tilesets[gid];
+                if (!tilesetData.has_value()) continue;
+                auto tilesetData_v = tilesetData.value();
 
                 // Identify the tileset to which the tile, per layer, belongs to.
-                auto it = tilesetData->properties.find("norender");
-                data.textures.emplace_back(it != tilesetData->properties.end() && it->second == "true" ? nullptr : tilesetData->texture);
+                auto it = tilesetData_v.properties.find("norender");
+                data.textures.emplace_back(it != tilesetData_v.properties.end() && it->second == "true" ? nullptr : tilesetData_v.texture);
 
                 data.srcRects.push_back({
-                    ((gid - tilesetData->firstGID) % tilesetData->srcCount.x) * tilesetData->srcSize.x,
-                    ((gid - tilesetData->firstGID) / tilesetData->srcCount.x) * tilesetData->srcSize.y,
-                    tilesetData->srcSize.x,
-                    tilesetData->srcSize.y,
+                    ((gid - tilesetData_v.firstGID) % tilesetData_v.srcCount.x) * tilesetData_v.srcSize.x,
+                    ((gid - tilesetData_v.firstGID) / tilesetData_v.srcCount.x) * tilesetData_v.srcSize.y,
+                    tilesetData_v.srcSize.x,
+                    tilesetData_v.srcSize.y,
                 });
             }
         }

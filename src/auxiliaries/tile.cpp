@@ -1,6 +1,7 @@
 #include <auxiliaries.hpp>
 
 #include <algorithm>
+#include <optional>
 #include <filesystem>
 
 #include <SDL.h>
@@ -108,14 +109,14 @@ void tile::Data_TilelayerTilesets::load(json const& JSONLevelData, SDL_Renderer*
     }
 }
 
-tile::Data_TilelayerTileset const* tile::Data_TilelayerTilesets::operator[](GID gid) const {
+std::optional<tile::Data_TilelayerTileset> tile::Data_TilelayerTilesets::operator[](GID gid) const {
     auto it = std::find_if(mData.begin(), mData.end(), [&](const auto tilelayer) {
         return tilelayer.firstGID <= gid && gid < tilelayer.firstGID + tilelayer.srcCount.x * tilelayer.srcCount.y;
     });
-    return it != mData.end() ? &*it : nullptr;
+    return it != mData.end() ? std::optional<Data_TilelayerTileset>(*it) : std::nullopt;
 }
 
-tile::Data_EntityTileset::Animation tile::Data_EntityTileset::stoan(std::string const& s) {
+std::optional<tile::Data_EntityTileset::Animation> tile::Data_EntityTileset::stoan(std::string const& s) {
     static const std::unordered_map<std::string, Animation> ump = {
         { "animation-idle", Animation::kIdle },
         { "animation-attack-meele", Animation::kAttackMeele },
@@ -126,7 +127,7 @@ tile::Data_EntityTileset::Animation tile::Data_EntityTileset::stoan(std::string 
         { "animation-damaged", Animation::kDamaged },
     };
     auto it = ump.find(s);
-    return it != ump.end() ? it->second : Animation::null;
+    return it != ump.end() ? std::optional<Animation>(it->second) : std::nullopt;
 }
 
 void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAnimationNode) {
@@ -192,19 +193,16 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
             auto propertytype_a = property_n.attribute("propertytype"); if (propertytype_a == nullptr || std::strcmp(propertytype_a.as_string(), "animation")) continue;
             auto animations_n = property_n.child("properties"); if (animations_n.empty()) continue;
 
-            auto animation = stoan(name_a.as_string()); if (animation == Animation::null) continue;
+            auto animation = stoan(name_a.as_string()); if (!animation.has_value()) continue;
 
             Data_Animation data;
             data.load(animations_n);
-            mUMap.emplace(std::make_pair(animation, data));
+            mUMap.emplace(std::make_pair(animation.value(), data));
         }
     }
-
-    // Insert null-representative value for index-based search
-    mUMap.emplace(std::make_pair(Animation::null, Data_Animation{}));
 }
 
-tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::operator[](Animation animation) const {
+std::optional<tile::Data_EntityTileset::Data_Animation> tile::Data_EntityTileset::operator[](Animation animation) const {
     auto it = mUMap.find(animation);
-    return it != mUMap.end() ? it->second : operator[](Animation::null);
+    return it != mUMap.end() ? std::optional<Data_Animation>(it->second) : std::nullopt;
 }

@@ -1,7 +1,7 @@
 #include <auxiliaries.hpp>
 
 
-level::Name level::stoln(std::string const& s) {
+std::optional<level::Name> level::stoln(std::string const& s) {
     static const std::unordered_map<std::string, level::Name> ump = {
         { "level-white-space", level::Name::kLevelWhiteSpace },
         { "level-tutorial-0", level::Name::kLevelTutorial_0 },
@@ -14,7 +14,7 @@ level::Name level::stoln(std::string const& s) {
     };
     
     auto it = ump.find(s);
-    return it != ump.end() ? it->second : Name::null;
+    return it != ump.end() ? std::optional<Name>(it->second) : std::nullopt;
 }
 
 void level::Map::load(json const& JSONLevelMapData) {
@@ -29,18 +29,18 @@ void level::Map::load(json const& JSONLevelMapData) {
         auto name_v = name_j.value(); if (!name_v.is_string()) continue;
         auto source_v = source_j.value(); if (!source_v.is_string()) continue;
 
-        Name ln = stoln(name_v);
-        if (ln == Name::null) continue;
+        auto ln = stoln(name_v);
+        if (!ln.has_value()) continue;
 
-        mUMap.insert(std::make_pair(ln, source_v));
+        mUMap.insert(std::make_pair(ln.value(), source_v));
     }
 }
 
-std::filesystem::path level::Map::operator[](Name ln) const {
+std::optional<std::filesystem::path> level::Map::operator[](Name ln) const {
     static const std::filesystem::path root = config::path::asset_tiled;
 
     auto it = mUMap.find(ln);
-    return it != mUMap.end() ? root / it->second : std::filesystem::path{};
+    return it != mUMap.end() ? std::optional<std::filesystem::path>(root / it->second) : std::nullopt;
 }
 
 /**
@@ -125,8 +125,8 @@ void level::Data_Teleporter::load(json const& JSONObjectData) {
             case hs("target-level"): {
                 if (!value_v.is_string()) break;
 
-                level::Name ln = level::stoln(value_v);
-                if (ln != Name::null) targetLevel = ln;
+                auto ln = level::stoln(value_v);
+                if (ln.has_value()) targetLevel = ln.value();
                 break; }
 
             default: break;

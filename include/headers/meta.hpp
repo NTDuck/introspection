@@ -125,8 +125,8 @@ class Multiton : virtual public PolymorphicBase<T> {
          * @remark You can't use `static_cast` in this situation because the compiler doesn't know the offset of B relative to A at compile time. The offset must be calculated at run-time based on the exact type of the most derived object. Therefore you must use `dynamic_cast`.
          * @note Compile-time `static_cast` yields "error: cannot convert from pointer to base class `Multiton<T>` to pointer to derived class `T` because the base is virtual". Therefore run-time `dynamic_cast` must be used instead.
         */
-        virtual ~Multiton() override {
-            instances.erase(dynamic_cast<T*>(this));   // remove from `instances`
+        virtual ~Multiton() {
+            instances.erase(reinterpret_cast<T*>(this));   // remove from `instances`
         }
 
         static std::unordered_set<T*> instances;

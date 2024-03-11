@@ -2,7 +2,7 @@
 
 #include <algorithm>
 #include <string>
-#include <queue>
+#include <stack>
 #include <unordered_set>
 
 #include <SDL.h>
@@ -76,16 +76,13 @@ void GenericSurgeProjectile<T>::handleInstantiation() {
     if (!isAnimationAtFinalSprite()) return;
 
     initiateNextLinearAttack();
-    sTerminatedInstances.push(dynamic_cast<T*>(this));
-    // instances.erase(reinterpret_cast<T*>(this));
+    sTerminatedInstances.push(reinterpret_cast<T*>(this));
 }
 
 template <typename T>
 void GenericSurgeProjectile<T>::handleTermination() {
     while (!sTerminatedInstances.empty()) {
-        auto instance = sTerminatedInstances.front();
-        if (instance != nullptr) delete instance;
-        instances.erase(instance);
+        delete sTerminatedInstances.top();
         sTerminatedInstances.pop();
     }
 }
@@ -108,7 +105,7 @@ void GenericSurgeProjectile<T>::handleCustomEventPOST_kReq_AttackRegister_Player
 
 
 template <typename T>
-std::queue<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
+std::stack<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
 
 
 template class GenericSurgeProjectile<PentacleProjectile>;

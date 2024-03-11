@@ -47,6 +47,10 @@ void Player::onLevelChange(level::Data_Generic const& player) {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
+    static constexpr unsigned short int count_limit = config::game::FPS >> 2;
+    static unsigned short int count = 0;
+    if (count > 0) --count;
+
     if (mCurrAnimationType == Animation::kDamaged || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDamaged)) return;
     if (mCurrAnimationType == Animation::kDeath || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDeath)) return;
 
@@ -74,7 +78,10 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
             if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackRanged);
+
+            if (count) break;
             handleKeyboardEvent_ProjectileAttack(event);
+            count = count_limit;
             break;
 
         case ~config::Key::kAffirmative:

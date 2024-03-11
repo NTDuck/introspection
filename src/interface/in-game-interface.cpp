@@ -577,7 +577,9 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_1() const {
         case 1:
             if (!isPlayerInRange({ 46, 48 }, { -1, 2 })) break;
 
-            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContent, "o o o ");
+            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
+                "...",
+            });
 
             proceed();
             break;

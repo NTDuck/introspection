@@ -74,10 +74,16 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
 template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++mCurrAnimationUpdateCount;
+
+    auto animationData = sTilesetData[mCurrAnimationType];
+    if (!animationData.has_value()) return;
+    auto animationData_v = animationData.value();
+
+    if constexpr(std::is_same_v<T, Player>) std::cout << "upt" << std::endl;
     
-    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData[mCurrAnimationType].updateRateMultiplier)) {
+    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * animationData_v.updateRateMultiplier)) {
         mCurrAnimationUpdateCount = 0;
-        if (mCurrAnimationGID < sTilesetData[mCurrAnimationType].stopGID) {
+        if (mCurrAnimationGID < animationData_v.stopGID) {
             mCurrAnimationGID += sTilesetData.animationSize.x;
             if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
         } else {
@@ -89,7 +95,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             }
 
             if (mCurrAnimationType == Animation::kDeath) return;   // The real permanent
-            resetAnimation(sTilesetData[mCurrAnimationType].isPermanent ? Animation::kIdle : mCurrAnimationType);
+            resetAnimation(animationData_v.isPermanent ? Animation::kIdle : mCurrAnimationType);
         };
     }
 
@@ -102,9 +108,15 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatus flag) {
+    auto animationData = sTilesetData[mCurrAnimationType];
+    if (!animationData.has_value()) return;
+    auto animationData_v = animationData.value();
+
+    if constexpr(std::is_same_v<T, Player>) std::cout << "res" << std::endl;
+
     mCurrAnimationType = animationType;
     if (flag == EntityStatus::kContinued) return;
-    mCurrAnimationGID = sTilesetData[mCurrAnimationType].startGID;
+    mCurrAnimationGID = animationData_v.startGID;
 }
 
 /**
