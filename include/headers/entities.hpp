@@ -147,13 +147,11 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            auto animationData = sTilesetData[mCurrAnimationType];
-            return animationData.has_value() ? isAnimationAtSprite(sTilesetData[mCurrAnimationType].value().startGID) : false;
+            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            auto animationData = sTilesetData[mCurrAnimationType];
-            return animationData.has_value() ? isAnimationAtSprite(sTilesetData[mCurrAnimationType].value().stopGID) : false;
+            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].stopGID);
         }
 
     protected:

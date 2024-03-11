@@ -276,7 +276,7 @@ namespace tile {
         };
 
         void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
-        std::optional<Data_Animation> operator[](Animation animation) const;
+        Data_Animation const& operator[](Animation animation) const;
 
         int animationUpdateRate = 64;
         SDL_Point animationSize = {1, 1};

@@ -202,7 +202,8 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
     }
 }
 
-std::optional<tile::Data_EntityTileset::Data_Animation> tile::Data_EntityTileset::operator[](Animation animation) const {
+tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::operator[](Animation animation) const {
+    static Data_Animation nullopt_repr{};
     auto it = mUMap.find(animation);
-    return it != mUMap.end() ? std::optional<Data_Animation>(it->second) : std::nullopt;
+    return it != mUMap.end() ? it->second : nullopt_repr;
 }
