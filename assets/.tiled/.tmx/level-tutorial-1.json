@@ -125,7 +125,7 @@
                          "value":"level-tutorial-0"
                         }],
                  "rotation":0,
-                 "type":"teleporter",
+                 "type":"teleporter [discarded]",
                  "visible":true,
                  "width":32,
                  "x":1504,
@@ -192,7 +192,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":8,
+ "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

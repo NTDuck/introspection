@@ -374,6 +374,7 @@ namespace level {
 
         tile::Tensor tiles;
         tile::Data_TilelayerTilesets tilesets;
+        std::vector<std::vector<tile::GID>> collisionTilelayer;
 
         SDL_Point tileDestSize;
         SDL_Point tileDestCount;

@@ -169,16 +169,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](const SDL_Point& coords) {
-        for (const auto& gid : level::data.tiles[coords.y][coords.x]) {
-            auto tilelayerTilesetData = level::data.tilesets[gid];
-            if (!tilelayerTilesetData.has_value()) continue;
-
-            auto it = sTilesetData.properties.find("collision");
-            if (!gid && it != sTilesetData.properties.end() && it->second == "true") continue;
-
-            return gid;
-        }
-        return 0;
+        return level::data.collisionTilelayer[coords.y][coords.x];
     };
 
     int currCollisionLevel = findCollisionLevelGID(mDestCoords);

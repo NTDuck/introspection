@@ -49,7 +49,7 @@
     <property name="target-level" value="level-white-space"/>
    </properties>
   </object>
-  <object id="5" name="to tutorial 0" type="teleporter" x="1504" y="3168" width="32" height="32">
+  <object id="5" name="to tutorial 0" type="teleporter [discarded]" x="1504" y="3168" width="32" height="32">
    <properties>
     <property name="target-dest-coords" type="class" propertytype="coords">
      <properties>

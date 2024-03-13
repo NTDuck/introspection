@@ -267,12 +267,22 @@ void level::Data::loadTileLayer(json const& JSONLayerData) {
         for (const auto& GID : layer_j.value()) GIDs.emplace_back(GID);
     } else if (encoding_j != JSONLayerData.end() && encoding_j.value() == "base64") {
         std::string decoded = utils::base64Decode(layer_j.value());
-        if (compression_j.value() == "zlib") {   // zlib-compressed base64
-            GIDs = utils::zlibDecompress<int>(decoded);
-        } else return;
+        if (compression_j.value() == "zlib") GIDs = utils::zlibDecompress<int>(decoded);   // zlib-compressed base64
+        else return;
     } else return;
 
     for (int y = 0; y < tileDestCount.y; ++y) for (int x = 0; x < tileDestCount.x; ++x) tiles[y][x].emplace_back(GIDs[y * tileDestCount.x + x]);
+
+    // Collision layer
+    auto name_j = JSONLayerData.find("name"); if (name_j == JSONLayerData.end()) return;
+    auto name_v = name_j.value(); if (!name_v.is_string()) return;
+
+    collisionTilelayer.resize(tileDestCount.y);
+    for (auto& row : collisionTilelayer) row.resize(tileDestCount.x, 0);
+
+    if (name_v == "static-collision") {
+        for (int y = 0; y < tileDestCount.y; ++y) for (int x = 0; x < tileDestCount.x; ++x) collisionTilelayer[y][x] = GIDs[y * tileDestCount.x + x];
+    }
 }
 
 /**
@@ -325,8 +335,11 @@ void level::Data::loadTilelayerTilesets(json const& JSONLevelData) {
  * @note When entry `key` is removed via `erase(key)`, iterators pointing to next entries are invalidated i.e. undefined behaviour with `for (auto& pair : dependencies) erase(pair.first);`
 */
 void level::Data::clear() {
-    for (auto& row : tiles) for (auto& tile : row) tile.clear();
+    tiles.clear();
     tiles.shrink_to_fit();
+    collisionTilelayer.clear();
+    collisionTilelayer.shrink_to_fit();
+
     backgroundColor = config::color::offblack;   // Default
 
     for (auto& pair : dependencies) for (auto& p : pair.second) delete p;
