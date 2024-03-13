@@ -20,14 +20,16 @@ void GenericTeleporterEntity<T>::onLevelChange(level::Data_Generic const& telepo
 
 template <typename T>
 void GenericTeleporterEntity<T>::handleCustomEventPOST() const {
-    handleCustomEventPOST_kReq_Teleport_GTE_Player();
+    handleCustomEventPOST_impl<event::Code::kReq_Teleport_GTE_Player>();
 }
 
 template <typename T>
-void GenericTeleporterEntity<T>::handleCustomEventPOST_kReq_Teleport_GTE_Player() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_Teleport_GTE_Player>
+GenericTeleporterEntity<T>::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
-    event::setCode(event, event::Code::kReq_Teleport_GTE_Player);
+    event::setCode(event, C);
     event::setData(event, event::Data_Teleporter({ mDestCoords, mTargetDestCoords, mTargetLevel }));
     event::enqueue(event);
 }

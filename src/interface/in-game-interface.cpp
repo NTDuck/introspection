@@ -260,15 +260,15 @@ void IngameInterface::handleMouseEvent(SDL_Event const& event) const {
 void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     switch (static_cast<event::Code>(event.user.code)) {
         case event::Code::kResp_Teleport_GTE_Player:
-            handleCustomEventGET_kResp_Teleport_GTE_Player(event);
+            handleCustomEventGET_impl<event::Code::kResp_Teleport_GTE_Player>(event);
             break;
 
         case event::Code::kReq_DeathPending_Player:
-            handleCustomEventGET_kReq_DeathPending_Player();
+            handleCustomEventGET_impl<event::Code::kReq_DeathPending_Player>();
             break;
 
         case event::Code::kReq_DeathFinalized_Player:
-            handleCustomEventGET_kReq_DeathFinalized_Player();
+            handleCustomEventGET_impl<event::Code::kReq_DeathFinalized_Player>();
             break;
 
         default: break;
@@ -366,15 +366,15 @@ void IngameInterface::handleEntitiesInteraction() const {
 void IngameInterface::handleLevelSpecifics() const {
     switch (IngameMapHandler::instance->getLevel()) {
         case level::Name::kLevelWhiteSpace:
-            handleLevelSpecifics_kLevelWhiteSpace();
+            handleLevelSpecifics_impl<level::Name::kLevelWhiteSpace>();
             break;
 
         case level::Name::kLevelTutorial_0:
-            handleLevelSpecifics_kLevelTutorial_0();
+            handleLevelSpecifics_impl<level::Name::kLevelTutorial_0>();
             break;
 
         case level::Name::kLevelTutorial_1:
-            handleLevelSpecifics_kLevelTutorial_1();
+            handleLevelSpecifics_impl<level::Name::kLevelTutorial_1>();
             break;
 
         default: break;
@@ -387,7 +387,9 @@ void IngameInterface::handleEntitiesSFX() const {
     Slime::invoke(&Slime::handleSFX);
 }
 
-void IngameInterface::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kResp_Teleport_GTE_Player>
+IngameInterface::handleCustomEventGET_impl(SDL_Event const& event) const {
     auto data = event::getData<event::Data_Teleporter>(event);
     
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, data.targetLevel);
@@ -400,11 +402,15 @@ void IngameInterface::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event c
     onWindowChange();
 }
 
-void IngameInterface::handleCustomEventGET_kReq_DeathPending_Player() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_DeathPending_Player>
+IngameInterface::handleCustomEventGET_impl() const {
     IngameMapHandler::instance->isOnGrayscale = true;
 }
 
-void IngameInterface::handleCustomEventGET_kReq_DeathFinalized_Player() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player>
+IngameInterface::handleCustomEventGET_impl() const {
     globals::state = GameState::kGameOver;
     IngameMapHandler::instance->isOnGrayscale = false;
 }
@@ -420,7 +426,9 @@ bool IngameInterface::isPlayerInRange(std::pair<int, int> const& x_lim, std::pai
     return result;
 }
 
-void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelTutorial_0>
+IngameInterface::handleLevelSpecifics_impl() const {
     static auto proceed = [&](std::string const& key = "progress") {
         level::data.setProperty<int>(key, level::data.getProperty<int>(key) + 1);
     };
@@ -644,7 +652,9 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_0() const {
     }
 }
 
-void IngameInterface::handleLevelSpecifics_kLevelTutorial_1() const {
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelTutorial_1>
+IngameInterface::handleLevelSpecifics_impl() const {
     static int progress;
     progress = level::data.getProperty<int>("progress");
     static auto proceed = [&]() {
@@ -683,7 +693,9 @@ void IngameInterface::handleLevelSpecifics_kLevelTutorial_1() const {
     }
 }
 
-void IngameInterface::handleLevelSpecifics_kLevelWhiteSpace() const {
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
+IngameInterface::handleLevelSpecifics_impl() const {
     auto isBorderTraversed = level::data.getProperty<bool>("is-border-traversed");
 
     auto kInternalTeleportHandler = [&](int& i, const double lower, const double upper) {

@@ -47,7 +47,7 @@ void Player::onLevelChange(level::Data_Generic const& player) {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
-    static constexpr unsigned short int count_limit = config::game::FPS >> 2;
+    static constexpr unsigned short int count_limit = config::game::FPS >> 4;
     static unsigned short int count = 0;
     if (count > 0) --count;
 
@@ -85,7 +85,7 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case ~config::Key::kAffirmative:
-            handleCustomEventPOST_kReq_Interact_Player_GIE();
+            handleCustomEventPOST_impl<event::Code::kReq_Interact_Player_GIE>();
             break;
 
         default: break;
@@ -103,26 +103,27 @@ void Player::handleMouseEvent(SDL_Event const& event) {
 }
 
 void Player::handleCustomEventPOST() const {
-    handleCustomEventPOST_kReq_AttackRegister_Player_GHE();
-    handleCustomEventPOST_kReq_Death_Player();
+    handleCustomEventPOST_impl<event::Code::kReq_AttackRegister_Player_GHE>();
+    handleCustomEventPOST_impl<event::Code::kReq_DeathFinalized_Player>();
+    // handleCustomEventPOST_impl<event::Code::kReq_DeathPending_Player>();
 }
 
 void Player::handleCustomEventGET(SDL_Event const& event) {
     switch (event::getCode(event)) {
         case event::Code::kReq_AttackRegister_GHE_Player:
-            handleCustomEventGET_kReq_AttackRegister_GHE_Player(event);
+            handleCustomEventGET_impl<event::Code::kReq_AttackRegister_GHE_Player>(event);
             break;
 
         case event::Code::kReq_AttackInitiate_GHE_Player:
-            handleCustomEventGET_kResp_AttackInitiate_GHE_Player(event);
+            handleCustomEventGET_impl<event::Code::kResp_AttackInitiate_GHE_Player>(event);
             break;
 
         case event::Code::kReq_MoveInitiate_GHE_Player:
-            handleCustomEventGET_kResp_MoveInitiate_GHE_Player(event);
+            handleCustomEventGET_impl<event::Code::kResp_MoveInitiate_GHE_Player>(event);
             break;
 
         case event::Code::kReq_Teleport_GTE_Player:
-            handleCustomEventGET_kResp_Teleport_GTE_Player(event);
+            handleCustomEventGET_impl<event::Code::kResp_Teleport_GTE_Player>(event);
             break;
 
         default: break;
@@ -194,7 +195,9 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
     PentacleProjectile::initiateAttack(it->second, mDestCoords, mPrevDirection);
 }
 
-void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
+Player::handleCustomEventPOST_impl() const {
     if (mCurrAnimationType != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
@@ -204,7 +207,9 @@ void Player::handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const {
     event::enqueue(event);
 }
 
-void Player::handleCustomEventPOST_kReq_Death_Player() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player || C == event::Code::kReq_DeathPending_Player>
+Player::handleCustomEventPOST_impl() const {
     if (mCurrAnimationType != Animation::kDeath) return;
 
     static int counter = config::entities::player::waitingFramesAfterDeath;
@@ -217,7 +222,9 @@ void Player::handleCustomEventPOST_kReq_Death_Player() const {
     event::enqueue(event);
 }
 
-void Player::handleCustomEventPOST_kReq_Interact_Player_GIE() const {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
+Player::handleCustomEventPOST_impl() const {
     if (mCurrAnimationType == Animation::kDeath) return;
 
     auto event = event::instantiate();
@@ -227,7 +234,9 @@ void Player::handleCustomEventPOST_kReq_Interact_Player_GIE() const {
     event::enqueue(event);
 }
 
-void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event) {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
+Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDamaged) return;
@@ -242,7 +251,9 @@ void Player::handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const
     }
 }
 
-void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event) {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
+Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDamaged || mCurrAnimationType == Animation::kDeath) return;
@@ -256,7 +267,9 @@ void Player::handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event cons
     event::enqueue(followupEvent);
 }
 
-void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event) {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kResp_MoveInitiate_GHE_Player>
+Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mCurrAnimationType == Animation::kDeath) return;
@@ -270,7 +283,9 @@ void Player::handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const&
     event::enqueue(followupEvent);
 }
 
-void Player::handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event) {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kResp_Teleport_GTE_Player>
+Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Teleporter>(event);
 
     if (mDestCoords != data.destCoords) return;

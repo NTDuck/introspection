@@ -31,7 +31,7 @@ template <typename T>
 void GenericInteractable<T>::handleCustomEventGET(SDL_Event const& event) {
     switch (event::getCode(event)) {
         case event::Code::kReq_Interact_Player_GIE:
-            handleCustomEventGET_kReq_Interact_Player_GIE(event);
+            handleCustomEventGET_impl<event::Code::kReq_Interact_Player_GIE>(event);
             break;
         
         default: break;
@@ -39,7 +39,9 @@ void GenericInteractable<T>::handleCustomEventGET(SDL_Event const& event) {
 }
 
 template <typename T>
-void GenericInteractable<T>::handleCustomEventGET_kReq_Interact_Player_GIE(SDL_Event const& event) {
+template <event::Code C>
+typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
+GenericInteractable<T>::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Interactable>(event);
     if (data.targetDestCoords != mDestCoords) return;
 
@@ -47,7 +49,7 @@ void GenericInteractable<T>::handleCustomEventGET_kReq_Interact_Player_GIE(SDL_E
     IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, mDialogues[mProgress >> 1]);
     if (mProgress >> 1 < static_cast<unsigned short int>(mDialogues.size()) - 1) ++mProgress;   // Move towards final state
 
-    if (sSFXName != nullptr && (mProgress & 1)) Mixer::invoke(&Mixer::playSFX, *sSFXName); 
+    if (sSFXName != nullptr && (mProgress & 1)) Mixer::invoke(&Mixer::playSFX, *sSFXName);     
 }
 
 

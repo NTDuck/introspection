@@ -5,6 +5,7 @@
 #include <functional>
 #include <string>
 #include <tuple>
+#include <type_traits>
 #include <vector>
 #include <stack>
 #include <unordered_set>
@@ -301,7 +302,9 @@ class GenericInteractable : public AbstractAnimatedEntity<T> {
         unsigned short int mProgress = 0;
 
     private:
-        void handleCustomEventGET_kReq_Interact_Player_GIE(SDL_Event const& event);
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
+        handleCustomEventGET_impl(const SDL_Event& event);
 
         static Mixer::SFXName* sSFXName;
         std::vector<std::vector<std::string>> mDialogues;
@@ -352,7 +355,9 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
         GenericTeleporterEntity(SDL_Point const& destCoords);
 
     private:
-        void handleCustomEventPOST_kReq_Teleport_GTE_Player() const;
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_Teleport_GTE_Player>
+        handleCustomEventPOST_impl() const;
 
         /**
          * The new `destCoords` of the player entity upon a `destCoords` collision event i.e. "trample".
@@ -415,14 +420,33 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         SDL_Point mAttackInitiateRange;
 
     private:
-        void handleCustomEventPOST_kReq_AttackRegister_GHE_Player() const;
-        void handleCustomEventPOST_kReq_AttackInitiate_GHE_Player() const;
-        void handleCustomEventPOST_kReq_MoveInitiate_GHE_Player() const;
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
+        handleCustomEventPOST_impl() const;
 
-        void handleCustomEventGET_kReq_AttackRegister_Player_GHE(SDL_Event const& event);
-        void handleCustomEventGET_kResp_AttackInitiate_GHE_Player();
-        void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
-        void handleCustomEventGET_kResp_MoveTerminate_GHE_Player();
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackInitiate_GHE_Player>
+        handleCustomEventPOST_impl() const;
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_MoveInitiate_GHE_Player>
+        handleCustomEventPOST_impl() const;
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
+        handleCustomEventGET_impl(SDL_Event const& event);
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
+        handleCustomEventGET_impl();
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_MoveInitiate_GHE_Player>
+        handleCustomEventGET_impl(SDL_Event const& event);
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_MoveTerminate_GHE_Player>
+        handleCustomEventGET_impl();
 
         static unsigned int sDeathCount;
 };
@@ -484,7 +508,10 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 
     private:
         void initiateNextLinearAttack();
-        void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
+        handleCustomEventPOST_impl() const;
 
         SDL_Point& mDirection = mCurrVelocity;   // Does not allocate additional memory
 
@@ -588,14 +615,33 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void handleKeyboardEvent_Movement(SDL_Event const& event);
         void handleKeyboardEvent_ProjectileAttack(SDL_Event const& event);
 
-        void handleCustomEventPOST_kReq_AttackRegister_Player_GHE() const;
-        void handleCustomEventPOST_kReq_Death_Player() const;
-        void handleCustomEventPOST_kReq_Interact_Player_GIE() const;
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
+        handleCustomEventPOST_impl() const;
 
-        void handleCustomEventGET_kReq_AttackRegister_GHE_Player(SDL_Event const& event);
-        void handleCustomEventGET_kResp_AttackInitiate_GHE_Player(SDL_Event const& event);
-        void handleCustomEventGET_kResp_MoveInitiate_GHE_Player(SDL_Event const& event);
-        void handleCustomEventGET_kResp_Teleport_GTE_Player(SDL_Event const& event);
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player || C == event::Code::kReq_DeathPending_Player>
+        handleCustomEventPOST_impl() const;
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
+        handleCustomEventPOST_impl() const;
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
+        handleCustomEventGET_impl(SDL_Event const& event);
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
+        handleCustomEventGET_impl(SDL_Event const& event);
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_MoveInitiate_GHE_Player>
+        handleCustomEventGET_impl(SDL_Event const& event);
+
+        template <event::Code C>
+        typename std::enable_if_t<C == event::Code::kResp_Teleport_GTE_Player>
+        handleCustomEventGET_impl(SDL_Event const& event);
 
         static const std::vector<std::filesystem::path> sTilesetPaths;
 
