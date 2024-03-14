@@ -175,27 +175,6 @@ namespace tile {
     using Tensor = std::vector<std::vector<Slice>>;
 
     /**
-     * @brief Contains data associated with the tilelayer used for rendering.
-     * 
-     * @param textures each element determines the tileset to which the `Tile` belongs, per tilelayer.
-     * @param srcRects has the same size as `textures`. `srcRects[i]` corresponds to `textures[i]` and is used in conjunction to determine the specific portion of the tileset used for rendering.
-     * @param destRect the specific portion of the window on which the `Tile` is rendered. Independent of the tileset, its value is determined only by `globals::tileDestSize` and `globals::windowOffset`.
-     * 
-     * @note Not to be confused with `TilelayerTilesetData`.
-     * @note Recommended implementation: instances should only be instantiated immediately before rendering and should be destantiated immediately afterwards.
-    */
-    struct Data_Tile_RenderOnly {
-        /**
-         * A 2-dimensional iterable of `TileRenderData`. `Data_Tile_RenderOnly::Collection[i][j]` corresponds to `Tensor[i][j]` and is used in conjunction to determine the rendering data.
-        */
-        using Collection = std::vector<std::vector<Data_Tile_RenderOnly>>;
-
-        std::vector<SDL_Texture*> textures;
-        std::vector<SDL_Rect> srcRects;
-        SDL_Rect destRect;
-    };
-
-    /**
      * @brief Contain data associated with a generic tileset.
      * @param properties maps the tileset's properties to their stringified values. Properties are Tiled standard types only e.g., `string`, `bool`, `int`. Registered values: `"norender"` prevents the tileset from being rendered; `"collision"` enables the tileset to be used in collision detection.
     */
@@ -602,7 +581,7 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelTutorial_0;
+        constexpr level::Name levelName = level::Name::kLevelWhiteSpace;
         constexpr int idleFrames = 16;
 
         constexpr double tileCountHeight = 22.5;   // OMORI's white space
