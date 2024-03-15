@@ -116,6 +116,57 @@ std::size_t std::hash<SDL_FPoint>::operator()(SDL_FPoint const& instance) const 
     return std::hash<float>{}(instance.x) ^ (std::hash<float>{}(instance.y) << 1);
 }
 
+
+template <typename K, typename V>
+utils::LRUCache<K, V>::LRUCache(std::size_t size) : kSize(size) {}
+
+template <typename K, typename V>
+std::optional<V> utils::LRUCache<K, V>::at(K const& k) {
+    auto it = mHashmap.find(k);
+    if (it == mHashmap.end()) return std::nullopt;
+
+    // Move to front of deque
+    push_front_impl(it);
+
+    return std::optional<V>(mHashmap[k].value);
+}
+
+template <typename K, typename V>
+void utils::LRUCache<K, V>::insert(K const& k, V const& v) {
+    auto it = mHashmap.find(k);
+
+    if (it != mHashmap.end()) {
+        it->second.value = v;   // Update associated value
+        push_front_impl(it);   // Move to front of queue
+    } else {
+        if (mDeque.size() == kSize) {   // Cache is full
+            // Evict LRU item (at the back of queue)
+            K lru = mDeque.back();
+            mDeque.pop_back();
+            mHashmap.erase(lru);   // Remove corresponding entry from the hashmap
+        }
+        mDeque.push_front(k);   // Insert item to the front of queue
+        mHashmap.insert(std::make_pair(k, U{ v, mDeque.begin() }));   // Register hashmap entry
+    }
+}
+
+template <typename K, typename V>
+void utils::LRUCache<K, V>::clear() {
+    mHashmap.clear();
+    mDeque.clear();
+}
+
+template <typename K, typename V>
+void utils::LRUCache<K, V>::push_front_impl(typename std::unordered_map<K, U>::iterator it) {
+    mDeque.erase(it->second.iterator);
+    mDeque.push_front(it->first);
+    it->second.iterator = mDeque.begin();
+}
+
+
+template class utils::LRUCache<tile::GID, tile::Data_TilelayerTileset>;
+
+
 /**
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
  * @note Susceptible to data loss.

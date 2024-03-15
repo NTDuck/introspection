@@ -112,34 +112,38 @@ void IngameMapHandler::renderBackground() const {
 void IngameMapHandler::renderLevelTilelayers() const {
     SDL_Rect GID_SrcRect, GID_DestRect;
     SDL_Texture* GID_Texture = nullptr;   // Assign-only
-    tile::GID prevGID = 0;
+
+    utils::LRUCache<tile::GID, tile::Data_TilelayerTileset> cache(config::interface::LRUCacheSize);   // Aims to reduce the number of calls to `Data_TilelayerTilesets::operator[]` which is essentially `std::lower_bound` which is `O(log(n))` time complexity
 
     GID_DestRect.x = GID_DestRect.y = 0;
     GID_DestRect.w = level::data.tileDestSize.x;
     GID_DestRect.h = level::data.tileDestSize.y;
 
+    tile::Data_TilelayerTileset tilesetData;
+
     for (int y = 0; y < level::data.tileDestCount.y; ++y) {
         for (int x = 0; x < level::data.tileDestCount.x; ++x) {
             for (const auto& gid : level::data.tiles[y][x]) {
                 if (!gid) continue;   // A GID value of `0` represents an "empty" tile i.e. associated with no tileset
-                
-                if (gid != prevGID) {   // Aims to reduce the number of calls to `Data_TilelayerTilesets::operator[]` which is essentially `std::find_if()` which is `O(n)` time complexity
-                    auto tilesetData = level::data.tilesets[gid];   // Identify the tileset to which the GID belongs (layer-specific); O(n) time complexity
-                    if (!tilesetData.has_value()) continue;   // GID is invalid
 
-                    auto tilesetData_v = tilesetData.value();
-                    if (tilesetData_v.getProperty("norender") == "true") continue;   // GID is for non-render purposes e.g. collision
+                auto cache_result = cache.at(gid);   // O(1) time complexity
 
-                    GID_Texture = tilesetData_v.texture;
-                    GID_SrcRect = {
-                        ((gid - tilesetData_v.firstGID) % tilesetData_v.srcCount.x) * tilesetData_v.srcSize.x,
-                        ((gid - tilesetData_v.firstGID) / tilesetData_v.srcCount.x) * tilesetData_v.srcSize.y,
-                        tilesetData_v.srcSize.x,
-                        tilesetData_v.srcSize.y,
-                    };
+                if (!cache_result.has_value()) {   // GID not recently used
+                    auto tilesetData_o = level::data.tilesets[gid];   // O(log(n)) time complexity
+                    if (!tilesetData_o.has_value()) continue;   // GID is invalid
+                    tilesetData = tilesetData_o.value();
+                    cache.insert(gid, tilesetData);   // Store to cache
+                } else tilesetData = cache_result.value();   // O(1) time complexity
 
-                    prevGID = gid;
-                }
+                if (tilesetData.getProperty("norender") == "true") continue;   // GID is for non-render purposes e.g. collision
+
+                GID_Texture = tilesetData.texture;
+                GID_SrcRect = {
+                    ((gid - tilesetData.firstGID) % tilesetData.srcCount.x) * tilesetData.srcSize.x,
+                    ((gid - tilesetData.firstGID) / tilesetData.srcCount.x) * tilesetData.srcSize.y,
+                    tilesetData.srcSize.x,
+                    tilesetData.srcSize.y,
+                };
 
                 SDL_RenderCopy(globals::renderer, GID_Texture, &GID_SrcRect, &GID_DestRect);
             }
@@ -150,6 +154,8 @@ void IngameMapHandler::renderLevelTilelayers() const {
         GID_DestRect.x = 0;
         GID_DestRect.y += GID_DestRect.h;
     }
+
+    cache.clear();
 }
 
 

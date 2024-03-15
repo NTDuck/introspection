@@ -6,9 +6,11 @@
 #include <array>
 #include <cmath>
 #include <cstdint>
+#include <cstddef>
 #include <filesystem>
 #include <functional>
 #include <optional>
+#include <list>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -583,6 +585,7 @@ namespace config {
         const std::filesystem::path path = "assets/.tiled/levels.json";
         constexpr level::Name levelName = level::Name::kLevelWhiteSpace;
         constexpr int idleFrames = 16;
+        constexpr std::size_t LRUCacheSize = 64;
 
         constexpr double tileCountHeight = 22.5;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
@@ -870,10 +873,33 @@ namespace std {
 
 
 namespace utils {
-    // template <typename Base, typename Derived>
-    // struct isDerivedFrom {
-    //     static_assert(std::is_base_of_v<Base, Derived>, "`Derived` must derive from `Base`");
-    // };
+    /**
+     * @brief Least Recently Used Cache implementation using Double-ended Queue and Hashmap.
+     * @note All operations (perhaps except for `clear()`) are `O(1)` in terms of time complexity.
+     * @see https://www.geeksforgeeks.org/lru-cache-implementation/#lru-cache-implementation-using-deque-hashmap
+    */
+    template <typename K, typename V>
+    class LRUCache {
+        struct U {
+            V value;
+            typename std::list<K>::iterator iterator;   // error: need 'typename' before 'std::__cxx11::list<K>::iterator' because 'std::__cxx11::list<K>' is a dependent scope
+        };
+
+        public:
+            LRUCache(std::size_t size);
+
+            std::optional<V> at(K const& k);
+            void insert(K const& k, V const& v);
+            void clear();
+
+        private:
+            void push_front_impl(typename std::unordered_map<K, U>::iterator it);
+
+            const std::size_t kSize;
+            std::unordered_map<K, U> mHashmap;
+            std::list<K> mDeque;
+    };
+
 
     template <typename Iterable, typename Callable, typename... Args>
     void iterate(Iterable const& iterable, Callable&& callable, Args&&... args) {
