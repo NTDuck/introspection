@@ -110,9 +110,19 @@ void tile::Data_TilelayerTilesets::load(json const& JSONLevelData, SDL_Renderer*
 }
 
 std::optional<tile::Data_TilelayerTileset> tile::Data_TilelayerTilesets::operator[](GID gid) const {
-    auto it = std::find_if(mData.begin(), mData.end(), [&](const auto tilelayer) {
-        return tilelayer.firstGID <= gid && gid < tilelayer.firstGID + tilelayer.srcCount.x * tilelayer.srcCount.y;
-    });
+    // auto it = std::find_if(mData.begin(), mData.end(), [&](const auto& tilelayer) {
+    //     return tilelayer.firstGID <= gid && gid < tilelayer.firstGID + tilelayer.srcCount.x * tilelayer.srcCount.y;
+    // });
+    // return it != mData.end() ? std::optional<Data_TilelayerTileset>(*it) : std::nullopt;
+
+    auto it = std::lower_bound(mData.begin(), mData.end(), gid, [](const Data_TilelayerTileset& tilelayer, GID gid) {
+        return tilelayer.firstGID + tilelayer.srcCount.x * tilelayer.srcCount.y <= gid;   // First `tilelayer` whose `firstGID` is not less than `gid`
+    });   // Use `std::lower_bound` (O(log n)) in lieu of `std::find_if` (O(n)) since `mData` is sorted by `firstGID`
+
+    if (it != mData.begin() && (it == mData.end() || it->firstGID > gid)) --it;   // Adjust flaw-susceptible search result so that condition `tilelayer.firstGID <= gid` is met
+
+    // if (it != mData.end() && it->firstGID <= gid && gid < it->firstGID + it->srcCount.x * it->srcCount.y) return std::optional<Data_TilelayerTileset>(*it);
+    // else return std::nullopt;
     return it != mData.end() ? std::optional<Data_TilelayerTileset>(*it) : std::nullopt;
 }
 

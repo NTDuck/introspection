@@ -214,7 +214,7 @@ namespace tile {
         private:
             std::vector<Data_TilelayerTileset> mData;
     };
-
+    
     /**
      * @brief Contain data associated with a tileset for an entity or an animated object.
      * @param animationMapping maps an animation type to the associated data.

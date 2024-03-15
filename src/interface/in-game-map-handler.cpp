@@ -2,7 +2,6 @@
 
 #include <filesystem>
 #include <vector>
-#include <deque>
 
 #include <SDL.h>
 
@@ -109,42 +108,47 @@ void IngameMapHandler::renderBackground() const {
 
 /**
  * @brief Render the static portions of a level to `texture`.
- * @note Needs optimization. Perhaps load only 1 `Data_Tile_RenderOnly` then immediately render then deallocate?
 */
 void IngameMapHandler::renderLevelTilelayers() const {
-    SDL_Rect tmpSrcRect, tmpDestRect;
-    SDL_Texture* tmpTexture;
+    SDL_Rect GID_SrcRect, GID_DestRect;
+    SDL_Texture* GID_Texture = nullptr;   // Assign-only
+    tile::GID prevGID = 0;
 
-    // // Optimization
-    // std::deque<std::optional<tile::Data_TilelayerTileset>>;
+    GID_DestRect.x = GID_DestRect.y = 0;
+    GID_DestRect.w = level::data.tileDestSize.x;
+    GID_DestRect.h = level::data.tileDestSize.y;
 
-    for (int y = 0; y < level::data.tileDestCount.y; ++y) for (int x = 0; x < level::data.tileDestCount.x; ++x) {
-        tmpDestRect = {
-            level::data.tileDestSize.x * x,
-            level::data.tileDestSize.y * y,
-            level::data.tileDestSize.x,
-            level::data.tileDestSize.y,
-        };
+    for (int y = 0; y < level::data.tileDestCount.y; ++y) {
+        for (int x = 0; x < level::data.tileDestCount.x; ++x) {
+            for (const auto& gid : level::data.tiles[y][x]) {
+                if (!gid) continue;   // A GID value of `0` represents an "empty" tile i.e. associated with no tileset
+                
+                if (gid != prevGID) {   // Aims to reduce the number of calls to `Data_TilelayerTilesets::operator[]` which is essentially `std::find_if()` which is `O(n)` time complexity
+                    auto tilesetData = level::data.tilesets[gid];   // Identify the tileset to which the GID belongs (layer-specific); O(n) time complexity
+                    if (!tilesetData.has_value()) continue;   // GID is invalid
 
-        for (const auto& gid : level::data.tiles[y][x]) {
-            if (!gid) continue;   // A GID value of `0` represents an "empty" tile i.e. associated with no tileset
-            
-            auto tilesetData = level::data.tilesets[gid];   // Identify the tileset to which the GID belongs (layer-specific)
-            if (!tilesetData.has_value()) continue;   // GID is invalid
+                    auto tilesetData_v = tilesetData.value();
+                    if (tilesetData_v.getProperty("norender") == "true") continue;   // GID is for non-render purposes e.g. collision
 
-            auto tilesetData_v = tilesetData.value();
-            if (tilesetData_v.getProperty("norender") == "true") continue;   // GID is for non-render purposes e.g. collision
+                    GID_Texture = tilesetData_v.texture;
+                    GID_SrcRect = {
+                        ((gid - tilesetData_v.firstGID) % tilesetData_v.srcCount.x) * tilesetData_v.srcSize.x,
+                        ((gid - tilesetData_v.firstGID) / tilesetData_v.srcCount.x) * tilesetData_v.srcSize.y,
+                        tilesetData_v.srcSize.x,
+                        tilesetData_v.srcSize.y,
+                    };
 
-            tmpTexture = tilesetData_v.texture;
-            tmpSrcRect = {
-                ((gid - tilesetData_v.firstGID) % tilesetData_v.srcCount.x) * tilesetData_v.srcSize.x,
-                ((gid - tilesetData_v.firstGID) / tilesetData_v.srcCount.x) * tilesetData_v.srcSize.y,
-                tilesetData_v.srcSize.x,
-                tilesetData_v.srcSize.y,
-            };
+                    prevGID = gid;
+                }
 
-            SDL_RenderCopy(globals::renderer, tmpTexture, &tmpSrcRect, &tmpDestRect);
+                SDL_RenderCopy(globals::renderer, GID_Texture, &GID_SrcRect, &GID_DestRect);
+            }
+
+            GID_DestRect.x += GID_DestRect.w;
         }
+
+        GID_DestRect.x = 0;
+        GID_DestRect.y += GID_DestRect.h;
     }
 }
 
