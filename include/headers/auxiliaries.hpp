@@ -276,8 +276,8 @@ namespace level {
      * Register level names as enumeration constants for maintainability.
     */
     enum class Name : char {
-        kLevelTutorial_0,
-        kLevelTutorial_1,
+        kLevelDeprecatedTutorial_0,
+        kLevelDeprecatedTutorial_1,
 
         kLevelWhiteSpace,
 
@@ -558,9 +558,11 @@ namespace config {
                 SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS,
                 IMG_INIT_PNG,
                 SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE,
-                SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC,
+                SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC | SDL_RENDERER_ACCELERATED,
                 {
-                    { SDL_HINT_RENDER_SCALE_QUALITY, "1" },
+                    { SDL_HINT_RENDER_SCALE_QUALITY, "0" },
+                    { SDL_HINT_RENDER_VSYNC, "1" },
+                    { SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4, "1" },
                 }
             },
             { SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 1280, 720 },
@@ -583,11 +585,11 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelWhiteSpace;
+        constexpr level::Name levelName = level::Name::kLevelDeprecatedTutorial_0;
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
 
-        constexpr double tileCountHeight = 22.5;   // OMORI's white space
+        constexpr double tileCountHeight = 12;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 

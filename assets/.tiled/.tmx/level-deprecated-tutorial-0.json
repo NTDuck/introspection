@@ -306,7 +306,7 @@
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-tutorial-1"
+                         "value":"level-deprecated-tutorial-1"
                         }],
                  "rotation":0,
                  "type":"teleporter",

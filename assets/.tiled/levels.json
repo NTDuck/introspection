@@ -5,12 +5,12 @@
       "source": ".tmx/level-white-space.json"
     },
     {
-      "name": "level-tutorial-0",
-      "source": ".tmx/level-tutorial-0.json"
+      "name": "level-deprecated-tutorial-0",
+      "source": ".tmx/level-deprecated-tutorial-0.json"
     },
     {
-      "name": "level-tutorial-1",
-      "source": ".tmx/level-tutorial-1.json"
+      "name": "level-deprecated-tutorial-1",
+      "source": ".tmx/level-deprecated-tutorial-1.json"
     },
     {
       "name": "level-ante",

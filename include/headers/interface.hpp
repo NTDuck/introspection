@@ -170,11 +170,11 @@ class IngameInterface final : public Singleton<IngameInterface> {
         bool isPlayerInRange(std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) const;
 
         template <level::Name L>
-        typename std::enable_if_t<L == level::Name::kLevelTutorial_0>
+        typename std::enable_if_t<L == level::Name::kLevelDeprecatedTutorial_0>
         handleLevelSpecifics_impl() const;
 
         template <level::Name L>
-        typename std::enable_if_t<L == level::Name::kLevelTutorial_1>
+        typename std::enable_if_t<L == level::Name::kLevelDeprecatedTutorial_1>
         handleLevelSpecifics_impl() const;
 
         template <level::Name L>

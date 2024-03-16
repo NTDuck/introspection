@@ -4,8 +4,8 @@
 std::optional<level::Name> level::stoln(std::string const& s) {
     static const std::unordered_map<std::string, level::Name> ump = {
         { "level-white-space", level::Name::kLevelWhiteSpace },
-        { "level-tutorial-0", level::Name::kLevelTutorial_0 },
-        { "level-tutorial-1", level::Name::kLevelTutorial_1 },
+        { "level-deprecated-tutorial-0", level::Name::kLevelDeprecatedTutorial_0 },
+        { "level-deprecated-tutorial-1", level::Name::kLevelDeprecatedTutorial_1 },
         { "level-ante", level::Name::kLevelAnte },
         { "level-paene", level::Name::kLevelPaene },
         { "level-umbra", level::Name::kLevelUmbra },

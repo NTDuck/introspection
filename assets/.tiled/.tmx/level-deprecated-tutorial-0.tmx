@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="15">
  <editorsettings>
-  <export target="level-tutorial-0.json" format="json"/>
+  <export target="level-deprecated-tutorial-0.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="../.tsx/collision.tsx"/>
  <tileset firstgid="17" source="../.tsx/mi-rb-floors.tsx"/>
@@ -168,7 +168,7 @@
       <property name="y" type="int" value="98"/>
      </properties>
     </property>
-    <property name="target-level" value="level-tutorial-1"/>
+    <property name="target-level" value="level-deprecated-tutorial-1"/>
    </properties>
   </object>
  </objectgroup>

@@ -135,8 +135,8 @@ void IngameInterface::onLevelChange() const {
             level::data.setProperty<bool>("is-border-traversed", false);
             break;
 
-        case level::Name::kLevelTutorial_0:
-        case level::Name::kLevelTutorial_1:
+        case level::Name::kLevelDeprecatedTutorial_0:
+        case level::Name::kLevelDeprecatedTutorial_1:
             level::data.setProperty<int>("progress", -config::game::FPS >> 1);   // Magic number
             level::data.setProperty<int>("progress-arb-1", 0);
             level::data.setProperty<int>("progress-arb-2", 0);
@@ -369,12 +369,12 @@ void IngameInterface::handleLevelSpecifics() const {
             handleLevelSpecifics_impl<level::Name::kLevelWhiteSpace>();
             break;
 
-        case level::Name::kLevelTutorial_0:
-            handleLevelSpecifics_impl<level::Name::kLevelTutorial_0>();
+        case level::Name::kLevelDeprecatedTutorial_0:
+            handleLevelSpecifics_impl<level::Name::kLevelDeprecatedTutorial_0>();
             break;
 
-        case level::Name::kLevelTutorial_1:
-            handleLevelSpecifics_impl<level::Name::kLevelTutorial_1>();
+        case level::Name::kLevelDeprecatedTutorial_1:
+            handleLevelSpecifics_impl<level::Name::kLevelDeprecatedTutorial_1>();
             break;
 
         default: break;
@@ -427,7 +427,7 @@ bool IngameInterface::isPlayerInRange(std::pair<int, int> const& x_lim, std::pai
 }
 
 template <level::Name L>
-typename std::enable_if_t<L == level::Name::kLevelTutorial_0>
+typename std::enable_if_t<L == level::Name::kLevelDeprecatedTutorial_0>
 IngameInterface::handleLevelSpecifics_impl() const {
     static auto proceed = [&](std::string const& key = "progress") {
         level::data.setProperty<int>(key, level::data.getProperty<int>(key) + 1);
@@ -642,7 +642,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
                 "... (Stand proud,)",
                 "... (You've done well.)",
             });
-            Mixer::invoke(&Mixer::onLevelChange, level::Name::kLevelTutorial_0);
+            Mixer::invoke(&Mixer::onLevelChange, level::Name::kLevelDeprecatedTutorial_0);
             
             proceed();
             break;
@@ -653,7 +653,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
 }
 
 template <level::Name L>
-typename std::enable_if_t<L == level::Name::kLevelTutorial_1>
+typename std::enable_if_t<L == level::Name::kLevelDeprecatedTutorial_1>
 IngameInterface::handleLevelSpecifics_impl() const {
     static int progress;
     progress = level::data.getProperty<int>("progress");

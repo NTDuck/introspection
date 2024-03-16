@@ -67,8 +67,8 @@ class Mixer final : Singleton<Mixer> {
 
         std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
             { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
-            { level::Name::kLevelTutorial_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
-            { level::Name::kLevelTutorial_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
+            { level::Name::kLevelDeprecatedTutorial_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
+            { level::Name::kLevelDeprecatedTutorial_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
             { level::Name::__kLevelTutorial_0_Combat__, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-009-enemy-approaching.mp3") },
         };
 
