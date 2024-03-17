@@ -97,6 +97,10 @@ Official os-specific releases are not available, and compatibility layers (e.g. 
 **Version control:** Git (_2.40.0.windows.1_)
 
 
+## Class Hierarchy
+![Class hierarchy, for code comprehension](/assets/graphics/misc/hierarchy.png)
+
+
 ## Acknowledgements
 
 > We would like to credit certain assets used in this project. Licenses, if any, should be found in the links below.
