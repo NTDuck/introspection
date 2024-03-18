@@ -51,8 +51,7 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
     static unsigned short int count = 0;
     if (count > 0) --count;
 
-    if (mCurrAnimationType == Animation::kDamaged || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDamaged)) return;
-    if (mCurrAnimationType == Animation::kDeath || (pNextAnimationType != nullptr && *pNextAnimationType == Animation::kDeath)) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
 
     switch (event.key.keysym.sym) {
         case ~config::Key::kPlayerMoveUp:
@@ -67,7 +66,7 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case ~config::Key::kPlayerAttackMeele:
-            if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
+            if (mAnimation == Animation::kAttackMeele || mAnimation == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackMeele);
             break;
 
@@ -76,7 +75,7 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalTriple:
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalQuadruple:
         case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
-            if (mCurrAnimationType == Animation::kAttackMeele || mCurrAnimationType == Animation::kAttackRanged) break;
+            if (mAnimation == Animation::kAttackMeele || mAnimation == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackRanged);
 
             if (count) break;
@@ -105,7 +104,6 @@ void Player::handleMouseEvent(SDL_Event const& event) {
 void Player::handleCustomEventPOST() const {
     handleCustomEventPOST_impl<event::Code::kReq_AttackRegister_Player_GHE>();
     handleCustomEventPOST_impl<event::Code::kReq_DeathFinalized_Player>();
-    // handleCustomEventPOST_impl<event::Code::kReq_DeathPending_Player>();
 }
 
 void Player::handleCustomEventGET(SDL_Event const& event) {
@@ -141,7 +139,7 @@ void Player::handleSFX() const {
         return;
     }
 
-    switch (mCurrAnimationType) {
+    switch (mAnimation) {
         case Animation::kWalk:
             Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kPlayerWalk);
             break;
@@ -198,7 +196,7 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
 Player::handleCustomEventPOST_impl() const {
-    if (mCurrAnimationType != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
+    if (mAnimation != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -210,7 +208,7 @@ Player::handleCustomEventPOST_impl() const {
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player || C == event::Code::kReq_DeathPending_Player>
 Player::handleCustomEventPOST_impl() const {
-    if (mCurrAnimationType != Animation::kDeath) return;
+    if (mAnimation != Animation::kDeath) return;
 
     static int counter = config::entities::player::waitingFramesAfterDeath;
     if (counter > 0) --counter;
@@ -225,7 +223,7 @@ Player::handleCustomEventPOST_impl() const {
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
 Player::handleCustomEventPOST_impl() const {
-    if (mCurrAnimationType == Animation::kDeath) return;
+    if (mAnimation == Animation::kDeath) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -239,16 +237,13 @@ typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
 Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mCurrAnimationType == Animation::kDamaged) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
 
-    if (pNextAnimationType == nullptr) {
-        pNextAnimationType = new Animation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
-        mIsAnimationOnProgress = false;
-    }
+    resetAnimation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
 }
 
 template <event::Code C>
@@ -256,7 +251,7 @@ typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
 Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mCurrAnimationType == Animation::kDamaged || mCurrAnimationType == Animation::kDeath) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
@@ -272,7 +267,7 @@ typename std::enable_if_t<C == event::Code::kResp_MoveInitiate_GHE_Player>
 Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mCurrAnimationType == Animation::kDeath) return;
+    if (mAnimation == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
 
     auto followupEvent = event::instantiate();

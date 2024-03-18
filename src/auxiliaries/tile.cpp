@@ -155,9 +155,9 @@ void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAni
             case hs("stopGID"):
                 stopGID = value_a.as_int();
                 break;
-            case hs("isPermanent"):
-                isPermanent = value_a.as_bool();
-                break;
+            // case hs("isPermanent"):
+            //     isPermanent = value_a.as_bool();
+            //     break;
             case hs("animation-update-rate-multiplier"):
                 updateRateMultiplier = value_a.as_double();
                 break;

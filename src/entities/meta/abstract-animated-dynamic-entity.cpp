@@ -131,14 +131,11 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
-    if (
-        pNextDestCoords != nullptr   // Another move is on progress
-        || mCurrAnimationType == Animation::kDeath   // Cannot move if is already dead
-        // || (currAnimationType == AnimationType::kDamaged || (nextAnimationType != nullptr && *nextAnimationType == AnimationType::kDamaged))   // Cannot move while damaged
-    ) return;
+    if ( pNextDestCoords != nullptr || mAnimation == Animation::kDeath) return;   // Another move is on progress
 
     if (pNextVelocity == nullptr) { onMoveEnd(EntityStatus::kInvalidated); return; }
 
+    // Will need to fix this for tilesets that support 4-directional
     if (pNextVelocity->x) mFlip = (pNextVelocity->x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
     pNextDestCoords = new SDL_Point(mDestCoords + *pNextVelocity);
@@ -185,8 +182,9 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
     mCurrVelocity = *pNextVelocity;
+    mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
-    AbstractAnimatedEntity<T>::resetAnimation((mIsRunning ? Animation::kRun : Animation::kWalk), flag);
+    resetAnimation(mBaseAnimation, false, flag);
 }
 
 /**
@@ -198,22 +196,19 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatus flag) {
     if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != EntityStatus::kInvalidated) {
         mDestCoords = *pNextDestCoords;
         mDestRect = *pNextDestRect;
-
-        if (flag == EntityStatus::kInvalidated) {
-            delete pNextDestCoords;
-            delete pNextDestRect;
-        }
     }
 
+    if (pNextDestCoords != nullptr) delete pNextDestCoords;
+    if (pNextDestRect != nullptr) delete pNextDestRect;
     pNextDestCoords = nullptr;
     pNextDestRect = nullptr;
 
-    mCurrVelocity = {0, 0};
+    mCurrVelocity = { 0, 0 };
     mMoveDelayCounter = sMoveDelay;
-    mFractionalVelocityCounter = {0, 0};
+    mFractionalVelocityCounter = { 0, 0 };
 
-    if (flag == EntityStatus::kContinued) return;
-    AbstractAnimatedEntity<T>::resetAnimation(Animation::kIdle, flag);
+    mBaseAnimation = Animation::kIdle;
+    resetAnimation(mBaseAnimation, false, flag);
 }
 
 /**
@@ -230,8 +225,8 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
     calculateVelocityDependencies();
 
     // Switch to proper animation type
-    if (mCurrAnimationType == Animation::kWalk && onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(Animation::kRun);
-    else if (mCurrAnimationType == Animation::kRun && !onRunningStart) AbstractAnimatedEntity<T>::resetAnimation(Animation::kWalk);
+    mBaseAnimation = onRunningStart ? Animation::kRun : Animation::kWalk;
+    resetAnimation(mBaseAnimation, false);
 
     // Don't forget to change this
     mIsRunning = onRunningStart;

@@ -46,7 +46,7 @@ template <typename T>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
 GenericHostileEntity<T>::handleCustomEventPOST_impl() const {
-    if (mCurrAnimationType != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
+    if (mAnimation != Animation::kAttackMeele || !isAnimationAtFinalSprite()) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -59,7 +59,7 @@ template <typename T>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_AttackInitiate_GHE_Player>
 GenericHostileEntity<T>::handleCustomEventPOST_impl() const {
-    if (mCurrAnimationType == Animation::kAttackMeele) return;
+    if (mAnimation == Animation::kAttackMeele) return;
 
     auto event = event::instantiate();
     event::setID(event, mID);
@@ -85,7 +85,7 @@ typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
 GenericHostileEntity<T>::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mCurrAnimationType == Animation::kDamaged) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
@@ -94,19 +94,14 @@ GenericHostileEntity<T>::handleCustomEventGET_impl(SDL_Event const& event) {
 
     if (!isDeadPrior && mSecondaryStats.HP <= 0) ++sDeathCount;
 
-    if (pNextAnimationType == nullptr) {
-        pNextAnimationType = new Animation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
-        mIsAnimationOnProgress = false;
-    }
+    resetAnimation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
 }
 
 template <typename T>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
 GenericHostileEntity<T>::handleCustomEventGET_impl() {
-    if (pNextAnimationType != nullptr) return;
-    pNextAnimationType = new Animation(Animation::kAttackMeele);
-    mIsAnimationOnProgress = false;
+    resetAnimation(Animation::kAttackMeele);
 }
 
 template <typename T>

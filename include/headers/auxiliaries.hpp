@@ -238,7 +238,40 @@ namespace tile {
             kDamaged,
         };
 
-        std::optional<Animation> stoan(std::string const& s);
+        static std::optional<Animation> stoan(std::string const& s);
+
+        static inline constexpr unsigned short int getPriority(Animation animation) {
+            switch (animation) {
+                case Animation::kIdle:
+                case Animation::kWalk:
+                case Animation::kRun:
+                    return 0;
+                
+                case Animation::kAttackMeele:
+                case Animation::kAttackRanged:
+                    return 1;
+
+                case Animation::kDamaged:
+                    return 2;
+
+                case Animation::kDeath:
+                    return std::numeric_limits<unsigned short int>::max();
+
+                default:
+                    return 0;
+            }
+        }
+
+        static inline constexpr bool getContinuity(Animation animation) {
+            switch (animation) {
+                case Animation::kIdle:
+                case Animation::kWalk:
+                case Animation::kRun:
+                    return true;
+
+                default: return false;
+            }
+        }
 
         /**
          * @brief Contain data associated with an animation i.e. a series of sprites.
@@ -252,7 +285,6 @@ namespace tile {
 
             int startGID = 0;
             int stopGID = 0;
-            bool isPermanent = false;
             double updateRateMultiplier = 1;
         };
 

@@ -21,12 +21,7 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) :
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
-    if (pNextAnimationType != nullptr) {
-        delete pNextAnimationType;
-        pNextAnimationType = nullptr;
-        mIsAnimationOnProgress = false;
-    }
-    
+    mBaseAnimation = Animation::kIdle;
     AbstractEntity<T>::onLevelChange(entityLevelData);
 }
 
@@ -45,7 +40,7 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
         return;
     }
 
-    switch (mCurrAnimationType) {
+    switch (mAnimation) {
         case Animation::kAttackMeele:
             if (!isAnimationAtFirstSprite()) return;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
@@ -73,51 +68,34 @@ void AbstractAnimatedEntity<T>::handleSFX() const {
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
-    ++mCurrAnimationUpdateCount;
+    ++mAnimationUpdateCount;
 
-    if (mCurrAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData[mCurrAnimationType].updateRateMultiplier)) {
-        mCurrAnimationUpdateCount = 0;
-        if (mCurrAnimationGID < sTilesetData[mCurrAnimationType].stopGID) {
-            mCurrAnimationGID += sTilesetData.animationSize.x;
-            if (mCurrAnimationGID / sTilesetData.srcCount.x != (mCurrAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mCurrAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
+    if (mAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData[mAnimation].updateRateMultiplier)) {
+        mAnimationUpdateCount = 0;
+        if (mAnimationGID < sTilesetData[mAnimation].stopGID) {
+            mAnimationGID += sTilesetData.animationSize.x;
+            if (mAnimationGID / sTilesetData.srcCount.x != (mAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
         } else {
-            // Deinitialize `nextAnimationData`
-            if (pNextAnimationType != nullptr && mIsAnimationOnProgress) {
-                delete pNextAnimationType;
-                pNextAnimationType = nullptr;
-                mIsAnimationOnProgress = false;
-            }
-
-            if (mCurrAnimationType == Animation::kDeath) return;   // The real permanent
-            resetAnimation(sTilesetData[mCurrAnimationType].isPermanent ? Animation::kIdle : mCurrAnimationType);
+            if (mAnimation == Animation::kDeath) return;   // The real permanent
+            if (tile::Data_EntityTileset::getContinuity(mAnimation)) resetAnimation(mAnimation);
+            else resetAnimation(mBaseAnimation, true);
         };
     }
 
-    mSrcRect.x = mCurrAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
-    mSrcRect.y = mCurrAnimationGID / sTilesetData.srcCount.x * sTilesetData.srcSize.y;
+    mSrcRect.x = mAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
+    mSrcRect.y = mAnimationGID / sTilesetData.srcCount.x * sTilesetData.srcSize.y;
 }
 
 /**
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(Animation animationType, EntityStatus flag) {
-    mCurrAnimationType = animationType;
+void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, bool override, EntityStatus flag) {
+    if (!override && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
+
+    mAnimation = animation;
     if (flag == EntityStatus::kContinued) return;
-    mCurrAnimationGID = sTilesetData[mCurrAnimationType].startGID;
-}
-
-/**
- * @brief Initiate a new animation based on `nextAnimationData`.
-*/
-template <typename T>
-void AbstractAnimatedEntity<T>::initiateAnimation() {
-    // Check for priority overlap
-    if (mCurrAnimationType == Animation::kDeath) return;
-    if (pNextAnimationType == nullptr || mIsAnimationOnProgress) return;
-
-    resetAnimation(*pNextAnimationType);
-    mIsAnimationOnProgress = true;
+    mAnimationGID = sTilesetData[mAnimation].startGID;
 }
 
 

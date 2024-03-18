@@ -350,7 +350,6 @@ void IngameInterface::handleEntitiesInteraction() const {
     // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::updateAnimation);
     RedHandThrone::invoke(&RedHandThrone::updateAnimation);
 
-    Slime::invoke(&Slime::initiateAnimation);
     Slime::invoke(&Slime::move);
     Slime::invoke(&Slime::updateAnimation);
 
@@ -358,7 +357,6 @@ void IngameInterface::handleEntitiesInteraction() const {
     PentacleProjectile::handleTermination();
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
 
-    Player::invoke(&Player::initiateAnimation);
     Player::invoke(&Player::move);
     Player::invoke(&Player::updateAnimation);
 }

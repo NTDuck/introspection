@@ -139,37 +139,35 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         void onLevelChange(level::Data_Generic const& entityLevelData) override;
         virtual void handleSFX() const;
 
-        void initiateAnimation();
         virtual void updateAnimation();
-        void resetAnimation(Animation animationType, EntityStatus flag = EntityStatus::kDefault);
+        void resetAnimation(Animation animation, bool override = false, EntityStatus flag = EntityStatus::kDefault);
 
         inline bool isAnimationAtSprite(int GID) const {
-            return mCurrAnimationGID == GID;
+            return mAnimationGID == GID;
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].startGID);
+            return isAnimationAtSprite(sTilesetData[mAnimation].startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(sTilesetData[mCurrAnimationType].stopGID);
+            return isAnimationAtSprite(sTilesetData[mAnimation].stopGID);
         }
 
     protected:
         AbstractAnimatedEntity(SDL_Point const& destCoords);
 
-        Animation mCurrAnimationType;
-        Animation* pNextAnimationType = nullptr;
-        bool mIsAnimationOnProgress = false;   // Works closely with `nextAnimationType` since they were once in a POD
+        Animation mBaseAnimation = Animation::kIdle;
+        Animation mAnimation = Animation::kIdle;
 
         SDL_Point mAttackRegisterRange;
 
     private:
-        int mCurrAnimationUpdateCount = 0;
-        int mCurrAnimationGID;
+        int mAnimationUpdateCount = 0;
+        int mAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::initiateAnimation, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mCurrAnimationType, AbstractAnimatedEntity<T>::pNextAnimationType, AbstractAnimatedEntity<T>::mIsAnimationOnProgress, AbstractAnimatedEntity<T>::mAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mAttackRegisterRange;
 
 /**
  * @brief A shorthand to declare a AAE-derived. Used in header files only.
