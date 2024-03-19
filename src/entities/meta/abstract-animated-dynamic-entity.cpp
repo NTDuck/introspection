@@ -147,7 +147,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
     mCurrVelocity = *pNextVelocity;
     mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
-    resetAnimation(mBaseAnimation, false, flag);
+    resetAnimation(mBaseAnimation, flag);
 }
 
 /**
@@ -171,7 +171,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatus flag) {
     mFractionalVelocityCounter = { 0, 0 };
 
     mBaseAnimation = Animation::kIdle;
-    resetAnimation(mBaseAnimation, false, flag);
+    resetAnimation(mBaseAnimation, flag);
 }
 
 /**
@@ -189,7 +189,7 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
 
     // Switch to proper animation type
     mBaseAnimation = onRunningStart ? Animation::kRun : Animation::kWalk;
-    if (pNextDestCoords != nullptr) resetAnimation(mBaseAnimation, false);
+    if (pNextDestCoords != nullptr) resetAnimation(mBaseAnimation);
 
     // Don't forget to change this
     mIsRunning = onRunningStart;

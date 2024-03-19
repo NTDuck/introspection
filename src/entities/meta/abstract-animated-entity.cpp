@@ -78,7 +78,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         } else {
             if (mAnimation == Animation::kDeath) return;   // The real permanent
             if (tile::Data_EntityTileset::getContinuity(mAnimation)) resetAnimation(mAnimation);
-            else resetAnimation(mBaseAnimation, true);
+            else resetAnimation(mBaseAnimation, EntityStatus::kPrioritized);
         };
     }
 
@@ -90,12 +90,11 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, bool override, EntityStatus flag) {
-    if (!override && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
+void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, EntityStatus flag) {
+    if (flag != EntityStatus::kPrioritized && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
 
     mAnimation = animation;
-    if (flag == EntityStatus::kContinued) return;
-    mAnimationGID = sTilesetData[mAnimation].startGID;
+    if (flag != EntityStatus::kContinued) mAnimationGID = sTilesetData[mAnimation].startGID;
 }
 
 

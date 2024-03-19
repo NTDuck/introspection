@@ -140,7 +140,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         virtual void handleSFX() const;
 
         virtual void updateAnimation();
-        void resetAnimation(Animation animation, bool override = false, EntityStatus flag = EntityStatus::kDefault);
+        void resetAnimation(Animation animation, EntityStatus flag = EntityStatus::kDefault);
 
         inline bool isAnimationAtSprite(int GID) const {
             return mAnimationGID == GID;

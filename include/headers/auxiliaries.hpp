@@ -58,6 +58,7 @@ enum class EntityStatus : unsigned char {
     kDefault,
     kInvalidated,
     kContinued,
+    kPrioritized,
 };
 
 enum class ProjectileType : unsigned char {
