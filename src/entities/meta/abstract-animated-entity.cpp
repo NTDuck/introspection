@@ -70,9 +70,9 @@ template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
     ++mAnimationUpdateCount;
 
-    if (mAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * sTilesetData[mAnimation].updateRateMultiplier)) {
+    if (mAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * mAnimationData.updateRateMultiplier)) {
         mAnimationUpdateCount = 0;
-        if (mAnimationGID < sTilesetData[mAnimation].stopGID) {
+        if (mAnimationGID < mAnimationData.stopGID) {
             mAnimationGID += sTilesetData.animationSize.x;
             if (mAnimationGID / sTilesetData.srcCount.x != (mAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
         } else {
@@ -94,7 +94,8 @@ void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, EntityStatus
     if (flag != EntityStatus::kPrioritized && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
 
     mAnimation = animation;
-    if (flag != EntityStatus::kContinued) mAnimationGID = sTilesetData[mAnimation].startGID;
+    mAnimationData = sTilesetData.at(mAnimation, sTilesetData.isMultiDirectional ? mDirection : tile::Data_EntityTileset::kDefaultDirection);
+    if (flag != EntityStatus::kContinued) mAnimationGID = mAnimationData.startGID;
 }
 
 

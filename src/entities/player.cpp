@@ -156,10 +156,10 @@ void Player::handleSFX() const {
 
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
-        { ~config::Key::kPlayerMoveUp, {0, -1} },
-        { ~config::Key::kPlayerMoveDown, {0, 1} },
-        { ~config::Key::kPlayerMoveRight, {-1, 0} },
-        { ~config::Key::kPlayerMoveLeft, {1, 0} },
+        { ~config::Key::kPlayerMoveUp, { 0, -1 } },
+        { ~config::Key::kPlayerMoveDown, { 0, 1 } },
+        { ~config::Key::kPlayerMoveRight, { -1, 0 } },
+        { ~config::Key::kPlayerMoveLeft, { 1, 0 } },
     };
 
     auto it = mapping.find(event.key.keysym.sym);
@@ -172,7 +172,6 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     }
 
     pNextVelocity = new SDL_Point(it->second);
-    mPrevDirection = it->second;
     initiateMove();
 }
 
@@ -190,7 +189,7 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
 
     if (event.type == SDL_KEYUP) return;
 
-    PentacleProjectile::initiateAttack(it->second, mDestCoords, mPrevDirection);
+    PentacleProjectile::initiateAttack(it->second, mDestCoords, mDirection);
 }
 
 template <event::Code C>
@@ -228,7 +227,7 @@ Player::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_Interact_Player_GIE);
-    event::setData(event, event::Data_Interactable({ mDestCoords + mPrevDirection }));
+    event::setData(event, event::Data_Interactable({ mDestCoords + mDirection }));
     event::enqueue(event);
 }
 

@@ -239,7 +239,7 @@ namespace tile {
             kDamaged,
         };
 
-        static std::optional<Animation> stoan(std::string const& s);
+        static std::pair<std::optional<Animation>, std::optional<SDL_Point>> stoan(std::string const& s);
 
         static inline constexpr unsigned short int getPriority(Animation animation) {
             switch (animation) {
@@ -289,14 +289,25 @@ namespace tile {
             double updateRateMultiplier = 1;
         };
 
+        static constexpr SDL_Point kDefaultDirection = { 1, 0 };
+
         void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
-        Data_Animation const& operator[](Animation animation) const;
+        Data_Animation const& at(Animation animation, SDL_Point const& direction = kDefaultDirection) const;
 
         int animationUpdateRate = 64;
-        SDL_Point animationSize = {1, 1};
+        SDL_Point animationSize = { 1, 1 };
+        bool isMultiDirectional = false;
 
         private:
-            std::unordered_map<Animation, Data_Animation> mUMap;
+            struct hash {
+                std::size_t operator()(std::pair<Animation, SDL_Point> const& instance) const;
+            };
+            
+            struct equal_to {
+                bool operator()(std::pair<Animation, SDL_Point> const& first, std::pair<Animation, SDL_Point> const& second) const;
+            };
+
+            std::unordered_map<std::pair<Animation, SDL_Point>, Data_Animation, hash, equal_to> mUMap;
     };
 }
 

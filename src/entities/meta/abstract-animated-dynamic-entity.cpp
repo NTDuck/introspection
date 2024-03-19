@@ -79,12 +79,11 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     // Cease new movement if counter not done
     if (mMoveDelayCounter) { --mMoveDelayCounter; return; }
 
-    // If new move has not been "initiated", terminate movement i.e. switch back to IDLE
-    if (pNextVelocity == nullptr) onMoveEnd();
-    // If new move has been initiated, do this to avoid switching back to original GID
+    if (pNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
-        onMoveEnd(EntityStatus::kContinued);
-        initiateMove(EntityStatus::kContinued);
+        EntityStatus flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? EntityStatus::kDefault : EntityStatus::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
+        onMoveEnd(flag);
+        initiateMove(flag);
     }
 }
 
@@ -98,10 +97,11 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
 
     if (pNextVelocity == nullptr) { onMoveEnd(EntityStatus::kInvalidated); return; }
 
-    // Will need to fix this for tilesets that support 4-directional
-    if (pNextVelocity->x) mFlip = (pNextVelocity->x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
+    if (sTilesetData.isMultiDirectional) mPrevDirection = mDirection;
+    mDirection = *pNextVelocity;
+    if (!sTilesetData.isMultiDirectional && mDirection.x) mFlip = (mDirection.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    pNextDestCoords = new SDL_Point(mDestCoords + *pNextVelocity);
+    pNextDestCoords = new SDL_Point(mDestCoords + mDirection);
     pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
 
     if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatus::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
@@ -161,10 +161,14 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatus flag) {
         mDestRect = *pNextDestRect;
     }
 
-    if (pNextDestCoords != nullptr) delete pNextDestCoords;
-    if (pNextDestRect != nullptr) delete pNextDestRect;
-    pNextDestCoords = nullptr;
-    pNextDestRect = nullptr;
+    if (pNextDestCoords != nullptr) {
+        delete pNextDestCoords;
+        pNextDestCoords = nullptr;
+    }
+    if (pNextDestRect != nullptr) {
+        delete pNextDestRect;
+        pNextDestRect = nullptr;
+    }
 
     mCurrVelocity = { 0, 0 };
     mMoveDelayCounter = sMoveDelay;

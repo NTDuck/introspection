@@ -126,7 +126,49 @@ std::optional<tile::Data_TilelayerTileset> tile::Data_TilelayerTilesets::operato
     return it != mData.end() ? std::optional<Data_TilelayerTileset>(*it) : std::nullopt;
 }
 
-std::optional<tile::Data_EntityTileset::Animation> tile::Data_EntityTileset::stoan(std::string const& s) {
+/**
+ * @note Expected input format: "animation-`animation_repr`=`direction_repr`" (for multi-directional tilesets), otherwise "animation-`animation_repr`".
+*/
+std::pair<std::optional<tile::Data_EntityTileset::Animation>, std::optional<SDL_Point>> tile::Data_EntityTileset::stoan(std::string const& s) {
+    static auto parse = [](std::string const& input, std::string& animation_repr, char& direction_repr) {
+        auto pos = input.rfind('=');
+        if (pos != std::string::npos) {
+            animation_repr = input.substr(0, pos);
+            direction_repr = input.at(++pos);
+        } else {
+            animation_repr = input;
+            direction_repr = '\0';
+        }
+    };
+
+    // Extract embedded data
+    std::string animation_repr;
+    char direction_repr;
+    parse(s, animation_repr, direction_repr);
+
+    // Process extracted data
+    std::pair<std::optional<Animation>, std::optional<SDL_Point>> data;
+
+    // Register direction
+    switch (direction_repr) {
+        case 'n':
+            data.second = std::make_optional<SDL_Point>({ 0, -1 }); 
+            break;
+        case 's':
+            data.second = std::make_optional<SDL_Point>({ 0, 1 }); 
+            break;
+        case 'w':
+            data.second = std::make_optional<SDL_Point>({ -1, 0 }); 
+            break;
+        case 'e':
+            data.second = std::make_optional<SDL_Point>({ 1, 0 }); 
+            break;
+
+        default:
+            data.second = std::nullopt;
+    }
+
+    // Register animation
     static const std::unordered_map<std::string, Animation> ump = {
         { "animation-idle", Animation::kIdle },
         { "animation-attack-meele", Animation::kAttackMeele },
@@ -136,8 +178,11 @@ std::optional<tile::Data_EntityTileset::Animation> tile::Data_EntityTileset::sto
         { "animation-walk", Animation::kWalk },
         { "animation-damaged", Animation::kDamaged },
     };
-    auto it = ump.find(s);
-    return it != ump.end() ? std::optional<Animation>(it->second) : std::nullopt;
+    auto it = ump.find(animation_repr);
+    if (it == ump.end()) return std::make_pair(std::nullopt, std::nullopt);
+
+    data.first = std::make_optional(it->second);
+    return data;
 }
 
 void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAnimationNode) {
@@ -155,9 +200,6 @@ void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAni
             case hs("stopGID"):
                 stopGID = value_a.as_int();
                 break;
-            // case hs("isPermanent"):
-            //     isPermanent = value_a.as_bool();
-            //     break;
             case hs("animation-update-rate-multiplier"):
                 updateRateMultiplier = value_a.as_double();
                 break;
@@ -196,6 +238,9 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
                 case hs("animation-height"):
                     animationSize.y = value_a.as_int();
                     break;
+                case hs("multidirectional"):
+                    isMultiDirectional = value_a.as_bool();
+                    break;
                 default:
                     setProperty(name_v, value_a.as_string());
             }
@@ -203,17 +248,26 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
             auto propertytype_a = property_n.attribute("propertytype"); if (propertytype_a == nullptr || std::strcmp(propertytype_a.as_string(), "animation")) continue;
             auto animations_n = property_n.child("properties"); if (animations_n.empty()) continue;
 
-            auto animation = stoan(name_a.as_string()); if (!animation.has_value()) continue;
+            auto pair = stoan(name_a.as_string()); if (!pair.first.has_value()) continue;   // Note that `isMultidirectional` is not correctly defined at the point of parsing
 
             Data_Animation data;
             data.load(animations_n);
-            mUMap.emplace(std::make_pair(animation.value(), data));
+
+            mUMap.insert(std::make_pair(std::make_pair(pair.first.value(), pair.second.value_or(kDefaultDirection)), data));
         }
     }
 }
 
-tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::operator[](Animation animation) const {
+tile::Data_EntityTileset::Data_Animation const& tile::Data_EntityTileset::at(Animation animation, SDL_Point const& direction) const {
     static Data_Animation nullopt_repr{};
-    auto it = mUMap.find(animation);
-    return it != mUMap.end() ? it->second : nullopt_repr;
+    auto it = mUMap.find(std::make_pair(animation, direction));
+    return it != mUMap.end() ? it->second : nullopt_repr;    
+}
+
+std::size_t tile::Data_EntityTileset::hash::operator()(std::pair<Animation, SDL_Point> const& instance) const {
+    return std::hash<char>{}(static_cast<char>(instance.first)) ^ std::hash<SDL_Point>{}(instance.second);
+}
+
+bool tile::Data_EntityTileset::equal_to::operator()(std::pair<Animation, SDL_Point> const& first, std::pair<Animation, SDL_Point> const& second) const {
+    return first.first == second.first && first.second == second.second;
 }

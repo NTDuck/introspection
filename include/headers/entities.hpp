@@ -147,11 +147,11 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         }
 
         inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(sTilesetData[mAnimation].startGID);
+            return isAnimationAtSprite(mAnimationData.startGID);
         }
 
         inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(sTilesetData[mAnimation].stopGID);
+            return isAnimationAtSprite(mAnimationData.stopGID);
         }
 
     protected:
@@ -160,14 +160,17 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         Animation mBaseAnimation = Animation::kIdle;
         Animation mAnimation = Animation::kIdle;
 
+        SDL_Point mDirection = tile::Data_EntityTileset::kDefaultDirection;
         SDL_Point mAttackRegisterRange;
 
     private:
+        tile::Data_EntityTileset::Data_Animation mAnimationData;
+
         int mAnimationUpdateCount = 0;
         int mAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mDirection, AbstractAnimatedEntity<T>::mAttackRegisterRange;
 
 /**
  * @brief A shorthand to declare a AAE-derived. Used in header files only.
@@ -272,6 +275,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         void calculateVelocityDependencies();
         
         int mMoveDelayCounter;
+        SDL_Point mPrevDirection;
 
         SDL_FPoint mFractionalVelocityCounter;
         SDL_FPoint mFractionalVelocity;
@@ -511,8 +515,6 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
         handleCustomEventPOST_impl() const;
 
-        SDL_Point& mDirection = mCurrVelocity;   // Does not allocate additional memory
-
         static std::stack<T*> sTerminatedInstances;
 };
 
@@ -642,8 +644,6 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         handleCustomEventGET_impl(SDL_Event const& event);
 
         static const std::vector<std::filesystem::path> sTilesetPaths;
-
-        SDL_Point mPrevDirection = { 1, 0 };
 };
 
 
