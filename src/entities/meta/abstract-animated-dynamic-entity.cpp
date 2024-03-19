@@ -11,43 +11,6 @@
 #include <auxiliaries.hpp>
 
 
-/**
- * @brief Flow: move handling
- * ┌───────────────┐
- * │    Derived    │
- * └───┬───────────┘
- *     │
- *     │   ┌────────────────────┐
- *     └───┤ calculateMove(...) ├──────┐
- *         └───┬────────────────┘      │
- *             │                       │
- *             └───► nextVelocity      │
- *                                     │
- * ┌───────────────────────────────┐   │
- * │ AbstractAnimatedDynamicEntity │   │
- * └───┬───────────────────────────┘   │
- *     │                               │
- *     │   ┌────────────────┐          │
- *     ├───┤ initiateMove() ◄──────────┘
- *     │   └───┬───┬────────┘
- *     │       │   │
- *     │       │   └───► nextDestCoords, nextDestRect
- *     │       │
- *     │   ┌───▼────────────┐
- *     ├───┤ validateMove() │
- *     │   └───┬────────────┘
- *     │       │
- *     │       ├─────────────────┐
- *     │       │                 │
- *     │   ┌───▼───────────┐ ┌───▼─────────────────────────┐
- *     └───┤ onMoveStart() ├─┤ onMoveEnd(invalidated=true) │
- *         └───┬───────────┘ └───┬─────────────────────────┘
- *             │                 │
- *             └───► reset       └───► reset
- *                   to WALK           to IDLE
-*/
-
-
 template <typename T>
 AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {}
 
@@ -165,7 +128,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
     ) return false;
 
     // Find the collision-tagged tileset associated with `gid`
-    auto findCollisionLevelGID = [&](const SDL_Point& coords) {
+    auto findCollisionLevelGID = [&](SDL_Point const& coords) {
         return level::data.collisionTilelayer[coords.y][coords.x];
     };
 
@@ -226,7 +189,7 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
 
     // Switch to proper animation type
     mBaseAnimation = onRunningStart ? Animation::kRun : Animation::kWalk;
-    resetAnimation(mBaseAnimation, false);
+    if (pNextDestCoords != nullptr) resetAnimation(mBaseAnimation, false);
 
     // Don't forget to change this
     mIsRunning = onRunningStart;

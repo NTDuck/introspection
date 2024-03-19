@@ -316,7 +316,7 @@ class IngameDialogueBox : public Singleton<IngameDialogueBox>, public GenericBox
             inline void setSpacing(SDL_Point spacing) { mSpacing = spacing; }
 
         private:
-            std::string getChars() const; 
+            std::string getChars() const;
             void registerCharToMap(TTF_Font* font, char c);
             void registerCharToTexture(TTF_Font* font, char c) const;
 
