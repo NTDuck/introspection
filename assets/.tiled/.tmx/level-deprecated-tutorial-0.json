@@ -294,14 +294,14 @@
                  "name":"to tutorial 1",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":47,
-                             "y":98
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":47
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":98
                         }, 
                         {
                          "name":"target-level",

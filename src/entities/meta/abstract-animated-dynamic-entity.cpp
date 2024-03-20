@@ -16,17 +16,17 @@ AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const&
 
 template <typename T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
-    if (pNextDestCoords != nullptr) {
-        delete pNextDestCoords;
-        pNextDestCoords = nullptr;
+    if (mNextDestCoords != nullptr) {
+        delete mNextDestCoords;
+        mNextDestCoords = nullptr;
     }
-    if (pNextDestRect != nullptr) {
-        delete pNextDestRect;
-        pNextDestRect = nullptr;
+    if (mNextDestRect != nullptr) {
+        delete mNextDestRect;
+        mNextDestRect = nullptr;
     }
-    if (pNextVelocity != nullptr) {
-        delete pNextVelocity;
-        pNextVelocity = nullptr;
+    if (mNextVelocity != nullptr) {
+        delete mNextVelocity;
+        mNextVelocity = nullptr;
     }
 }
 
@@ -44,7 +44,7 @@ void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::Data_Generic const& 
 
 template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const {
-    return isTargetWithinRange(pNextDestCoords != nullptr ? *pNextDestCoords : mDestCoords, x_coords_lim, y_coords_lim);
+    return isTargetWithinRange(mNextDestCoords != nullptr ? *mNextDestCoords : mDestCoords, x_coords_lim, y_coords_lim);
 }
 
 /**
@@ -52,7 +52,7 @@ bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& 
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::move() {
-    if (pNextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
+    if (mNextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
 
     if (mMoveDelayCounter == sMoveDelay) {   // Only executed if 
         mDestRect.x += mCurrVelocity.x * mIntegralVelocity.x;
@@ -73,13 +73,13 @@ void AbstractAnimatedDynamicEntity<T>::move() {
         }
 
         // Continue movement if new `Tile` has not been reached
-        if ((pNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (pNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+        if ((mNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (mNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
     }
 
     // Cease new movement if counter not done
     if (mMoveDelayCounter) { --mMoveDelayCounter; return; }
 
-    if (pNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
+    if (mNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
         BehaviouralType flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? BehaviouralType::kDefault : BehaviouralType::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
         onMoveEnd(flag);
@@ -93,16 +93,16 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(BehaviouralType flag) {
-    if ( pNextDestCoords != nullptr || mAnimation == Animation::kDeath) return;   // Another move is on progress
+    if ( mNextDestCoords != nullptr || mAnimation == Animation::kDeath) return;   // Another move is on progress
 
-    if (pNextVelocity == nullptr) { onMoveEnd(BehaviouralType::kInvalidated); return; }
+    if (mNextVelocity == nullptr) { onMoveEnd(BehaviouralType::kInvalidated); return; }
 
     if (sTilesetData.isMultiDirectional) mPrevDirection = mDirection;
-    mDirection = *pNextVelocity;
+    mDirection = *mNextVelocity;
     if (!sTilesetData.isMultiDirectional && mDirection.x) mFlip = (mDirection.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
 
-    pNextDestCoords = new SDL_Point(mDestCoords + mDirection);
-    pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
+    mNextDestCoords = new SDL_Point(mDestCoords + mDirection);
+    mNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*mNextDestCoords));
 
     if (validateMove()) onMoveStart(flag); else onMoveEnd(BehaviouralType::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
@@ -114,7 +114,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(BehaviouralType flag) {
 */
 template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
-    if (pNextDestCoords == nullptr || pNextDestCoords -> x < 0 || pNextDestCoords -> y < 0 || pNextDestCoords -> x >= level::data.tileDestCount.x || pNextDestCoords -> y >= level::data.tileDestCount.y) return false;
+    if (mNextDestCoords == nullptr || mNextDestCoords -> x < 0 || mNextDestCoords -> y < 0 || mNextDestCoords -> x >= level::data.tileDestCount.x || mNextDestCoords -> y >= level::data.tileDestCount.y) return false;
 
     // Prevent `destCoords` overlap
     // Warning: expensive operation
@@ -122,7 +122,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
         std::find_if(
             instances.begin(), instances.end(),
             [&](const auto& instance) {
-                return (*pNextDestCoords == instance->mDestCoords);
+                return (*mNextDestCoords == instance->mDestCoords);
             }
         ) != instances.end()
     ) return false;
@@ -133,7 +133,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
     };
 
     int currCollisionLevel = findCollisionLevelGID(mDestCoords);
-    int nextCollisionLevel = findCollisionLevelGID(*pNextDestCoords);
+    int nextCollisionLevel = findCollisionLevelGID(*mNextDestCoords);
 
     if (!nextCollisionLevel) return false;
     return currCollisionLevel == nextCollisionLevel;
@@ -144,7 +144,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
-    mCurrVelocity = *pNextVelocity;
+    mCurrVelocity = *mNextVelocity;
     mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
     resetAnimation(mBaseAnimation, flag);
@@ -156,18 +156,18 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd(BehaviouralType flag) {
     // Terminate movement when reached new `Tile`
-    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != BehaviouralType::kInvalidated) {
-        mDestCoords = *pNextDestCoords;
-        mDestRect = *pNextDestRect;
+    if (mNextDestCoords != nullptr && mNextDestRect != nullptr && flag != BehaviouralType::kInvalidated) {
+        mDestCoords = *mNextDestCoords;
+        mDestRect = *mNextDestRect;
     }
 
-    if (pNextDestCoords != nullptr) {
-        delete pNextDestCoords;
-        pNextDestCoords = nullptr;
+    if (mNextDestCoords != nullptr) {
+        delete mNextDestCoords;
+        mNextDestCoords = nullptr;
     }
-    if (pNextDestRect != nullptr) {
-        delete pNextDestRect;
-        pNextDestRect = nullptr;
+    if (mNextDestRect != nullptr) {
+        delete mNextDestRect;
+        mNextDestRect = nullptr;
     }
 
     mCurrVelocity = { 0, 0 };
@@ -193,7 +193,7 @@ void AbstractAnimatedDynamicEntity<T>::onRunningToggled(bool onRunningStart) {
 
     // Switch to proper animation type
     mBaseAnimation = onRunningStart ? Animation::kRun : Animation::kWalk;
-    if (pNextDestCoords != nullptr) resetAnimation(mBaseAnimation);
+    if (mNextDestCoords != nullptr) resetAnimation(mBaseAnimation);
 
     // Don't forget to change this
     mIsRunning = onRunningStart;

@@ -113,12 +113,8 @@
   </object>
   <object id="2" name="to bedroom" type="teleporter" x="512" y="320" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" type="class" propertytype="coords">
-     <properties>
-      <property name="x" type="int" value="38"/>
-      <property name="y" type="int" value="52"/>
-     </properties>
-    </property>
+    <property name="target-dest-coords-x" type="int" value="38"/>
+    <property name="target-dest-coords-y" type="int" value="52"/>
     <property name="target-level" value="level-bedroom"/>
    </properties>
   </object>

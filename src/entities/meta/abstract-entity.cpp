@@ -56,7 +56,7 @@ void AbstractEntity<T>::reinitialize(std::filesystem::path path) {
 */
 template <typename T>
 void AbstractEntity<T>::render() const {
-    SDL_RenderCopyEx(globals::renderer, sTilesetData.texture, &mSrcRect, &mDestRect, mAngle, pCenter, mFlip);
+    SDL_RenderCopyEx(globals::renderer, sTilesetData.texture, &mSrcRect, &mDestRect, mAngle, mCenter, mFlip);
 }
 
 /**

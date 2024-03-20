@@ -123,7 +123,7 @@ std::optional<tile::Data_TilelayerTileset> tile::Data_TilelayerTilesets::operato
 
     // if (it != mData.end() && it->firstGID <= gid && gid < it->firstGID + it->srcCount.x * it->srcCount.y) return std::optional<Data_TilelayerTileset>(*it);
     // else return std::nullopt;
-    return it != mData.end() ? std::optional<Data_TilelayerTileset>(*it) : std::nullopt;
+    return it != mData.end() ? std::make_optional<Data_TilelayerTileset>(*it) : std::nullopt;
 }
 
 /**
@@ -149,39 +149,37 @@ std::pair<std::optional<tile::Data_EntityTileset::Animation>, std::optional<SDL_
     // Process extracted data
     std::pair<std::optional<Animation>, std::optional<SDL_Point>> data;
 
-    // Register direction
-    switch (direction_repr) {
-        case 'n':
-            data.second = std::make_optional<SDL_Point>({ 0, -1 }); 
-            break;
-        case 's':
-            data.second = std::make_optional<SDL_Point>({ 0, 1 }); 
-            break;
-        case 'w':
-            data.second = std::make_optional<SDL_Point>({ -1, 0 }); 
-            break;
-        case 'e':
-            data.second = std::make_optional<SDL_Point>({ 1, 0 }); 
-            break;
+    // Register animation
+    #define IMPL_AN(an) \
+    case static_cast<unsigned int>(an):\
+        data.first = std::make_optional(an);\
+        break;
 
-        default:
-            data.second = std::nullopt;
+    switch (hstr(animation_repr.c_str())) {
+        IMPL_AN(Animation::kIdle)
+        IMPL_AN(Animation::kWalk)
+        IMPL_AN(Animation::kRun)
+        IMPL_AN(Animation::kAttackMeele)
+        IMPL_AN(Animation::kAttackRanged)
+        IMPL_AN(Animation::kDamaged)
+        IMPL_AN(Animation::kDeath)
+        default: data.first = std::nullopt;
     }
 
-    // Register animation
-    static const std::unordered_map<std::string, Animation> ump = {
-        { "animation-idle", Animation::kIdle },
-        { "animation-attack-meele", Animation::kAttackMeele },
-        { "animation-attack-ranged", Animation::kAttackRanged },
-        { "animation-death", Animation::kDeath },
-        { "animation-run", Animation::kRun },
-        { "animation-walk", Animation::kWalk },
-        { "animation-damaged", Animation::kDamaged },
-    };
-    auto it = ump.find(animation_repr);
-    if (it == ump.end()) return std::make_pair(std::nullopt, std::nullopt);
+    // Register direction
+    #define IMPL_DIR(repr, dir_x, dir_y) \
+    case repr:\
+        data.second = std::make_optional<SDL_Point>({ dir_x, dir_y });\
+        break;
+        
+    switch (direction_repr) {
+        IMPL_DIR('n', 0, -1 )
+        IMPL_DIR('s', 0, 1 )
+        IMPL_DIR('w', -1, 0 )
+        IMPL_DIR('e', 1, 0 )
+        default: data.second = std::nullopt;
+    }
 
-    data.first = std::make_optional(it->second);
     return data;
 }
 
@@ -193,14 +191,14 @@ void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAni
         auto value_a = animation_n.attribute("value"); if (value_a == nullptr) continue;
         
         std::string name_v = name_a.as_string();
-        switch (hs(name_v.c_str())) {
-            case hs("startGID"):
+        switch (hstr(name_v.c_str())) {
+            case hstr("startGID"):
                 startGID = value_a.as_int();
                 break;
-            case hs("stopGID"):
+            case hstr("stopGID"):
                 stopGID = value_a.as_int();
                 break;
-            case hs("animation-update-rate-multiplier"):
+            case hstr("animation-update-rate-multiplier"):
                 updateRateMultiplier = value_a.as_double();
                 break;
             default: break;
@@ -228,17 +226,17 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
             auto value_a = property_n.attribute("value"); if (value_a == nullptr) continue;
             std::string name_v = name_a.as_string();
 
-            switch (hs(name_v.c_str())) {
-                case hs("animation-update-rate"):
+            switch (hstr(name_v.c_str())) {
+                case hstr("animation-update-rate"):
                     animationUpdateRate = value_a.as_int();
                     break;
-                case hs("animation-width"):
+                case hstr("animation-width"):
                     animationSize.x = value_a.as_int();
                     break;
-                case hs("animation-height"):
+                case hstr("animation-height"):
                     animationSize.y = value_a.as_int();
                     break;
-                case hs("multidirectional"):
+                case hstr("multidirectional"):
                     isMultiDirectional = value_a.as_bool();
                     break;
                 default:

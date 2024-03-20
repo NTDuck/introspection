@@ -30,6 +30,15 @@
 */
 using json = nlohmann::json;
 
+/**
+ * @brief Enable `constexpr`-ness on `std::string`.
+ * @note Abbreviation for "hash(ed) string".
+ * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
+*/
+constexpr unsigned int hstr(const char* s, int hashval = 0) {
+    return !s[hashval] ? 5381 : (hstr(s, hashval + 1) * 33) ^ s[hashval];
+}
+
 
 /* Enumerations & Structs */
 
@@ -41,7 +50,6 @@ enum class GameState : unsigned short int {
     kIngameDialogue = 16,
     kGameOver = 32,
     // kIngamePaused,
-    // kIngameDialogue,
     // kIngameCutscene,
     __6__ = 6,
     __12__ = 12,   // Prevent warnings
@@ -229,14 +237,14 @@ namespace tile {
         /**
          * Register animation types as enumeration constants for maintainability.
         */
-        enum class Animation : char {
-            kIdle,
-            kAttackMeele,
-            kAttackRanged,
-            kDeath,
-            kRun,
-            kWalk,
-            kDamaged,
+        enum class Animation : unsigned int {
+            kIdle = hstr("animation-idle"),
+            kWalk = hstr("animation-walk"),
+            kRun = hstr("animation-run"),
+            kAttackMeele = hstr("animation-attack-meele"),
+            kAttackRanged = hstr("animation-attack-ranged"),
+            kDamaged = hstr("animation-damaged"),
+            kDeath = hstr("animation-death"),
         };
 
         static std::pair<std::optional<Animation>, std::optional<SDL_Point>> stoan(std::string const& s);
@@ -319,18 +327,18 @@ namespace level {
     /**
      * Register level names as enumeration constants for maintainability.
     */
-    enum class Name : char {
-        kLevelDeprecatedTutorial_0,
-        kLevelDeprecatedTutorial_1,
+    enum class Name : unsigned int {
+        kLevelDeprecatedTutorial_0 = hstr("level-deprecated-tutorial-0"),
+        kLevelDeprecatedTutorial_1 = hstr("level-deprecated-tutorial-1"),
 
-        kLevelWhiteSpace,
+        kLevelWhiteSpace = hstr("level-white-space"),
 
-        kLevelAnte,
-        kLevelPaene,
-        kLevelUmbra,
+        kLevelAnte = hstr("level-ante"),
+        kLevelPaene = hstr("level-paene"),
+        kLevelUmbra = hstr("level-umbra"),
 
-        kLevelBreakroomInitial,
-        kLevelBedroom,
+        kLevelBreakroomInitial = hstr("level-breakroom-initial"),
+        kLevelBedroom = hstr("level-bedroom"),
 
         __kLevelTutorial_0_Combat__,
     };
@@ -896,14 +904,6 @@ bool operator==(SDL_FPoint const& first, SDL_FPoint const& second);
 SDL_FPoint operator<<(SDL_FPoint const& instance, float rad);
 SDL_FPoint operator>>(SDL_FPoint const& instance, float rad);
 
-/**
- * @brief Enable `switch` on `std::string`.
- * @note Abbreviation for "hash(ed) string".
- * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
-*/
-constexpr unsigned int hs(const char* s, int hashval = 0) {
-    return !s[hashval] ? 5381 : (hs(s, hashval + 1) * 33) ^ s[hashval];
-}
 
 namespace std {
     template <>

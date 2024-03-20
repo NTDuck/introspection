@@ -69,14 +69,14 @@
                  "name":"",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":17,
-                             "y":10
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":17
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":10
                         }, 
                         {
                          "name":"target-level",
@@ -92,18 +92,18 @@
                 }, 
                 {
                  "height":32,
-                 "id":3,
+                 "id":5,
                  "name":"",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":17,
-                             "y":10
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":17
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":10
                         }, 
                         {
                          "name":"target-level",
@@ -124,7 +124,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":5,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

@@ -100,7 +100,7 @@ class AbstractEntity : public Multiton<T> {
         SDL_FRect mDestRectModifier;
 
         double mAngle = 0;   // Clockwise rotation, in degrees
-        SDL_Point* pCenter = nullptr;
+        SDL_Point* mCenter = nullptr;
         SDL_RendererFlip mFlip = SDL_FLIP_NONE;
 
         EntityPrimaryStats mPrimaryStats;
@@ -122,7 +122,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEx, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::pCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEx, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
 
 
 /**
@@ -229,13 +229,13 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
          * A pointer to the "next" `mDestCoords`.
          * @note Recommended implementation: this member should be set when the entity "moves" (implemented by derived classes). Upon successful validation, its stored value should be reassigned to `destCoords`. This member should then be nullified regardless.
         */
-        SDL_Point* pNextDestCoords = nullptr;
+        SDL_Point* mNextDestCoords = nullptr;
 
         /**
          * A pointer to the "next" `mDestRect`.
          * @note Recommended implementation: this member should be used in strict conjunction with `nextDestCoords`.
         */
-        SDL_Rect* pNextDestRect = nullptr;
+        SDL_Rect* mNextDestRect = nullptr;
 
         /**
          * Represent the multiplier applied to `sVelocity` should the entity switch to `kRun` animation.
@@ -263,7 +263,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
          * Represent the next direction of the entity. Might change every frame.
          * @note Data members should only receive values of `-1`, `1`, and `0`.
         */
-        SDL_Point* pNextVelocity = nullptr;
+        SDL_Point* mNextVelocity = nullptr;
 
     private:
         void calculateVelocityDependencies();
@@ -276,7 +276,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Point mIntegralVelocity;
 };
 
-#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::isWithinRange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::mIsRunning, AbstractAnimatedDynamicEntity<T>::pNextDestCoords, AbstractAnimatedDynamicEntity<T>::pNextDestRect, AbstractAnimatedDynamicEntity<T>::sRunModifier, AbstractAnimatedDynamicEntity<T>::sMoveDelay, AbstractAnimatedDynamicEntity<T>::sVelocity, AbstractAnimatedDynamicEntity<T>::mCurrVelocity, AbstractAnimatedDynamicEntity<T>::pNextVelocity;
+#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::isWithinRange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::mIsRunning, AbstractAnimatedDynamicEntity<T>::mNextDestCoords, AbstractAnimatedDynamicEntity<T>::mNextDestRect, AbstractAnimatedDynamicEntity<T>::sRunModifier, AbstractAnimatedDynamicEntity<T>::sMoveDelay, AbstractAnimatedDynamicEntity<T>::sVelocity, AbstractAnimatedDynamicEntity<T>::mCurrVelocity, AbstractAnimatedDynamicEntity<T>::mNextVelocity;
 
 
 template <typename T>

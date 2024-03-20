@@ -108,7 +108,7 @@ template <event::Code C>
 typename std::enable_if_t<C == event::Code::kResp_MoveInitiate_GHE_Player>
 GenericHostileEntity<T>::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
-    pNextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (data.destCoords.x > mDestCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (data.destCoords.y > mDestCoords.y) * 2 - 1 });
+    mNextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (data.destCoords.x > mDestCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (data.destCoords.y > mDestCoords.y) * 2 - 1 });
     initiateMove();
 }
 
@@ -116,8 +116,8 @@ template <typename T>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kResp_MoveTerminate_GHE_Player>
 GenericHostileEntity<T>::handleCustomEventGET_impl() {
-    delete pNextVelocity;
-    pNextVelocity = nullptr;
+    delete mNextVelocity;
+    mNextVelocity = nullptr;
 }
 
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="11">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="13">
  <editorsettings>
   <export target="level-deprecated-tutorial-1.json" format="json"/>
  </editorsettings>
@@ -40,45 +40,29 @@
  <objectgroup id="6" name="entities">
   <object id="3" name="to whitespace" type="teleporter" x="1472" y="0" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" type="class" propertytype="coords">
-     <properties>
-      <property name="x" type="int" value="54"/>
-      <property name="y" type="int" value="49"/>
-     </properties>
-    </property>
+    <property name="target-dest-coords-x" type="int" value="54"/>
+    <property name="target-dest-coords-y" type="int" value="49"/>
     <property name="target-level" value="level-white-space"/>
    </properties>
   </object>
   <object id="5" name="to tutorial 0" type="teleporter [discarded]" x="1504" y="3168" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" type="class" propertytype="coords">
-     <properties>
-      <property name="x" type="int" value="47"/>
-      <property name="y" type="int" value="1"/>
-     </properties>
-    </property>
+    <property name="target-dest-coords-x" type="int" value="47"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
     <property name="target-level" value="level-deprecated-tutorial-0"/>
    </properties>
   </object>
-  <object id="6" name="to whitespace" type="teleporter" x="1504" y="0" width="32" height="32">
+  <object id="11" name="to whitespace" type="teleporter" x="1504" y="0" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" type="class" propertytype="coords">
-     <properties>
-      <property name="x" type="int" value="54"/>
-      <property name="y" type="int" value="49"/>
-     </properties>
-    </property>
+    <property name="target-dest-coords-x" type="int" value="54"/>
+    <property name="target-dest-coords-y" type="int" value="49"/>
     <property name="target-level" value="level-white-space"/>
    </properties>
   </object>
-  <object id="7" name="to whitespace" type="teleporter" x="1536" y="0" width="32" height="32">
+  <object id="12" name="to whitespace" type="teleporter" x="1536" y="0" width="32" height="32">
    <properties>
-    <property name="target-dest-coords" type="class" propertytype="coords">
-     <properties>
-      <property name="x" type="int" value="54"/>
-      <property name="y" type="int" value="49"/>
-     </properties>
-    </property>
+    <property name="target-dest-coords-x" type="int" value="54"/>
+    <property name="target-dest-coords-y" type="int" value="49"/>
     <property name="target-level" value="level-white-space"/>
    </properties>
   </object>

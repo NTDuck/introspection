@@ -83,14 +83,14 @@
                  "name":"to whitespace",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":54,
-                             "y":49
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":54
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":49
                         }, 
                         {
                          "name":"target-level",
@@ -110,14 +110,14 @@
                  "name":"to tutorial 0",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":47,
-                             "y":1
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":47
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
@@ -133,18 +133,18 @@
                 }, 
                 {
                  "height":32,
-                 "id":6,
+                 "id":11,
                  "name":"to whitespace",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":54,
-                             "y":49
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":54
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":49
                         }, 
                         {
                          "name":"target-level",
@@ -160,18 +160,18 @@
                 }, 
                 {
                  "height":32,
-                 "id":7,
+                 "id":12,
                  "name":"to whitespace",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":54,
-                             "y":49
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":54
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":49
                         }, 
                         {
                          "name":"target-level",
@@ -192,7 +192,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":11,
+ "nextobjectid":13,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

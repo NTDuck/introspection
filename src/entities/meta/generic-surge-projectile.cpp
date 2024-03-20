@@ -88,9 +88,9 @@ void GenericSurgeProjectile<T>::handleTermination() {
 
 template <typename T>
 void GenericSurgeProjectile<T>::initiateNextLinearAttack() {
-    pNextDestCoords = new SDL_Point(mDestCoords + mDirection);
+    mNextDestCoords = new SDL_Point(mDestCoords + mDirection);
     if (!validateMove()) Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kSurgeAttack);
-    else instantiate(*pNextDestCoords, mDirection);
+    else instantiate(*mNextDestCoords, mDirection);
 }
 
 template <typename T>

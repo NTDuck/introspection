@@ -202,14 +202,14 @@
                  "name":"to bedroom",
                  "properties":[
                         {
-                         "name":"target-dest-coords",
-                         "propertytype":"coords",
-                         "type":"class",
-                         "value":
-                            {
-                             "x":38,
-                             "y":52
-                            }
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":38
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":52
                         }, 
                         {
                          "name":"target-level",

@@ -162,10 +162,10 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     if (it == mapping.end()) return;
 
     if (event.type == SDL_KEYUP) {
-        delete pNextVelocity;
-        pNextVelocity = nullptr;
+        delete mNextVelocity;
+        mNextVelocity = nullptr;
     } else {
-        pNextVelocity = new SDL_Point(it->second);
+        mNextVelocity = new SDL_Point(it->second);
         initiateMove();
     }
 }
@@ -232,7 +232,7 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
-    
+
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 

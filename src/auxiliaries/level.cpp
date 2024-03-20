@@ -1,20 +1,26 @@
 #include <auxiliaries.hpp>
 
 
+/**
+ * @see https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
+*/
 std::optional<level::Name> level::stoln(std::string const& s) {
-    static const std::unordered_map<std::string, level::Name> ump = {
-        { "level-white-space", level::Name::kLevelWhiteSpace },
-        { "level-deprecated-tutorial-0", level::Name::kLevelDeprecatedTutorial_0 },
-        { "level-deprecated-tutorial-1", level::Name::kLevelDeprecatedTutorial_1 },
-        { "level-ante", level::Name::kLevelAnte },
-        { "level-paene", level::Name::kLevelPaene },
-        { "level-umbra", level::Name::kLevelUmbra },
-        { "level-breakroom-initial", level::Name::kLevelBreakroomInitial },
-        { "level-bedroom", level::Name::kLevelBedroom },
-    };
-    
-    auto it = ump.find(s);
-    return it != ump.end() ? std::optional<Name>(it->second) : std::nullopt;
+    #define IMPL(ln) \
+    case static_cast<unsigned int>(ln):\
+        return std::make_optional<Name>(ln);
+
+    switch (hstr(s.c_str())) {
+        IMPL(Name::kLevelWhiteSpace)
+        IMPL(Name::kLevelDeprecatedTutorial_0)
+        IMPL(Name::kLevelDeprecatedTutorial_1)
+        IMPL(Name::kLevelAnte)
+        IMPL(Name::kLevelPaene)
+        IMPL(Name::kLevelUmbra)
+        IMPL(Name::kLevelBreakroomInitial)
+        IMPL(Name::kLevelBedroom)
+
+        default: return std::nullopt;
+    }
 }
 
 void level::Map::load(json const& JSONLevelMapData) {
@@ -40,7 +46,7 @@ std::optional<std::filesystem::path> level::Map::operator[](Name ln) const {
     static const std::filesystem::path root = config::path::asset_tiled;
 
     auto it = mUMap.find(ln);
-    return it != mUMap.end() ? std::optional<std::filesystem::path>(root / it->second) : std::nullopt;
+    return it != mUMap.end() ? std::make_optional<std::filesystem::path>(root / it->second) : std::nullopt;
 }
 
 /**
@@ -110,19 +116,29 @@ void level::Data_Teleporter::load(json const& JSONObjectData) {
         auto name_v = name_j.value(); if (!name_v.is_string()) continue;
         auto value_v = value_j.value();
 
-        switch (hs(static_cast<std::string>(name_v).c_str())) {
-            case hs("target-dest-coords"): {
-                if (!value_v.is_object()) break;
+        switch (hstr(static_cast<std::string>(name_v).c_str())) {
+            // case hstr("target-dest-coords"): {
+            //     if (!value_v.is_object()) break;
 
-                auto targetDestCoordsX_j = value_v.find("x"); if (targetDestCoordsX_j == value_v.end()) break;
-                auto targetDestCoordsY_j = value_v.find("y"); if (targetDestCoordsY_j == value_v.end()) break;
-                auto targetDestCoordsX_v = targetDestCoordsX_j.value(); if (!targetDestCoordsX_v.is_number_integer()) break;
-                auto targetDestCoordsY_v = targetDestCoordsY_j.value(); if (!targetDestCoordsY_v.is_number_integer()) break;
+            //     auto targetDestCoordsX_j = value_v.find("x"); if (targetDestCoordsX_j == value_v.end()) break;
+            //     auto targetDestCoordsY_j = value_v.find("y"); if (targetDestCoordsY_j == value_v.end()) break;
+            //     auto targetDestCoordsX_v = targetDestCoordsX_j.value(); if (!targetDestCoordsX_v.is_number_integer()) break;
+            //     auto targetDestCoordsY_v = targetDestCoordsY_j.value(); if (!targetDestCoordsY_v.is_number_integer()) break;
 
-                targetDestCoords = { targetDestCoordsX_v, targetDestCoordsY_v };
-                break; }
+            //     targetDestCoords = { targetDestCoordsX_v, targetDestCoordsY_v };
+            //     break; }
 
-            case hs("target-level"): {
+            case hstr("target-dest-coords-x"):
+                if (!value_v.is_number_integer()) break;
+                targetDestCoords.x = value_v;
+                break;
+
+            case hstr("target-dest-coords-y"):
+                if (!value_v.is_number_integer()) break;
+                targetDestCoords.y = value_v;
+                break;
+
+            case hstr("target-level"): {
                 if (!value_v.is_string()) break;
 
                 auto ln = level::stoln(value_v);
@@ -185,9 +201,9 @@ long long level::Data::getProperty<long long>(std::string const& key) {
 
 template <>
 bool level::Data::getProperty<bool>(std::string const& key) {
-    switch (hs(getProperty<std::string>(key).c_str())) {
-        case hs("true"):
-        case hs("1"):
+    switch (hstr(getProperty<std::string>(key).c_str())) {
+        case hstr("true"):
+        case hstr("1"):
             return true;
 
         default: return false;
@@ -221,9 +237,9 @@ void level::Data::load(json const& JSONLevelData) {
         auto type_j = layer.find("type"); if (type_j == layer.end()) continue;
         auto type_v = type_j.value(); if (!type_v.is_string()) continue;
 
-        switch (hs(static_cast<std::string>(type_v).c_str())) {
-            case hs("tilelayer"): loadTileLayer(layer); break;
-            case hs("objectgroup"): loadObjectLayer(layer); break;
+        switch (hstr(static_cast<std::string>(type_v).c_str())) {
+            case hstr("tilelayer"): loadTileLayer(layer); break;
+            case hstr("objectgroup"): loadObjectLayer(layer); break;
             default: break;
         }
     }
@@ -298,23 +314,23 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
 
         Data_Generic* data = nullptr;
 
-        switch (hs(static_cast<std::string>(type_v).c_str())) {
-            case hs(config::entities::placeholder_interactable::typeID):
-            case hs(config::entities::omori_laptop::typeID):
-            case hs(config::entities::omori_mewo::typeID):
-            case hs(config::entities::omori_cat_0::typeID):
-            case hs(config::entities::omori_cat_1::typeID):
-            case hs(config::entities::omori_cat_2::typeID):
-            case hs(config::entities::omori_cat_3::typeID):
-            case hs(config::entities::omori_cat_4::typeID):
-            case hs(config::entities::omori_cat_5::typeID):
-            case hs(config::entities::omori_cat_6::typeID):
-            case hs(config::entities::omori_cat_7::typeID):
+        switch (hstr(static_cast<std::string>(type_v).c_str())) {
+            case hstr(config::entities::placeholder_interactable::typeID):
+            case hstr(config::entities::omori_laptop::typeID):
+            case hstr(config::entities::omori_mewo::typeID):
+            case hstr(config::entities::omori_cat_0::typeID):
+            case hstr(config::entities::omori_cat_1::typeID):
+            case hstr(config::entities::omori_cat_2::typeID):
+            case hstr(config::entities::omori_cat_3::typeID):
+            case hstr(config::entities::omori_cat_4::typeID):
+            case hstr(config::entities::omori_cat_5::typeID):
+            case hstr(config::entities::omori_cat_6::typeID):
+            case hstr(config::entities::omori_cat_7::typeID):
                 data = new Data_Interactable();
                 break;
 
-            case hs(config::entities::placeholder_teleporter::typeID):
-            case hs(config::entities::teleporter_red_hand_throne::typeID):
+            case hstr(config::entities::placeholder_teleporter::typeID):
+            case hstr(config::entities::teleporter_red_hand_throne::typeID):
                 data = new Data_Teleporter();
                 break;
 
