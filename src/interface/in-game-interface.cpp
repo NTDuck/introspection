@@ -269,6 +269,7 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
 
         case event::Code::kReq_DeathFinalized_Player:
             handleCustomEventGET_impl<event::Code::kReq_DeathFinalized_Player>();
+            Player::instance->mSecondaryStats.initialize(Player::instance->mPrimaryStats);   // Prevent stuck at death screen
             break;
 
         default: break;
@@ -417,7 +418,7 @@ bool IngameInterface::isPlayerInRange(std::pair<int, int> const& x_lim, std::pai
     bool result = Player::instance->isWithinRange(x_lim, y_lim);
 
     if (result) {
-        Player::invoke(&Player::onMoveEnd, EntityStatus::kInvalidated);
+        Player::invoke(&Player::onMoveEnd, BehaviouralType::kInvalidated);
         Player::invoke(&Player::onRunningToggled, false);
     }
 

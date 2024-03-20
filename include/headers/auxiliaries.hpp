@@ -54,7 +54,7 @@ constexpr GameState operator|(GameState const& first, GameState const& second) {
 /**
  * @brief Provide flexible handling base on an entity movement's status.
 */
-enum class EntityStatus : unsigned char {
+enum class BehaviouralType : unsigned char {
     kDefault,
     kInvalidated,
     kContinued,
@@ -901,8 +901,8 @@ SDL_FPoint operator>>(SDL_FPoint const& instance, float rad);
  * @note Abbreviation for "hash(ed) string".
  * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
 */
-constexpr unsigned int hs(const char* s, int hash = 0) {
-    return !s[hash] ? 5381 : (hs(s, hash + 1) * 33) ^ s[hash];
+constexpr unsigned int hs(const char* s, int hashval = 0) {
+    return !s[hashval] ? 5381 : (hs(s, hashval + 1) * 33) ^ s[hashval];
 }
 
 namespace std {

@@ -81,7 +81,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 
     if (pNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
-        EntityStatus flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? EntityStatus::kDefault : EntityStatus::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
+        BehaviouralType flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? BehaviouralType::kDefault : BehaviouralType::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
         onMoveEnd(flag);
         initiateMove(flag);
     }
@@ -92,10 +92,10 @@ void AbstractAnimatedDynamicEntity<T>::move() {
  * @note Recommended implementation: this method should only be called after `currentVelocity` is guaranteed to change i.e. be assigned a non-zero value.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
+void AbstractAnimatedDynamicEntity<T>::initiateMove(BehaviouralType flag) {
     if ( pNextDestCoords != nullptr || mAnimation == Animation::kDeath) return;   // Another move is on progress
 
-    if (pNextVelocity == nullptr) { onMoveEnd(EntityStatus::kInvalidated); return; }
+    if (pNextVelocity == nullptr) { onMoveEnd(BehaviouralType::kInvalidated); return; }
 
     if (sTilesetData.isMultiDirectional) mPrevDirection = mDirection;
     mDirection = *pNextVelocity;
@@ -104,7 +104,7 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(EntityStatus flag) {
     pNextDestCoords = new SDL_Point(mDestCoords + mDirection);
     pNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*pNextDestCoords));
 
-    if (validateMove()) onMoveStart(flag); else onMoveEnd(EntityStatus::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
+    if (validateMove()) onMoveStart(flag); else onMoveEnd(BehaviouralType::kInvalidated);   // In case of invalidation, call `onMoveEnd()` with the `invalidated` flag set to `true`
 }
 
 /**
@@ -143,7 +143,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
  * @note Called when a move is initiated after successful validation.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
+void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
     mCurrVelocity = *pNextVelocity;
     mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
@@ -154,9 +154,9 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(EntityStatus flag) {
  * @note Called when a validated move is finalized, or when a move is invalidated.
 */
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onMoveEnd(EntityStatus flag) {
+void AbstractAnimatedDynamicEntity<T>::onMoveEnd(BehaviouralType flag) {
     // Terminate movement when reached new `Tile`
-    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != EntityStatus::kInvalidated) {
+    if (pNextDestCoords != nullptr && pNextDestRect != nullptr && flag != BehaviouralType::kInvalidated) {
         mDestCoords = *pNextDestCoords;
         mDestRect = *pNextDestRect;
     }

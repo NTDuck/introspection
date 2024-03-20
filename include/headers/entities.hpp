@@ -136,23 +136,17 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
         virtual ~AbstractAnimatedEntity() = default;
 
+        static void reinitialize(std::filesystem::path path);
+
         void onLevelChange(level::Data_Generic const& entityLevelData) override;
         virtual void handleSFX() const;
 
         virtual void updateAnimation();
-        void resetAnimation(Animation animation, EntityStatus flag = EntityStatus::kDefault);
+        void resetAnimation(Animation animation, BehaviouralType flag = BehaviouralType::kDefault);
 
-        inline bool isAnimationAtSprite(int GID) const {
-            return mAnimationGID == GID;
-        }
-
-        inline bool isAnimationAtFirstSprite() const {
-            return isAnimationAtSprite(mAnimationData.startGID);
-        }
-
-        inline bool isAnimationAtFinalSprite() const {
-            return isAnimationAtSprite(mAnimationData.stopGID);
-        }
+        inline bool isAnimationAtSprite(int GID) const { return mAnimationGID == GID; }
+        inline bool isAnimationAtFirstSprite() const { return isAnimationAtSprite(mAnimationData.startGID); }
+        inline bool isAnimationAtFinalSprite() const { return isAnimationAtSprite(mAnimationData.stopGID); }
 
     protected:
         AbstractAnimatedEntity(SDL_Point const& destCoords);
@@ -170,7 +164,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int mAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mDirection, AbstractAnimatedEntity<T>::mAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::reinitialize, AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mDirection, AbstractAnimatedEntity<T>::mAttackRegisterRange;
 
 /**
  * @brief A shorthand to declare a AAE-derived. Used in header files only.
@@ -218,13 +212,13 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         bool isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const override;
 
         virtual void move();
-        virtual void initiateMove(EntityStatus flag = EntityStatus::kDefault);
+        virtual void initiateMove(BehaviouralType flag = BehaviouralType::kDefault);
 
     protected:
         AbstractAnimatedDynamicEntity(SDL_Point const& destCoords);
 
-        virtual void onMoveStart(EntityStatus flag = EntityStatus::kDefault);
-        virtual void onMoveEnd(EntityStatus flag = EntityStatus::kDefault);
+        virtual void onMoveStart(BehaviouralType flag = BehaviouralType::kDefault);
+        virtual void onMoveEnd(BehaviouralType flag = BehaviouralType::kDefault);
         virtual void onRunningToggled(bool onRunningStart);
 
         virtual bool validateMove() const;

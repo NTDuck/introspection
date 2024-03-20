@@ -28,13 +28,9 @@ void Player::reinitialize(bool increment) {
     static unsigned short int index = 0;
     static const unsigned short int size = static_cast<unsigned short int>(sTilesetPaths.size());
 
-    if (increment) {
-        if (index == size - 1) index = 0; else ++index;
-    } else {
-        if (!index) index = size - 1; else --index;
-    }
+    if (increment) { if (index == size - 1) index = 0; else ++index; } else { if (!index) index = size - 1; else --index; }
 
-    AbstractEntity<Player>::reinitialize(sTilesetPaths[index]);
+    AbstractAnimatedEntity<Player>::reinitialize(sTilesetPaths[index]);
 }
 
 void Player::onLevelChange(level::Data_Generic const& player) {
@@ -168,11 +164,10 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     if (event.type == SDL_KEYUP) {
         delete pNextVelocity;
         pNextVelocity = nullptr;
-        return;
+    } else {
+        pNextVelocity = new SDL_Point(it->second);
+        initiateMove();
     }
-
-    pNextVelocity = new SDL_Point(it->second);
-    initiateMove();
 }
 
 void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
@@ -237,6 +232,7 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
+    
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
@@ -251,6 +247,7 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
+
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
     if (distance > data.range.x || distance > data.range.y) return;
 
@@ -267,6 +264,7 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mAnimation == Animation::kDeath) return;
+
     auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
 
     auto followupEvent = event::instantiate();

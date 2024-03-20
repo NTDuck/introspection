@@ -18,7 +18,6 @@
 template <typename T>
 GenericSurgeProjectile<T>::GenericSurgeProjectile(SDL_Point const& destCoords, SDL_Point const& direction) : AbstractAnimatedDynamicEntity<T>(destCoords) {
     mDirection = direction;
-
     resetAnimation(Animation::kAttackMeele);
     // onWindowChange();
 }

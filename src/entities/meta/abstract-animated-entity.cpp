@@ -15,6 +15,12 @@ AbstractAnimatedEntity<T>::AbstractAnimatedEntity(SDL_Point const& destCoords) :
     if (!sTilesetPath.empty()) resetAnimation(Animation::kIdle);
 }
 
+template <typename T>
+void AbstractAnimatedEntity<T>::reinitialize(std::filesystem::path path) {
+    AbstractEntity<T>::reinitialize(path);
+    invoke(&T::resetAnimation, Animation::kIdle, BehaviouralType::kDefault);
+}
+
 /**
  * @brief Update relevant data members on entering new level.
  * @note Recommended implementation: this method should be defined by derived classes.
@@ -78,7 +84,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         } else {
             if (mAnimation == Animation::kDeath) return;   // The real permanent
             if (tile::Data_EntityTileset::getContinuity(mAnimation)) resetAnimation(mAnimation);
-            else resetAnimation(mBaseAnimation, EntityStatus::kPrioritized);
+            else resetAnimation(mBaseAnimation, BehaviouralType::kPrioritized);
         };
     }
 
@@ -90,12 +96,12 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
  * @brief Switch to new animation type i.e. new collection of sprites.
 */
 template <typename T>
-void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, EntityStatus flag) {
-    if (flag != EntityStatus::kPrioritized && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
+void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, BehaviouralType flag) {
+    if (flag != BehaviouralType::kPrioritized && tile::Data_EntityTileset::getPriority(animation) < tile::Data_EntityTileset::getPriority(mAnimation)) return; 
 
     mAnimation = animation;
     mAnimationData = sTilesetData.at(mAnimation, sTilesetData.isMultiDirectional ? mDirection : tile::Data_EntityTileset::kDefaultDirection);
-    if (flag != EntityStatus::kContinued) mAnimationGID = mAnimationData.startGID;
+    if (flag != BehaviouralType::kContinued) mAnimationGID = mAnimationData.startGID;
 }
 
 

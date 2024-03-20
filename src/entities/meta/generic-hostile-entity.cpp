@@ -91,7 +91,6 @@ GenericHostileEntity<T>::handleCustomEventGET_impl(SDL_Event const& event) {
 
     bool isDeadPrior = mSecondaryStats.HP <= 0;
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
-
     if (!isDeadPrior && mSecondaryStats.HP <= 0) ++sDeathCount;
 
     resetAnimation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
