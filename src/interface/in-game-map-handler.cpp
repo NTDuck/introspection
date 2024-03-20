@@ -19,7 +19,7 @@ IngameMapHandler::~IngameMapHandler() {
 
 void IngameMapHandler::initialize() {
     json data;
-    utils::readJSON(config::interface::path, data);
+    utils::fetch(config::interface::path, data);
     sLevelMap.load(data);
 }
 
@@ -80,7 +80,7 @@ void IngameMapHandler::loadLevel() const {
     if (!kLevelPath.has_value() || !std::filesystem::exists(kLevelPath.value())) return;
     
     json JSONLevelData;
-    utils::readJSON(kLevelPath.value().string(), JSONLevelData);
+    utils::fetch(kLevelPath.value().string(), JSONLevelData);
     level::data.load(JSONLevelData);
 }
 

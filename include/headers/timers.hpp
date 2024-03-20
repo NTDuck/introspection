@@ -14,11 +14,8 @@
  * @see https://lazyfoo.net/tutorials/SDL/23_advanced_timers/index.php
  * @note Credits are important!
 */
-template <typename T>
-class GenericTimer : public Singleton<T> {
+class GenericTimer {
     public:
-        INCL_SINGLETON(T)
-
         GenericTimer() = default;
         virtual ~GenericTimer() = default;
 
@@ -29,8 +26,8 @@ class GenericTimer : public Singleton<T> {
 
         uint32_t getTicks();
 
-        bool isStarted();
-        bool isPaused();
+        inline bool isStarted() { return mIsStarted; }
+        inline bool isPaused() { return mIsPaused && mIsStarted; }
 
     protected:
         uint32_t mStartTicks = 0;
@@ -40,18 +37,16 @@ class GenericTimer : public Singleton<T> {
         bool mIsPaused = true;
 };
 
-#define INCL_GENERIC_TIMER(T) using GenericTimer<T>::start, GenericTimer<T>::stop, GenericTimer<T>::pause, GenericTimer<T>::unpause, GenericTimer<T>::getTicks, GenericTimer<T>::isStarted, GenericTimer<T>::isPaused, GenericTimer<T>::mStartTicks, GenericTimer<T>::mPausedTicks, GenericTimer<T>::mIsStarted, GenericTimer<T>::mIsPaused;
-
 
 /* Derived implementations */
 
 /**
  * @brief Represent a timer tailored for calculating the average FPS.
 */
-class FPSDisplayTimer final : public GenericTimer<FPSDisplayTimer> {
+class FPSDisplayTimer final : public Singleton<FPSDisplayTimer>, public GenericTimer {
     public:
-        INCL_GENERIC_TIMER(FPSDisplayTimer)
-        
+        INCL_SINGLETON(FPSDisplayTimer)
+
         FPSDisplayTimer() = default;
         ~FPSDisplayTimer() = default;
 
@@ -65,10 +60,10 @@ class FPSDisplayTimer final : public GenericTimer<FPSDisplayTimer> {
 /**
  * @brief Represent a timer tailored for capping in-game FPS.
 */
-class FPSControlTimer final : public GenericTimer<FPSControlTimer> {
+class FPSControlTimer final : public Singleton<FPSControlTimer>, public GenericTimer {
     public:
-        INCL_GENERIC_TIMER(FPSControlTimer)
-
+        INCL_SINGLETON(FPSControlTimer)
+        
         FPSControlTimer() = default;
         ~FPSControlTimer() = default;
 

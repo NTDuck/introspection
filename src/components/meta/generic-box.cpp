@@ -28,7 +28,7 @@ void GenericBoxComponent<T>::onWindowChange() {
 
 template <typename T>
 void GenericBoxComponent<T>::shrinkRect(SDL_Rect& rect, const float ratio) {
-    int delta = utils::castFloatToInt(std::min(rect.w, rect.h) / 2 * ratio);
+    int delta = utils::ftoi(std::min(rect.w, rect.h) / 2 * ratio);
     rect.x += delta;
     rect.y += delta;
     rect.w -= delta * 2;
@@ -41,8 +41,8 @@ void GenericBoxComponent<T>::loadBoxTexture(SDL_Texture*& texture, ComponentPres
     
     mBoxDestRect.w = sDestSize * kDestRectRatio.x;
     mBoxDestRect.h = sDestSize * kDestRectRatio.y;
-    mBoxDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - mBoxDestRect.w / 2);
-    mBoxDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - mBoxDestRect.h / 2);
+    mBoxDestRect.x = utils::ftoi(globals::windowSize.x * kCenter.x - mBoxDestRect.w / 2);
+    mBoxDestRect.y = utils::ftoi(globals::windowSize.y * kCenter.y - mBoxDestRect.h / 2);
 
     texture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, 
     SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mBoxDestRect.w, mBoxDestRect.h);

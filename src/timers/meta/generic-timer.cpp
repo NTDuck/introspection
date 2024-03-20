@@ -6,8 +6,7 @@
 /**
  * @note This method can also be used to restart the timer.
 */
-template <typename T>
-void GenericTimer<T>::start() {
+void GenericTimer::start() {
     mIsStarted = true;
     mIsPaused = false;
 
@@ -15,8 +14,7 @@ void GenericTimer<T>::start() {
     mPausedTicks = 0;
 }
 
-template <typename T>
-void GenericTimer<T>::stop() {
+void GenericTimer::stop() {
     mIsStarted = false;
     mIsPaused = true;
 
@@ -24,8 +22,7 @@ void GenericTimer<T>::stop() {
     mPausedTicks = 0;
 }
 
-template <typename T>
-void GenericTimer<T>::pause() {
+void GenericTimer::pause() {
     if (!mIsStarted || mIsPaused) return;
 
     mIsPaused = true;
@@ -33,8 +30,7 @@ void GenericTimer<T>::pause() {
     mStartTicks = 0;
 }
 
-template <typename T>
-void GenericTimer<T>::unpause() {
+void GenericTimer::unpause() {
     if (!mIsStarted || !mIsPaused) return;
 
     mIsPaused = false;
@@ -42,21 +38,6 @@ void GenericTimer<T>::unpause() {
     mPausedTicks = 0;
 }
 
-template <typename T>
-uint32_t GenericTimer<T>::getTicks() {
+uint32_t GenericTimer::getTicks() {
     return mIsStarted ? (mIsPaused ? mPausedTicks : SDL_GetTicks() - mStartTicks) : 0;
 }
-
-template <typename T>
-bool GenericTimer<T>::isStarted() {
-    return mIsStarted;
-}
-
-template <typename T>
-bool GenericTimer<T>::isPaused() {
-    return mIsPaused && mIsStarted;
-}
-
-
-template class GenericTimer<FPSDisplayTimer>;
-template class GenericTimer<FPSControlTimer>;

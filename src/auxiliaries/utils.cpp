@@ -171,15 +171,31 @@ template class utils::LRUCache<tile::GID, tile::Data_TilelayerTileset>;
  * @brief Convert a `float` to type `int`. Achieve a similar effect to `std::floor`.
  * @note Susceptible to data loss.
 */
-int utils::castFloatToInt(const float f) { return static_cast<int>(std::lroundf(f)); }
+int utils::ftoi(const float f) { return static_cast<int>(std::lroundf(f)); }
 
 /**
  * @brief Stringify a `double` with specified precision i.e. digits after the decimal point.
 */
-std::string utils::castDoubleToString(const double d, unsigned int precision) {
+std::string utils::dtos(const double d, unsigned int precision) {
     std::ostringstream oss;
     oss << std::fixed << std::setprecision(precision) << d;
     return oss.str();
+}
+
+/**
+ * @brief Convert a string representing a hex color value to `SDL_Color`.
+*/
+SDL_Color utils::hextocol(std::string const& hexString) {
+    uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);   // Base 16
+    SDL_Color color;
+
+    // Isolate each component (8 bits) then mask out redundancies (via bitwise AND, to ensure valid range 0 - 255)
+    color.a = (ARGB >> 24) & 0xff;
+    color.r = (ARGB >> 16) & 0xff;
+    color.g = (ARGB >> 8) & 0xff;
+    color.b = ARGB & 0xff;
+
+    return color;
 }
 
 /**
@@ -201,22 +217,6 @@ int utils::generateRandomBinary(const double probability) {
 double utils::calculateDistance(SDL_Point const& first, SDL_Point const& second) {
     auto sub = first - second;
     return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
-}
-
-/**
- * @brief Convert a string representing a hex color value to `SDL_Color`.
-*/
-SDL_Color utils::SDL_ColorFromHexString(std::string const& hexString) {
-    // Convert hexadecimal string to unsigned integer
-    uint32_t ARGB = std::stoul(hexString.substr(1), nullptr, 16);
-
-    // Isolate each component (8 bits) then mask out redundancies (via bitwise AND, to ensure valid range 0 - 255)
-    uint8_t alpha = (ARGB >> 24) & 0xff;
-    uint8_t red = (ARGB >> 16) & 0xff;
-    uint8_t green = (ARGB >> 8) & 0xff;
-    uint8_t blue = ARGB & 0xff;
-
-    return {red, green, blue, alpha};
 }
 
 /**
@@ -311,6 +311,23 @@ SDL_Texture* utils::createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* 
 }
 
 /**
+ * @brief Set color modulation on the texture of derived class `T`.
+*/
+void utils::setTextureRGB(SDL_Texture* texture, SDL_Color const& color) {
+    SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
+}
+
+/**
+ * @brief Set both color modulation and alpha modulation on the texture of derived class `T`.
+ * @param col represents a standard RGBA value.
+*/
+void utils::setTextureRGBA(SDL_Texture* texture, SDL_Color const& color) {
+    utils::setTextureRGB(texture, color);
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    SDL_SetTextureAlphaMod(texture, color.a);
+}
+
+/**
  * @brief Decompress a zlib-compressed string.
  * @param s the zlib-compressed string.
  * @return the decompressed stream represented as a vector of the specified data type.
@@ -397,7 +414,7 @@ std::string utils::base64Decode(std::string const& s) {
 /**
  * @brief Read a JSON file.
 */
-void utils::readJSON(std::filesystem::path const& path, json& data) {
+void utils::fetch(std::filesystem::path const& path, json& data) {
     std::ifstream file;
     file.open(path);
     if (!file.is_open()) return;
@@ -423,21 +440,4 @@ std::filesystem::path utils::cleanRelativePath(std::filesystem::path const& path
     }
 
     return repr;   // Implicit
-}
-
-/**
- * @brief Set color modulation on the texture of derived class `T`.
-*/
-void utils::setTextureRGB(SDL_Texture*& texture, SDL_Color const& color) {
-    SDL_SetTextureColorMod(texture, color.r, color.g, color.b);
-}
-
-/**
- * @brief Set both color modulation and alpha modulation on the texture of derived class `T`.
- * @param col represents a standard RGBA value.
-*/
-void utils::setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color) {
-    utils::setTextureRGB(texture, color);
-    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-    SDL_SetTextureAlphaMod(texture, color.a);
 }

@@ -979,25 +979,25 @@ namespace utils {
     //     instance = nullptr;
     // }
     
-    int castFloatToInt(const float f);
-    std::string castDoubleToString(const double d, unsigned int precision);
+    int ftoi(const float f);
+    std::string dtos(const double d, unsigned int precision);
+    SDL_Color hextocol(std::string const& hexString);
+    
     int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(SDL_Point const& first, SDL_Point const& second);
-    SDL_Color SDL_ColorFromHexString(std::string const& hexString);
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
 
     SDL_Texture* duplicateTexture(SDL_Renderer* renderer, SDL_Texture* texture);
     SDL_Texture* createGrayscaleTexture(SDL_Renderer* renderer, SDL_Texture* texture, double intensity = 1);
+    void setTextureRGB(SDL_Texture* texture, SDL_Color const& color);
+    void setTextureRGBA(SDL_Texture* texture, SDL_Color const& color);
 
     template <typename T>
     std::vector<T> zlibDecompress(std::string const& s);
     std::string base64Decode(std::string const& s);
 
-    void readJSON(std::filesystem::path const& path, json& data);
+    void fetch(std::filesystem::path const& path, json& data);
     std::filesystem::path cleanRelativePath(std::filesystem::path const& path);
-
-    void setTextureRGB(SDL_Texture*& texture, SDL_Color const& color);
-    void setTextureRGBA(SDL_Texture*& texture, SDL_Color const& color);  
 }
 
 

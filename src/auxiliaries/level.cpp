@@ -265,7 +265,7 @@ void level::Data::loadMembers(json const& JSONLevelData) {
 
     auto backgroundColor_j = JSONLevelData.find("backgroundcolor"); if (backgroundColor_j == JSONLevelData.end()) return;
     auto backgroundColor_v = backgroundColor_j.value(); if (!backgroundColor_v.is_string()) return;
-    backgroundColor = utils::SDL_ColorFromHexString(backgroundColor_v);
+    backgroundColor = utils::hextocol(backgroundColor_v);
 }
 
 /**

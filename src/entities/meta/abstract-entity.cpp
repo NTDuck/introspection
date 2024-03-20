@@ -90,12 +90,12 @@ bool AbstractEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, s
 template <typename T>
 SDL_Rect AbstractEntity<T>::getDestRectFromCoords(SDL_Point const& coords) const {
     return {
-        coords.x * level::data.tileDestSize.x + utils::castFloatToInt(mDestRectModifier.x * level::data.tileDestSize.x)
+        coords.x * level::data.tileDestSize.x + utils::ftoi(mDestRectModifier.x * level::data.tileDestSize.x)
         - (sTilesetData.animationSize.x - 1) / 2 * level::data.tileDestSize.x
-        - utils::castFloatToInt(level::data.tileDestSize.x * sTilesetData.animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
-        coords.y * level::data.tileDestSize.y + utils::castFloatToInt(mDestRectModifier.y * level::data.tileDestSize.y) - (sTilesetData.animationSize.y - 1) / 2 * level::data.tileDestSize.y - utils::castFloatToInt(level::data.tileDestSize.y * sTilesetData.animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
-        utils::castFloatToInt(level::data.tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
-        utils::castFloatToInt(level::data.tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
+        - utils::ftoi(level::data.tileDestSize.x * sTilesetData.animationSize.x * (mDestRectModifier.w - 1) / 2),   // Apply `destRectModifier.x`, center `destRect` based on `tilesetData->animationSize.x` and `destRectModifier.w`
+        coords.y * level::data.tileDestSize.y + utils::ftoi(mDestRectModifier.y * level::data.tileDestSize.y) - (sTilesetData.animationSize.y - 1) / 2 * level::data.tileDestSize.y - utils::ftoi(level::data.tileDestSize.y * sTilesetData.animationSize.y * (mDestRectModifier.h - 1) / 2),   // Apply `destRectModifier.y`, center `destRect` based on `tilesetData->animationSize.y` and `destRectModifier.h`
+        utils::ftoi(level::data.tileDestSize.x * sTilesetData.animationSize.x * mDestRectModifier.w),
+        utils::ftoi(level::data.tileDestSize.y * sTilesetData.animationSize.y * mDestRectModifier.h),
     };
 }
 

@@ -117,7 +117,7 @@ void Game::startGameLoop() {
 
         // Calculate frame rate
         FPSDisplayTimer::invoke(&FPSDisplayTimer::calculateFPS);
-        if (FPSDisplayTimer::instance->mAccumulatedFrames % FPSOverlay::kAnimationUpdateRate == 0) FPSOverlay::invoke(&FPSOverlay::editContent, config::components::fps_overlay::prefix + utils::castDoubleToString(FPSDisplayTimer::instance->mAverageFPS, config::components::fps_overlay::precision));
+        if (FPSDisplayTimer::instance->mAccumulatedFrames % FPSOverlay::kAnimationUpdateRate == 0) FPSOverlay::invoke(&FPSOverlay::editContent, config::components::fps_overlay::prefix + utils::dtos(FPSDisplayTimer::instance->mAverageFPS, config::components::fps_overlay::precision));
 
         // Main flow
         handleDependencies();

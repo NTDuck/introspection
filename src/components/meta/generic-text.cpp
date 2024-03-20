@@ -58,8 +58,8 @@ void GenericTextComponent<T>::loadTextTexture(SDL_Texture*& texture, ComponentPr
     // Register `innerSurface` dimensions to `innerDestRect`
     mTextDestRect.w = surface->w;
     mTextDestRect.h = surface->h;
-    mTextDestRect.x = utils::castFloatToInt(globals::windowSize.x * kCenter.x - mTextDestRect.w / 2);
-    mTextDestRect.y = utils::castFloatToInt(globals::windowSize.y * kCenter.y - mTextDestRect.h / 2);
+    mTextDestRect.x = utils::ftoi(globals::windowSize.x * kCenter.x - mTextDestRect.w / 2);
+    mTextDestRect.y = utils::ftoi(globals::windowSize.y * kCenter.y - mTextDestRect.h / 2);
 
     SDL_FreeSurface(surface);
 }
