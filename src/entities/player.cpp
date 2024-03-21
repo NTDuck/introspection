@@ -5,6 +5,7 @@
 
 #include <SDL.h>
 
+#include <timers.hpp>
 #include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
@@ -205,14 +206,16 @@ typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player || C == e
 Player::handleCustomEventPOST_impl() const {
     if (mAnimation != Animation::kDeath) return;
 
-    static int counter = config::entities::player::waitingFramesAfterDeath;
-    if (counter > 0) --counter;
+    static CountdownTimer timer(config::entities::player::deathTicks);
+    if (!timer.isStarted()) timer.start();
 
     auto event = event::instantiate();
     event::setID(event, mID);
-    event::setCode(event, counter == 0 ? event::Code::kReq_DeathFinalized_Player : event::Code::kReq_DeathPending_Player);
-    event::setData(event, counter);
+    event::setCode(event, timer.isFinished() ? event::Code::kReq_DeathFinalized_Player : event::Code::kReq_DeathPending_Player);
+    event::setData(event, true);
     event::enqueue(event);
+
+    if (timer.isFinished()) timer.stop();
 }
 
 template <event::Code C>

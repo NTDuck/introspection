@@ -24,14 +24,14 @@ class GenericTimer {
         void pause();
         void unpause();
 
-        uint32_t getTicks();
+        unsigned int getTicks() const;
 
-        inline bool isStarted() { return mIsStarted; }
-        inline bool isPaused() { return mIsPaused && mIsStarted; }
+        inline bool isStarted() const { return mIsStarted; }
+        inline bool isPaused() const { return mIsPaused && mIsStarted; }
 
     protected:
-        uint32_t mStartTicks = 0;
-        uint32_t mPausedTicks = 0;
+        unsigned int mStartTicks = 0;
+        unsigned int mPausedTicks = 0;
 
         bool mIsStarted = false;
         bool mIsPaused = true;
@@ -71,6 +71,17 @@ class FPSControlTimer final : public Singleton<FPSControlTimer>, public GenericT
 
     private:
         static constexpr int kTicksPerFrame = 1000 / config::game::FPS;
+};
+
+class CountdownTimer final : public GenericTimer {
+    public:
+        CountdownTimer(unsigned int maxTicks) : kMaxTicks(maxTicks) {}
+        ~CountdownTimer() = default;
+
+        inline bool isFinished() const { return getTicks() >= kMaxTicks; }
+
+    private:
+        const unsigned int kMaxTicks;
 };
 
 

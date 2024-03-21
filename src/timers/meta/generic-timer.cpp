@@ -38,6 +38,6 @@ void GenericTimer::unpause() {
     mPausedTicks = 0;
 }
 
-uint32_t GenericTimer::getTicks() {
+unsigned int GenericTimer::getTicks() const {
     return mIsStarted ? (mIsPaused ? mPausedTicks : SDL_GetTicks() - mStartTicks) : 0;
 }

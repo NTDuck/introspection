@@ -682,7 +682,7 @@ namespace config {
             constexpr int moveDelay = 0;
             constexpr SDL_Point attackRegisterRange = { 3, 3 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-            constexpr int waitingFramesAfterDeath = 6.66 * config::game::FPS;
+            constexpr unsigned int deathTicks = 6666;
         }
 
         namespace placeholder_interactable {
