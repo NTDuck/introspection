@@ -3,7 +3,6 @@
  <properties>
   <property name="animation-attack-meele=e" type="class" propertytype="animation">
    <properties>
-    <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="1456"/>
     <property name="stopGID" type="int" value="1461"/>
    </properties>
@@ -28,7 +27,6 @@
   </property>
   <property name="animation-attack-ranged=e" type="class" propertytype="animation">
    <properties>
-    <property name="isPermanent" type="bool" value="true"/>
     <property name="startGID" type="int" value="2016"/>
     <property name="stopGID" type="int" value="2018"/>
    </properties>
@@ -53,52 +51,56 @@
   </property>
   <property name="animation-damaged=e" type="class" propertytype="animation">
    <properties>
-    <property name="animation-update-rate-multiplier" type="float" value="2"/>
-    <property name="isPermanent" type="bool" value="true"/>
+    <property name="ticks-multiplier" type="float" value="2"/>
     <property name="startGID" type="int" value="2128"/>
     <property name="stopGID" type="int" value="2130"/>
    </properties>
   </property>
   <property name="animation-damaged=n" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="2"/>
     <property name="startGID" type="int" value="2131"/>
     <property name="stopGID" type="int" value="2133"/>
    </properties>
   </property>
   <property name="animation-damaged=s" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="2"/>
     <property name="startGID" type="int" value="2137"/>
     <property name="stopGID" type="int" value="2139"/>
    </properties>
   </property>
   <property name="animation-damaged=w" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="2"/>
     <property name="startGID" type="int" value="2134"/>
     <property name="stopGID" type="int" value="2136"/>
    </properties>
   </property>
   <property name="animation-death=e" type="class" propertytype="animation">
    <properties>
-    <property name="animation-update-rate-multiplier" type="float" value="4"/>
-    <property name="isPermanent" type="bool" value="true"/>
+    <property name="ticks-multiplier" type="float" value="4"/>
     <property name="startGID" type="int" value="2128"/>
     <property name="stopGID" type="int" value="2130"/>
    </properties>
   </property>
   <property name="animation-death=n" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="4"/>
     <property name="startGID" type="int" value="2131"/>
     <property name="stopGID" type="int" value="2133"/>
    </properties>
   </property>
   <property name="animation-death=s" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="4"/>
     <property name="startGID" type="int" value="2137"/>
     <property name="stopGID" type="int" value="2139"/>
    </properties>
   </property>
   <property name="animation-death=w" type="class" propertytype="animation">
    <properties>
+    <property name="ticks-multiplier" type="float" value="4"/>
     <property name="startGID" type="int" value="2134"/>
     <property name="stopGID" type="int" value="2136"/>
    </properties>
@@ -152,7 +154,7 @@
     <property name="stopGID" type="int" value="913"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="10"/>
+  <property name="animation-ticks" type="int" value="200"/>
   <property name="animation-walk=e" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="224"/>

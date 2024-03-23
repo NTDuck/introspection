@@ -198,8 +198,8 @@ void tile::Data_EntityTileset::Data_Animation::load(pugi::xml_node const& XMLAni
             case hstr("stopGID"):
                 stopGID = value_a.as_int();
                 break;
-            case hstr("animation-update-rate-multiplier"):
-                updateRateMultiplier = value_a.as_double();
+            case hstr("ticks-multiplier"):
+                ticksMultiplier = value_a.as_double();
                 break;
             default: break;
         }
@@ -227,8 +227,8 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
             std::string name_v = name_a.as_string();
 
             switch (hstr(name_v.c_str())) {
-                case hstr("animation-update-rate"):
-                    animationUpdateRate = value_a.as_int();
+                case hstr("animation-ticks"):
+                    animationTicks = value_a.as_uint();
                     break;
                 case hstr("animation-width"):
                     animationSize.x = value_a.as_int();

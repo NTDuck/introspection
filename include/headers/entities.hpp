@@ -13,6 +13,7 @@
 
 #include <SDL.h>
 
+#include <timers.hpp>
 #include <mixer.hpp>
 #include <meta.hpp>
 #include <auxiliaries.hpp>
@@ -159,8 +160,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
 
     private:
         tile::Data_EntityTileset::Data_Animation mAnimationData;
-
-        int mAnimationUpdateCount = 0;
+        CountdownTimer mAnimationTimer;
         int mAnimationGID;
 };
 
@@ -208,7 +208,6 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         virtual ~AbstractAnimatedDynamicEntity();
 
         void onWindowChange() override;
-        void onLevelChange(level::Data_Generic const& entityLevelData) override;
         bool isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const override;
 
         virtual void move();
@@ -245,7 +244,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         /**
          * Represent the minimum number of frames of inaction, between 2 consecutive moves.
         */
-        static int sMoveDelay;
+        static const unsigned int sMoveDelayTicks;
 
         /**
          * For dimension `i`, a number of `kVelocity.i` frames is required for the entity to make a full move i.e. `destRect.i` shifts by `globals::tileDestSize.i` pixels.
@@ -268,7 +267,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
     private:
         void calculateVelocityDependencies();
         
-        int mMoveDelayCounter;
+        CountdownTimer mMoveDelayTimer;
         SDL_Point mPrevDirection;
 
         SDL_FPoint mFractionalVelocityCounter;
@@ -276,7 +275,7 @@ class AbstractAnimatedDynamicEntity : public AbstractAnimatedEntity<T> {
         SDL_Point mIntegralVelocity;
 };
 
-#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::onLevelChange, AbstractAnimatedDynamicEntity<T>::isWithinRange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::mIsRunning, AbstractAnimatedDynamicEntity<T>::mNextDestCoords, AbstractAnimatedDynamicEntity<T>::mNextDestRect, AbstractAnimatedDynamicEntity<T>::sRunModifier, AbstractAnimatedDynamicEntity<T>::sMoveDelay, AbstractAnimatedDynamicEntity<T>::sVelocity, AbstractAnimatedDynamicEntity<T>::mCurrVelocity, AbstractAnimatedDynamicEntity<T>::mNextVelocity;
+#define INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T) using AbstractAnimatedDynamicEntity<T>::onWindowChange, AbstractAnimatedDynamicEntity<T>::isWithinRange, AbstractAnimatedDynamicEntity<T>::move, AbstractAnimatedDynamicEntity<T>::initiateMove, AbstractAnimatedDynamicEntity<T>::onMoveStart, AbstractAnimatedDynamicEntity<T>::onMoveEnd, AbstractAnimatedDynamicEntity<T>::onRunningToggled, AbstractAnimatedDynamicEntity<T>::validateMove, AbstractAnimatedDynamicEntity<T>::mIsRunning, AbstractAnimatedDynamicEntity<T>::mNextDestCoords, AbstractAnimatedDynamicEntity<T>::mNextDestRect, AbstractAnimatedDynamicEntity<T>::sRunModifier, AbstractAnimatedDynamicEntity<T>::sMoveDelayTicks, AbstractAnimatedDynamicEntity<T>::sVelocity, AbstractAnimatedDynamicEntity<T>::mCurrVelocity, AbstractAnimatedDynamicEntity<T>::mNextVelocity;
 
 
 template <typename T>
@@ -469,7 +468,7 @@ T::T(SDL_Point const& destCoords) : GenericHostileEntity<T>(destCoords) {\
 }\
 \
 template <>\
-int AbstractAnimatedDynamicEntity<T>::sMoveDelay = ns::moveDelay;\
+const unsigned int AbstractAnimatedDynamicEntity<T>::sMoveDelayTicks = ns::moveDelayTicks;\
 \
 template <>\
 SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\
@@ -536,7 +535,7 @@ T::T(SDL_Point const& destCoords, SDL_Point const& direction) : GenericSurgeProj
 }\
 \
 template <>\
-int AbstractAnimatedDynamicEntity<T>::sMoveDelay = ns::moveDelay;\
+const unsigned int AbstractAnimatedDynamicEntity<T>::sMoveDelayTicks = ns::moveDelayTicks;\
 \
 template <>\
 SDL_FPoint AbstractAnimatedDynamicEntity<T>::sVelocity = ns::velocity;\

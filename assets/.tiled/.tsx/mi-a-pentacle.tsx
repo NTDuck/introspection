@@ -9,7 +9,7 @@
    </properties>
   </property>
   <property name="animation-height" type="int" value="2"/>
-  <property name="animation-update-rate" type="int" value="5"/>
+  <property name="animation-ticks" type="int" value="15"/>
   <property name="animation-width" type="int" value="1"/>
  </properties>
  <image source="../../graphics/sprites/entities/mi-a-pentacle.png" width="384" height="64"/>

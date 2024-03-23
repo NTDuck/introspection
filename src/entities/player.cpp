@@ -45,9 +45,8 @@ void Player::onLevelChange(level::Data_Generic const& player) {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
-    static constexpr unsigned short int count_limit = config::game::FPS >> 4;
-    static unsigned short int count = 0;
-    if (count > 0) --count;
+    static CountdownTimer timer(config::entities::player::projectileCooldownTicks);
+    if (!timer.isStarted()) timer.start();
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
 
@@ -73,12 +72,11 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalTriple:
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalQuadruple:
         case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
-            if (mAnimation == Animation::kAttackMeele || mAnimation == Animation::kAttackRanged) break;
+            if (tile::Data_EntityTileset::getPriority(mAnimation) == tile::Data_EntityTileset::getPriority(Animation::kAttackMeele) || !timer.isFinished()) break;
             resetAnimation(Animation::kAttackRanged);
 
-            if (count) break;
             handleKeyboardEvent_ProjectileAttack(event);
-            count = count_limit;
+            timer.stop();
             break;
 
         case ~config::Key::kAffirmative:
@@ -295,7 +293,7 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
 
 
 template <>
-int AbstractAnimatedDynamicEntity<Player>::sMoveDelay = config::entities::player::moveDelay;
+const unsigned int AbstractAnimatedDynamicEntity<Player>::sMoveDelayTicks = config::entities::player::moveDelayTicks;
 
 template <>
 SDL_FPoint AbstractAnimatedDynamicEntity<Player>::sVelocity = config::entities::player::velocity;

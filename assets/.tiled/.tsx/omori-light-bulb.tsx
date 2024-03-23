@@ -6,7 +6,7 @@
     <property name="stopGID" type="int" value="14"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="10"/>
+  <property name="animation-ticks" type="int" value="200"/>
  </properties>
  <image source="../../graphics/sprites/entities/omori-white-space/omori-light-bulb.png" width="160" height="96"/>
 </tileset>

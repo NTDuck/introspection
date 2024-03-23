@@ -435,10 +435,8 @@ IngameInterface::handleLevelSpecifics_impl() const {
     switch (level::data.getProperty<int>("progress")) {
         case 0:   // At the very beginning
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (Press [E]. That's all you need to know.)\n(For now.)",
-                "... (Good job! Now...)",
-                "... (Did you know you could move around with [W][A][S][D]?)",
-                "... (C'mon, give it a little try!)",
+                "... (Proceed with [E].)",
+                "... (Move with [W][A][S][D].)",
             });
 
             proceed();
@@ -448,12 +446,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
             if (!isPlayerInRange({ -1, -1 }, { -1, 89 })) break;
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (Pssst, hey you!)",
-                "... (Yes, you!)",
-                "... (Do you see that cat up there?)",
-                "... (It says it wanna talk to you!)",
-                "... (So, uh, just go there, I guess?)",
-                "... (You don't want to disappoint a cat, do you?)",
+                "... (You can try talking to the cat up there.)",
             });
 
             proceed();
@@ -463,12 +456,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
             if (!isPlayerInRange({ 23, 24 }, { 88, 89 })) break;
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (Pssst, hey you!)",
-                "... (Yes, you again! Like, who else is here?)",
-                "... (Do you see that cat on your left?)",
-                "... (It says it wanna talk to you!)",
-                "... (So, uh, just go there, I guess?)",
-                "... (You don't want to disappoint a cat, do you?)",
+                "... (You can try talking to the cat on your left.)",
             });
 
             proceed();
@@ -478,14 +466,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
             if (!isPlayerInRange({ 39, 40 }, { 76, 77 })) break;
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (Pssst, hey you!)",
-                "... (I hope you talked to both cats.)",
-                "... (Like, the developer who created all this didn't really provide me with a proper mechanism to track such interactions, so I really do not know.)",
-                "... (But, uh, if you haven't, can you, like, go back and talk to them?)",
-                "... (Because, uh, you'll never see them again? C'mon, everyone knows that this tutorial is a one-time thing.)",
-                "...",
-                "... (Oh, one more thing.)"
-                "... (Make sure you read the sign before going any further.)",
+                "... (Enemy approaching)",
             });
             Mixer::invoke(&Mixer::stopBGM);
 
@@ -496,8 +477,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
             if (!isPlayerInRange({ -1, 36 }, { 67, 73 })) break;
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (You might want to press [SPACE].)",
-                "... (Because, uh, you might be dead otherwise.)",
+                "... (Press [SPACE] to not die.)",
             });
             Slime::instantiateEx({
                 new level::Data_Generic({ 27, 70 }),
@@ -665,24 +645,9 @@ IngameInterface::handleLevelSpecifics_impl() const {
             if (!isPlayerInRange({ 46, 48 }, { -1, 20 })) break;
 
             IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "... (If you truly wish to leave the TUTORIAL...)",
-                "... (I will not stop you.)",
-                "... (However, when you leave...)",
-                "... (Please do not come back.)",
-                "... (I hope you understand.)",
-                "... (Goodbye, my child.)",
+                "... (Up next: some OMORI reference)",
             });
             Mixer::invoke(&Mixer::stopBGM);
-
-            proceed();
-            break;
-
-        case 1:
-            if (!isPlayerInRange({ 46, 48 }, { -1, 2 })) break;
-
-            IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>{
-                "...",
-            });
 
             proceed();
             break;

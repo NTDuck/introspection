@@ -37,47 +37,42 @@ void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityL
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::handleSFX() const {
-    // Separate for different `T`
-    static constexpr int idleFrames = config::game::FPS >> 2;   // Magic number
-    static int idleFramesTracker = idleFrames;
-
-    if (idleFramesTracker) {
-        --idleFramesTracker;
-        return;
-    }
+    static CountdownTimer timer(config::entities::SFXTicks);
+    if (!timer.isStarted()) timer.start();
+    if (!timer.isFinished()) return;
 
     switch (mAnimation) {
         case Animation::kAttackMeele:
-            if (!isAnimationAtFirstSprite()) return;
+            if (!isAnimationAtFirstSprite()) break;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerAttack : Mixer::SFXName::kEntityAttack);
             break;
 
         case Animation::kDamaged:
-            if (!isAnimationAtFirstSprite()) return;
+            if (!isAnimationAtFirstSprite()) break;
             Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kEntityDamaged);
             break;
 
         case Animation::kDeath:
-            if (!isAnimationAtFirstSprite()) return;
+            if (!isAnimationAtFirstSprite()) break;
             Mixer::invoke(&Mixer::playSFX, std::is_same_v<T, Player> ? Mixer::SFXName::kPlayerDeath : Mixer::SFXName::kEntityDeath);
             break;
 
-        default: return;
+        default: break;
     }
-    
-    idleFramesTracker = idleFrames;
+
+    timer.start();
 }
 
 /**
- * @brief Switch from one sprite to the next. Called every `animationUpdateRate` frames.
+ * @brief Switch from one sprite to the next. Called every `animationTicks` frames.
  * @see <interface.h> Interface::renderLevelTiles()
 */
 template <typename T>
 void AbstractAnimatedEntity<T>::updateAnimation() {
-    ++mAnimationUpdateCount;
+    if (!mAnimationTimer.isStarted()) mAnimationTimer.start();
+    if (mAnimationTimer.isFinished()) {
+        mAnimationTimer.stop();
 
-    if (mAnimationUpdateCount >= static_cast<int>(sTilesetData.animationUpdateRate * mAnimationData.updateRateMultiplier)) {
-        mAnimationUpdateCount = 0;
         if (mAnimationGID < mAnimationData.stopGID) {
             mAnimationGID += sTilesetData.animationSize.x;
             if (mAnimationGID / sTilesetData.srcCount.x != (mAnimationGID - sTilesetData.animationSize.x) / sTilesetData.srcCount.x) mAnimationGID += sTilesetData.srcCount.x * (sTilesetData.animationSize.y - 1);   // Originally intended for "flawed" tilesets where `sTilesetData.animationSize.x` > 'sTilesetData.srcCount.x`
@@ -85,7 +80,7 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
             if (mAnimation == Animation::kDeath) return;   // The real permanent
             if (tile::Data_EntityTileset::getContinuity(mAnimation)) resetAnimation(mAnimation);
             else resetAnimation(mBaseAnimation, BehaviouralType::kPrioritized);
-        };
+        }
     }
 
     mSrcRect.x = mAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
@@ -101,6 +96,9 @@ void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, BehaviouralT
 
     mAnimation = animation;
     mAnimationData = sTilesetData.at(mAnimation, sTilesetData.isMultiDirectional ? mDirection : tile::Data_EntityTileset::kDefaultDirection);
+
+    mAnimationTimer.setMaxTicks(sTilesetData.animationTicks * mAnimationData.ticksMultiplier);
+
     if (flag != BehaviouralType::kContinued) mAnimationGID = mAnimationData.startGID;
 }
 

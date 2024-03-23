@@ -4,6 +4,6 @@
 
 
 void FPSControlTimer::controlFPS() {
-    int ticks = static_cast<int>(getTicks());
+    auto ticks = getTicks();
     if (ticks < kTicksPerFrame) SDL_Delay(kTicksPerFrame - ticks);
 }

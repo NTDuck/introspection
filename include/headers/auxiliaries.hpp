@@ -229,7 +229,7 @@ namespace tile {
     /**
      * @brief Contain data associated with a tileset for an entity or an animated object.
      * @param animationMapping maps an animation type to the associated data.
-     * @param animationUpdateRate the number of frames a sprite should last before switching to the next. Should be treated as a constant.
+     * @param animationTicks the number of frames a sprite should last before switching to the next. Should be treated as a constant.
      * @param animationSize represents the ratio between the size of one single animation/sprite and the size of a `Tile` on the tileset, per dimension. Should be implemented alongside `globals::tileDestSize`.
      * @note `clear()` method unnecessary since its lifespan (and its dependencies') should persist along with an `AbstractAnimatedEntity<T>`-derived as a static member.
     */
@@ -294,7 +294,7 @@ namespace tile {
 
             int startGID = 0;
             int stopGID = 0;
-            double updateRateMultiplier = 1;
+            double ticksMultiplier = 1;
         };
 
         static constexpr SDL_Point kDefaultDirection = { 1, 0 };
@@ -302,7 +302,7 @@ namespace tile {
         void load(pugi::xml_document const& XMLTilesetData, SDL_Renderer* renderer);
         Data_Animation const& at(Animation animation, SDL_Point const& direction = kDefaultDirection) const;
 
-        int animationUpdateRate = 64;
+        unsigned int animationTicks = 1000;
         SDL_Point animationSize = { 1, 1 };
         bool isMultiDirectional = false;
 
@@ -527,6 +527,7 @@ namespace event {
 */
 namespace config {
     constexpr bool enable_audio = true;
+    constexpr bool enable_entity_overlap = true;
 
     /**
      * Uses `operator~` for static conversion to `SDL_Keycode`.
@@ -651,6 +652,7 @@ namespace config {
     namespace entities {
         constexpr double runVelocityModifier = 4;
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+        constexpr unsigned int SFXTicks = 777;
         
         namespace player {
             constexpr const char* typeID = "player";
@@ -679,10 +681,12 @@ namespace config {
             const std::filesystem::path path = paths[0];
             constexpr SDL_FRect destRectModifier = { 0, -1.125, 1, 1 };
             constexpr SDL_FPoint velocity = { 16, 16 };
-            constexpr int moveDelay = 0;
+            constexpr unsigned int moveDelayTicks = 0;
             constexpr SDL_Point attackRegisterRange = { 3, 3 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+
             constexpr unsigned int deathTicks = 6666;
+            constexpr unsigned int projectileCooldownTicks = 1000;
         }
 
         namespace placeholder_interactable {
@@ -708,7 +712,7 @@ namespace config {
             const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
             constexpr SDL_FPoint velocity = { 128, 128 };
-            constexpr int moveDelay = 32;
+            constexpr int moveDelayTicks = 1000;
             constexpr SDL_Point moveInitiateRange = { 16, 16 };
             constexpr SDL_Point attackInitiateRange = { 3, 3 };
             constexpr SDL_Point attackRegisterRange = { 1, 1 };
@@ -720,7 +724,7 @@ namespace config {
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";
             constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
             constexpr SDL_FPoint velocity = { 0, 0 };
-            constexpr int moveDelay = 0;
+            constexpr int moveDelayTicks = 0;
             constexpr SDL_Point attackRegisterRange = { 1, 1 };
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }

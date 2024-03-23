@@ -12,7 +12,9 @@
 
 
 template <typename T>
-AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {}
+AbstractAnimatedDynamicEntity<T>::AbstractAnimatedDynamicEntity(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords), mMoveDelayTimer(sMoveDelayTicks) {
+    onMoveEnd();
+}
 
 template <typename T>
 AbstractAnimatedDynamicEntity<T>::~AbstractAnimatedDynamicEntity() {
@@ -37,12 +39,6 @@ void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
 }
 
 template <typename T>
-void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
-    AbstractAnimatedEntity<T>::onLevelChange(entityLevelData);
-    onMoveEnd();
-}
-
-template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const {
     return isTargetWithinRange(mNextDestCoords != nullptr ? *mNextDestCoords : mDestCoords, x_coords_lim, y_coords_lim);
 }
@@ -52,32 +48,29 @@ bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& 
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::move() {
-    if (mNextDestCoords == nullptr) return;   // Return if the move has not been "initiated"
+    if (mNextDestCoords == nullptr || !mMoveDelayTimer.isFinished()) return;   // Return if the move has not been "initiated"
 
-    if (mMoveDelayCounter == sMoveDelay) {   // Only executed if 
-        mDestRect.x += mCurrVelocity.x * mIntegralVelocity.x;
-        mDestRect.y += mCurrVelocity.y * mIntegralVelocity.y;
+    mDestRect.x += mCurrVelocity.x * mIntegralVelocity.x;
+    mDestRect.y += mCurrVelocity.y * mIntegralVelocity.y;
 
-        // Store the fractional part
-        mFractionalVelocityCounter.x += mFractionalVelocity.x;
-        mFractionalVelocityCounter.y += mFractionalVelocity.y;
+    // Store the fractional part
+    mFractionalVelocityCounter.x += mFractionalVelocity.x;
+    mFractionalVelocityCounter.y += mFractionalVelocity.y;
 
-        // Prevent movement loss by handling accumulative movement 
-        if (mFractionalVelocityCounter.x >= 1) {
-            mDestRect.x += mCurrVelocity.x;
-            --mFractionalVelocityCounter.x;
-        }
-        if (mFractionalVelocityCounter.y >= 1) {
-            mDestRect.y += mCurrVelocity.y;
-            --mFractionalVelocityCounter.y;
-        }
-
-        // Continue movement if new `Tile` has not been reached
-        if ((mNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (mNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+    // Prevent movement loss by handling accumulative movement 
+    if (mFractionalVelocityCounter.x >= 1) {
+        mDestRect.x += mCurrVelocity.x;
+        --mFractionalVelocityCounter.x;
+    }
+    if (mFractionalVelocityCounter.y >= 1) {
+        mDestRect.y += mCurrVelocity.y;
+        --mFractionalVelocityCounter.y;
     }
 
-    // Cease new movement if counter not done
-    if (mMoveDelayCounter) { --mMoveDelayCounter; return; }
+    // Continue movement if new `Tile` has not been reached
+    if ((mNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (mNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
+
+    // if (!mMoveDelayTimer.isFinished()) return;
 
     if (mNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
@@ -118,14 +111,7 @@ bool AbstractAnimatedDynamicEntity<T>::validateMove() const {
 
     // Prevent `destCoords` overlap
     // Warning: expensive operation
-    if (
-        std::find_if(
-            instances.begin(), instances.end(),
-            [&](const auto& instance) {
-                return (*mNextDestCoords == instance->mDestCoords);
-            }
-        ) != instances.end()
-    ) return false;
+    if constexpr(!config::enable_entity_overlap) if (std::find_if( instances.begin(), instances.end(), [&](const auto& instance) { return (*mNextDestCoords == instance->mDestCoords); }) != instances.end()) return false;
 
     // Find the collision-tagged tileset associated with `gid`
     auto findCollisionLevelGID = [&](SDL_Point const& coords) {
@@ -170,8 +156,8 @@ void AbstractAnimatedDynamicEntity<T>::onMoveEnd(BehaviouralType flag) {
         mNextDestRect = nullptr;
     }
 
+    mMoveDelayTimer.start();
     mCurrVelocity = { 0, 0 };
-    mMoveDelayCounter = sMoveDelay;
     mFractionalVelocityCounter = { 0, 0 };
 
     mBaseAnimation = Animation::kIdle;

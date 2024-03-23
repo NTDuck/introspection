@@ -152,7 +152,7 @@
     <property name="stopGID" type="int" value="913"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="10"/>
+  <property name="animation-ticks" type="int" value="200"/>
   <property name="animation-walk=e" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="224"/>

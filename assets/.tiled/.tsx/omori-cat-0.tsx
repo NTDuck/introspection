@@ -7,7 +7,7 @@
     <property name="stopGID" type="int" value="5"/>
    </properties>
   </property>
-  <property name="animation-update-rate" type="int" value="10"/>
+  <property name="animation-ticks" type="int" value="200"/>
   <property name="animation-width" type="int" value="1"/>
  </properties>
  <image source="../../graphics/sprites/entities/omori-misc/omori-cat-0.png" width="96" height="128"/>

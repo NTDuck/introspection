@@ -70,18 +70,19 @@ class FPSControlTimer final : public Singleton<FPSControlTimer>, public GenericT
         void controlFPS();
 
     private:
-        static constexpr int kTicksPerFrame = 1000 / config::game::FPS;
+        static constexpr unsigned int kTicksPerFrame = 1000 / config::game::FPS;
 };
 
 class CountdownTimer final : public GenericTimer {
     public:
-        CountdownTimer(unsigned int maxTicks) : kMaxTicks(maxTicks) {}
+        CountdownTimer(unsigned int maxTicks = 1000) { setMaxTicks(maxTicks); }
         ~CountdownTimer() = default;
 
-        inline bool isFinished() const { return getTicks() >= kMaxTicks; }
+        inline bool isFinished() const { return getTicks() >= mMaxTicks; }
+        inline void setMaxTicks(unsigned int maxTicks) { mMaxTicks = maxTicks; }
 
     private:
-        const unsigned int kMaxTicks;
+        unsigned int mMaxTicks;
 };
 
 
