@@ -333,6 +333,12 @@ namespace level {
 
         kLevelWhiteSpace = hstr("level-white-space"),
 
+        kLevelForest_0 = hstr("level-forest-0"),
+        kLevelForest_1 = hstr("level-forest-1"),
+        kLevelForest_2 = hstr("level-forest-2"),
+        kLevelForest_3 = hstr("level-forest-3"),
+        kLevelForest_4 = hstr("level-forest-4"),
+
         kLevelAnte = hstr("level-ante"),
         kLevelPaene = hstr("level-paene"),
         kLevelUmbra = hstr("level-umbra"),
@@ -638,11 +644,11 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelDeprecatedTutorial_0;
+        constexpr level::Name levelName = level::Name::kLevelForest_0;
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
 
-        constexpr double tileCountHeight = 12;   // OMORI's white space
+        constexpr double tileCountHeight = 22.5;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 

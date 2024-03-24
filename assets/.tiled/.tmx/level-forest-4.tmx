@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="30" height="75" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="8">
+ <editorsettings>
+  <export target="level-forest-4.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../.tsx/me-camping.tsx"/>
+ <tileset firstgid="5793" source="../.tsx/collision.tsx"/>
+ <layer id="5" name="static-collision" width="30" height="75">
+  <data encoding="base64" compression="zlib">
+   eJzt0kEKwCAMBEBf0f/3pz146yFWhG2pE9hDQBlJbE2l6jx60n2V6p2jc0/ufdGt+r+5K/tI2Lu5O+Y+z9R8Z5zkzt/6a1wul8vlcrlcLpfL5XK5XC6Xy+VyuVwut9cFJZi8nQ==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="30" height="75">
+  <data encoding="base64" compression="zlib">
+   eJztwwEJAAAMBKHL9v1DrcdQcNVUVVVVVVVVVfX5A7C1RDM=
+  </data>
+ </layer>
+ <layer id="2" name="props" width="30" height="75">
+  <data encoding="base64" compression="zlib">
+   eJzt1VlKgmEYxfFPwSuvmteROTQuInNoXEWWU22iLKfaRFlqwy4qNWsRlbMF/aGvq4wMet+CngM/5AN5DuJBXXbDcMOPAFyan9+j+1liGA94xBNqqKOBZo/3Om18d3DDg0lMYRozmMWcrb/eAYthDGIIwxjBKMYsH9/r46YfAQSxiCUsYwWrWOuzd5z7DkzACRfc8PToDXFzA5sII4IoYohjC9t99s5z34sF+OBHAMEevQlu7mEfSaSQRgZZHOCwz97vJMfNE5wijwKKOMM5LnCpoPeKm9e4QQllVHCLKu5wr6C3xs06GmiihTY66OIZLwp6/1J2rIaxi4RVbY+D++twmj1HvB4j16M3ym90DPEf+K32cj8E3yefL0xHxP7WmUYGWQ3/EUk6UmZnEWc419Cbp6NgdlZwi6qG3hIdZbOzjQ66GnqbdLTMzt/KT+75q8ieZc+qI3tWF9mz/sie1UX2rD+yZ3WRPeuP7FldZM/6I3tWF9mz/sie1UX2rD+yZ3WRPeuP7FldZM//J6+hMTEK
+  </data>
+ </layer>
+ <layer id="3" name="props" width="30" height="75">
+  <data encoding="base64" compression="zlib">
+   eJztlbkNAkEQBNdmbcgEMuFS4QuE5wLhC4QvDo7PoSX2Qpg+jCqppR2rnJK26aXUzykNtLvejfEeaqPsv8da1cHd4r4BAABaZvof5trC8E9M5Jjmn3OtbbTa4F3KsSrOvXbQjgbvVo5dcV60q3YzeE9ynIvzpb21j8H7kONZnF1Bz3HQsx96joOe/dBzHPTsh57joGc/9BwHPfuh5zjo2Q89x0HPfug5Dnr2Q89x/EPPX2NdBU4=
+  </data>
+ </layer>
+ <objectgroup id="4" name="entities">
+  <object id="1" name="bonfire" type="interactable" x="768" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A bonfire."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="2" name="sweet" type="interactable" x="736" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A marshmallow stick."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="4" name="sweet" type="interactable" x="800" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A marshmallow stick."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="7" name="entryway" type="interactable" x="640" y="320" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Work in progress."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Means no entry for now."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

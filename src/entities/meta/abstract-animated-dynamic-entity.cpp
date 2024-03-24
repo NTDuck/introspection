@@ -70,8 +70,6 @@ void AbstractAnimatedDynamicEntity<T>::move() {
     // Continue movement if new `Tile` has not been reached
     if ((mNextDestRect->x - mDestRect.x) * mCurrVelocity.x > 0 || (mNextDestRect->y - mDestRect.y) * mCurrVelocity.y > 0) return;   // Not sure this is logically acceptable but this took 3 hours of debugging so just gonna keep it anyway
 
-    // if (!mMoveDelayTimer.isFinished()) return;
-
     if (mNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
         BehaviouralType flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? BehaviouralType::kDefault : BehaviouralType::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed

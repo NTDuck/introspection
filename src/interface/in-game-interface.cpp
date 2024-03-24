@@ -376,6 +376,26 @@ void IngameInterface::handleLevelSpecifics() const {
             handleLevelSpecifics_impl<level::Name::kLevelDeprecatedTutorial_1>();
             break;
 
+        case level::Name::kLevelForest_0:
+            handleLevelSpecifics_impl<level::Name::kLevelForest_0>();
+            break;
+
+        case level::Name::kLevelForest_1:
+            handleLevelSpecifics_impl<level::Name::kLevelForest_1>();
+            break;
+
+        case level::Name::kLevelForest_2:
+            handleLevelSpecifics_impl<level::Name::kLevelForest_2>();
+            break;
+
+        case level::Name::kLevelForest_3:
+            handleLevelSpecifics_impl<level::Name::kLevelForest_3>();
+            break;
+
+        case level::Name::kLevelForest_4:
+            handleLevelSpecifics_impl<level::Name::kLevelForest_4>();
+            break;
+
         default: break;
     }
 }
@@ -688,4 +708,70 @@ IngameInterface::handleLevelSpecifics_impl() const {
     if (isBorderTraversed && RedHandThrone::instances.empty()) RedHandThrone::instantiateEx({
         new level::Data_Teleporter{ { 52, 43 }, { 20, 11 }, level::Name::kLevelBreakroomInitial },
     });
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelForest_0>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (PlaceholderTeleporter::instances.empty()) {
+        std::vector<level::Data_Generic*> data;
+        for (int y = 4; y <= 18; ++y) data.push_back(new level::Data_Teleporter(
+            { 49, y }, { 1, y }, level::Name::kLevelForest_1
+        ));
+        PlaceholderTeleporter::instantiateEx(data);
+    }
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelForest_1>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (PlaceholderTeleporter::instances.empty()) {
+        std::vector<level::Data_Generic*> data;
+        for (int y = 4; y <= 18; ++y) {
+            data.push_back(new level::Data_Teleporter( { 0, y }, { 48, y }, level::Name::kLevelForest_0 ));
+            data.push_back(new level::Data_Teleporter( { 49, y }, { 1, y }, level::Name::kLevelForest_2 ));
+        }
+        PlaceholderTeleporter::instantiateEx(data);
+    }
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelForest_2>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (PlaceholderTeleporter::instances.empty()) {
+        std::vector<level::Data_Generic*> data;
+        for (int y = 4; y <= 18; ++y) {
+            data.push_back(new level::Data_Teleporter( { 0, y }, { 48, y }, level::Name::kLevelForest_1 ));
+            data.push_back(new level::Data_Teleporter( { 49, y }, { 1, y }, level::Name::kLevelForest_3 ));
+        }
+        PlaceholderTeleporter::instantiateEx(data);
+    }
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelForest_3>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (PlaceholderTeleporter::instances.empty()) {
+        std::vector<level::Data_Generic*> data;
+        for (int y = 4; y <= 18; ++y) {
+            data.push_back(new level::Data_Teleporter( { 0, y }, { 48, y }, level::Name::kLevelForest_2 ));
+            data.push_back(new level::Data_Teleporter( { 49, y }, { 1, y }, level::Name::kLevelForest_4 ));
+        }
+        PlaceholderTeleporter::instantiateEx(data);
+    }
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelForest_4>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (PlaceholderTeleporter::instances.empty()) {
+        std::vector<level::Data_Generic*> data;
+        for (int y = 4; y <= 18; ++y) data.push_back(new level::Data_Teleporter(
+            { 0, y }, { 48, y }, level::Name::kLevelForest_3
+        ));
+        for (int x = 3; x <= 26; ++x) data.push_back(new level::Data_Teleporter(
+            { x, 74 }, { 54, 49 }, level::Name::kLevelWhiteSpace
+        ));
+        PlaceholderTeleporter::instantiateEx(data);
+    }
 }

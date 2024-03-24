@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="10">
+ <editorsettings>
+  <export target="level-forest-2.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../.tsx/me-camping.tsx"/>
+ <tileset firstgid="5793" source="../.tsx/omori-keys.tsx"/>
+ <tileset firstgid="5889" source="../.tsx/collision.tsx"/>
+ <layer id="2" name="static-collision" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt1zEKACAIQFE7Rfe/aUN7S4Qp78Mb3AQnI6Q3jblVn7s73Y7cu2TvAABQxU//w80sqX8LA3NKcQ==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt1DENACAMBdEvi7kqwAlSEFNxMDAQVgbS5oaXnIIzSQYAAMLypSTRAqvb2RH1qzMYSfx+DQAAeDcBOgdlGg==
+  </data>
+ </layer>
+ <layer id="3" name="props" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt2LEJgDAQheFzhGuyqQ4i6ACCCwgXEFwjzuNZiOk9Ei+8D17xd0mZCBNFXdKdOnHeD+8NUEoKRIdu0e26NdQ+0TdjV/sENrZG7gEAAABQwpC9pXr22zO/PbHfjlmL4/7DH4dF32r/cVh0Ky7RGNUI
+  </data>
+ </layer>
+ <layer id="4" name="props" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt2EENACAMBEEsIBacgBNwAnq4TwXAizY7yT1WQltzSk3rWtGq4x7aDNBL2wHaeG8AAAAAwD272b33Lz8PfiZ//Txe+wCujPie
+  </data>
+ </layer>
+ <objectgroup id="5" name="entities">
+  <object id="3" name="slime" type="slime" x="1376" y="384" width="32" height="32"/>
+  <object id="5" name="slime" type="slime" x="1312" y="480" width="32" height="32"/>
+  <object id="6" name="slime" type="slime" x="1248" y="256" width="32" height="32"/>
+  <object id="7" name="slime" type="slime" x="704" y="192" width="32" height="32"/>
+  <object id="8" name="slime" type="slime" x="928" y="544" width="32" height="32"/>
+  <object id="9" type="interactable" x="288" y="224" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Enemy approaching."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

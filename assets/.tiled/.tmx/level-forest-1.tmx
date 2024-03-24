@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="18">
+ <tileset firstgid="1" source="../.tsx/me-camping.tsx"/>
+ <tileset firstgid="5793" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="5809" source="../.tsx/omori-keys.tsx"/>
+ <layer id="4" name="static-collision" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt1zEKACAIQFFP0f27aUN7S4Qp78Mb3AQnI6Q3zbFVn7s73Y7cu2TvAABQxU//w80sqX8L1KU3tQ==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt1DENACAMBdEvi7kqwAlSEFNxMDAQVgbS5oaXnIIzSQYAAMLypSTRAqvb2RH1qzMYSfx+DQAAeDcBOgdlGg==
+  </data>
+ </layer>
+ <layer id="5" name="props" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJwr5WNgKAPiqUA8DYhLhzgfBoY6fxSMAnqBp2IMDBziDAw7gPQfIH4nNtAuGgUgIMQ00C4YBaNgFIyCUTAKRsEoGDrADKkvZco3dPlhfAh+KN/Q5Zch8UuHMH8wjHFQgw8CAz3GQQ3+cAEAcKeLmQ==
+  </data>
+ </layer>
+ <layer id="3" name="props" width="50" height="25">
+  <data encoding="base64" compression="zlib">
+   eJzt2EENACAMBEEU4AacgBNwAnq5TwXAizY7yT1WQltzSk3rWtGq4x7aDNBL2wHaeG8AAAAAwD272b33Lz8PfiZ//Txe+wDySp1H
+  </data>
+ </layer>
+ <objectgroup id="2" name="entities"/>
+</map>

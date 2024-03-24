@@ -5,6 +5,26 @@
       "source": ".tmx/level-white-space.json"
     },
     {
+      "name": "level-forest-0",
+      "source": ".tmx/level-forest-0.json"
+    },
+    {
+      "name": "level-forest-1",
+      "source": ".tmx/level-forest-1.json"
+    },
+    {
+      "name": "level-forest-2",
+      "source": ".tmx/level-forest-2.json"
+    },
+    {
+      "name": "level-forest-3",
+      "source": ".tmx/level-forest-3.json"
+    },
+    {
+      "name": "level-forest-4",
+      "source": ".tmx/level-forest-4.json"
+    },
+    {
       "name": "level-deprecated-tutorial-0",
       "source": ".tmx/level-deprecated-tutorial-0.json"
     },
