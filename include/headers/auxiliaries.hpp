@@ -417,13 +417,15 @@ namespace level {
 
         SDL_Point tileDestSize;
         SDL_Point tileDestCount;
+        double viewportHeight;
         SDL_Color backgroundColor;
 
         std::unordered_map<std::string, std::vector<Data_Generic*>> dependencies;
         std::unordered_map<std::string, std::string> properties;
 
         private:
-            void loadMembers(json const& JSONLevelData);
+            void loadProperties(json const& JSONLevelData);
+            void loadLayers(json const& JSONLevelData);
             void loadTileLayer(json const& JSONLayerData);
             void loadObjectLayer(json const& JSONLayerData);
             void loadTilelayerTilesets(json const& JSONLevelData);
@@ -648,7 +650,7 @@ namespace config {
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
 
-        constexpr double tileCountHeight = 22.5;   // OMORI's white space
+        constexpr double viewportHeight = 18;   // OMORI's white space
         constexpr double grayscaleIntensity = 0.5;
     }
 

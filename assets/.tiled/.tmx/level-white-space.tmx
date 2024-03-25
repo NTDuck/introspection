@@ -3,6 +3,9 @@
  <editorsettings>
   <export target="level-white-space.json" format="json"/>
  </editorsettings>
+ <properties>
+  <property name="viewport-height" type="float" value="22.5"/>
+ </properties>
  <tileset firstgid="1" source="../.tsx/omori-white-space.tsx"/>
  <tileset firstgid="37" source="../.tsx/omori-light-bulb-string.tsx"/>
  <tileset firstgid="51" source="../.tsx/collision.tsx"/>

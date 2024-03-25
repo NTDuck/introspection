@@ -76,6 +76,7 @@ void IngameViewHandler::onLevelChange() {
     };
     mTexture = SDL_CreateTexture(globals::renderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, mTextureSize.x, mTextureSize.y);
     
+    mTileCountHeight = level::data.viewportHeight;
     onWindowChange();
 
     // Switch view based on level size

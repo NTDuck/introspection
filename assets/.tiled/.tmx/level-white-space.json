@@ -349,6 +349,12 @@
  "nextlayerid":5,
  "nextobjectid":9,
  "orientation":"orthogonal",
+ "properties":[
+        {
+         "name":"viewport-height",
+         "type":"float",
+         "value":22.5
+        }],
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
  "tileheight":32,

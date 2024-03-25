@@ -115,7 +115,7 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 
         SDL_Point mTileDestSize;   // Not to be confused with `globals::tileDestSize`.
         double mTileCountWidth;
-        static constexpr double mTileCountHeight = config::interface::tileCountHeight;
+        double mTileCountHeight;
 
         SDL_Rect& mTargetedEntityDestRect;   // Read-only
         mutable SDL_Rect mViewport;   // Prevent warning: `note: the first difference of corresponding definitions is field 'mTargetedEntityDestRect'`

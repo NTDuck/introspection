@@ -1,5 +1,8 @@
 #include <auxiliaries.hpp>
 
+#include <string>
+#include <type_traits>
+
 
 /**
  * @see https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
@@ -217,9 +220,8 @@ bool level::Data::getProperty<bool>(std::string const& key) {
 
 template <typename T>
 void level::Data::setProperty(std::string const& key, T const& property) {
-    auto it = properties.find(key);
-    if (it == properties.end()) properties.insert(std::make_pair(key, std::to_string(property)));
-    else it->second = std::to_string(property);
+    if constexpr(std::is_same_v<T, std::string>) properties[key] = property;
+    else properties[key] = std::to_string(property);
 }
 
 template void level::Data::setProperty<bool>(std::string const&, bool const&);
@@ -233,26 +235,13 @@ void level::Data::eraseProperty(std::string const& key) {
 
 void level::Data::load(json const& JSONLevelData) {
     clear();   // Prevent undefined behaviour
-    loadMembers(JSONLevelData);
 
-    auto layers_j = JSONLevelData.find("layers"); if (layers_j == JSONLevelData.end()) return;
-    auto layers_v = layers_j.value(); if (!layers_v.is_array()) return;
-
-    for (const auto& layer : layers_v) {
-        auto type_j = layer.find("type"); if (type_j == layer.end()) continue;
-        auto type_v = type_j.value(); if (!type_v.is_string()) continue;
-
-        switch (hstr(static_cast<std::string>(type_v).c_str())) {
-            case hstr("tilelayer"): loadTileLayer(layer); break;
-            case hstr("objectgroup"): loadObjectLayer(layer); break;
-            default: break;
-        }
-    }
-
+    loadProperties(JSONLevelData);
+    loadLayers(JSONLevelData);
     loadTilelayerTilesets(JSONLevelData);
 }
 
-void level::Data::loadMembers(json const& JSONLevelData) {
+void level::Data::loadProperties(json const& JSONLevelData) {
     auto tileDestCountWidth_j = JSONLevelData.find("width"); if (tileDestCountWidth_j == JSONLevelData.end()) return;
     auto tileDestCountWidth_v = tileDestCountWidth_j.value(); if (!tileDestCountWidth_v.is_number_integer()) return;
     auto tileDestCountHeight_j = JSONLevelData.find("height"); if (tileDestCountHeight_j == JSONLevelData.end()) return;
@@ -268,9 +257,46 @@ void level::Data::loadMembers(json const& JSONLevelData) {
     auto tileDestSizeHeight_v = tileDestSizeHeight_j.value(); if (!tileDestSizeHeight_v.is_number_integer()) return;
     tileDestSize = { tileDestSizeWidth_v, tileDestSizeHeight_v };
 
-    auto backgroundColor_j = JSONLevelData.find("backgroundcolor"); if (backgroundColor_j == JSONLevelData.end()) return;
-    auto backgroundColor_v = backgroundColor_j.value(); if (!backgroundColor_v.is_string()) return;
-    backgroundColor = utils::hextocol(backgroundColor_v);
+    auto backgroundColor_j = JSONLevelData.find("backgroundcolor");
+    if (backgroundColor_j != JSONLevelData.end()) {
+        auto backgroundColor_v = backgroundColor_j.value();
+        if (backgroundColor_v.is_string()) backgroundColor = utils::hextocol(backgroundColor_v);
+    }
+
+    auto properties_j = JSONLevelData.find("properties"); if (properties_j == JSONLevelData.end()) return;
+    auto properties_v = properties_j.value();
+
+    for (const auto& property : properties_v) {
+        auto name_j = property.find("name"); if (name_j == property.end()) continue;
+        auto name_v = name_j.value(); if (!name_v.is_string()) continue;
+        auto value_j = property.find("value"); if (value_j == property.end()) continue;
+        auto value_v = value_j.value();
+
+        switch (hstr(static_cast<std::string>(name_v).c_str())) {
+            case hstr("viewport-height"):
+                viewportHeight = value_v;
+                break;
+
+            default:
+                setProperty(std::string(name_v), std::string(value_v));
+        }
+    }
+}
+
+void level::Data::loadLayers(json const& JSONLevelData) {
+    auto layers_j = JSONLevelData.find("layers"); if (layers_j == JSONLevelData.end()) return;
+    auto layers_v = layers_j.value(); if (!layers_v.is_array()) return;
+
+    for (const auto& layer : layers_v) {
+        auto type_j = layer.find("type"); if (type_j == layer.end()) continue;
+        auto type_v = type_j.value(); if (!type_v.is_string()) continue;
+
+        switch (hstr(static_cast<std::string>(type_v).c_str())) {
+            case hstr("tilelayer"): loadTileLayer(layer); break;
+            case hstr("objectgroup"): loadObjectLayer(layer); break;
+            default: break;
+        }
+    }
 }
 
 /**
@@ -361,7 +387,9 @@ void level::Data::clear() {
     collisionTilelayer.clear();
     collisionTilelayer.shrink_to_fit();
 
-    backgroundColor = config::color::offblack;   // Default
+    // Default properties
+    viewportHeight = config::interface::viewportHeight;
+    backgroundColor = config::color::offblack;
 
     for (auto& pair : dependencies) for (auto& p : pair.second) delete p;
     dependencies.clear();
