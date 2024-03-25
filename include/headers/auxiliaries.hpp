@@ -332,6 +332,8 @@ namespace level {
         kLevelDeprecatedTutorial_1 = hstr("level-deprecated-tutorial-1"),
 
         kLevelWhiteSpace = hstr("level-white-space"),
+        
+        kLevelBegin = hstr("level-begin"),
 
         kLevelForest_0 = hstr("level-forest-0"),
         kLevelForest_1 = hstr("level-forest-1"),
@@ -646,7 +648,7 @@ namespace config {
 
     namespace interface {
         const std::filesystem::path path = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelForest_0;
+        constexpr level::Name levelName = level::Name::kLevelBegin;
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
 

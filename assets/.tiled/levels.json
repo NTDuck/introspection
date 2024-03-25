@@ -5,6 +5,10 @@
       "source": ".tmx/level-white-space.json"
     },
     {
+      "name": "level-begin",
+      "source": ".tmx/level-begin.json"
+    },
+    {
       "name": "level-forest-0",
       "source": ".tmx/level-forest-0.json"
     },

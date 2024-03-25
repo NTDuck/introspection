@@ -26,7 +26,5 @@
    eJzt2KERACAMBEEc/QvoBDqBTkDzJgWAIpnbmRdXQlJzSk3rWtGq4x7aDNBL2wHaeG8AAAAAwD272b33Lz8PfiZ//Txe+wCIuBar
   </data>
  </layer>
- <objectgroup id="8" name="entities">
-  <object id="1" name="origin" type="player" x="288" y="352" width="32" height="32"/>
- </objectgroup>
+ <objectgroup id="8" name="entities"/>
 </map>

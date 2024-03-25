@@ -14,6 +14,7 @@ std::optional<level::Name> level::stoln(std::string const& s) {
 
     switch (hstr(s.c_str())) {
         IMPL(Name::kLevelWhiteSpace)
+        IMPL(Name::kLevelBegin)
         IMPL(Name::kLevelForest_0)
         IMPL(Name::kLevelForest_1)
         IMPL(Name::kLevelForest_2)
