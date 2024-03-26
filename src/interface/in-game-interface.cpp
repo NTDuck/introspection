@@ -14,6 +14,8 @@ IngameInterface::IngameInterface() {
 
         // Non-interactible entities
         OmoriLightBulb::invoke(&OmoriLightBulb::render);
+        OmoriKeysWASD::invoke(&OmoriKeysWASD::render);
+        HospitalXRayMachine::invoke(&HospitalXRayMachine::render);
 
         // Interactables
         // PlaceholderInteractable::invoke(&PlaceholderInteractable::render);
@@ -27,6 +29,9 @@ IngameInterface::IngameInterface() {
         OmoriCat_5::invoke(&OmoriCat_5::render);
         OmoriCat_6::invoke(&OmoriCat_6::render);
         OmoriCat_7::invoke(&OmoriCat_7::render);
+        HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::render);
+        HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::render);
+        HospitalSink::invoke(&HospitalSink::render);
 
         // Entities
         // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::render);
@@ -62,6 +67,8 @@ void IngameInterface::deinitialize() {
     Player::deinitialize();
 
     OmoriLightBulb::deinitialize();
+    OmoriKeysWASD::deinitialize();
+    HospitalXRayMachine::deinitialize();
 
     PlaceholderInteractable::deinitialize();
     OmoriLaptop::deinitialize();
@@ -74,6 +81,9 @@ void IngameInterface::deinitialize() {
     OmoriCat_5::deinitialize();
     OmoriCat_6::deinitialize();
     OmoriCat_7::deinitialize();
+    HospitalXRayScreenArm::deinitialize();
+    HospitalXRayScreenHead::deinitialize();
+    HospitalSink::deinitialize();
 
     PlaceholderTeleporter::deinitialize();
     RedHandThrone::deinitialize();
@@ -91,6 +101,8 @@ void IngameInterface::initialize() {
     Player::initialize();
 
     OmoriLightBulb::initialize();
+    OmoriKeysWASD::initialize();
+    HospitalXRayMachine::initialize();
 
     PlaceholderInteractable::initialize();
     OmoriMewO::initialize();
@@ -103,6 +115,9 @@ void IngameInterface::initialize() {
     OmoriCat_5::initialize();
     OmoriCat_6::initialize();
     OmoriCat_7::initialize();
+    HospitalXRayScreenArm::initialize();
+    HospitalXRayScreenHead::initialize();
+    HospitalSink::initialize();
 
     // PlaceholderTeleporter::initialize();
     RedHandThrone::initialize();
@@ -156,6 +171,8 @@ void IngameInterface::onLevelChange() const {
     Player::invoke(&Player::onLevelChange, *(level::data.get(config::entities::player::typeID)[0]));
 
     OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
+    OmoriKeysWASD::onLevelChangeAll(level::data.get(config::entities::omori_keys_wasd::typeID));
+    HospitalXRayMachine::onLevelChangeAll(level::data.get(config::entities::hospital_xray_machine::typeID));
 
     PlaceholderInteractable::onLevelChangeAll(level::data.get(config::entities::placeholder_interactable::typeID));
     OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
@@ -168,6 +185,9 @@ void IngameInterface::onLevelChange() const {
     OmoriCat_5::onLevelChangeAll(level::data.get(config::entities::omori_cat_5::typeID));
     OmoriCat_6::onLevelChangeAll(level::data.get(config::entities::omori_cat_6::typeID));
     OmoriCat_7::onLevelChangeAll(level::data.get(config::entities::omori_cat_7::typeID));
+    HospitalXRayScreenArm::onLevelChangeAll(level::data.get(config::entities::hospital_xray_screen_arm::typeID));
+    HospitalXRayScreenHead::onLevelChangeAll(level::data.get(config::entities::hospital_xray_screen_head::typeID));
+    HospitalSink::onLevelChangeAll(level::data.get(config::entities::hospital_sink::typeID));
 
     PlaceholderTeleporter::onLevelChangeAll(level::data.get(config::entities::placeholder_teleporter::typeID));
     RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
@@ -186,6 +206,8 @@ void IngameInterface::onWindowChange() const {
     Player::invoke(&Player::onWindowChange);
 
     OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
+    OmoriKeysWASD::invoke(&OmoriKeysWASD::onWindowChange);
+    HospitalXRayMachine::invoke(&HospitalXRayMachine::onWindowChange);
 
     PlaceholderInteractable::invoke(&PlaceholderInteractable::onWindowChange);
     OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
@@ -198,6 +220,9 @@ void IngameInterface::onWindowChange() const {
     OmoriCat_5::invoke(&OmoriCat_5::onWindowChange);
     OmoriCat_6::invoke(&OmoriCat_6::onWindowChange);
     OmoriCat_7::invoke(&OmoriCat_7::onWindowChange);
+    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::onWindowChange);
+    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::onWindowChange);
+    HospitalSink::invoke(&HospitalSink::onWindowChange);
 
     PlaceholderTeleporter::invoke(&PlaceholderTeleporter::onWindowChange);
     RedHandThrone::invoke(&RedHandThrone::onWindowChange);
@@ -290,6 +315,9 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     OmoriCat_5::invoke(&OmoriCat_5::handleCustomEventGET, event);
     OmoriCat_6::invoke(&OmoriCat_6::handleCustomEventGET, event);
     OmoriCat_7::invoke(&OmoriCat_7::handleCustomEventGET, event);
+    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::handleCustomEventGET, event);
+    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::handleCustomEventGET, event);
+    HospitalSink::invoke(&HospitalSink::handleCustomEventGET, event);
 
     PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventGET, event);
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
@@ -335,6 +363,8 @@ void IngameInterface::handleDependencies() const {
 */
 void IngameInterface::handleEntitiesInteraction() const {
     OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
+    OmoriKeysWASD::invoke(&OmoriKeysWASD::updateAnimation);
+    HospitalXRayMachine::invoke(&HospitalXRayMachine::updateAnimation);
 
     PlaceholderInteractable::invoke(&PlaceholderInteractable::updateAnimation);
     OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
@@ -347,6 +377,9 @@ void IngameInterface::handleEntitiesInteraction() const {
     OmoriCat_5::invoke(&OmoriCat_5::updateAnimation);
     OmoriCat_6::invoke(&OmoriCat_6::updateAnimation);
     OmoriCat_7::invoke(&OmoriCat_7::updateAnimation);
+    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::updateAnimation);
+    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::updateAnimation);
+    HospitalSink::invoke(&HospitalSink::updateAnimation);
 
     // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::updateAnimation);
     RedHandThrone::invoke(&RedHandThrone::updateAnimation);

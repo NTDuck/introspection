@@ -112,4 +112,4 @@ std::stack<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
 template class GenericSurgeProjectile<PentacleProjectile>;
 
 
-DEFINE_GENERIC_SURGE_PROJECTILE(PentacleProjectile, config::entities::pentacle_projectile)
+DEF_GENERIC_SURGE_PROJECTILE(PentacleProjectile, config::entities::pentacle_projectile)

@@ -739,6 +739,30 @@ namespace config {
             constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
         }
 
+        namespace hospital_xray_machine {
+            constexpr const char* typeID = "hospital-xray-machine";
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-machine.tsx";
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;            
+        }
+
+        namespace hospital_xray_screen_arm {
+            constexpr const char* typeID = "interactable-hospital-xray-screen-arm";
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-screen-arm.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };            
+        }
+
+        namespace hospital_xray_screen_head {
+            constexpr const char* typeID = "interactable-hospital-xray-screen-head";
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-screen-head.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };            
+        }
+
+        namespace hospital_sink {
+            constexpr const char* typeID = "interactable-hospital-sink";
+            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-sink.tsx";
+            constexpr SDL_FRect destRectModifier = { -1, -1, 1, 1 };
+        }
+
         namespace omori_laptop {
             constexpr const char* typeID = "interactable-omori-laptop";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
@@ -757,21 +781,27 @@ namespace config {
             constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
         }
 
-        #define DEFINE_OMORI_CAT_NS(index) \
+        #define DEF_OMORI_CAT_NS(index) \
         namespace omori_cat_##index {\
             constexpr const char* typeID = "interactable-omori-cat-" #index;\
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
             constexpr SDL_FRect destRectModifier = { 0, -0.0125, 1, 1 };\
         }
 
-        DEFINE_OMORI_CAT_NS(0)
-        DEFINE_OMORI_CAT_NS(1)
-        DEFINE_OMORI_CAT_NS(2)
-        DEFINE_OMORI_CAT_NS(3)
-        DEFINE_OMORI_CAT_NS(4)
-        DEFINE_OMORI_CAT_NS(5)
-        DEFINE_OMORI_CAT_NS(6)
-        DEFINE_OMORI_CAT_NS(7)
+        DEF_OMORI_CAT_NS(0)
+        DEF_OMORI_CAT_NS(1)
+        DEF_OMORI_CAT_NS(2)
+        DEF_OMORI_CAT_NS(3)
+        DEF_OMORI_CAT_NS(4)
+        DEF_OMORI_CAT_NS(5)
+        DEF_OMORI_CAT_NS(6)
+        DEF_OMORI_CAT_NS(7)
+
+        namespace omori_keys_wasd {
+            constexpr const char* typeID = "omori-keys-wasd";
+            const std::filesystem::path path = "assets/.tiled/.tsx/omori-keys-wasd.tsx";
+            constexpr SDL_FRect destRectModifier = { 0.5, 0.5, 1, 1 };            
+        }
     }
 
     namespace components {

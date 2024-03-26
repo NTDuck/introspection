@@ -170,7 +170,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
  * @brief A shorthand to declare a AAE-derived. Used in header files only.
  * @note Does not include explicit template instantiation.
 */
-#define DECLARE_ABSTRACT_ANIMATED_ENTITY(T) \
+#define DECL_ABSTRACT_ANIMATED_ENTITY(T) \
 class T final : public AbstractAnimatedEntity<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_ENTITY(T)\
@@ -183,7 +183,7 @@ class T final : public AbstractAnimatedEntity<T> {\
  * @brief A shorthand to define a AAE-derived. Used in source files only.
  * @note Does not include dependencies i.e. `#include ...`
 */
-#define DEFINE_ABSTRACT_ANIMATED_ENTITY(T, ns) \
+#define DEF_ABSTRACT_ANIMATED_ENTITY(T, ns) \
 T::T(SDL_Point const& destCoords) : AbstractAnimatedEntity<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
 }\
@@ -307,7 +307,7 @@ class GenericInteractable : public AbstractAnimatedEntity<T> {
 
 #define INCL_GENERIC_INTERACTABLE(T) using GenericInteractable<T>::deinitialize, GenericInteractable<T>::onLevelChange, GenericInteractable<T>::handleCustomEventGET, GenericInteractable<T>::mProgress;
 
-#define DECLARE_GENERIC_INTERACTABLE(T) \
+#define DECL_GENERIC_INTERACTABLE(T) \
 class T final : public GenericInteractable<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_ENTITY(T)\
@@ -317,7 +317,7 @@ class T final : public GenericInteractable<T> {\
         ~T() = default;\
 };
 
-#define DEFINE_GENERIC_INTERACTABLE_SFX(T, ns, sfx) \
+#define DEF_GENERIC_INTERACTABLE_SFX(T, ns, sfx) \
 T::T(SDL_Point const& destCoords) : GenericInteractable<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
 }\
@@ -331,7 +331,7 @@ std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 template <>\
 Mixer::SFXName* GenericInteractable<T>::sSFXName = sfx;
 
-#define DEFINE_GENERIC_INTERACTABLE(T, ns) DEFINE_GENERIC_INTERACTABLE_SFX(T, ns, nullptr);
+#define DEF_GENERIC_INTERACTABLE(T, ns) DEF_GENERIC_INTERACTABLE_SFX(T, ns, nullptr);
 
 
 template <typename T>
@@ -367,7 +367,7 @@ class GenericTeleporterEntity : public AbstractAnimatedEntity<T> {
 
 #define INCL_GENERIC_TELEPORTER_ENTITY(T) using GenericTeleporterEntity<T>::onLevelChange, GenericTeleporterEntity<T>::handleCustomEventPOST;
 
-#define DECLARE_GENERIC_TELEPORTER_ENTITY(T) \
+#define DECL_GENERIC_TELEPORTER_ENTITY(T) \
 class T final : public GenericTeleporterEntity<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_ENTITY(T)\
@@ -377,7 +377,7 @@ class T final : public GenericTeleporterEntity<T> {\
         ~T() = default;\
 };
 
-#define DEFINE_GENERIC_TELEPORTER_ENTITY(T, ns) \
+#define DEF_GENERIC_TELEPORTER_ENTITY(T, ns) \
 T::T(SDL_Point const& destCoords) : GenericTeleporterEntity<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
 }\
@@ -448,7 +448,7 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
 
 #define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::getDeathCount, GenericHostileEntity<T>::isAllDead, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
 
-#define DECLARE_GENERIC_HOSTILE_ENTITY(T) \
+#define DECL_GENERIC_HOSTILE_ENTITY(T) \
 class T final : public GenericHostileEntity<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
@@ -458,7 +458,7 @@ class T final : public GenericHostileEntity<T> {\
         ~T() = default;\
 };
 
-#define DEFINE_GENERIC_HOSTILE_ENTITY(T, ns) \
+#define DEF_GENERIC_HOSTILE_ENTITY(T, ns) \
 T::T(SDL_Point const& destCoords) : GenericHostileEntity<T>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
     mMoveInitiateRange = ns::moveInitiateRange;\
@@ -516,7 +516,7 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
 /**
  * @note Second parameter `direction` of constructor is provided with a decoy value to prevent a specific compilation error.
 */
-#define DECLARE_GENERIC_SURGE_PROJECTILE(T) \
+#define DECL_GENERIC_SURGE_PROJECTILE(T) \
 class T final : public GenericSurgeProjectile<T> {\
     public:\
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
@@ -526,7 +526,7 @@ class T final : public GenericSurgeProjectile<T> {\
         ~T() = default;\
 };
 
-#define DEFINE_GENERIC_SURGE_PROJECTILE(T, ns) \
+#define DEF_GENERIC_SURGE_PROJECTILE(T, ns) \
 T::T(SDL_Point const& destCoords, SDL_Point const& direction) : GenericSurgeProjectile<T>(destCoords, direction) {\
     mDestRectModifier = ns::destRectModifier;\
     mAttackRegisterRange = ns::attackRegisterRange;\
@@ -640,24 +640,29 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 };
 
 
-DECLARE_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
+DECL_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
+DECL_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD)
+DECL_ABSTRACT_ANIMATED_ENTITY(HospitalXRayMachine)
 
-DECLARE_GENERIC_INTERACTABLE(OmoriLaptop)
-DECLARE_GENERIC_INTERACTABLE(OmoriMewO)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_0)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_1)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_2)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_3)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_4)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_5)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_6)
-DECLARE_GENERIC_INTERACTABLE(OmoriCat_7)
+DECL_GENERIC_INTERACTABLE(OmoriLaptop)
+DECL_GENERIC_INTERACTABLE(OmoriMewO)
+DECL_GENERIC_INTERACTABLE(OmoriCat_0)
+DECL_GENERIC_INTERACTABLE(OmoriCat_1)
+DECL_GENERIC_INTERACTABLE(OmoriCat_2)
+DECL_GENERIC_INTERACTABLE(OmoriCat_3)
+DECL_GENERIC_INTERACTABLE(OmoriCat_4)
+DECL_GENERIC_INTERACTABLE(OmoriCat_5)
+DECL_GENERIC_INTERACTABLE(OmoriCat_6)
+DECL_GENERIC_INTERACTABLE(OmoriCat_7)
+DECL_GENERIC_INTERACTABLE(HospitalXRayScreenArm)
+DECL_GENERIC_INTERACTABLE(HospitalXRayScreenHead)
+DECL_GENERIC_INTERACTABLE(HospitalSink)
 
-DECLARE_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
+DECL_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 
-DECLARE_GENERIC_HOSTILE_ENTITY(Slime)
+DECL_GENERIC_HOSTILE_ENTITY(Slime)
 
-DECLARE_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
+DECL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
 
 
 #endif

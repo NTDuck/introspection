@@ -64,16 +64,22 @@ template class GenericInteractable<OmoriCat_4>;
 template class GenericInteractable<OmoriCat_5>;
 template class GenericInteractable<OmoriCat_6>;
 template class GenericInteractable<OmoriCat_7>;
+template class GenericInteractable<HospitalXRayScreenArm>;
+template class GenericInteractable<HospitalXRayScreenHead>;
+template class GenericInteractable<HospitalSink>;
 
 
-DEFINE_GENERIC_INTERACTABLE(PlaceholderInteractable, config::entities::placeholder_interactable)
-DEFINE_GENERIC_INTERACTABLE(OmoriLaptop, config::entities::omori_laptop)
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriMewO, config::entities::omori_mewo, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_0, config::entities::omori_cat_0, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_1, config::entities::omori_cat_1, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_2, config::entities::omori_cat_2, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_3, config::entities::omori_cat_3, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_4, config::entities::omori_cat_4, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_5, config::entities::omori_cat_5, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_6, config::entities::omori_cat_6, new Mixer::SFXName(Mixer::SFXName::kMewo))
-DEFINE_GENERIC_INTERACTABLE_SFX(OmoriCat_7, config::entities::omori_cat_7, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE(PlaceholderInteractable, config::entities::placeholder_interactable)
+DEF_GENERIC_INTERACTABLE(OmoriLaptop, config::entities::omori_laptop)
+DEF_GENERIC_INTERACTABLE_SFX(OmoriMewO, config::entities::omori_mewo, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_0, config::entities::omori_cat_0, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_1, config::entities::omori_cat_1, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_2, config::entities::omori_cat_2, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_3, config::entities::omori_cat_3, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_4, config::entities::omori_cat_4, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_5, config::entities::omori_cat_5, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_6, config::entities::omori_cat_6, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_7, config::entities::omori_cat_7, new Mixer::SFXName(Mixer::SFXName::kMewo))
+DEF_GENERIC_INTERACTABLE(HospitalXRayScreenArm, config::entities::hospital_xray_screen_arm)
+DEF_GENERIC_INTERACTABLE(HospitalXRayScreenHead, config::entities::hospital_xray_screen_head)
+DEF_GENERIC_INTERACTABLE(HospitalSink, config::entities::hospital_sink)

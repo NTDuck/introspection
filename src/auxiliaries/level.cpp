@@ -358,6 +358,9 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
             case hstr(config::entities::omori_cat_5::typeID):
             case hstr(config::entities::omori_cat_6::typeID):
             case hstr(config::entities::omori_cat_7::typeID):
+            case hstr(config::entities::hospital_xray_screen_arm::typeID):
+            case hstr(config::entities::hospital_xray_screen_head::typeID):
+            case hstr(config::entities::hospital_sink::typeID):
                 data = new Data_Interactable();
                 break;
 

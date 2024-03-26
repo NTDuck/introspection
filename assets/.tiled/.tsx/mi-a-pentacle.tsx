@@ -12,5 +12,5 @@
   <property name="animation-ticks" type="int" value="15"/>
   <property name="animation-width" type="int" value="1"/>
  </properties>
- <image source="../../graphics/sprites/entities/mi-a-pentacle.png" width="384" height="64"/>
+ <image source="../../graphics/sprites/entities/mi/mi-a-pentacle.png" width="384" height="64"/>
 </tileset>

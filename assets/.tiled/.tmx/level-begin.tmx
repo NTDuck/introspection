@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="15" height="17" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#1b1b1b" nextlayerid="22" nextobjectid="4">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="15" height="17" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#1b1b1b" nextlayerid="22" nextobjectid="74">
  <editorsettings>
   <export target="level-begin.json" format="json"/>
  </editorsettings>
@@ -15,7 +15,7 @@
  <tileset firstgid="4187" source="../.tsx/omori-keys.tsx"/>
  <layer id="6" name="static-collision" width="15" height="17">
   <data encoding="base64" compression="zlib">
-   eJxjYBj6wFsAgklVjwujqyFHLyX2kqMXl3txmYOPTYxeUgG19BLjX2LDhlCY4YsXSvXiA6T6l1wAAHAkHpM=
+   eJxjYBj6wFsAgklVjwujq8GlF5cYLrdQSy8x7ifkd3xsYvSSCqillxj/Ehs2hMIMX7xQqhcfINW/5AIAtKgdJw==
   </data>
  </layer>
  <layer id="1" name="floors" width="15" height="17">
@@ -30,7 +30,7 @@
  </layer>
  <layer id="3" name="props" width="15" height="17">
   <data encoding="base64" compression="zlib">
-   eJzFkj1OAlEQgCdaCSx4AVkOwN8F8AZwGSmEhh8btPEHCyRBNFKZCDXcgL0BNCZaaWMiFVR+iUN2ULZACif5sjPz5nt5u/tEtosjR6TofOf1iMgJHFOXoKz9N3rvkd/uA+s9nblivQkN6lM40/6c3gKeqR/DvtukvnZW92tR30Bb+3s8Q/ABo7D8Obwt3P8INyqSiPp1nvMXIBnyeyu5+TcZvKxxY6ztw4GZX+Yd9ryFrn6fIXMjs5dLnoCUcZf5E04fBuqOmfPsOcizkDOuzW1MmJuuuV/rosJcFWoB8y+c51XPlOLepM0dO8e5gMsA9xNvpm4O79C4XZw7uFc3zru45n126O/qWh6v8ONu20jjZQK+xSbxBeXCLS8=
+   eJxjYKAMFPMyMJTwQthNPAwMzUBcAeRXAnEVL369i4HyS6BqJgH1TQbiDiC/E4i70PTeB/JXcSP4k4H8KWhqZgD5M4F4FlScE0q/B9K7uBnIBqco0DsQQJ6PgUGBD8H3BbrfD4h1uBBiKGweBFsfqM8ASS8/UE4AiGWR1MPYc4FmzgPi+TjCRx6oTwGIdZH0wthrgXrWAfF6HHr1gfoMgNgWSS8ym1bgEdA9j6Fu0gWmGz0CaRgZfALq+wzVawvUZ4dHrxzQL/JI/mEC+pUZGg++QH1+ePTqAfXpUyEsAG+IHqU=
   </data>
  </layer>
  <layer id="5" name="props" width="15" height="17">
@@ -58,16 +58,6 @@
    eJxL4mRgSBrFo3gUjzgMADGAapY=
   </data>
  </layer>
- <layer id="12" name="shadow-4" width="15" height="17">
-  <data encoding="base64" compression="zlib">
-   eJxL4mRgSBrFo3gUjzgMADGAapY=
-  </data>
- </layer>
- <layer id="13" name="shadow-5" width="15" height="17">
-  <data encoding="base64" compression="zlib">
-   eJxL4mRgSBrFo3gUjzgMADGAapY=
-  </data>
- </layer>
  <objectgroup id="7" name="entities">
   <object id="1" name="origin" type="player" x="384" y="128" width="32" height="32"/>
   <object id="2" name="to forest 0" type="teleporter" x="128" y="480" width="32" height="32">
@@ -82,6 +72,737 @@
     <property name="target-dest-coords-x" type="int" value="9"/>
     <property name="target-dest-coords-y" type="int" value="11"/>
     <property name="target-level" value="level-forest-0"/>
+   </properties>
+  </object>
+  <object id="4" name="keys" type="omori-keys-wasd" x="128" y="160" width="32" height="32"/>
+  <object id="5" name="hint" type="interactable" x="128" y="160" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="&quot;WASD&quot;"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="10" name="sink" type="interactable-hospital-sink" x="352" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's a sink."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="The faucet seems stuck."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="11" name="arm" type="interactable-hospital-xray-screen-arm" x="384" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A computer screen."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="12" name="head" type="interactable-hospital-xray-screen-head" x="416" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A computer screen."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="15" name="near sink" type="interactable" x="320" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Nothing worth mentioning."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="17" name="plant" type="interactable" x="96" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="23" name="drawer" type="interactable" x="384" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A small drawer."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="24" name="bed" type="interactable" x="416" y="128" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A single bed."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="25" name="trash" type="interactable" x="288" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="In the trash lie your hopes and dreams."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Exactly where they belong."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="26" name="plant" type="interactable" x="192" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="27" name="plant" type="interactable" x="192" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="28" name="plant" type="interactable" x="96" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="29" name="large plant" type="interactable" x="384" y="480" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A large potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="30" name="large plant" type="interactable" x="416" y="480" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A large potted plant."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="31" name="hint" type="interactable" x="160" y="160" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="&quot;WASD&quot;"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="32" name="hint" type="interactable" x="160" y="192" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="&quot;WASD&quot;"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="33" name="hint" type="interactable" x="128" y="192" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="&quot;WASD&quot;"/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="34" name="wheelchair" type="interactable" x="384" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A wheelchair."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="35" name="fake" type="interactable" x="128" y="64" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A locked glass door."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You cannot go there, not yet."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="For you are unworthy."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="36" name="wheelchair" type="interactable" x="384" y="224" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A wheelchair."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="37" name="fake" type="interactable" x="160" y="64" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A locked glass door."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You cannot go there, not yet."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="For you are unworthy."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="43" name="machine" type="interactable" x="32" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="48" name="vend" type="interactable" x="32" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A vending machine."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's stocked with noodles."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="But you don't have any changes."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="50" name="vend" type="interactable" x="64" y="352" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A vending machine."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's stocked with noodles."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="But you don't have any changes."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="51" name="cabinet" type="interactable" x="64" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A medium-sized cabinet."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There's a human corpse inside."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Upon closer inspection, it's just your reflection."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="52" name="machine" type="interactable" x="64" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="53" name="machine" type="interactable" x="192" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="54" name="machine" type="interactable" x="224" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="55" name="machine" type="interactable" x="256" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="56" name="cabinet" type="interactable" x="32" y="256" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A medium-sized cabinet."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There's a human corpse inside."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Upon closer inspection, it's just your reflection."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="58" name="trash" type="interactable" x="96" y="96" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="In the trash lie your hopes and dreams."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Exactly where they belong."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="59" name="weaver" type="interactable" x="288" y="384" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="60" name="weaver" type="interactable" x="320" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="61" name="weaver" type="interactable" x="256" y="448" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="62" name="weaver" type="interactable" x="288" y="448" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="63" name="weaver" type="interactable" x="320" y="448" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="64" name="weaver" type="interactable" x="256" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="65" name="weaver reyeal" type="hospital-xray-machine" x="288" y="416" width="32" height="32"/>
+  <object id="66" name="weaver" type="interactable" x="320" y="384" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="67" name="weaver" type="interactable" x="256" y="384" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Intricate machineries whose purpose is yet known."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's working hard."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Unlike you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="68" name="cubicle" type="interactable" x="64" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A cubicle."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="The curtains do not retract."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Guess you're not welcome."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="70" name="cubicle" type="interactable" x="32" y="416" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A cubicle."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="The curtains do not retract."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Guess you're not welcome."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="71" name="todo" type="interactable" x="256" y="320" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A todolist that is barely readable."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="72" name="todo" type="interactable" x="288" y="320" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A todolist that is barely readable."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="73" name="todo" type="interactable" x="320" y="320" width="32" height="32">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A todolist that is barely readable."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
    </properties>
   </object>
  </objectgroup>

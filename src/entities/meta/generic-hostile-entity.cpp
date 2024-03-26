@@ -128,4 +128,4 @@ unsigned int GenericHostileEntity<T>::sDeathCount = 0;
 template class GenericHostileEntity<Slime>;
 
 
-DEFINE_GENERIC_HOSTILE_ENTITY(Slime, config::entities::slime)
+DEF_GENERIC_HOSTILE_ENTITY(Slime, config::entities::slime)

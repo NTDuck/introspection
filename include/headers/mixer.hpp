@@ -67,6 +67,12 @@ class Mixer final : Singleton<Mixer> {
 
         std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
             { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
+            { level::Name::kLevelBegin, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-088-lost-library.mp3") },
+            { level::Name::kLevelForest_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-038-space-boyfriend-tape.mp3") },
+            { level::Name::kLevelForest_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-038-space-boyfriend-tape.mp3") },
+            { level::Name::kLevelForest_2, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-039-trouble-never-always.mp3") },
+            { level::Name::kLevelForest_3, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-040-you-were-wrong-go-back.mp3") },
+            { level::Name::kLevelForest_4, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-037-the-elegance-of-the-mysterious-and-distant.mp3") },
             { level::Name::kLevelDeprecatedTutorial_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
             { level::Name::kLevelDeprecatedTutorial_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-005-ruins.mp3") },
             { level::Name::__kLevelTutorial_0_Combat__, std::make_pair(nullptr, config::path::asset_audio / "bgm/undertale-009-enemy-approaching.mp3") },
