@@ -653,7 +653,7 @@ namespace config {
         constexpr std::size_t LRUCacheSize = 64;
 
         constexpr double viewportHeight = 18;   // OMORI's white space
-        constexpr double grayscaleIntensity = 0.5;
+        constexpr double grayscaleIntensity = 1;
     }
 
     /**

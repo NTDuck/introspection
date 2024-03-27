@@ -72,9 +72,8 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 
     if (mNextVelocity == nullptr) onMoveEnd();   // If new move has not been initiated, terminate movement i.e. switch back to `mBaseAnimation`
     else {
-        BehaviouralType flag = sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? BehaviouralType::kDefault : BehaviouralType::kContinued;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
-        onMoveEnd(flag);
-        initiateMove(flag);
+        onMoveEnd(BehaviouralType::kContinued);
+        initiateMove(BehaviouralType::kContinued);
     }
 }
 
@@ -84,7 +83,7 @@ void AbstractAnimatedDynamicEntity<T>::move() {
 */
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::initiateMove(BehaviouralType flag) {
-    if ( mNextDestCoords != nullptr || mAnimation == Animation::kDeath) return;   // Another move is on progress
+    if ( (mNextDestCoords != nullptr && mNextVelocity != nullptr && *mNextVelocity + mCurrVelocity != SDL_Point{ 0, 0 }) || mAnimation == Animation::kDeath) return;   // Another move is on progress and next move is not directionally opposite to current move
 
     if (mNextVelocity == nullptr) { onMoveEnd(BehaviouralType::kInvalidated); return; }
 
@@ -131,6 +130,8 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
     mCurrVelocity = *mNextVelocity;
     mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
+    if (sTilesetData.isMultiDirectional && mDirection != mPrevDirection) flag = BehaviouralType::kDefault;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
+
     resetAnimation(mBaseAnimation, flag);
 }
 
@@ -140,16 +141,15 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
 template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd(BehaviouralType flag) {
     // Terminate movement when reached new `Tile`
-    if (mNextDestCoords != nullptr && mNextDestRect != nullptr && flag != BehaviouralType::kInvalidated) {
-        mDestCoords = *mNextDestCoords;
-        mDestRect = *mNextDestRect;
-    }
+    if (mNextDestCoords != nullptr && mNextDestRect != nullptr) {
+        if (flag != BehaviouralType::kInvalidated) {
+            mDestCoords = *mNextDestCoords;
+            mDestRect = *mNextDestRect;
+        }
 
-    if (mNextDestCoords != nullptr) {
         delete mNextDestCoords;
         mNextDestCoords = nullptr;
-    }
-    if (mNextDestRect != nullptr) {
+
         delete mNextDestRect;
         mNextDestRect = nullptr;
     }

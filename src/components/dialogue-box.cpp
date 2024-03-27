@@ -222,7 +222,7 @@ void IngameDialogueBox::onWindowChange() {
 }
 
 void IngameDialogueBox::handleKeyBoardEvent(SDL_Event const& event) {
-    if (event.key.repeat != 0) return;
+    if (event.type != SDL_KEYDOWN || event.key.repeat != 0) return;
 
     switch (event.key.keysym.sym) {
         case ~config::Key::kAffirmative:
