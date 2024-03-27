@@ -75,15 +75,7 @@ void GenericSurgeProjectile<T>::handleInstantiation() {
     if (!isAnimationAtFinalSprite()) return;
 
     initiateNextLinearAttack();
-    sTerminatedInstances.push(reinterpret_cast<T*>(this));
-}
-
-template <typename T>
-void GenericSurgeProjectile<T>::handleTermination() {
-    while (!sTerminatedInstances.empty()) {
-        delete sTerminatedInstances.top();
-        sTerminatedInstances.pop();
-    }
+    globals::gc.insert(this);
 }
 
 template <typename T>
@@ -103,10 +95,6 @@ GenericSurgeProjectile<T>::handleCustomEventPOST_impl() const {
     event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
     event::enqueue(event);
 }
-
-
-template <typename T>
-std::stack<T*> GenericSurgeProjectile<T>::sTerminatedInstances;
 
 
 template class GenericSurgeProjectile<PentacleProjectile>;

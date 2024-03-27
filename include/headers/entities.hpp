@@ -496,7 +496,6 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         static void initiateAttack(ProjectileType type, SDL_Point const& destCoords, SDL_Point const& direction);
 
         void handleInstantiation();
-        static void handleTermination();
 
     protected:
         GenericSurgeProjectile(SDL_Point const& destCoords, SDL_Point const& direction);
@@ -507,11 +506,9 @@ class GenericSurgeProjectile : public AbstractAnimatedDynamicEntity<T> {
         template <event::Code C>
         typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
         handleCustomEventPOST_impl() const;
-
-        static std::stack<T*> sTerminatedInstances;
 };
 
-#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation, GenericSurgeProjectile<T>::handleTermination;
+#define INCL_GENERIC_SURGE_PROJECTILE(T) using GenericSurgeProjectile<T>::onLevelChangeAll, GenericSurgeProjectile<T>::handleCustomEventPOST, GenericSurgeProjectile<T>::initiateAttack, GenericSurgeProjectile<T>::handleInstantiation;
 
 /**
  * @note Second parameter `direction` of constructor is provided with a decoy value to prevent a specific compilation error.

@@ -388,7 +388,6 @@ void IngameInterface::handleEntitiesInteraction() const {
     Slime::invoke(&Slime::updateAnimation);
 
     PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
-    PentacleProjectile::handleTermination();
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
 
     Player::invoke(&Player::move);

@@ -8,6 +8,7 @@
 #include <SDL.h>
 
 #include <auxiliaries.hpp>
+#include <garbage-collector.hpp>
 
 
 /**
@@ -105,7 +106,8 @@ class Multiton : virtual public PolymorphicBase<T> {
         */
         static void deinitialize() {
             // Somehow this yields weird segfaults. Consider switching to smart pointers?
-            for (auto& instance : instances) if (instance != nullptr) delete instance;
+            // for (auto& instance : instances) if (instance != nullptr) delete instance;
+            for (auto& instance : instances) if (instance != nullptr) globals::gc.insert(instance);
             instances.clear();
         }
 

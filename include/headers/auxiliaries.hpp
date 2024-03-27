@@ -24,6 +24,8 @@
 #include <nlohmann/json.hpp>
 #include <pugixml/pugixml.hpp>
 
+#include <garbage-collector.hpp>
+
 
 /**
  * Register JSON for Modern C++ i.e. `nlohmann::json` as the only JSON library in the scope of this project.
@@ -930,6 +932,8 @@ namespace globals {
     extern SDL_Point mouseState;
 
     extern GameState state;
+
+    extern GarbageCollector gc;
 }
 
 

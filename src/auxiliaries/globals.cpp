@@ -8,6 +8,7 @@ SDL_Renderer* globals::renderer = nullptr;
 SDL_Point globals::windowSize;
 SDL_Point globals::mouseState;
 GameState globals::state = GameState::kMenu;
+GarbageCollector globals::gc;
 
 
 /**

@@ -13,6 +13,7 @@
 #include <timers.hpp>
 #include <interface.hpp>
 #include <auxiliaries.hpp>
+#include <garbage-collector.hpp>
 
 
 Game::Game(GameInitFlag const& flags, SDL_Rect windowDimension, const int FPS, const std::string title) : mFlags(flags), mWindowDimension(windowDimension), mFPS(FPS), mWindowTitle(title) {}
@@ -43,6 +44,8 @@ Game::~Game() {
     IngameInterface::deinitialize();
     MenuInterface::deinitialize();
     LoadingInterface::deinitialize();
+
+    globals::gc.clear();
 
     // Quit SDL subsystems
     IMG_Quit();
@@ -126,6 +129,9 @@ void Game::startGameLoop() {
 
         // Control frame rate
         FPSControlTimer::invoke(&FPSControlTimer::controlFPS);
+
+        // Clean up
+        globals::gc.clear();
     }
 }
 
