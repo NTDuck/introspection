@@ -174,11 +174,11 @@ Encapsulate all operations within a game state, therefore facilitating modular d
 ## Programming techniques:
 
 #### Design patterns
-- Utilizes [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with an extensive use of [**CRTP**](https://en.cppreference.com/w/cpp/language/crtp). Emphasizes key OOP concepts (Abstraction, Encapsulation, Inheritence, Polymorphism)
+Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [**CRTP**](https://en.cppreference.com/w/cpp/language/crtp) and [**Explicit Template Instantiation**](https://en.cppreference.com/w/cpp/language/class_template).
 
 #### Data Structures
-- Custom hash functors and operator overloading
-- **LRU Cache** using double-ended queue and hashmap
+- Custom [hash functors](https://en.cppreference.com/w/cpp/utility/hash) and [operator overloading](https://en.cppreference.com/w/cpp/language/operators)
+- [LRU Cache](https://www.geeksforgeeks.org/lru-cache-implementation/) using double-ended queue and hashmap
 
 #### Algorithms
 - Texture manipulation, grayscale conversion
@@ -190,8 +190,8 @@ Encapsulate all operations within a game state, therefore facilitating modular d
 - Supports manipulation & retrieval of JSON/XML data formats (in-memory & from files)
 
 #### Misc
-- Utilizes **SFINAE** and variadic function templates for compile-time polymorphism
-- Supports distribution & retrieval of custom events i.e. `SDL_UserEvent`
+- Uses [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae) and [Parameter pack](https://en.cppreference.com/w/cpp/language/parameter_pack)
+- Supports distribution & retrieval of [custom events](https://wiki.libsdl.org/SDL2/SDL_UserEvent)
 - Supports frame-independent animation
 - Supports IDE-independent, cross-platform compilation
 

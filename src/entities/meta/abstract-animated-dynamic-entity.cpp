@@ -130,9 +130,7 @@ void AbstractAnimatedDynamicEntity<T>::onMoveStart(BehaviouralType flag) {
     mCurrVelocity = *mNextVelocity;
     mBaseAnimation = mIsRunning ? Animation::kRun : Animation::kWalk;
 
-    if (sTilesetData.isMultiDirectional && mDirection != mPrevDirection) flag = BehaviouralType::kDefault;   // Only switch to `startGID` if tileset is multidirectional and direction has recently changed
-
-    resetAnimation(mBaseAnimation, flag);
+    resetAnimation(mBaseAnimation, sTilesetData.isMultiDirectional && mDirection != mPrevDirection ? BehaviouralType::kDefault : flag);
 }
 
 /**

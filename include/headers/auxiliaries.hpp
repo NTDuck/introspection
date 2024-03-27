@@ -800,7 +800,7 @@ namespace config {
         namespace omori_keys_wasd {
             constexpr const char* typeID = "omori-keys-wasd";
             const std::filesystem::path path = "assets/.tiled/.tsx/omori-keys-wasd.tsx";
-            constexpr SDL_FRect destRectModifier = { 0.5, 0.5, 1, 1 };            
+            constexpr SDL_FRect destRectModifier = { 0.4921875, 0.4921875, 2, 2 };
         }
     }
 

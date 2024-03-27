@@ -30,7 +30,7 @@ WARNINGS = -Wall
 LDFLAGS =
 
 # Libraries to link
-LDLIBS = -l"SDL2" -l"SDL2_image" -l"SDL2_ttf" -l"SDL2_mixer" -l"z"
+LDLIBS = -l"SDL2" -l"SDL2_image" -l"SDL2_ttf" -l"SDL2_mixer"
 
 # Debug (default) and release modes settings
 # https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html
@@ -66,7 +66,7 @@ endif
 ifeq ($(OS),windows)   # Windows 32-bit and 64-bit common settings
 	INCLUDES +=
 	LDFLAGS += -static-libgcc -static-libstdc++
-	LDLIBS := -l"mingw32" -l"SDL2main" $(LDLIBS)
+	LDLIBS := -l"mingw32" -l"SDL2main" $(LDLIBS) -l"zlib"
 
 	LIB_PATH = -L"lib"
 	EXEC := $(EXEC).exe
@@ -91,12 +91,12 @@ ifeq ($(OS),windows)   # Windows 32-bit and 64-bit common settings
 else ifeq ($(OS),macos)   # macOS-specific settings
 	INCLUDES +=
 	LDFLAGS +=
-	LDLIBS +=
+	LDLIBS += -l"z"
 
 else ifeq ($(OS),linux)   # Linux-specific settings
 	INCLUDES +=
 	LDFLAGS +=
-	LDLIBS +=
+	LDLIBS += -l"z"
 
 	LIB_PATH = -L/usr/lib
 	RM = rm -f
