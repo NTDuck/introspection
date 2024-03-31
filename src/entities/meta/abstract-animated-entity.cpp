@@ -128,6 +128,8 @@ template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
 template class AbstractAnimatedEntity<Slime>;
+template class AbstractAnimatedEntity<PixelCatGray>;
+template class AbstractAnimatedEntity<PixelCatGold>;
 
 template class AbstractAnimatedEntity<PentacleProjectile>;
 

@@ -126,6 +126,10 @@ unsigned int GenericHostileEntity<T>::sDeathCount = 0;
 
 
 template class GenericHostileEntity<Slime>;
+template class GenericHostileEntity<PixelCatGray>;
+template class GenericHostileEntity<PixelCatGold>;
 
 
 DEF_GENERIC_HOSTILE_ENTITY(Slime, config::entities::slime)
+DEF_GENERIC_HOSTILE_ENTITY(PixelCatGray, config::entities::pixel_cat_gray)
+DEF_GENERIC_HOSTILE_ENTITY(PixelCatGold, config::entities::pixel_cat_gold)

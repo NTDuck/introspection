@@ -155,5 +155,7 @@ template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
 template class AbstractEntity<Slime>;
+template class AbstractEntity<PixelCatGray>;
+template class AbstractEntity<PixelCatGold>;
 
 template class AbstractEntity<PentacleProjectile>;

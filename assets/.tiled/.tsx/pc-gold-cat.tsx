@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.10" tiledversion="1.10.2" name="pc-gray-cat" tilewidth="32" tileheight="32" tilecount="88" columns="8">
+<tileset version="1.10" tiledversion="1.10.2" name="pc-gold-cat" tilewidth="32" tileheight="32" tilecount="88" columns="8">
  <properties>
   <property name="animation-attack-meele=e" type="class" propertytype="animation">
    <properties>
@@ -126,5 +126,5 @@
   <property name="animation-width" type="int" value="1"/>
   <property name="multidirectional" type="bool" value="true"/>
  </properties>
- <image source="../../graphics/sprites/entities/pc/pc-gray-cat.png" width="256" height="352"/>
+ <image source="../../graphics/sprites/entities/pc/pc-gold-cat.png" width="256" height="352"/>
 </tileset>

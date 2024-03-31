@@ -5,15 +5,15 @@
 
 
 class GarbageCollector final {
-    class AbstractWrapper {
+    class BaseWrapper {
         public:
-            virtual ~AbstractWrapper() = default;
+            virtual ~BaseWrapper() = default;
             virtual void terminate() = 0;
     };
 
     public:
         template <typename T>
-        class Wrapper : public AbstractWrapper {
+        class Wrapper : public BaseWrapper {
             public:
                 inline Wrapper(T* instance) : mInstance(instance) {}
                 inline virtual ~Wrapper() override { delete mInstance; }
@@ -39,7 +39,7 @@ class GarbageCollector final {
         }
 
     private:
-        std::stack<AbstractWrapper*> mInstances;
+        std::stack<BaseWrapper*> mInstances;
 };
 
 

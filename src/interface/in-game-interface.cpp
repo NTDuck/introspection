@@ -38,6 +38,8 @@ IngameInterface::IngameInterface() {
         RedHandThrone::invoke(&RedHandThrone::render);
 
         Slime::invoke(&Slime::render);
+        PixelCatGray::invoke(&PixelCatGray::render);
+        PixelCatGold::invoke(&PixelCatGold::render);
 
         // Projectiles
         PentacleProjectile::invoke(&PentacleProjectile::render);
@@ -89,6 +91,8 @@ void IngameInterface::deinitialize() {
     RedHandThrone::deinitialize();
 
     Slime::deinitialize();
+    PixelCatGray::deinitialize();
+    PixelCatGold::deinitialize();
 
     PentacleProjectile::deinitialize();
 
@@ -123,6 +127,8 @@ void IngameInterface::initialize() {
     RedHandThrone::initialize();
 
     Slime::initialize();
+    PixelCatGray::initialize();
+    PixelCatGold::initialize();
 
     PentacleProjectile::initialize();
 }
@@ -193,6 +199,8 @@ void IngameInterface::onLevelChange() const {
     RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
 
     Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
+    PixelCatGray::onLevelChangeAll(level::data.get(config::entities::pixel_cat_gray::typeID));
+    PixelCatGold::onLevelChangeAll(level::data.get(config::entities::pixel_cat_gold::typeID));
 
     PentacleProjectile::onLevelChangeAll();
 
@@ -228,6 +236,8 @@ void IngameInterface::onWindowChange() const {
     RedHandThrone::invoke(&RedHandThrone::onWindowChange);
 
     Slime::invoke(&Slime::onWindowChange);
+    PixelCatGray::invoke(&PixelCatGray::onWindowChange);
+    PixelCatGold::invoke(&PixelCatGold::onWindowChange);
 
     PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
 
@@ -323,6 +333,8 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
 
     Slime::invoke(&Slime::handleCustomEventGET, event);
+    PixelCatGray::invoke(&PixelCatGray::handleCustomEventGET, event);
+    PixelCatGold::invoke(&PixelCatGold::handleCustomEventGET, event);
 
     PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
 }
@@ -386,6 +398,10 @@ void IngameInterface::handleEntitiesInteraction() const {
 
     Slime::invoke(&Slime::move);
     Slime::invoke(&Slime::updateAnimation);
+    PixelCatGray::invoke(&PixelCatGray::move);
+    PixelCatGray::invoke(&PixelCatGray::updateAnimation);
+    PixelCatGold::invoke(&PixelCatGold::move);
+    PixelCatGold::invoke(&PixelCatGold::updateAnimation);
 
     PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
     PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
@@ -395,38 +411,20 @@ void IngameInterface::handleEntitiesInteraction() const {
 }
 
 void IngameInterface::handleLevelSpecifics() const {
+    #define IMPL(ln) \
+    case ln:\
+        handleLevelSpecifics_impl<ln>();\
+        break;
+
     switch (IngameMapHandler::instance->getLevel()) {
-        case level::Name::kLevelWhiteSpace:
-            handleLevelSpecifics_impl<level::Name::kLevelWhiteSpace>();
-            break;
-
-        case level::Name::kLevelDeprecatedTutorial_0:
-            handleLevelSpecifics_impl<level::Name::kLevelDeprecatedTutorial_0>();
-            break;
-
-        case level::Name::kLevelDeprecatedTutorial_1:
-            handleLevelSpecifics_impl<level::Name::kLevelDeprecatedTutorial_1>();
-            break;
-
-        case level::Name::kLevelForest_0:
-            handleLevelSpecifics_impl<level::Name::kLevelForest_0>();
-            break;
-
-        case level::Name::kLevelForest_1:
-            handleLevelSpecifics_impl<level::Name::kLevelForest_1>();
-            break;
-
-        case level::Name::kLevelForest_2:
-            handleLevelSpecifics_impl<level::Name::kLevelForest_2>();
-            break;
-
-        case level::Name::kLevelForest_3:
-            handleLevelSpecifics_impl<level::Name::kLevelForest_3>();
-            break;
-
-        case level::Name::kLevelForest_4:
-            handleLevelSpecifics_impl<level::Name::kLevelForest_4>();
-            break;
+        IMPL(level::Name::kLevelWhiteSpace)
+        IMPL(level::Name::kLevelDeprecatedTutorial_0)
+        IMPL(level::Name::kLevelDeprecatedTutorial_1)
+        IMPL(level::Name::kLevelForest_0)
+        IMPL(level::Name::kLevelForest_1)
+        IMPL(level::Name::kLevelForest_2)
+        IMPL(level::Name::kLevelForest_3)
+        IMPL(level::Name::kLevelForest_4)
 
         default: break;
     }
@@ -436,6 +434,8 @@ void IngameInterface::handleEntitiesSFX() const {
     Player::invoke(&Player::handleSFX);
     // Teleporter::invoke(&Teleporter::handleSFX);
     Slime::invoke(&Slime::handleSFX);
+    PixelCatGray::invoke(&PixelCatGray::handleSFX);
+    PixelCatGold::invoke(&PixelCatGold::handleSFX);
 }
 
 template <event::Code C>

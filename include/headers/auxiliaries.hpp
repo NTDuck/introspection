@@ -731,6 +731,30 @@ namespace config {
             constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
         }
 
+        namespace pixel_cat_gray {
+            constexpr const char* typeID = "pixel-cat-gray";
+            const std::filesystem::path path = "assets/.tiled/.tsx/px-gray-cat.tsx";
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            constexpr SDL_FPoint velocity = { 48, 48 };
+            constexpr int moveDelayTicks = 0;
+            constexpr SDL_Point moveInitiateRange = { 16, 16 };
+            constexpr SDL_Point attackInitiateRange = { 1, 1 };
+            constexpr SDL_Point attackRegisterRange = { 1, 1 };
+            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+        }
+
+        namespace pixel_cat_gold {
+            constexpr const char* typeID = "pixel-cat-gold";
+            const std::filesystem::path path = "assets/.tiled/.tsx/px-gold-cat.tsx";
+            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            constexpr SDL_FPoint velocity = { 128, 128 };
+            constexpr int moveDelayTicks = 4444;
+            constexpr SDL_Point moveInitiateRange = { 99, 99 };
+            constexpr SDL_Point attackInitiateRange = { 2, 2 };
+            constexpr SDL_Point attackRegisterRange = { 2, 2 };
+            constexpr EntityPrimaryStats primaryStats = { 44, 44, 44, 4, 44, 44, 44, 4 };
+        }
+
         namespace pentacle_projectile {
             constexpr const char* typeID = "pentacle-projectile";
             const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";

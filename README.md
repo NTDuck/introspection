@@ -191,6 +191,7 @@ Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [
 
 #### Misc
 - Uses [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae) and [Parameter pack](https://en.cppreference.com/w/cpp/language/parameter_pack)
+- Uses a manual garbage collection system
 - Supports distribution & retrieval of [custom events](https://wiki.libsdl.org/SDL2/SDL_UserEvent)
 - Supports frame-independent animation
 - Supports IDE-independent, cross-platform compilation
