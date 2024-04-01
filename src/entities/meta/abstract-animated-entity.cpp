@@ -83,8 +83,10 @@ void AbstractAnimatedEntity<T>::updateAnimation() {
         }
     }
 
-    mSrcRect.x = mAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
-    mSrcRect.y = mAnimationGID / sTilesetData.srcCount.x * sTilesetData.srcSize.y;
+    if (sTilesetData.srcCount.x) {
+        mSrcRect.x = mAnimationGID % sTilesetData.srcCount.x * sTilesetData.srcSize.x;
+        mSrcRect.y = mAnimationGID / sTilesetData.srcCount.x * sTilesetData.srcSize.y;
+    }
 }
 
 /**

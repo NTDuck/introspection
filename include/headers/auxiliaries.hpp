@@ -733,8 +733,8 @@ namespace config {
 
         namespace pixel_cat_gray {
             constexpr const char* typeID = "pixel-cat-gray";
-            const std::filesystem::path path = "assets/.tiled/.tsx/px-gray-cat.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            const std::filesystem::path path = "assets/.tiled/.tsx/pc-gray-cat.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, 0, 2, 2 };
             constexpr SDL_FPoint velocity = { 48, 48 };
             constexpr int moveDelayTicks = 0;
             constexpr SDL_Point moveInitiateRange = { 16, 16 };
@@ -745,11 +745,11 @@ namespace config {
 
         namespace pixel_cat_gold {
             constexpr const char* typeID = "pixel-cat-gold";
-            const std::filesystem::path path = "assets/.tiled/.tsx/px-gold-cat.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            const std::filesystem::path path = "assets/.tiled/.tsx/pc-gold-cat.tsx";
+            constexpr SDL_FRect destRectModifier = { 0, 0, 4.444, 4.444 };
             constexpr SDL_FPoint velocity = { 128, 128 };
             constexpr int moveDelayTicks = 4444;
-            constexpr SDL_Point moveInitiateRange = { 99, 99 };
+            constexpr SDL_Point moveInitiateRange = { std::numeric_limits<int>::max(), std::numeric_limits<int>::max() };
             constexpr SDL_Point attackInitiateRange = { 2, 2 };
             constexpr SDL_Point attackRegisterRange = { 2, 2 };
             constexpr EntityPrimaryStats primaryStats = { 44, 44, 44, 4, 44, 44, 44, 4 };

@@ -119,6 +119,10 @@ $(OUTPUT): $(SRCS)
 run:
 	./$(OUTPUT)
 
+.PHONY: rund
+rund:
+	gdb -ex run ./$(OUTPUT)
+
 .PHONY: clean
 clean:
 	@echo Cleaning $(BUILD_DIR) directory

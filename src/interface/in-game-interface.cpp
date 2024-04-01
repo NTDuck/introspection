@@ -174,7 +174,8 @@ void IngameInterface::onLevelChange() const {
     }
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
-    Player::invoke(&Player::onLevelChange, *(level::data.get(config::entities::player::typeID)[0]));
+    auto playerLevelData = level::data.get(config::entities::player::typeID);
+    if (!playerLevelData.empty() && playerLevelData.front() != nullptr) Player::invoke(&Player::onLevelChange, *playerLevelData.front());
 
     OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
     OmoriKeysWASD::onLevelChangeAll(level::data.get(config::entities::omori_keys_wasd::typeID));
@@ -349,6 +350,8 @@ void IngameInterface::handleCustomEventPOST() const {
     RedHandThrone::invoke(&RedHandThrone::handleCustomEventPOST);
 
     Slime::invoke(&Slime::handleCustomEventPOST);
+    PixelCatGray::invoke(&PixelCatGray::handleCustomEventPOST);
+    PixelCatGold::invoke(&PixelCatGold::handleCustomEventPOST);
 
     PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
 }
