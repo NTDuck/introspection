@@ -9,43 +9,7 @@
 
 IngameInterface::IngameInterface() {
     static constexpr auto renderIngameDependencies = []() {
-        // Static assets
-        IngameMapHandler::invoke(&IngameMapHandler::render);
-
-        // Non-interactible entities
-        OmoriLightBulb::invoke(&OmoriLightBulb::render);
-        OmoriKeysWASD::invoke(&OmoriKeysWASD::render);
-        HospitalXRayMachine::invoke(&HospitalXRayMachine::render);
-
-        // Interactables
-        // PlaceholderInteractable::invoke(&PlaceholderInteractable::render);
-        OmoriLaptop::invoke(&OmoriLaptop::render);
-        OmoriMewO::invoke(&OmoriMewO::render);
-        OmoriCat_0::invoke(&OmoriCat_0::render);
-        OmoriCat_1::invoke(&OmoriCat_1::render);
-        OmoriCat_2::invoke(&OmoriCat_2::render);
-        OmoriCat_3::invoke(&OmoriCat_3::render);
-        OmoriCat_4::invoke(&OmoriCat_4::render);
-        OmoriCat_5::invoke(&OmoriCat_5::render);
-        OmoriCat_6::invoke(&OmoriCat_6::render);
-        OmoriCat_7::invoke(&OmoriCat_7::render);
-        HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::render);
-        HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::render);
-        HospitalSink::invoke(&HospitalSink::render);
-
-        // Entities
-        // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::render);
-        RedHandThrone::invoke(&RedHandThrone::render);
-
-        Slime::invoke(&Slime::render);
-        PixelCatGray::invoke(&PixelCatGray::render);
-        PixelCatGold::invoke(&PixelCatGold::render);
-
-        // Projectiles
-        PentacleProjectile::invoke(&PentacleProjectile::render);
-
-        // Player must be rendered last
-        Player::invoke(&Player::render);
+        Invoker<IngameMapHandler, ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, Player>::invoke_render();
     };
 
     IngameDialogueBox::instantiate(config::components::dialogue_box::initializer);
@@ -63,74 +27,11 @@ IngameInterface::~IngameInterface() {
  * @note Intellisense's `more than one instance of overloaded function "[...]::deinitialize" matches the argument list:C/C++(308)` could be safely ignored as no relevant warnings are shown during compilation.
 */
 void IngameInterface::deinitialize() {
-    IngameMapHandler::deinitialize();
-    IngameViewHandler::deinitialize();
-
-    Player::deinitialize();
-
-    OmoriLightBulb::deinitialize();
-    OmoriKeysWASD::deinitialize();
-    HospitalXRayMachine::deinitialize();
-
-    PlaceholderInteractable::deinitialize();
-    OmoriLaptop::deinitialize();
-    OmoriMewO::deinitialize();
-    OmoriCat_0::deinitialize();
-    OmoriCat_1::deinitialize();
-    OmoriCat_2::deinitialize();
-    OmoriCat_3::deinitialize();
-    OmoriCat_4::deinitialize();
-    OmoriCat_5::deinitialize();
-    OmoriCat_6::deinitialize();
-    OmoriCat_7::deinitialize();
-    HospitalXRayScreenArm::deinitialize();
-    HospitalXRayScreenHead::deinitialize();
-    HospitalSink::deinitialize();
-
-    PlaceholderTeleporter::deinitialize();
-    RedHandThrone::deinitialize();
-
-    Slime::deinitialize();
-    PixelCatGray::deinitialize();
-    PixelCatGold::deinitialize();
-
-    PentacleProjectile::deinitialize();
-
-    IngameDialogueBox::deinitialize();
+    Invoker<IngameMapHandler, IngameViewHandler, Player, ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, IngameDialogueBox>::invoke_deinitialize();
 }
 
 void IngameInterface::initialize() {
-    IngameMapHandler::initialize();
-
-    Player::initialize();
-
-    OmoriLightBulb::initialize();
-    OmoriKeysWASD::initialize();
-    HospitalXRayMachine::initialize();
-
-    PlaceholderInteractable::initialize();
-    OmoriMewO::initialize();
-    OmoriLaptop::initialize();
-    OmoriCat_0::initialize();
-    OmoriCat_1::initialize();
-    OmoriCat_2::initialize();
-    OmoriCat_3::initialize();
-    OmoriCat_4::initialize();
-    OmoriCat_5::initialize();
-    OmoriCat_6::initialize();
-    OmoriCat_7::initialize();
-    HospitalXRayScreenArm::initialize();
-    HospitalXRayScreenHead::initialize();
-    HospitalSink::initialize();
-
-    // PlaceholderTeleporter::initialize();
-    RedHandThrone::initialize();
-
-    Slime::initialize();
-    PixelCatGray::initialize();
-    PixelCatGold::initialize();
-
-    PentacleProjectile::initialize();
+    Invoker<IngameMapHandler, Player, ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_initialize();
 }
 
 void IngameInterface::render() const {
@@ -209,40 +110,7 @@ void IngameInterface::onLevelChange() const {
 }
 
 void IngameInterface::onWindowChange() const {
-    IngameMapHandler::invoke(&IngameMapHandler::onWindowChange);
-    IngameViewHandler::invoke(&IngameViewHandler::onWindowChange);
-
-    Player::invoke(&Player::onWindowChange);
-
-    OmoriLightBulb::invoke(&OmoriLightBulb::onWindowChange);
-    OmoriKeysWASD::invoke(&OmoriKeysWASD::onWindowChange);
-    HospitalXRayMachine::invoke(&HospitalXRayMachine::onWindowChange);
-
-    PlaceholderInteractable::invoke(&PlaceholderInteractable::onWindowChange);
-    OmoriLaptop::invoke(&OmoriLaptop::onWindowChange);
-    OmoriMewO::invoke(&OmoriMewO::onWindowChange);
-    OmoriCat_0::invoke(&OmoriCat_0::onWindowChange);
-    OmoriCat_1::invoke(&OmoriCat_1::onWindowChange);
-    OmoriCat_2::invoke(&OmoriCat_2::onWindowChange);
-    OmoriCat_3::invoke(&OmoriCat_3::onWindowChange);
-    OmoriCat_4::invoke(&OmoriCat_4::onWindowChange);
-    OmoriCat_5::invoke(&OmoriCat_5::onWindowChange);
-    OmoriCat_6::invoke(&OmoriCat_6::onWindowChange);
-    OmoriCat_7::invoke(&OmoriCat_7::onWindowChange);
-    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::onWindowChange);
-    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::onWindowChange);
-    HospitalSink::invoke(&HospitalSink::onWindowChange);
-
-    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::onWindowChange);
-    RedHandThrone::invoke(&RedHandThrone::onWindowChange);
-
-    Slime::invoke(&Slime::onWindowChange);
-    PixelCatGray::invoke(&PixelCatGray::onWindowChange);
-    PixelCatGold::invoke(&PixelCatGold::onWindowChange);
-
-    PentacleProjectile::invoke(&PentacleProjectile::onWindowChange);
-
-    IngameDialogueBox::invoke(&IngameDialogueBox::onWindowChange);
+    Invoker<IngameMapHandler, IngameViewHandler, Player, ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, IngameDialogueBox>::invoke_onWindowChange();
 }
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
@@ -311,49 +179,14 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
         default: break;
     }
 
-
-    Player::invoke(&Player::handleCustomEventGET, event);
-
-    // Dialogues!
-    PlaceholderInteractable::invoke(&PlaceholderInteractable::handleCustomEventGET, event);
-    OmoriLaptop::invoke(&OmoriLaptop::handleCustomEventGET, event);
-    OmoriMewO::invoke(&OmoriMewO::handleCustomEventGET, event);
-    OmoriCat_0::invoke(&OmoriCat_0::handleCustomEventGET, event);
-    OmoriCat_1::invoke(&OmoriCat_1::handleCustomEventGET, event);
-    OmoriCat_2::invoke(&OmoriCat_2::handleCustomEventGET, event);
-    OmoriCat_3::invoke(&OmoriCat_3::handleCustomEventGET, event);
-    OmoriCat_4::invoke(&OmoriCat_4::handleCustomEventGET, event);
-    OmoriCat_5::invoke(&OmoriCat_5::handleCustomEventGET, event);
-    OmoriCat_6::invoke(&OmoriCat_6::handleCustomEventGET, event);
-    OmoriCat_7::invoke(&OmoriCat_7::handleCustomEventGET, event);
-    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::handleCustomEventGET, event);
-    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::handleCustomEventGET, event);
-    HospitalSink::invoke(&HospitalSink::handleCustomEventGET, event);
-
-    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventGET, event);
-    RedHandThrone::invoke(&RedHandThrone::handleCustomEventGET, event);
-
-    Slime::invoke(&Slime::handleCustomEventGET, event);
-    PixelCatGray::invoke(&PixelCatGray::handleCustomEventGET, event);
-    PixelCatGold::invoke(&PixelCatGold::handleCustomEventGET, event);
-
-    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventGET, event);
+    Invoker<Player, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_handleCustomEventGET(event);
 }
 
 /**
  * @note `GameState::kIngamePlaying` only.
 */
 void IngameInterface::handleCustomEventPOST() const {
-    Player::invoke(&Player::handleCustomEventPOST);
-    
-    PlaceholderTeleporter::invoke(&PlaceholderTeleporter::handleCustomEventPOST);
-    RedHandThrone::invoke(&RedHandThrone::handleCustomEventPOST);
-
-    Slime::invoke(&Slime::handleCustomEventPOST);
-    PixelCatGray::invoke(&PixelCatGray::handleCustomEventPOST);
-    PixelCatGold::invoke(&PixelCatGold::handleCustomEventPOST);
-
-    PentacleProjectile::invoke(&PentacleProjectile::handleCustomEventPOST);
+    Invoker<Player, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_handleCustomEventPOST();
 }
 
 void IngameInterface::handleDependencies() const {
@@ -377,40 +210,8 @@ void IngameInterface::handleDependencies() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesInteraction() const {
-    OmoriLightBulb::invoke(&OmoriLightBulb::updateAnimation);
-    OmoriKeysWASD::invoke(&OmoriKeysWASD::updateAnimation);
-    HospitalXRayMachine::invoke(&HospitalXRayMachine::updateAnimation);
-
-    PlaceholderInteractable::invoke(&PlaceholderInteractable::updateAnimation);
-    OmoriLaptop::invoke(&OmoriLaptop::updateAnimation);
-    OmoriMewO::invoke(&OmoriMewO::updateAnimation);
-    OmoriCat_0::invoke(&OmoriCat_0::updateAnimation);
-    OmoriCat_1::invoke(&OmoriCat_1::updateAnimation);
-    OmoriCat_2::invoke(&OmoriCat_2::updateAnimation);
-    OmoriCat_3::invoke(&OmoriCat_3::updateAnimation);
-    OmoriCat_4::invoke(&OmoriCat_4::updateAnimation);
-    OmoriCat_5::invoke(&OmoriCat_5::updateAnimation);
-    OmoriCat_6::invoke(&OmoriCat_6::updateAnimation);
-    OmoriCat_7::invoke(&OmoriCat_7::updateAnimation);
-    HospitalXRayScreenArm::invoke(&HospitalXRayScreenArm::updateAnimation);
-    HospitalXRayScreenHead::invoke(&HospitalXRayScreenHead::updateAnimation);
-    HospitalSink::invoke(&HospitalSink::updateAnimation);
-
-    // PlaceholderTeleporter::invoke(&PlaceholderTeleporter::updateAnimation);
-    RedHandThrone::invoke(&RedHandThrone::updateAnimation);
-
-    Slime::invoke(&Slime::move);
-    Slime::invoke(&Slime::updateAnimation);
-    PixelCatGray::invoke(&PixelCatGray::move);
-    PixelCatGray::invoke(&PixelCatGray::updateAnimation);
-    PixelCatGold::invoke(&PixelCatGold::move);
-    PixelCatGold::invoke(&PixelCatGold::updateAnimation);
-
-    PentacleProjectile::invoke(&PentacleProjectile::handleInstantiation);
-    PentacleProjectile::invoke(&PentacleProjectile::updateAnimation);
-
-    Player::invoke(&Player::move);
-    Player::invoke(&Player::updateAnimation);
+    Invoker<ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, Player>::invoke_updateAnimation();
+    Invoker<GENERIC_HOSTILE_ENTITY, Player>::invoke_move();
 }
 
 void IngameInterface::handleLevelSpecifics() const {
@@ -434,11 +235,7 @@ void IngameInterface::handleLevelSpecifics() const {
 }
 
 void IngameInterface::handleEntitiesSFX() const {
-    Player::invoke(&Player::handleSFX);
-    // Teleporter::invoke(&Teleporter::handleSFX);
-    Slime::invoke(&Slime::handleSFX);
-    PixelCatGray::invoke(&PixelCatGray::handleSFX);
-    PixelCatGold::invoke(&PixelCatGold::handleSFX);
+    Invoker<Player, GENERIC_HOSTILE_ENTITY>::invoke_handleSFX();
 }
 
 template <event::Code C>

@@ -640,6 +640,7 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD)
 DECL_ABSTRACT_ANIMATED_ENTITY(HospitalXRayMachine)
+#define ABSTRACT_ANIMATED_ENTITY OmoriLightBulb, OmoriKeysWASD, HospitalXRayMachine
 
 DECL_GENERIC_INTERACTABLE(OmoriLaptop)
 DECL_GENERIC_INTERACTABLE(OmoriMewO)
@@ -654,14 +655,46 @@ DECL_GENERIC_INTERACTABLE(OmoriCat_7)
 DECL_GENERIC_INTERACTABLE(HospitalXRayScreenArm)
 DECL_GENERIC_INTERACTABLE(HospitalXRayScreenHead)
 DECL_GENERIC_INTERACTABLE(HospitalSink)
+#define GENERIC_INTERACTABLE OmoriLaptop, OmoriMewO, OmoriCat_0, OmoriCat_1, OmoriCat_2, OmoriCat_3, OmoriCat_4, OmoriCat_5, OmoriCat_6, OmoriCat_7, HospitalXRayScreenArm, HospitalXRayScreenHead, HospitalSink
 
 DECL_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
+#define GENERIC_TELEPORTER_ENTITY RedHandThrone
 
 DECL_GENERIC_HOSTILE_ENTITY(Slime)
 DECL_GENERIC_HOSTILE_ENTITY(PixelCatGray)
 DECL_GENERIC_HOSTILE_ENTITY(PixelCatGold)
+#define GENERIC_HOSTILE_ENTITY Slime, PixelCatGray, PixelCatGold
 
 DECL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
+#define GENERIC_SURGE_PROJECTILE PentacleProjectile
+
+
+/* Utilities */
+template <typename... Ts>
+class Invoker {
+    #define DECL(func) \
+        template <typename... Args>\
+        static inline void invoke_##func(Args&&... args) {\
+            (Ts::invoke(&Ts::func, std::forward<Args>(args)...), ...);\
+        };
+
+    #define DECL_STATIC(func) \
+        static inline void invoke_##func() {\
+            (Ts::func(), ...);\
+        };
+
+    public:
+        DECL_STATIC(initialize)
+        DECL_STATIC(deinitialize)
+
+        DECL(render)
+        DECL(onWindowChange)
+        DECL(handleCustomEventGET)
+        DECL(handleCustomEventPOST)
+        DECL(updateAnimation)
+        DECL(move)
+        DECL(handleSFX)
+};
 
 
 #endif
