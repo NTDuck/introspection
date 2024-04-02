@@ -47,12 +47,14 @@ void IngameInterface::render() const {
 }
 
 void IngameInterface::onLevelChange() const {
+    auto levelName = IngameMapHandler::instance->getLevel();
+    
     // Populate `globals::currentLevelData` members
     IngameMapHandler::invoke(&IngameMapHandler::onLevelChange);
     IngameViewHandler::invoke(&IngameViewHandler::onLevelChange);
 
     // Populate `level::data.properties` members
-    switch (IngameMapHandler::instance->getLevel()) {
+    switch (levelName) {
         case level::Name::kLevelWhiteSpace:
             level::data.setProperty<bool>("is-border-traversed", false);
             break;
@@ -78,35 +80,8 @@ void IngameInterface::onLevelChange() const {
     auto playerLevelData = level::data.get(config::entities::player::typeID);
     if (!playerLevelData.empty() && playerLevelData.front() != nullptr) Player::invoke(&Player::onLevelChange, *playerLevelData.front());
 
-    OmoriLightBulb::onLevelChangeAll(level::data.get(config::entities::omori_light_bulb::typeID));
-    OmoriKeysWASD::onLevelChangeAll(level::data.get(config::entities::omori_keys_wasd::typeID));
-    HospitalXRayMachine::onLevelChangeAll(level::data.get(config::entities::hospital_xray_machine::typeID));
-
-    PlaceholderInteractable::onLevelChangeAll(level::data.get(config::entities::placeholder_interactable::typeID));
-    OmoriLaptop::onLevelChangeAll(level::data.get(config::entities::omori_laptop::typeID));
-    OmoriMewO::onLevelChangeAll(level::data.get(config::entities::omori_mewo::typeID));
-    OmoriCat_0::onLevelChangeAll(level::data.get(config::entities::omori_cat_0::typeID));
-    OmoriCat_1::onLevelChangeAll(level::data.get(config::entities::omori_cat_1::typeID));
-    OmoriCat_2::onLevelChangeAll(level::data.get(config::entities::omori_cat_2::typeID));
-    OmoriCat_3::onLevelChangeAll(level::data.get(config::entities::omori_cat_3::typeID));
-    OmoriCat_4::onLevelChangeAll(level::data.get(config::entities::omori_cat_4::typeID));
-    OmoriCat_5::onLevelChangeAll(level::data.get(config::entities::omori_cat_5::typeID));
-    OmoriCat_6::onLevelChangeAll(level::data.get(config::entities::omori_cat_6::typeID));
-    OmoriCat_7::onLevelChangeAll(level::data.get(config::entities::omori_cat_7::typeID));
-    HospitalXRayScreenArm::onLevelChangeAll(level::data.get(config::entities::hospital_xray_screen_arm::typeID));
-    HospitalXRayScreenHead::onLevelChangeAll(level::data.get(config::entities::hospital_xray_screen_head::typeID));
-    HospitalSink::onLevelChangeAll(level::data.get(config::entities::hospital_sink::typeID));
-
-    PlaceholderTeleporter::onLevelChangeAll(level::data.get(config::entities::placeholder_teleporter::typeID));
-    RedHandThrone::onLevelChangeAll(level::data.get(config::entities::teleporter_red_hand_throne::typeID));
-
-    Slime::onLevelChangeAll(level::data.get(config::entities::slime::typeID));
-    PixelCatGray::onLevelChangeAll(level::data.get(config::entities::pixel_cat_gray::typeID));
-    PixelCatGold::onLevelChangeAll(level::data.get(config::entities::pixel_cat_gold::typeID));
-
-    PentacleProjectile::onLevelChangeAll();
-
-    Mixer::invoke(&Mixer::onLevelChange, IngameMapHandler::instance->getLevel());   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
+    Invoker<ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_onLevelChangeAll();
+    Mixer::invoke(&Mixer::onLevelChange, levelName);   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
 
 void IngameInterface::onWindowChange() const {

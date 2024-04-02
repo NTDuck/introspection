@@ -46,9 +46,11 @@ class AbstractEntity : public Multiton<T> {
          * @brief Clear `instanceMapping` then call `onLevelChange()` method on every instance of derived class `T`.
          * @todo Allow only `level::EntityLevelData` and its subclasses. Try `<type_traits>` and `<concepts>`.
         */
-        static inline void onLevelChangeAll(std::vector<level::Data_Generic*> const& levelData) {
+        static inline void onLevelChangeAll() {
             Multiton<T>::deinitialize();
             sID_Counter = 0;
+
+            auto levelData = level::data.get(sTypeID);
 
             for (const auto data : levelData) {
                 if (data == nullptr) continue;
@@ -60,7 +62,7 @@ class AbstractEntity : public Multiton<T> {
         static inline void instantiateEx(std::vector<level::Data_Generic*> const& levelData, bool reset = true) {
             if (reset) level::data.erase(sTypeID);
             for (const auto& data : levelData) level::data.insert(sTypeID, data);
-            onLevelChangeAll(level::data.get(sTypeID));
+            onLevelChangeAll();
             invoke(&T::onWindowChange);
         }
 
@@ -686,6 +688,7 @@ class Invoker {
     public:
         DECL_STATIC(initialize)
         DECL_STATIC(deinitialize)
+        DECL_STATIC(onLevelChangeAll)
 
         DECL(render)
         DECL(onWindowChange)
