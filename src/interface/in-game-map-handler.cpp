@@ -19,7 +19,7 @@ IngameMapHandler::~IngameMapHandler() {
 
 void IngameMapHandler::initialize() {
     json data;
-    utils::fetch(config::interface::path, data);
+    utils::fetch(config::interface::levelPath, data);
     sLevelMap.load(data);
 }
 
@@ -82,6 +82,32 @@ void IngameMapHandler::loadLevel() const {
     json JSONLevelData;
     utils::fetch(kLevelPath.value().string(), JSONLevelData);
     level::data.load(JSONLevelData);
+}
+
+void IngameMapHandler::loadProgressFromStorage(json const& saveData) {
+    #define IMPL(ln) \
+    case static_cast<unsigned int>(ln):\
+        changeLevel(ln);\
+        break;
+
+    switch (static_cast<unsigned int>(saveData["level"])) {
+        IMPL(level::Name::kLevelWhiteSpace)
+        IMPL(level::Name::kLevelBegin)
+        IMPL(level::Name::kLevelForest_0)
+        IMPL(level::Name::kLevelForest_1)
+        IMPL(level::Name::kLevelForest_2)
+        IMPL(level::Name::kLevelForest_3)
+        IMPL(level::Name::kLevelForest_4)
+        IMPL(level::Name::kLevelDeprecatedTutorial_0)
+        IMPL(level::Name::kLevelDeprecatedTutorial_1)
+        IMPL(level::Name::kLevelAnte)
+        IMPL(level::Name::kLevelPaene)
+        IMPL(level::Name::kLevelUmbra)
+        IMPL(level::Name::kLevelBreakroomInitial)
+        IMPL(level::Name::kLevelBedroom)
+
+        default: break;
+    }
 }
 
 void IngameMapHandler::renderToTexture() {

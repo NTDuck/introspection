@@ -51,6 +51,8 @@ enum class GameState : unsigned short int {
     kIngamePlaying = 8,
     kIngameDialogue = 16,
     kGameOver = 32,
+
+    kLoadFromSave = 64,
     // kIngamePaused,
     // kIngameCutscene,
     __6__ = 6,
@@ -649,7 +651,8 @@ namespace config {
     }
 
     namespace interface {
-        const std::filesystem::path path = "assets/.tiled/levels.json";
+        const std::filesystem::path savePath = "build/save/autosave.json";
+        const std::filesystem::path levelPath = "assets/.tiled/levels.json";
         constexpr level::Name levelName = level::Name::kLevelBegin;
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
@@ -762,7 +765,7 @@ namespace config {
             constexpr SDL_FPoint velocity = { 0, 0 };
             constexpr int moveDelayTicks = 0;
             constexpr SDL_Point attackRegisterRange = { 1, 1 };
-            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 10, 0 };
+            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
         }
 
         namespace hospital_xray_machine {
@@ -881,7 +884,7 @@ namespace config {
         namespace menu_button {
             const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializer = {
                 std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", nullptr),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kLoadFromSave)),
                 std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
                 std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
             };

@@ -419,7 +419,7 @@ void utils::fetch(std::filesystem::path const& path, json& data) {
     file.open(path);
     if (!file.is_open()) return;
 
-    file >> data;
+    data = json::parse(file);
     file.close();
 }
 

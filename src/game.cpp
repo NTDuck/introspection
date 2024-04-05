@@ -235,6 +235,11 @@ void Game::handleDependencies() {
             Mixer::invoke(&Mixer::handleGameStateChange);
             break;
 
+        case GameState::kLoadFromSave:
+            IngameInterface::invoke(&IngameInterface::loadProgressFromStorage);
+            globals::state = GameState::kLoading | GameState::kIngamePlaying;
+            break;
+
         default: break;
     }
 }

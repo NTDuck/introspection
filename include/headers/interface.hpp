@@ -57,6 +57,7 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
 
         inline level::Name getLevel() { return mLevelName; }
         void changeLevel(const level::Name levelName);
+        void loadProgressFromStorage(json const& saveData);
 
         bool isOnGrayscale = false;
 
@@ -149,6 +150,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleCustomEventGET(SDL_Event const& event) const;
 
         void handleDependencies() const;
+        void loadProgressFromStorage() const;
 
     private:
         void handleEntitiesInteraction() const;
@@ -200,6 +202,9 @@ class IngameInterface final : public Singleton<IngameInterface> {
         template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelForest_4>
         handleLevelSpecifics_impl() const;
+
+        json saveProgressToJSON() const;
+        void saveJSONToStorage(json const& data) const;
 
         mutable SDL_Point* mCachedTargetDestCoords = nullptr;
 };

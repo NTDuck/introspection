@@ -1,6 +1,7 @@
 #include <interface.hpp>
 
 #include <array>
+#include <fstream>
 
 #include <entities.hpp>
 #include <mixer.hpp>
@@ -73,6 +74,7 @@ void IngameInterface::onLevelChange() const {
     if (mCachedTargetDestCoords != nullptr) {
         auto data = new level::Data_Generic();
         data->destCoords = *mCachedTargetDestCoords;
+        level::data.erase(config::entities::player::typeID);
         level::data.insert(config::entities::player::typeID, data);
     }
 
@@ -92,6 +94,13 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
     switch (event.key.keysym.sym) {
         case ~config::Key::kIngameReturnMenu:
             if (event.type != SDL_KEYDOWN) break;
+
+            // Save progress
+            if (Player::instance->mAnimation != Animation::kDeath) {
+                auto data = saveProgressToJSON();
+                saveJSONToStorage(data);
+            }
+
             globals::state = GameState::kLoading | GameState::kMenu;
             break;
 
@@ -581,4 +590,43 @@ IngameInterface::handleLevelSpecifics_impl() const {
         ));
         PlaceholderTeleporter::instantiateEx(data);
     }
+}
+
+/**
+ * @brief Save current in-game progress to external storage.
+*/
+json IngameInterface::saveProgressToJSON() const {
+    // Populate JSON object
+    json data;
+
+    data["level"] = IngameMapHandler::instance->getLevel();
+    data["player"]["x"] = Player::instance->mDestCoords.x;
+    data["player"]["y"] = Player::instance->mDestCoords.y;
+
+    return data;
+}
+
+void IngameInterface::saveJSONToStorage(json const& data) const {
+    std::ofstream file;
+
+    file.open(config::interface::savePath, std::ofstream::out);
+    if (!file.is_open()) return;
+
+    file << data.dump(2, ' ', true, json::error_handler_t::strict);   // Should move into `config::interface` ?
+    file.close();
+}
+
+void IngameInterface::loadProgressFromStorage() const {
+    if (!std::filesystem::exists(config::interface::savePath)) return;
+
+    json data;
+    utils::fetch(config::interface::savePath, data);
+    if (data.empty()) return;
+
+    IngameMapHandler::invoke(&IngameMapHandler::loadProgressFromStorage, data);
+
+    // level::data.erase(config::entities::player::typeID);
+    // level::data.insert(config::entities::player::typeID, new level::Data_Generic({ data["player"]["x"], data["player"]["y"] }));
+    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
+    mCachedTargetDestCoords = new SDL_Point({ data["player"]["x"], data["player"]["y"] });
 }
