@@ -73,6 +73,13 @@ enum class BehaviouralType : unsigned char {
     kPrioritized,
 };
 
+enum class MovementSelectionType : unsigned char {
+    kGreedyTrigonometric,
+    kGreedyRandomBinary,
+    // kPathfindingAStar,
+    // kPathfindingDijkstra,
+};
+
 enum class ProjectileType : unsigned char {
     kOrthogonalSingle,
     kOrthogonalDouble,

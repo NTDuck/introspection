@@ -391,7 +391,7 @@ template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 
 
-template <typename T>
+template <typename T, MovementSelectionType M = MovementSelectionType::kGreedyRandomBinary>
 class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
     public:
         INCL_MULTITON(T)
@@ -445,13 +445,21 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         typename std::enable_if_t<C == event::Code::kResp_MoveTerminate_GHE_Player>
         handleCustomEventGET_impl();
 
+        template <MovementSelectionType M_>
+        typename std::enable_if_t<M_ == MovementSelectionType::kGreedyTrigonometric>
+        calculateNextMovement(SDL_Point const& targetDestCoords);
+
+        template <MovementSelectionType M_>
+        typename std::enable_if_t<M_ == MovementSelectionType::kGreedyRandomBinary>
+        calculateNextMovement(SDL_Point const& targetDestCoords);
+
         static unsigned int sDeathCount;
 };
 
 #define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::getDeathCount, GenericHostileEntity<T>::isAllDead, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
 
-#define DECL_GENERIC_HOSTILE_ENTITY(T) \
-class T final : public GenericHostileEntity<T> {\
+#define DECL_GENERIC_HOSTILE_ENTITY(T, M) \
+class T final : public GenericHostileEntity<T, M> {\
     public:\
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
         INCL_GENERIC_HOSTILE_ENTITY(T)\
@@ -460,8 +468,10 @@ class T final : public GenericHostileEntity<T> {\
         ~T() = default;\
 };
 
-#define DEF_GENERIC_HOSTILE_ENTITY(T, ns) \
-T::T(SDL_Point const& destCoords) : GenericHostileEntity<T>(destCoords) {\
+#define DECL_GENERIC_HOSTILE_ENTITY_(T) DECL_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyRandomBinary)
+
+#define DEF_GENERIC_HOSTILE_ENTITY(T, M, ns) \
+T::T(SDL_Point const& destCoords) : GenericHostileEntity<T, M>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
     mMoveInitiateRange = ns::moveInitiateRange;\
     mAttackInitiateRange = ns::attackInitiateRange;\
@@ -480,6 +490,8 @@ const char* AbstractEntity<T>::sTypeID = ns::typeID;\
 \
 template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
+
+#define DEF_GENERIC_HOSTILE_ENTITY_(T, ns) DEF_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyRandomBinary, ns)
 
 
 template <typename T>
@@ -662,9 +674,9 @@ DECL_GENERIC_INTERACTABLE(HospitalSink)
 DECL_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 #define GENERIC_TELEPORTER_ENTITY RedHandThrone
 
-DECL_GENERIC_HOSTILE_ENTITY(Slime)
-DECL_GENERIC_HOSTILE_ENTITY(PixelCatGray)
-DECL_GENERIC_HOSTILE_ENTITY(PixelCatGold)
+DECL_GENERIC_HOSTILE_ENTITY_(Slime)
+DECL_GENERIC_HOSTILE_ENTITY_(PixelCatGray)
+DECL_GENERIC_HOSTILE_ENTITY_(PixelCatGold)
 #define GENERIC_HOSTILE_ENTITY Slime, PixelCatGray, PixelCatGold
 
 DECL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
