@@ -391,7 +391,7 @@ template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;
 
 
-template <typename T, MovementSelectionType M = MovementSelectionType::kGreedyRandomBinary>
+template <typename T, MovementSelectionType M = MovementSelectionType::kGreedyTrigonometric>
 class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
     public:
         INCL_MULTITON(T)
@@ -468,7 +468,7 @@ class T final : public GenericHostileEntity<T, M> {\
         ~T() = default;\
 };
 
-#define DECL_GENERIC_HOSTILE_ENTITY_(T) DECL_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyRandomBinary)
+#define DECL_GENERIC_HOSTILE_ENTITY_(T) DECL_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyTrigonometric)
 
 #define DEF_GENERIC_HOSTILE_ENTITY(T, M, ns) \
 T::T(SDL_Point const& destCoords) : GenericHostileEntity<T, M>(destCoords) {\
@@ -491,7 +491,7 @@ const char* AbstractEntity<T>::sTypeID = ns::typeID;\
 template <>\
 std::filesystem::path AbstractEntity<T>::sTilesetPath = ns::path;\
 
-#define DEF_GENERIC_HOSTILE_ENTITY_(T, ns) DEF_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyRandomBinary, ns)
+#define DEF_GENERIC_HOSTILE_ENTITY_(T, ns) DEF_GENERIC_HOSTILE_ENTITY(T, MovementSelectionType::kGreedyTrigonometric, ns)
 
 
 template <typename T>
@@ -708,6 +708,7 @@ class Invoker {
         DECL(handleCustomEventPOST)
         DECL(updateAnimation)
         DECL(move)
+        DECL(handleInstantiation)
         DECL(handleSFX)
 };
 

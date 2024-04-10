@@ -45,17 +45,17 @@ void GenericSurgeProjectile<T>::initiateAttack(ProjectileType type, SDL_Point co
     switch (type) {
         case ProjectileType::kDiagonalQuadruple:
             initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, kDiagonalQuadrupleDirection);
-            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, kDiagonalQuadrupleDirection << 1);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, utils::fpttopt(kDiagonalQuadrupleDirection << (M_PI / 2)));
             break;
 
         case ProjectileType::kOrthogonalQuadruple:
             initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction);
-            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction << 1);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, utils::fpttopt(direction << (M_PI / 2)));
             break;
 
         case ProjectileType::kOrthogonalTriple:
             initiateAttack(ProjectileType::kOrthogonalSingle, destCoords, direction);
-            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, direction << 1);
+            initiateAttack(ProjectileType::kOrthogonalDouble, destCoords, utils::fpttopt(direction << (M_PI / 2)));
             break;
 
         case ProjectileType::kOrthogonalDouble:

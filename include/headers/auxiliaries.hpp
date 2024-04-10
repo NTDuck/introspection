@@ -977,15 +977,13 @@ bool operator<(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator+(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator-(SDL_Point const& first, SDL_Point const& second);
 SDL_Point operator-(SDL_Point const& instance);
-SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& vector);
 SDL_Point operator~(SDL_Point const& instance);
-SDL_Point operator<<(SDL_Point const& instance, unsigned int times);
-SDL_Point operator>>(SDL_Point const& instance, unsigned int times);
 
 bool operator==(SDL_FPoint const& first, SDL_FPoint const& second);
 SDL_FPoint operator<<(SDL_FPoint const& instance, float rad);
+SDL_FPoint operator<<(SDL_Point const& instance, float rad);
 SDL_FPoint operator>>(SDL_FPoint const& instance, float rad);
-
+SDL_FPoint operator>>(SDL_Point const& instance, float rad);
 
 namespace std {
     template <>
@@ -1063,10 +1061,12 @@ namespace utils {
     
     int ftoi(const float f);
     std::string dtos(const double d, unsigned int precision);
+    SDL_Point fpttopt(SDL_FPoint const& fpt);
     SDL_Color hextocol(std::string const& hexString);
     
     int generateRandomBinary(const double probability = 0.5);
     double calculateDistance(SDL_Point const& first, SDL_Point const& second);
+    SDL_Point calculateDirection(SDL_Point const& endpoint, SDL_Point const& origin = { 0, 0 });
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
 
     SDL_Texture* duplicateTexture(SDL_Renderer* renderer, SDL_Texture* texture);

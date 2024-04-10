@@ -124,15 +124,7 @@ template <typename T, MovementSelectionType M>
 template <MovementSelectionType M_>
 typename std::enable_if_t<M_ == MovementSelectionType::kGreedyTrigonometric>
 GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoords) {
-    // Let A be `this.mDestCoords` and B be `targetDestCoords`
-    // Vector AB: (B.x - A.x, B.y - A.y)
-    // Vector Ox (x-axis): (1, 0)
-    // Dot product of vector AB and vector Ox: AB . Ox = AB.x * Ox.x + AB.y * Ox.y = B.x - A.x
-    // Magnitude of vector AB: sqrt(pow(B.x - A.x, 2) + pow(B.y - A.y, 2))
-    // Magnitude of vector Ox: 1
-    // cos(AB, Ox) = (AB . Ox) / (|AB| * |Ox|) = (B.x - A.x) / (sqrt(pow(B.x - A.x, 2) + pow(B.y - A.y, 2)))
-
-
+    mNextVelocity = new SDL_Point(utils::calculateDirection(targetDestCoords, mDestCoords));
 }
 
 template <typename T, MovementSelectionType M>

@@ -41,47 +41,8 @@ SDL_Point operator-(SDL_Point const& instance) {
     return { -instance.x, -instance.y };
 }
 
-/**
- * @brief Multiply a `2`x`2` matrix with a `2`x`1` vector.
-*/
-SDL_Point operator*(std::array<std::array<int, 2>, 2> matrix, SDL_Point const& vector) {
-    return {
-        matrix[0][0] * vector.x + matrix[0][1] * vector.y,
-        matrix[1][0] * vector.x + matrix[1][1] * vector.y,
-    };
-}
-
 SDL_Point operator~(SDL_Point const& instance) {
     return { instance.y, instance.x };
-}
-
-/**
- * @brief Rotate a decimal point for a specified number of times.
- * @see https://www.learncpp.com/cpp-tutorial/multidimensional-stdarray/
- * @see https://ideone.com/cTHReg
-*/
-SDL_Point operator<<(SDL_Point const& instance, unsigned int times) {
-    static const std::array<std::array<std::array<int, 2>, 2>, 3> matrices {{
-        {{
-            { 0, -1 },
-            { 1, 0 },
-        }},
-        {{
-            { -1, 0 },
-            { 0, -1 },
-        }},
-        {{
-            { 0, 1 },
-            { -1, 0 },
-        }},
-    }};
-
-    times %= 4;
-    return times ? matrices[times + 1] * instance : instance;
-}
-
-SDL_Point operator>>(SDL_Point const& instance, unsigned int times) {
-    return instance << (4 - (times % 4));
 }
 
 bool operator==(SDL_FPoint const& first, SDL_FPoint const& second) {
@@ -101,10 +62,21 @@ SDL_FPoint operator<<(SDL_FPoint const& instance, float rad) {
     };
 }
 
+SDL_FPoint operator<<(SDL_Point const& instance, float rad) {
+    return {
+        instance.x * std::cos(rad) - instance.y * std::sin(rad),
+        instance.x * std::sin(rad) + instance.y * std::cos(rad),
+    };    
+}
+
 /**
  * @brief Rotate a floating point by the specified angle, clockwise.
 */
 SDL_FPoint operator>>(SDL_FPoint const& instance, float rad) {
+    return instance << -rad;
+}
+
+SDL_FPoint operator>>(SDL_Point const& instance, float rad) {
     return instance << -rad;
 }
 
@@ -182,6 +154,10 @@ std::string utils::dtos(const double d, unsigned int precision) {
     return oss.str();
 }
 
+SDL_Point utils::fpttopt(SDL_FPoint const& fpt) {
+    return { utils::ftoi(fpt.x), utils::ftoi(fpt.y) };
+}
+
 /**
  * @brief Convert a string representing a hex color value to `SDL_Color`.
 */
@@ -217,6 +193,18 @@ int utils::generateRandomBinary(const double probability) {
 double utils::calculateDistance(SDL_Point const& first, SDL_Point const& second) {
     auto sub = first - second;
     return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
+}
+
+/**
+ * @brief Reduce `endpoint` to a 4-directional representation.
+*/
+SDL_Point utils::calculateDirection(SDL_Point const& endpoint, SDL_Point const& origin) {
+    auto endpoint_shifted = (endpoint - origin) >> (M_PI / 4);   // 45 degrees counterclockwise rotation
+    if (endpoint_shifted.x >= 0 && endpoint_shifted.y >= 0) return { 0, 1 };
+    if (endpoint_shifted.x >= 0 && endpoint_shifted.y <= 0) return { 1, 0 };
+    if (endpoint_shifted.x <= 0 && endpoint_shifted.y <= 0) return { 0, -1 };
+    if (endpoint_shifted.x <= 0 && endpoint_shifted.y >= 0) return { -1, 0 };
+    return tile::Data_EntityTileset::kDefaultDirection;
 }
 
 /**
