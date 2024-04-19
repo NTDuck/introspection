@@ -11,6 +11,7 @@
 #include <functional>
 #include <optional>
 #include <list>
+#include <limits>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -76,7 +77,7 @@ enum class BehaviouralType : unsigned char {
 enum class MovementSelectionType : unsigned char {
     kGreedyTrigonometric,
     kGreedyRandomBinary,
-    // kPathfindingAStar,
+    kPathfindingAStar,
     // kPathfindingDijkstra,
 };
 
@@ -541,6 +542,109 @@ namespace event {
 }
 
 
+namespace pathfinders {
+    enum class Heuristic : unsigned char {
+        kManhattan,   // Best for 4-directional
+        kDiagonal,   // Best for 8-directional
+        kEuclidean,   // Works for any directions
+    };
+
+    enum class MovementType : bool {
+        k4Directional,
+        k8Directional,
+    };
+
+    enum class Status : unsigned char {
+        kInvalidSrc,
+        kInvalidDest,
+        kBlockedSrc,
+        kBlockedDest,
+        kCoincidents,
+
+        kSuccess,
+        kFailure,
+    };
+
+    struct Cell {
+        int x, y;
+
+        inline bool operator==(Cell const& other) const { return x == other.x && y == other.y; }
+        inline Cell operator+(Cell const& other) const { return { x + other.x, y + other.y }; }
+        friend inline std::ostream& operator<<(std::ostream& os, Cell const& self) { return os << '(' << self.x << ", " << self.y << ')'; }
+
+        static inline SDL_Point cltopt(Cell const& self) { return { self.x, self.y }; }
+        static inline Cell pttocl(SDL_Point const& pt) { return { pt.x, pt.y }; }
+
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kManhattan, double>
+        static getH(Cell const& lhs, Cell const& rhs);
+
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kDiagonal, double>
+        static getH(Cell const& lhs, Cell const& rhs);
+
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kEuclidean, double>
+        static getH(Cell const& lhs, Cell const& rhs);
+
+        struct Data;   // Forward declaration to prevent "incomplete type" compilation error
+    };
+
+    struct Cell::Data {
+        Cell parent;
+        double g, h, f = std::numeric_limits<double>::max();
+    };
+
+    struct Result {
+        const Status status;
+        std::stack<Cell> path;
+
+        Result(Status status, std::stack<Cell> path = {}) : status(status), path(path) {}
+    };
+
+    /**
+     * @brief Implementation of A* pathfinding algorithm.
+     * @see https://www.geeksforgeeks.org/a-search-algorithm/
+    */
+    template <Heuristic H = Heuristic::kManhattan, MovementType M = MovementType::k4Directional>
+    class ASPF {
+        public:
+            ASPF(std::vector<std::vector<int>> const& grid);
+            ~ASPF() = default;
+
+            void setBegin(Cell const& begin);
+            void setEnd(Cell const& end);
+
+            Result search(Cell const& src, Cell const& dest) const;
+
+        private:
+            bool isValid(Cell const& cell) const;
+            bool isUnblocked(Cell const& cell) const;
+            bool isUnblocked(Cell const& parent, Cell const& successor) const;
+
+            std::stack<Cell> getPath(std::vector<std::vector<Cell::Data>> const& cellData, Cell const& dest) const;
+
+            static inline constexpr auto getDirections() {
+                if constexpr(M == MovementType::k4Directional) {
+                    return std::array<Cell, 4>{{
+                        { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 },
+                    }};
+                } else {
+                    return std::array<Cell, 8>{{
+                        { 1, 0 }, { -1, 0 }, { 0, 1 }, { 0, -1 },
+                        { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 },
+                    }};
+                }
+            }
+
+            std::vector<std::vector<int>> const& mGrid;
+            Cell mBegin, mEnd;
+
+            static inline constexpr auto mDirections = getDirections();
+    };
+};
+
+
 /**
  * @brief Group components that are used for configuration.
  * @note Recommended implementation: components should be retrieved once in `Game` initialization and may extend to other retrieval operations, manipulation is not possible.
@@ -757,9 +861,9 @@ namespace config {
             constexpr const char* typeID = "pixel-cat-gold";
             const std::filesystem::path path = "assets/.tiled/.tsx/pc-gold-cat.tsx";
             constexpr SDL_FRect destRectModifier = { 0, 0, 4.444, 4.444 };
-            constexpr SDL_FPoint velocity = { 128, 128 };
-            constexpr int moveDelayTicks = 4444;
-            constexpr SDL_Point moveInitiateRange = { std::numeric_limits<int>::max(), std::numeric_limits<int>::max() };
+            constexpr SDL_FPoint velocity = { 44, 44 };
+            constexpr int moveDelayTicks = 0;
+            constexpr SDL_Point moveInitiateRange = { std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() };
             constexpr SDL_Point attackInitiateRange = { 2, 2 };
             constexpr SDL_Point attackRegisterRange = { 2, 2 };
             constexpr EntityPrimaryStats primaryStats = { 44, 44, 44, 4, 44, 44, 44, 4 };
@@ -1025,7 +1129,6 @@ namespace utils {
             std::unordered_map<K, U> mHashmap;
             std::list<K> mDeque;
     };
-
 
     template <typename Iterable, typename Callable, typename... Args>
     void iterate(Iterable const& iterable, Callable&& callable, Args&&... args) {

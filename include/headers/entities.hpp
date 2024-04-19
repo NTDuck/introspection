@@ -445,24 +445,28 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         typename std::enable_if_t<C == event::Code::kResp_MoveTerminate_GHE_Player>
         handleCustomEventGET_impl();
 
-        template <MovementSelectionType M_>
+        template <MovementSelectionType M_ = M>
         typename std::enable_if_t<M_ == MovementSelectionType::kGreedyTrigonometric>
         calculateNextMovement(SDL_Point const& targetDestCoords);
 
-        template <MovementSelectionType M_>
+        template <MovementSelectionType M_ = M>
         typename std::enable_if_t<M_ == MovementSelectionType::kGreedyRandomBinary>
+        calculateNextMovement(SDL_Point const& targetDestCoords);
+
+        template <MovementSelectionType M_ = M>
+        typename std::enable_if_t<M_ == MovementSelectionType::kPathfindingAStar>
         calculateNextMovement(SDL_Point const& targetDestCoords);
 
         static unsigned int sDeathCount;
 };
 
-#define INCL_GENERIC_HOSTILE_ENTITY(T) using GenericHostileEntity<T>::handleCustomEventPOST, GenericHostileEntity<T>::handleCustomEventGET, GenericHostileEntity<T>::getDeathCount, GenericHostileEntity<T>::isAllDead, GenericHostileEntity<T>::mMoveInitiateRange, GenericHostileEntity<T>::mAttackInitiateRange;
+#define INCL_GENERIC_HOSTILE_ENTITY(T, M) using GenericHostileEntity<T, M>::handleCustomEventPOST, GenericHostileEntity<T, M>::handleCustomEventGET, GenericHostileEntity<T, M>::getDeathCount, GenericHostileEntity<T, M>::isAllDead, GenericHostileEntity<T, M>::mMoveInitiateRange, GenericHostileEntity<T, M>::mAttackInitiateRange;
 
 #define DECL_GENERIC_HOSTILE_ENTITY(T, M) \
 class T final : public GenericHostileEntity<T, M> {\
     public:\
         INCL_ABSTRACT_ANIMATED_DYNAMIC_ENTITY(T)\
-        INCL_GENERIC_HOSTILE_ENTITY(T)\
+        INCL_GENERIC_HOSTILE_ENTITY(T, M)\
         \
         T(SDL_Point const& destCoords);\
         ~T() = default;\
@@ -676,7 +680,7 @@ DECL_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 
 DECL_GENERIC_HOSTILE_ENTITY_(Slime)
 DECL_GENERIC_HOSTILE_ENTITY_(PixelCatGray)
-DECL_GENERIC_HOSTILE_ENTITY_(PixelCatGold)
+DECL_GENERIC_HOSTILE_ENTITY(PixelCatGold, MovementSelectionType::kPathfindingAStar)
 #define GENERIC_HOSTILE_ENTITY Slime, PixelCatGray, PixelCatGold
 
 DECL_GENERIC_SURGE_PROJECTILE(PentacleProjectile)
