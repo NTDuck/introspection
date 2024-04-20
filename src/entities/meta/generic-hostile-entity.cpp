@@ -142,7 +142,11 @@ template <typename T, MovementSelectionType M>
 template <MovementSelectionType M_>
 typename std::enable_if_t<M_ == MovementSelectionType::kPathfindingAStar>
 GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoords) {
-    static auto pathfinder = pathfinders::ASPF(level::data.collisionTilelayer);
+    static auto pathfinder = pathfinders::ASPF<pathfinders::Heuristic::kManhattan, pathfinders::MovementType::k4Directional>(level::data.collisionTilelayer);
+
+    static auto timer = CountdownTimer(config::entities::ASPFTicks);
+    if (!timer.isStarted()) timer.start();
+    if (!timer.isFinished()) return;
 
     pathfinder.setBegin(pathfinders::Cell::pttocl(mDestCoords - mMoveInitiateRange));
     pathfinder.setEnd(pathfinders::Cell::pttocl(mDestCoords + mMoveInitiateRange));
@@ -154,6 +158,8 @@ GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoo
     if (result.path.empty()) return;
 
     mNextVelocity = new SDL_Point( pathfinders::Cell::cltopt(result.path.top()) - mDestCoords );
+
+    timer.start();
 }
 
 
@@ -168,4 +174,4 @@ template class GenericHostileEntity<PixelCatGold>;
 
 DEF_GENERIC_HOSTILE_ENTITY_(Slime, config::entities::slime)
 DEF_GENERIC_HOSTILE_ENTITY_(PixelCatGray, config::entities::pixel_cat_gray)
-DEF_GENERIC_HOSTILE_ENTITY(PixelCatGold, MovementSelectionType::kPathfindingAStar, config::entities::pixel_cat_gold)
+DEF_GENERIC_HOSTILE_ENTITY_(PixelCatGold, config::entities::pixel_cat_gold)

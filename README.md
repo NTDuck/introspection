@@ -185,6 +185,7 @@ Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [
 - Zlib decompression
 - Base64 decoding
 - Hexadecimal to RGB conversion
+- A* search algorithm, Dijkstra pathfinding algorithm, Greedy Best-First-Search algorithm (both reverted from A*)
 
 #### Data Serialization
 - Supports manipulation & retrieval of JSON/XML data formats (in-memory & from files)

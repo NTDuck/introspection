@@ -546,7 +546,11 @@ namespace pathfinders {
     enum class Heuristic : unsigned char {
         kManhattan,   // Best for 4-directional
         kDiagonal,   // Best for 8-directional
+        kChebyshev,   // Diagonal with `D = D2 = 1`
+        kOctile,   // Diagonal with `D = 1, D2 = std::sqrt(2)`
         kEuclidean,   // Works for any directions
+        kConstantZero,   // `g << h`, reverts into Dijkstra
+        kContantInf,   // `g >> h`, reverts into Greedy Best-First-Search
     };
 
     enum class MovementType : bool {
@@ -575,19 +579,38 @@ namespace pathfinders {
         static inline SDL_Point cltopt(Cell const& self) { return { self.x, self.y }; }
         static inline Cell pttocl(SDL_Point const& pt) { return { pt.x, pt.y }; }
 
+        static double getG(Cell const& distance);
+
         template <Heuristic H>
         typename std::enable_if_t<H == Heuristic::kManhattan, double>
         static getH(Cell const& lhs, Cell const& rhs);
 
         template <Heuristic H>
-        typename std::enable_if_t<H == Heuristic::kDiagonal, double>
+        typename std::enable_if_t<H == Heuristic::kChebyshev, double>
+        static getH(Cell const& lhs, Cell const& rhs);
+
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kOctile, double>
         static getH(Cell const& lhs, Cell const& rhs);
 
         template <Heuristic H>
         typename std::enable_if_t<H == Heuristic::kEuclidean, double>
         static getH(Cell const& lhs, Cell const& rhs);
 
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kConstantZero, double>
+        static constexpr inline getH(Cell const& lhs, Cell const& rhs) { return 0; }
+
+        template <Heuristic H>
+        typename std::enable_if_t<H == Heuristic::kContantInf, double>
+        static constexpr inline getH(Cell const& lhs, Cell const& rhs) { return std::pow(10, 307); }   // Might cause overflow
+
         struct Data;   // Forward declaration to prevent "incomplete type" compilation error
+
+        private:
+            template <Heuristic H, unsigned short int Dsq, unsigned short int D2sq>   // Floating-point template parameter is nonstandardC/C++(605)
+            typename std::enable_if_t<H == Heuristic::kDiagonal, double>
+            static getH(Cell const& lhs, Cell const& rhs);
     };
 
     struct Cell::Data {
@@ -642,6 +665,21 @@ namespace pathfinders {
 
             static inline constexpr auto mDirections = getDirections();
     };
+
+    /**
+     * @brief Implementation of Dijkstra pathfinding algorithm (reverted from A* search algorithm by setting heuristic `h` to constant `0`).
+     * @see https://cs.stackexchange.com/questions/83618/best-heuristic-for-a
+     * @see https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+    */
+    template <MovementType M = MovementType::k4Directional>
+    using DJPF = ASPF<Heuristic::kConstantZero, M>;
+
+    /**
+     * @brief Implementation of Greedy Best-First-Search pathfinding algorithm (reverted from A* search algorithm by setting heuristic `h` to be much higher than `g` so that `g` does not contribute to `f`).
+     * @see https://theory.stanford.edu/~amitp/GameProgramming/Heuristics.html
+    */
+    template <MovementType M = MovementType::k4Directional>
+    using GBFSPF = ASPF<Heuristic::kContantInf, M>;
 };
 
 
@@ -779,6 +817,7 @@ namespace config {
         constexpr double runVelocityModifier = 4;
         constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
         constexpr unsigned int SFXTicks = 777;
+        constexpr unsigned int ASPFTicks = 1111;
         
         namespace player {
             constexpr const char* typeID = "player";

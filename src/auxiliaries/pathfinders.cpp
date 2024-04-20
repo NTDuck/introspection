@@ -8,21 +8,34 @@
 #include <stack>
 
 
+double pathfinders::Cell::getG(Cell const& cell) {
+    return std::sqrt(std::pow(cell.x, 2) + std::pow(cell.y, 2));
+}
+
 template <pathfinders::Heuristic H>
 typename std::enable_if_t<H == pathfinders::Heuristic::kManhattan, double>
 pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
     return std::abs(cell.x - dest.x) + std::abs(cell.y - dest.y);
 }
 
-template <pathfinders::Heuristic H>
+template <pathfinders::Heuristic H, unsigned short int Dsq, unsigned short int D2sq>
 typename std::enable_if_t<H == pathfinders::Heuristic::kDiagonal, double>
 pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
-    static constexpr double kNodeLength = 1;
-    static constexpr double kNodeDiagonalDistance = std::sqrt(2);
-
     auto dx = std::abs(cell.x - dest.x);
     auto dy = std::abs(cell.y - dest.y);
-    return kNodeLength * (dx + dy) + (kNodeDiagonalDistance - kNodeLength * 2) * std::min(dx, dy);
+    return std::sqrt(Dsq) * std::max(dx, dy) + (std::sqrt(D2sq) - std::sqrt(Dsq)) * std::min(dx, dy);
+}
+
+template <pathfinders::Heuristic H>
+typename std::enable_if_t<H == pathfinders::Heuristic::kChebyshev, double>
+pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
+    return getH<Heuristic::kDiagonal, 1, 1>(cell, dest);
+}
+
+template <pathfinders::Heuristic H>
+typename std::enable_if_t<H == pathfinders::Heuristic::kOctile, double>
+pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
+    return getH<Heuristic::kDiagonal, 1, 2>(cell, dest);
 }
 
 template <pathfinders::Heuristic H>
@@ -130,7 +143,7 @@ pathfinders::Result pathfinders::ASPF<H, M>::search(Cell const& src, Cell const&
 
             // Ignore if successor is already on the closed list or is blocked
             if (!closedList[successor.y - mBegin.y][successor.x - mBegin.x] && isUnblocked(successor)) {
-                g = cellDataList[parent.y - mBegin.y][parent.x - mBegin.x].g + std::sqrt(std::pow(direction.x, 2) + std::pow(direction.y, 2));
+                g = cellDataList[parent.y - mBegin.y][parent.x - mBegin.x].g + Cell::getG(direction);
                 h = Cell::getH<H>(successor, dest);
                 f = g + h;
 
