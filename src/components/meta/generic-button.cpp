@@ -1,6 +1,8 @@
 #include <components.hpp>
 
 #include <string>
+#include <functional>
+
 #include <SDL.h>
 
 #include <mixer.hpp>
@@ -8,7 +10,7 @@
 
 
 template <typename T>
-GenericButtonComponent<T>::GenericButtonComponent(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState) : GenericComponent<T>(center, onMouseOutPreset), GenericTextBoxComponent<T>(center, onMouseOutPreset, content), kOnMouseOverPreset(onMouseOverPreset), kTargetGameState(destState) {}
+GenericButtonComponent<T>::GenericButtonComponent(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback) : GenericComponent<T>(center, onMouseOutPreset), GenericTextBoxComponent<T>(center, onMouseOutPreset, content), kOnMouseOverPreset(onMouseOverPreset), kTargetGameState(destState), mCallback(callback) {}
 
 /**
  * @see https://wiki.libsdl.org/SDL2/SDL_SystemCursor
@@ -68,9 +70,10 @@ void GenericButtonComponent<T>::handleCursor() {
 
 template <typename T>
 void GenericButtonComponent<T>::onClick() {
-    if (kTargetGameState == nullptr) return;
+    std::invoke(mCallback);
     Mixer::invoke(&Mixer::playSFX, Mixer::SFXName::kButtonClick);
-    globals::state = *kTargetGameState;
+
+    if (kTargetGameState != nullptr) globals::state = *kTargetGameState;
 
     SDL_SetCursor(sOnMouseOutCursor);
 }

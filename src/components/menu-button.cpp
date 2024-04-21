@@ -6,7 +6,7 @@
 #include <auxiliaries.hpp>
 
 
-MenuButton::MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState) : GenericComponent<MenuButton>(center, onMouseOutPreset), GenericButtonComponent<MenuButton>(center, onMouseOutPreset, onMouseOverPreset, content, destState) {}
+MenuButton::MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback) : GenericComponent<MenuButton>(center, onMouseOutPreset), GenericButtonComponent<MenuButton>(center, onMouseOutPreset, onMouseOverPreset, content, destState, callback) {}
 
 
 template <>

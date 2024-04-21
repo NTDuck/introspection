@@ -162,7 +162,7 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
         static void handleCursor();
 
     protected:
-        GenericButtonComponent(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState);
+        GenericButtonComponent(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback = [](){});
 
         virtual void onClick();
 
@@ -179,6 +179,8 @@ class GenericButtonComponent : public GenericTextBoxComponent<T> {
         static bool sPrevAllMouseOutState;
         static bool sCurrAllMouseOutState;
         bool mIsMouseOut = true;
+
+        std::function<void(void)> mCallback;
 };
 
 #define INCL_GENERIC_BUTTON_COMPONENT(T) using GenericButtonComponent<T>::initialize, GenericButtonComponent<T>::deinitialize, GenericButtonComponent<T>::render, GenericButtonComponent<T>::onWindowChange, GenericButtonComponent<T>::handleMouseEvent, GenericButtonComponent<T>::handleCursor, GenericButtonComponent<T>::onClick, GenericButtonComponent<T>::kOnMouseOverPreset, GenericButtonComponent<T>::mTextTextureOnMouseOver, GenericButtonComponent<T>::mBoxTextureOnMouseOver, GenericButtonComponent<T>::kTargetGameState;
@@ -412,7 +414,7 @@ class MenuButton final : public GenericButtonComponent<MenuButton> {
     public:
         INCL_GENERIC_BUTTON_COMPONENT(MenuButton)
 
-        MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState);
+        MenuButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback);
         ~MenuButton() = default;
 };
 
@@ -479,7 +481,7 @@ class GameOverButton final : public Singleton<GameOverButton>, public GenericBut
         INCL_GENERIC_BUTTON_COMPONENT(GameOverButton)
         INCL_SINGLETON(GameOverButton)
 
-        GameOverButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState);
+        GameOverButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback = [](){});
         ~GameOverButton() = default;
 
         static void deinitialize();

@@ -6,7 +6,7 @@
 #include <auxiliaries.hpp>
 
 
-GameOverButton::GameOverButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState) : GenericComponent<GameOverButton>(center, onMouseOutPreset), GenericButtonComponent<GameOverButton>(center, onMouseOutPreset, onMouseOverPreset, content, destState) {}
+GameOverButton::GameOverButton(SDL_FPoint const& center, ComponentPreset const& onMouseOutPreset, ComponentPreset const& onMouseOverPreset, std::string const& content, GameState* destState, std::function<void(void)> const& callback) : GenericComponent<GameOverButton>(center, onMouseOutPreset), GenericButtonComponent<GameOverButton>(center, onMouseOutPreset, onMouseOverPreset, content, destState, callback) {}
 
 void GameOverButton::deinitialize() {
     GenericButtonComponent<GameOverButton>::deinitialize();
