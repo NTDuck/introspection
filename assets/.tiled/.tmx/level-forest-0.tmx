@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="18">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="50" height="25" tilewidth="32" tileheight="32" infinite="0" nextlayerid="10" nextobjectid="19">
  <editorsettings>
   <export target="level-forest-0.json" format="json"/>
  </editorsettings>
@@ -26,5 +26,7 @@
    eJzt2KERACAMBEEc/QvoBDqBTkDzJgWAIpnbmRdXQlJzSk3rWtGq4x7aDNBL2wHaeG8AAAAAwD272b33Lz8PfiZ//Txe+wCIuBar
   </data>
  </layer>
- <objectgroup id="8" name="entities"/>
+ <objectgroup id="8" name="entities">
+  <object id="18" type="autopilot-target" x="1568" y="384" width="32" height="32"/>
+ </objectgroup>
 </map>

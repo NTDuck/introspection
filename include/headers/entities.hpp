@@ -616,12 +616,16 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         void handleCustomEventPOST() const override;
         void handleCustomEventGET(SDL_Event const& event) override;
-
         void handleSFX() const override;
+
+        inline bool isOnAutopilot() const { return !mAutopilotPath.empty(); }
+        void handleAutopilotMovement();
 
     private:
         void handleKeyboardEvent_Movement(SDL_Event const& event);
         void handleKeyboardEvent_ProjectileAttack(SDL_Event const& event);
+
+        void onAutopilotToggled(bool onAutopilotStart);
 
         template <event::Code C>
         typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
@@ -652,6 +656,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         handleCustomEventGET_impl(SDL_Event const& event);
 
         static const std::vector<std::filesystem::path> sTilesetPaths;
+
+        std::stack<pathfinders::Cell> mAutopilotPath;
 };
 
 

@@ -467,6 +467,7 @@ namespace level {
         tile::Tensor tiles;
         tile::Data_TilelayerTilesets tilesets;
         std::vector<std::vector<tile::GID>> collisionTilelayer;
+        SDL_Point autopilotTargetTile;   // For autopilot
 
         SDL_Point tileDestSize;
         SDL_Point tileDestCount;
@@ -750,6 +751,7 @@ namespace config {
         kPlayerMoveDown = SDLK_s,
         kPlayerMoveRight = SDLK_a,
         kPlayerMoveLeft = SDLK_d,
+        kPlayerAutopilotToggle = SDLK_TAB,
         kPlayerRunToggle = SDLK_LSHIFT,
         kPlayerAttackMeele = SDLK_SPACE,
         kPlayerAttackSurgeProjectileOrthogonalSingle = SDLK_1,

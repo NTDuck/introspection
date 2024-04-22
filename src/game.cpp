@@ -218,6 +218,7 @@ void Game::handleDependencies() {
 
         case (GameState::kLoading | GameState::kIngamePlaying):
             LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
+            IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
             onLevelChange();
             onWindowChange();
             break;

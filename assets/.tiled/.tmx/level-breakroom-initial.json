@@ -268,6 +268,17 @@
                  "width":32,
                  "x":640,
                  "y":416
+                }, 
+                {
+                 "height":32,
+                 "id":5,
+                 "name":"",
+                 "rotation":0,
+                 "type":"autopilot-target",
+                 "visible":true,
+                 "width":32,
+                 "x":512,
+                 "y":320
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -276,7 +287,7 @@
          "y":0
         }],
  "nextlayerid":6,
- "nextobjectid":5,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

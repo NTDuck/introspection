@@ -26,8 +26,8 @@ void Player::deinitialize() {
 }
 
 void Player::reinitialize(bool increment) {
-    static unsigned short int index = 0;
-    static const unsigned short int size = static_cast<unsigned short int>(sTilesetPaths.size());
+    static std::size_t index = 0;
+    static const std::size_t size = sTilesetPaths.size();
 
     if (increment) { if (index == size - 1) index = 0; else ++index; } else { if (!index) index = size - 1; else --index; }
 
@@ -55,7 +55,13 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerMoveDown:
         case ~config::Key::kPlayerMoveRight:
         case ~config::Key::kPlayerMoveLeft:
+            onAutopilotToggled(false);
             handleKeyboardEvent_Movement(event);
+            break;
+
+        case ~config::Key::kPlayerAutopilotToggle:
+            if (event.type != SDL_KEYDOWN) break;
+            onAutopilotToggled(!isOnAutopilot());
             break;
 
         case ~config::Key::kPlayerRunToggle:
@@ -63,6 +69,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case ~config::Key::kPlayerAttackMeele:
+            if (event.type != SDL_KEYDOWN) break;
+            onAutopilotToggled(false);
             if (mAnimation == Animation::kAttackMeele || mAnimation == Animation::kAttackRanged) break;
             resetAnimation(Animation::kAttackMeele);
             break;
@@ -72,6 +80,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalTriple:
         case ~config::Key::kPlayerAttackSurgeProjectileOrthogonalQuadruple:
         case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
+            if (event.type != SDL_KEYDOWN) break;
+            onAutopilotToggled(false);
             if (tile::Data_EntityTileset::getPriority(mAnimation) == tile::Data_EntityTileset::getPriority(Animation::kAttackMeele) || !timer.isFinished()) break;
             resetAnimation(Animation::kAttackRanged);
 
@@ -80,6 +90,8 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
             break;
 
         case ~config::Key::kAffirmative:
+            if (event.type != SDL_KEYDOWN) break;
+            onAutopilotToggled(false);
             handleCustomEventPOST_impl<event::Code::kReq_Interact_Player_GIE>();
             break;
 
@@ -150,6 +162,71 @@ void Player::handleSFX() const {
     idleFramesTracker = idleFrames;
 }
 
+/**
+ * @brief Calculate path to `level::data.autopilotTargetTile`.
+*/
+void Player::onAutopilotToggled(bool onAutopilotStart) {
+    if (!onAutopilotStart) {
+        while (!mAutopilotPath.empty()) mAutopilotPath.pop();
+        if (mNextVelocity != nullptr) delete mNextVelocity;
+        mNextVelocity = nullptr;
+        return;
+    }
+
+    static auto pathfinder = pathfinders::ASPF<pathfinders::Heuristic::kManhattan, pathfinders::MovementType::k4Directional>(level::data.collisionTilelayer);
+    pathfinder.setBegin({ 0, 0 });
+    pathfinder.setEnd({ static_cast<int>(level::data.collisionTilelayer.front().size()) - 1, static_cast<int>(level::data.collisionTilelayer.size()) - 1 });
+
+    auto result = pathfinder.search(pathfinders::Cell::pttocl(mDestCoords), pathfinders::Cell::pttocl(level::data.autopilotTargetTile));
+    if (result.status != pathfinders::Status::kSuccess) return;
+    mAutopilotPath = result.path;
+
+    // // Trace path
+    // std::cout << "Path: " << std::endl;
+    // while (!result.path.empty()) {
+    //     std::cout << "(" << result.path.top().x << ", " << result.path.top().y << ") -> ";
+    //     result.path.pop();
+    // }
+    // std::cout << std::endl;
+}
+
+/**
+ * @brief Determine player movement on autopilot.
+*/
+void Player::handleAutopilotMovement() {
+    // if (!isOnAutopilot() || mDestCoords != pathfinders::Cell::cltopt(mAutopilotPath.top())) return;
+
+    // // The current topmost element of the path is the player's current position, so remove it
+    // std::cout << "called, pop: (" << mDestCoords.x << ", " << mDestCoords.y << ") ";
+
+    // mAutopilotPath.pop();
+    // if (mAutopilotPath.empty()) return;
+
+    // // After removal, the current topmost element of the path is the player's (supposedly) next position, so base calculations on it
+    // if (mNextVelocity != nullptr) delete mNextVelocity;
+    // mNextVelocity = new SDL_Point(pathfinders::Cell::cltopt(mAutopilotPath.top()) - mDestCoords);
+    // std::cout << "-> (" << mAutopilotPath.top().x << ", " << mAutopilotPath.top().y << ") dx (" << mNextVelocity->x << ", " << mNextVelocity->y << ")" << std::endl;
+    // initiateMove();
+
+    static bool resolved = false;
+
+    if (!isOnAutopilot()) return;
+
+    if (mDestCoords == pathfinders::Cell::cltopt(mAutopilotPath.top())) {
+        mAutopilotPath.pop();
+        // std::cout << "called, pop: (" << mDestCoords.x << ", " << mDestCoords.y << ") ";
+        resolved = false;
+        return;
+    }
+
+    if (!isOnAutopilot() || resolved) return;
+    if (mNextVelocity != nullptr) delete mNextVelocity;
+    mNextVelocity = new SDL_Point(pathfinders::Cell::cltopt(mAutopilotPath.top()) - mDestCoords);
+    // std::cout << "-> (" << mAutopilotPath.top().x << ", " << mAutopilotPath.top().y << ") dx (" << mNextVelocity->x << ", " << mNextVelocity->y << ")" << std::endl;
+    initiateMove();
+    resolved = true;
+}
+
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     static const std::unordered_map<SDL_Keycode, SDL_Point> mapping = {
         { ~config::Key::kPlayerMoveUp, { 0, -1 } },
@@ -161,10 +238,10 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     auto it = mapping.find(event.key.keysym.sym);
     if (it == mapping.end()) return;
 
-    if (event.type == SDL_KEYUP) {
-        delete mNextVelocity;
-        mNextVelocity = nullptr;
-    } else {
+    delete mNextVelocity;
+    mNextVelocity = nullptr;
+
+    if (event.type == SDL_KEYDOWN) {
         mNextVelocity = new SDL_Point(it->second);
         initiateMove();
     }

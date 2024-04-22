@@ -374,7 +374,9 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
         }
 
         data->load(object);
-        insert(type_v, data);
+
+        if (type_v == "autopilot-target") autopilotTargetTile = data->destCoords;
+        else insert(type_v, data);
     }
 }
 
@@ -394,6 +396,7 @@ void level::Data::clear() {
     // Default properties
     viewportHeight = config::interface::viewportHeight;
     backgroundColor = config::color::offblack;
+    autopilotTargetTile = { -1, -1 };
 
     for (auto& pair : dependencies) for (auto& p : pair.second) delete p;
     dependencies.clear();

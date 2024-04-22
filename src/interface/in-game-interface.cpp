@@ -196,6 +196,7 @@ void IngameInterface::handleDependencies() const {
 void IngameInterface::handleEntitiesInteraction() const {
     Invoker<ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, Player>::invoke_updateAnimation();
     Invoker<GENERIC_SURGE_PROJECTILE>::invoke_handleInstantiation();
+    Player::invoke(&Player::handleAutopilotMovement);   // Autopilot
     Invoker<GENERIC_HOSTILE_ENTITY, Player>::invoke_move();
 }
 

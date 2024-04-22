@@ -47,7 +47,7 @@ pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
 template <pathfinders::Heuristic H, pathfinders::MovementType M>
 pathfinders::ASPF<H, M>::ASPF(std::vector<std::vector<int>> const& grid) : mGrid(grid) {
     setBegin({ 0, 0 });
-    setEnd({ 0, 0 });
+    setEnd({ static_cast<int>(mGrid.front().size()) - 1, static_cast<int>(mGrid.size()) - 1 });
 }
 
 template <pathfinders::Heuristic H, pathfinders::MovementType M>
