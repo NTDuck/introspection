@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="7" height="10" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <layer id="1" name="terrains" width="7" height="10">
+  <data encoding="base64" compression="zlib">
+   eJwzZWFgMMWBXfHgTjz4MiMDwxU0/BSIr0LpoYABnHQzCg==
+  </data>
+ </layer>
+ <layer id="2" name="finalizer" width="7" height="10">
+  <data encoding="base64" compression="zlib">
+   eJxj4WJgYMWC2YBYAoixAalhIqcDxLpYsB4QAwC7pwQb
+  </data>
+ </layer>
+</map>
