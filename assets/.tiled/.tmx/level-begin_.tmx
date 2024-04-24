@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="40" height="16" tilewidth="8" tileheight="8" infinite="0" backgroundcolor="#322f27" nextlayerid="3" nextobjectid="1">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <layer id="1" name="terrains" width="40" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2DgQQEjYUwvoM7BwKABxJocxLmL3u60BrrLBohtB6n7/IHuCgDiwEHqvmSgu1KAOBWP+3oZyHP7SMMMgzycYGAwpDtCYDC7bRQMTwAAktRUjA==
+  </data>
+ </layer>
+</map>

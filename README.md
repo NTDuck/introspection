@@ -212,8 +212,10 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 #### Tilesets
 - [Modern Interiors](https://limezu.itch.io/moderninteriors) and [Modern Exteriors](https://limezu.itch.io/modernexteriors)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
+- [1-bit Pulp-compliant tileset](https://teaceratops.itch.io/1-bit-tileset)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Pixel Cats](https://pixelfight.itch.io/cat-pack)
+- [Hana Caraka Base Character](https://bagong-games.itch.io/hana-caraka-base-character)
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 - [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 
