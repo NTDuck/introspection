@@ -97,7 +97,7 @@ GenericSurgeProjectile<T>::handleCustomEventPOST_impl() const {
 }
 
 
-template class GenericSurgeProjectile<PentacleProjectile>;
+template class GenericSurgeProjectile<Darkness>;
 
 
-DEF_GENERIC_SURGE_PROJECTILE(PentacleProjectile, config::entities::pentacle_projectile)
+DEF_GENERIC_SURGE_PROJECTILE(Darkness, config::entities::projectile::darkness)

@@ -261,7 +261,7 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
 
     if (event.type == SDL_KEYUP) return;
 
-    PentacleProjectile::initiateAttack(it->second, mDestCoords, mDirection);
+    Darkness::initiateAttack(it->second, mDestCoords, mDirection);
 }
 
 template <event::Code C>

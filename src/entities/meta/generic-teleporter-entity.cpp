@@ -39,5 +39,5 @@ template class GenericTeleporterEntity<PlaceholderTeleporter>;
 template class GenericTeleporterEntity<RedHandThrone>;
 
 
-DEF_GENERIC_TELEPORTER_ENTITY(PlaceholderTeleporter, config::entities::placeholder_teleporter)
-DEF_GENERIC_TELEPORTER_ENTITY(RedHandThrone, config::entities::teleporter_red_hand_throne)
+DEF_GENERIC_TELEPORTER_ENTITY(PlaceholderTeleporter, config::entities::placeholders::teleporter)
+DEF_GENERIC_TELEPORTER_ENTITY(RedHandThrone, config::entities::teleporter::red_hand_throne)

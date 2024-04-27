@@ -134,7 +134,6 @@ template class AbstractEntity<Player>;
 
 template class AbstractEntity<OmoriLightBulb>;
 template class AbstractEntity<OmoriKeysWASD>;
-template class AbstractEntity<HospitalXRayMachine>;
 
 template class AbstractEntity<PlaceholderInteractable>;
 template class AbstractEntity<OmoriLaptop>;
@@ -147,15 +146,10 @@ template class AbstractEntity<OmoriCat_4>;
 template class AbstractEntity<OmoriCat_5>;
 template class AbstractEntity<OmoriCat_6>;
 template class AbstractEntity<OmoriCat_7>;
-template class AbstractEntity<HospitalXRayScreenArm>;
-template class AbstractEntity<HospitalXRayScreenHead>;
-template class AbstractEntity<HospitalSink>;
 
 template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
-template class AbstractEntity<Slime>;
-template class AbstractEntity<PixelCatGray>;
-template class AbstractEntity<PixelCatGold>;
+template class AbstractEntity<Stalfos>;
 
-template class AbstractEntity<PentacleProjectile>;
+template class AbstractEntity<Darkness>;

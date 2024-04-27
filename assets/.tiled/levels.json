@@ -1,60 +1,52 @@
 {
   "levels": [
     {
+      "name": "level-prelude",
+      "source": ".tmx/level-prelude.json"
+    },
+    {
+      "name": "level-woods-entry-point",
+      "source": ".tmx/level-woods-entry-point.json"
+    },
+    {
+      "name": "level-woods-long-lane",
+      "source": ".tmx/level-woods-long-lane.json"
+    },
+    {
+      "name": "level-woods-mystery-shack",
+      "source": ".tmx/level-woods-mystery-shack.json"
+    },
+    {
+      "name": "level-woods-crossroads-first",
+      "source": ".tmx/level-woods-crossroads-first.json"
+    },
+    {
+      "name": "level-woods-dead-end",
+      "source": ".tmx/level-woods-dead-end.json"
+    },
+    {
+      "name": "level-woods-enemy-approaching-first",
+      "source": ".tmx/level-woods-enemy-approaching-first.json"
+    },
+    {
+      "name": "level-woods-enemy-approaching-final",
+      "source": ".tmx/level-woods-enemy-approaching-final.json"
+    },
+    {
+      "name": "level-woods-crossroads-final",
+      "source": ".tmx/level-woods-crossroads-final.json"
+    },
+    {
+      "name": "level-woods-destined-death",
+      "source": ".tmx/level-woods-destined-death.json"
+    },
+    {
+      "name": "level-interlude",
+      "source": ".tmx/level-interlude.json"
+    },
+    {
       "name": "level-white-space",
       "source": ".tmx/level-white-space.json"
-    },
-    {
-      "name": "level-begin",
-      "source": ".tmx/level-begin.json"
-    },
-    {
-      "name": "level-forest-0",
-      "source": ".tmx/level-forest-0.json"
-    },
-    {
-      "name": "level-forest-1",
-      "source": ".tmx/level-forest-1.json"
-    },
-    {
-      "name": "level-forest-2",
-      "source": ".tmx/level-forest-2.json"
-    },
-    {
-      "name": "level-forest-3",
-      "source": ".tmx/level-forest-3.json"
-    },
-    {
-      "name": "level-forest-4",
-      "source": ".tmx/level-forest-4.json"
-    },
-    {
-      "name": "level-deprecated-tutorial-0",
-      "source": ".tmx/level-deprecated-tutorial-0.json"
-    },
-    {
-      "name": "level-deprecated-tutorial-1",
-      "source": ".tmx/level-deprecated-tutorial-1.json"
-    },
-    {
-      "name": "level-ante",
-      "source": ".tmx/level-ante.json"
-    },
-    {
-      "name": "level-paene",
-      "source": ".tmx/level-paene.json"
-    },
-    {
-      "name": "level-umbra",
-      "source": ".tmx/level-umbra.json"
-    },
-    {
-      "name": "level-breakroom-initial",
-      "source": ".tmx/level-breakroom-initial.json"
-    },
-    {
-      "name": "level-bedroom",
-      "source": ".tmx/level-bedroom.json"
     }
   ]
 }

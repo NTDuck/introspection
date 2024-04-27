@@ -109,7 +109,6 @@ template class AbstractAnimatedEntity<Player>;
 
 template class AbstractAnimatedEntity<OmoriLightBulb>;
 template class AbstractAnimatedEntity<OmoriKeysWASD>;
-template class AbstractAnimatedEntity<HospitalXRayMachine>;
 
 template class AbstractAnimatedEntity<PlaceholderInteractable>;
 template class AbstractAnimatedEntity<OmoriLaptop>;
@@ -122,20 +121,14 @@ template class AbstractAnimatedEntity<OmoriCat_4>;
 template class AbstractAnimatedEntity<OmoriCat_5>;
 template class AbstractAnimatedEntity<OmoriCat_6>;
 template class AbstractAnimatedEntity<OmoriCat_7>;
-template class AbstractAnimatedEntity<HospitalXRayScreenArm>;
-template class AbstractAnimatedEntity<HospitalXRayScreenHead>;
-template class AbstractAnimatedEntity<HospitalSink>;
 
 template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
-template class AbstractAnimatedEntity<Slime>;
-template class AbstractAnimatedEntity<PixelCatGray>;
-template class AbstractAnimatedEntity<PixelCatGold>;
+template class AbstractAnimatedEntity<Stalfos>;
 
-template class AbstractAnimatedEntity<PentacleProjectile>;
+template class AbstractAnimatedEntity<Darkness>;
 
 
-DEF_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::omori_light_bulb)
-DEF_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD, config::entities::omori_keys_wasd)
-DEF_ABSTRACT_ANIMATED_ENTITY(HospitalXRayMachine, config::entities::hospital_xray_machine)
+DEF_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::interactables::omori_light_bulb)
+DEF_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD, config::entities::interactables::omori_keys_wasd)

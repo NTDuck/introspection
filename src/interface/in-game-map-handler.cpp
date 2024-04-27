@@ -91,20 +91,20 @@ void IngameMapHandler::loadProgressFromStorage(json const& saveData) {
         break;
 
     switch (static_cast<unsigned int>(saveData["level"])) {
+        IMPL(level::Name::kLevelPrelude)
+        IMPL(level::Name::kLevelWoodsEntryPoint)
+        IMPL(level::Name::kLevelWoodsLongLane)
+        IMPL(level::Name::kLevelWoodsMysteryShack)
+        IMPL(level::Name::kLevelWoodsCrossroadsFirst)
+        IMPL(level::Name::kLevelWoodsDeadEnd)
+        IMPL(level::Name::kLevelWoodsEnemyApproachingFirst)
+        IMPL(level::Name::kLevelWoodsEnemyApproachingFinal)
+        IMPL(level::Name::kLevelWoodsCrossroadsFinal)
+        IMPL(level::Name::kLevelWoodsDestinedDeath)
+
+        IMPL(level::Name::kLevelInterlude)
+
         IMPL(level::Name::kLevelWhiteSpace)
-        IMPL(level::Name::kLevelBegin)
-        IMPL(level::Name::kLevelForest_0)
-        IMPL(level::Name::kLevelForest_1)
-        IMPL(level::Name::kLevelForest_2)
-        IMPL(level::Name::kLevelForest_3)
-        IMPL(level::Name::kLevelForest_4)
-        IMPL(level::Name::kLevelDeprecatedTutorial_0)
-        IMPL(level::Name::kLevelDeprecatedTutorial_1)
-        IMPL(level::Name::kLevelAnte)
-        IMPL(level::Name::kLevelPaene)
-        IMPL(level::Name::kLevelUmbra)
-        IMPL(level::Name::kLevelBreakroomInitial)
-        IMPL(level::Name::kLevelBedroom)
 
         default: break;
     }

@@ -167,11 +167,7 @@ template <typename T, MovementSelectionType M>
 unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 
-template class GenericHostileEntity<Slime>;
-template class GenericHostileEntity<PixelCatGray>;
-template class GenericHostileEntity<PixelCatGold>;
+template class GenericHostileEntity<Stalfos>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(Slime, config::entities::slime)
-DEF_GENERIC_HOSTILE_ENTITY_(PixelCatGray, config::entities::pixel_cat_gray)
-DEF_GENERIC_HOSTILE_ENTITY_(PixelCatGold, config::entities::pixel_cat_gold)
+DEF_GENERIC_HOSTILE_ENTITY_(Stalfos, config::entities::hostile::stalfos)

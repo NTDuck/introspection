@@ -210,14 +210,12 @@ Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [
 We would like to credit certain assets used in this project. Licenses, if any, should be included in the links below.
 
 #### Tilesets
-- [Modern Interiors](https://limezu.itch.io/moderninteriors) and [Modern Exteriors](https://limezu.itch.io/modernexteriors)
+- [1-bit Pulp-compliant Tileset](https://teaceratops.itch.io/1-bit-tileset)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
-- [1-bit Pulp-compliant tileset](https://teaceratops.itch.io/1-bit-tileset)
+- [Zelda's Adventure](https://www.spriters-resource.com/cd_i/zeldasadventure/)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
-- [Pixel Cats](https://pixelfight.itch.io/cat-pack)
 - [Hana Caraka Base Character](https://bagong-games.itch.io/hana-caraka-base-character)
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
-- [Enemy Galore](https://admurin.itch.io/enemy-galore-1)
 
 #### Fonts
 - [Omori](https://dafontonline.com/omori-font/)

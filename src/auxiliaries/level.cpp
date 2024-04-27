@@ -13,20 +13,20 @@ std::optional<level::Name> level::stoln(std::string const& s) {
         return std::make_optional<Name>(ln);
 
     switch (hstr(s.c_str())) {
+        IMPL(Name::kLevelPrelude)
+        IMPL(Name::kLevelWoodsEntryPoint)
+        IMPL(Name::kLevelWoodsLongLane)
+        IMPL(Name::kLevelWoodsMysteryShack)
+        IMPL(Name::kLevelWoodsCrossroadsFirst)
+        IMPL(Name::kLevelWoodsDeadEnd)
+        IMPL(Name::kLevelWoodsEnemyApproachingFirst)
+        IMPL(Name::kLevelWoodsEnemyApproachingFinal)
+        IMPL(Name::kLevelWoodsCrossroadsFinal)
+        IMPL(Name::kLevelWoodsDestinedDeath)
+
+        IMPL(Name::kLevelInterlude)
+
         IMPL(Name::kLevelWhiteSpace)
-        IMPL(Name::kLevelBegin)
-        IMPL(Name::kLevelForest_0)
-        IMPL(Name::kLevelForest_1)
-        IMPL(Name::kLevelForest_2)
-        IMPL(Name::kLevelForest_3)
-        IMPL(Name::kLevelForest_4)
-        IMPL(Name::kLevelDeprecatedTutorial_0)
-        IMPL(Name::kLevelDeprecatedTutorial_1)
-        IMPL(Name::kLevelAnte)
-        IMPL(Name::kLevelPaene)
-        IMPL(Name::kLevelUmbra)
-        IMPL(Name::kLevelBreakroomInitial)
-        IMPL(Name::kLevelBedroom)
 
         default: return std::nullopt;
     }
@@ -347,25 +347,22 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
         Data_Generic* data = nullptr;
 
         switch (hstr(static_cast<std::string>(type_v).c_str())) {
-            case hstr(config::entities::placeholder_interactable::typeID):
-            case hstr(config::entities::omori_laptop::typeID):
-            case hstr(config::entities::omori_mewo::typeID):
-            case hstr(config::entities::omori_cat_0::typeID):
-            case hstr(config::entities::omori_cat_1::typeID):
-            case hstr(config::entities::omori_cat_2::typeID):
-            case hstr(config::entities::omori_cat_3::typeID):
-            case hstr(config::entities::omori_cat_4::typeID):
-            case hstr(config::entities::omori_cat_5::typeID):
-            case hstr(config::entities::omori_cat_6::typeID):
-            case hstr(config::entities::omori_cat_7::typeID):
-            case hstr(config::entities::hospital_xray_screen_arm::typeID):
-            case hstr(config::entities::hospital_xray_screen_head::typeID):
-            case hstr(config::entities::hospital_sink::typeID):
+            case hstr(config::entities::placeholders::interactable::typeID):
+            case hstr(config::entities::interactables::omori_laptop::typeID):
+            case hstr(config::entities::interactables::omori_mewo::typeID):
+            case hstr(config::entities::interactables::omori_cat_0::typeID):
+            case hstr(config::entities::interactables::omori_cat_1::typeID):
+            case hstr(config::entities::interactables::omori_cat_2::typeID):
+            case hstr(config::entities::interactables::omori_cat_3::typeID):
+            case hstr(config::entities::interactables::omori_cat_4::typeID):
+            case hstr(config::entities::interactables::omori_cat_5::typeID):
+            case hstr(config::entities::interactables::omori_cat_6::typeID):
+            case hstr(config::entities::interactables::omori_cat_7::typeID):
                 data = new Data_Interactable();
                 break;
 
-            case hstr(config::entities::placeholder_teleporter::typeID):
-            case hstr(config::entities::teleporter_red_hand_throne::typeID):
+            case hstr(config::entities::placeholders::teleporter::typeID):
+            case hstr(config::entities::teleporter::red_hand_throne::typeID):
                 data = new Data_Teleporter();
                 break;
 

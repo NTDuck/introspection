@@ -379,27 +379,20 @@ namespace level {
      * Register level names as enumeration constants for maintainability.
     */
     enum class Name : unsigned int {
-        kLevelDeprecatedTutorial_0 = hstr("level-deprecated-tutorial-0"),
-        kLevelDeprecatedTutorial_1 = hstr("level-deprecated-tutorial-1"),
+        kLevelPrelude = hstr("level-prelude"),
+        kLevelWoodsEntryPoint = hstr("level-woods-entry-point"),
+        kLevelWoodsLongLane = hstr("level-woods-long-lane"),
+        kLevelWoodsMysteryShack = hstr("level-woods-mystery-shack"),
+        kLevelWoodsCrossroadsFirst = hstr("level-woods-crossroads-first"),
+        kLevelWoodsDeadEnd = hstr("level-woods-dead-end"),
+        kLevelWoodsEnemyApproachingFirst = hstr("level-woods-enemy-approaching-first"),
+        kLevelWoodsEnemyApproachingFinal = hstr("level-woods-enemy-approaching-final"),
+        kLevelWoodsCrossroadsFinal = hstr("level-woods-crossroads-final"),
+        kLevelWoodsDestinedDeath = hstr("level-woods-destined-death"),
 
-        kLevelWhiteSpace = hstr("level-white-space"),
+        kLevelInterlude = hstr("level-interlude"),
         
-        kLevelBegin = hstr("level-begin"),
-
-        kLevelForest_0 = hstr("level-forest-0"),
-        kLevelForest_1 = hstr("level-forest-1"),
-        kLevelForest_2 = hstr("level-forest-2"),
-        kLevelForest_3 = hstr("level-forest-3"),
-        kLevelForest_4 = hstr("level-forest-4"),
-
-        kLevelAnte = hstr("level-ante"),
-        kLevelPaene = hstr("level-paene"),
-        kLevelUmbra = hstr("level-umbra"),
-
-        kLevelBreakroomInitial = hstr("level-breakroom-initial"),
-        kLevelBedroom = hstr("level-bedroom"),
-
-        __kLevelTutorial_0_Combat__,
+        kLevelWhiteSpace = hstr("level-white-space"),
     };
 
     std::optional<Name> stoln(std::string const& s);
@@ -843,11 +836,11 @@ namespace config {
     namespace interface {
         const std::filesystem::path savePath = "build/save/autosave.json";
         const std::filesystem::path levelPath = "assets/.tiled/levels.json";
-        constexpr level::Name levelName = level::Name::kLevelBegin;
+        constexpr level::Name levelName = level::Name::kLevelPrelude;
         constexpr int idleFrames = 16;
         constexpr std::size_t LRUCacheSize = 64;
 
-        constexpr double viewportHeight = 18;   // OMORI's white space
+        constexpr double viewportHeight = 10;
         constexpr double grayscaleIntensity = 1;
     }
 
@@ -876,132 +869,94 @@ namespace config {
             constexpr unsigned int projectileCooldownTicks = 1000;
         }
 
-        namespace placeholder_interactable {
-            constexpr const char* typeID = "interactable";
-            const std::filesystem::path path{};
-            constexpr SDL_FRect destRectModifier{};
+        namespace placeholders {
+            namespace interactable {
+                constexpr const char* typeID = "interactable";
+                const std::filesystem::path path{};
+                constexpr SDL_FRect destRectModifier{};
+            }
+
+            namespace teleporter {
+                constexpr const char* typeID = "teleporter";
+                const std::filesystem::path path{};
+                constexpr SDL_FRect destRectModifier{};                
+            }
         }
 
-        namespace placeholder_teleporter {
-            constexpr const char* typeID = "teleporter";
-            const std::filesystem::path path{};
-            constexpr SDL_FRect destRectModifier{};
+        namespace interactables {
+            namespace omori_laptop {
+                constexpr const char* typeID = "interactable-omori-laptop";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.125, 1, 1 };
+            }
+
+            namespace omori_light_bulb {
+                constexpr const char* typeID = "omori-light-bulb";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-light-bulb.tsx";
+                constexpr SDL_FRect destRectModifier = { 0.5, 0, 1, 1 };
+            }
+
+            namespace omori_mewo {
+                constexpr const char* typeID = "interactable-omori-mewo";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
+                constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            }
+
+            #define DEF_OMORI_CAT_NS(index) \
+            namespace omori_cat_##index {\
+                constexpr const char* typeID = "interactable-omori-cat-" #index;\
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
+                constexpr SDL_FRect destRectModifier = { 0, -0.0125, 1, 1 };\
+            }
+
+            DEF_OMORI_CAT_NS(0)
+            DEF_OMORI_CAT_NS(1)
+            DEF_OMORI_CAT_NS(2)
+            DEF_OMORI_CAT_NS(3)
+            DEF_OMORI_CAT_NS(4)
+            DEF_OMORI_CAT_NS(5)
+            DEF_OMORI_CAT_NS(6)
+            DEF_OMORI_CAT_NS(7)
+
+            namespace omori_keys_wasd {
+                constexpr const char* typeID = "omori-keys-wasd";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-keys-wasd.tsx";
+                constexpr SDL_FRect destRectModifier = { 0.4921875, 0.4921875, 2, 2 };
+            }
         }
 
-        namespace teleporter_red_hand_throne {
-            constexpr const char* typeID = "teleporter-red-hand-throne";
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-red-hand-throne.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -0.25, 1, 1 };
+        namespace teleporter {
+            namespace red_hand_throne {
+                constexpr const char* typeID = "teleporter-red-hand-throne";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-red-hand-throne.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.25, 1, 1 };                
+            }
         }
 
-        namespace slime {
-            constexpr const char* typeID = "slime";
-            const std::filesystem::path path = "assets/.tiled/.tsx/eg-slime-full.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
-            constexpr SDL_FPoint velocity = { 128, 128 };
-            constexpr int moveDelayTicks = 1000;
-            constexpr SDL_Point moveInitiateRange = { 16, 16 };
-            constexpr SDL_Point attackInitiateRange = { 3, 3 };
-            constexpr SDL_Point attackRegisterRange = { 1, 1 };
-            constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
+        namespace hostile {
+            namespace stalfos {
+                constexpr const char* typeID = "slime";
+                const std::filesystem::path path = "assets/.tiled/.tsx/za-stalfos.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
+                constexpr SDL_FPoint velocity = { 128, 128 };
+                constexpr int moveDelayTicks = 1000;
+                constexpr SDL_Point moveInitiateRange = { 16, 16 };
+                constexpr SDL_Point attackInitiateRange = { 3, 3 };
+                constexpr SDL_Point attackRegisterRange = { 1, 1 };
+                constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };                
+            }
         }
 
-        namespace pixel_cat_gray {
-            constexpr const char* typeID = "pixel-cat-gray";
-            const std::filesystem::path path = "assets/.tiled/.tsx/pc-gray-cat.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, 0, 2, 2 };
-            constexpr SDL_FPoint velocity = { 48, 48 };
-            constexpr int moveDelayTicks = 0;
-            constexpr SDL_Point moveInitiateRange = { 16, 16 };
-            constexpr SDL_Point attackInitiateRange = { 1, 1 };
-            constexpr SDL_Point attackRegisterRange = { 1, 1 };
-            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
-        }
-
-        namespace pixel_cat_gold {
-            constexpr const char* typeID = "pixel-cat-gold";
-            const std::filesystem::path path = "assets/.tiled/.tsx/pc-gold-cat.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, 0, 4.444, 4.444 };
-            constexpr SDL_FPoint velocity = { 44, 44 };
-            constexpr int moveDelayTicks = 0;
-            constexpr SDL_Point moveInitiateRange = { std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() };
-            constexpr SDL_Point attackInitiateRange = { 2, 2 };
-            constexpr SDL_Point attackRegisterRange = { 2, 2 };
-            constexpr EntityPrimaryStats primaryStats = { 44, 44, 44, 4, 44, 44, 44, 4 };
-        }
-
-        namespace pentacle_projectile {
-            constexpr const char* typeID = "pentacle-projectile";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-pentacle.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };
-            constexpr SDL_FPoint velocity = { 0, 0 };
-            constexpr int moveDelayTicks = 0;
-            constexpr SDL_Point attackRegisterRange = { 1, 1 };
-            constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
-        }
-
-        namespace hospital_xray_machine {
-            constexpr const char* typeID = "hospital-xray-machine";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-machine.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;            
-        }
-
-        namespace hospital_xray_screen_arm {
-            constexpr const char* typeID = "interactable-hospital-xray-screen-arm";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-screen-arm.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };            
-        }
-
-        namespace hospital_xray_screen_head {
-            constexpr const char* typeID = "interactable-hospital-xray-screen-head";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-xray-screen-head.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -1, 1, 1 };            
-        }
-
-        namespace hospital_sink {
-            constexpr const char* typeID = "interactable-hospital-sink";
-            const std::filesystem::path path = "assets/.tiled/.tsx/mi-a-hospital-sink.tsx";
-            constexpr SDL_FRect destRectModifier = { -1, -1, 1, 1 };
-        }
-
-        namespace omori_laptop {
-            constexpr const char* typeID = "interactable-omori-laptop";
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
-            constexpr SDL_FRect destRectModifier = { 0, -0.125, 1, 1 };
-        }
-
-        namespace omori_light_bulb {
-            constexpr const char* typeID = "omori-light-bulb";
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-light-bulb.tsx";
-            constexpr SDL_FRect destRectModifier = { 0.5, 0, 1, 1 };
-        }
-
-        namespace omori_mewo {
-            constexpr const char* typeID = "interactable-omori-mewo";
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-mewo.tsx";
-            constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
-        }
-
-        #define DEF_OMORI_CAT_NS(index) \
-        namespace omori_cat_##index {\
-            constexpr const char* typeID = "interactable-omori-cat-" #index;\
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
-            constexpr SDL_FRect destRectModifier = { 0, -0.0125, 1, 1 };\
-        }
-
-        DEF_OMORI_CAT_NS(0)
-        DEF_OMORI_CAT_NS(1)
-        DEF_OMORI_CAT_NS(2)
-        DEF_OMORI_CAT_NS(3)
-        DEF_OMORI_CAT_NS(4)
-        DEF_OMORI_CAT_NS(5)
-        DEF_OMORI_CAT_NS(6)
-        DEF_OMORI_CAT_NS(7)
-
-        namespace omori_keys_wasd {
-            constexpr const char* typeID = "omori-keys-wasd";
-            const std::filesystem::path path = "assets/.tiled/.tsx/omori-keys-wasd.tsx";
-            constexpr SDL_FRect destRectModifier = { 0.4921875, 0.4921875, 2, 2 };
+        namespace projectile {
+            namespace darkness {
+                constexpr const char* typeID = "pentacle-projectile";
+                const std::filesystem::path path = "assets/.tiled/.tsx/mta-darkness.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
+                constexpr int moveDelayTicks = 0;
+                constexpr SDL_Point attackRegisterRange = { 1, 1 };
+                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
+            }
         }
     }
 
