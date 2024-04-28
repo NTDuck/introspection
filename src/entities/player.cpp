@@ -208,7 +208,7 @@ void Player::handleAutopilotMovement() {
     // After removal, the current topmost element of the path is the player's (supposedly) next position, so base calculations on it
     // if (mNextVelocity != nullptr) delete mNextVelocity;
     mNextVelocity = new SDL_Point(pathfinders::Cell::cltopt(mAutopilotPath.top()) - mDestCoords);
-    initiateMove();
+    initiateMove(BehaviouralType::kAutopilot);
 }
 
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
