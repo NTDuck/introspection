@@ -117,6 +117,7 @@ enum class BehaviouralType : unsigned char {
     kInvalidated,
     kContinued,
     kPrioritized,
+    kAutopilot,   // Custom mix of `kInvalidated` and `kContinued`
 };
 
 enum class MovementSelectionType : unsigned char {
@@ -776,6 +777,9 @@ namespace config {
     }
 
     namespace color {
+        constexpr SDL_Color mnml_dark = SDL_Color{ 0x32, 0x2f, 0x27 };
+        constexpr SDL_Color mnml_light = SDL_Color{ 0xb1, 0xae, 0xa8 };
+
         constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color black = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
@@ -962,6 +966,14 @@ namespace config {
                 constexpr int moveDelayTicks = 0;
                 constexpr SDL_Point attackRegisterRange = { 1, 1 };
                 constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
+            }
+        }
+
+        namespace misc {
+            namespace umbra {
+                constexpr const char* typeID = "misc-umbra";
+                const std::filesystem::path path = "assets/.tiled/.tsx/umbra.tsx";
+                constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
             }
         }
     }

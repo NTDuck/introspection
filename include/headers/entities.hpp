@@ -59,7 +59,7 @@ class AbstractEntity : public Multiton<T> {
             }
         }
 
-        static inline void instantiateEx(std::vector<level::Data_Generic*> const& levelData, bool reset = true) {
+        static inline void instantiateEX(std::vector<level::Data_Generic*> const& levelData, bool reset = true) {
             if (reset) level::data.erase(sTypeID);
             for (const auto& data : levelData) level::data.insert(sTypeID, data);
             onLevelChangeAll();
@@ -125,7 +125,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEx, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEX, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
 
 
 /**
@@ -661,9 +661,10 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 };
 
 
+DECL_ABSTRACT_ANIMATED_ENTITY(Umbra)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD)
-#define ABSTRACT_ANIMATED_ENTITY OmoriLightBulb, OmoriKeysWASD
+#define ABSTRACT_ANIMATED_ENTITY Umbra, OmoriLightBulb, OmoriKeysWASD
 
 DECL_GENERIC_INTERACTABLE(OmoriLaptop)
 DECL_GENERIC_INTERACTABLE(OmoriMewO)

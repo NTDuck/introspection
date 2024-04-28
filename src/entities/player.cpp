@@ -38,6 +38,8 @@ void Player::onLevelChange(level::Data_Generic const& player) {
     auto data = *reinterpret_cast<const level::Data_Generic*>(&player);
     AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
     resetAnimation(Animation::kIdle, BehaviouralType::kPrioritized);
+    onRunningToggled(false);
+    onAutopilotToggled(false);
 }
 
 /**
@@ -167,6 +169,7 @@ void Player::handleSFX() const {
 */
 void Player::onAutopilotToggled(bool onAutopilotStart) {
     if (!onAutopilotStart) {
+        Umbra::instantiateEX({});
         while (!mAutopilotPath.empty()) mAutopilotPath.pop();
         if (mNextVelocity != nullptr) delete mNextVelocity;
         mNextVelocity = nullptr;
@@ -179,52 +182,33 @@ void Player::onAutopilotToggled(bool onAutopilotStart) {
 
     auto result = pathfinder.search(pathfinders::Cell::pttocl(mDestCoords), pathfinders::Cell::pttocl(level::data.autopilotTargetTile));
     if (result.status != pathfinders::Status::kSuccess) return;
-    mAutopilotPath = result.path;
 
-    // // Trace path
-    // std::cout << "Path: " << std::endl;
-    // while (!result.path.empty()) {
-    //     std::cout << "(" << result.path.top().x << ", " << result.path.top().y << ") -> ";
-    //     result.path.pop();
-    // }
-    // std::cout << std::endl;
+    mAutopilotPath = result.path;
+    
+    std::vector<level::Data_Generic*> umbraLevelData(result.path.size());
+    for (auto& data : umbraLevelData) {
+        data = new level::Data_Generic(pathfinders::Cell::cltopt(result.path.top()));
+        result.path.pop();
+    }
+    Umbra::instantiateEX(umbraLevelData);
 }
 
 /**
  * @brief Determine player movement on autopilot.
 */
 void Player::handleAutopilotMovement() {
-    // if (!isOnAutopilot() || mDestCoords != pathfinders::Cell::cltopt(mAutopilotPath.top())) return;
+    if (!isOnAutopilot() || mDestCoords != pathfinders::Cell::cltopt(mAutopilotPath.top())) return;
 
-    // // The current topmost element of the path is the player's current position, so remove it
-    // std::cout << "called, pop: (" << mDestCoords.x << ", " << mDestCoords.y << ") ";
+    // The current topmost element of the path is the player's current position, so remove it
+    mAutopilotPath.pop();
+    if (mAutopilotPath.empty()) return;
 
-    // mAutopilotPath.pop();
-    // if (mAutopilotPath.empty()) return;
+    onMoveEnd(BehaviouralType::kAutopilot);   // This took more than 1 week to debug
 
-    // // After removal, the current topmost element of the path is the player's (supposedly) next position, so base calculations on it
+    // After removal, the current topmost element of the path is the player's (supposedly) next position, so base calculations on it
     // if (mNextVelocity != nullptr) delete mNextVelocity;
-    // mNextVelocity = new SDL_Point(pathfinders::Cell::cltopt(mAutopilotPath.top()) - mDestCoords);
-    // std::cout << "-> (" << mAutopilotPath.top().x << ", " << mAutopilotPath.top().y << ") dx (" << mNextVelocity->x << ", " << mNextVelocity->y << ")" << std::endl;
-    // initiateMove();
-
-    static bool resolved = false;
-
-    if (!isOnAutopilot()) return;
-
-    if (mDestCoords == pathfinders::Cell::cltopt(mAutopilotPath.top())) {
-        mAutopilotPath.pop();
-        // std::cout << "called, pop: (" << mDestCoords.x << ", " << mDestCoords.y << ") ";
-        resolved = false;
-        return;
-    }
-
-    if (!isOnAutopilot() || resolved) return;
-    if (mNextVelocity != nullptr) delete mNextVelocity;
     mNextVelocity = new SDL_Point(pathfinders::Cell::cltopt(mAutopilotPath.top()) - mDestCoords);
-    // std::cout << "-> (" << mAutopilotPath.top().x << ", " << mAutopilotPath.top().y << ") dx (" << mNextVelocity->x << ", " << mNextVelocity->y << ")" << std::endl;
     initiateMove();
-    resolved = true;
 }
 
 void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {

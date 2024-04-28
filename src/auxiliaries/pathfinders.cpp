@@ -169,3 +169,8 @@ pathfinders::Result pathfinders::ASPF<H, M>::search(Cell const& src, Cell const&
 
 
 template class pathfinders::ASPF<pathfinders::Heuristic::kManhattan, pathfinders::MovementType::k4Directional>;
+template class pathfinders::ASPF<pathfinders::Heuristic::kChebyshev, pathfinders::MovementType::k4Directional>;
+template class pathfinders::ASPF<pathfinders::Heuristic::kOctile, pathfinders::MovementType::k4Directional>;
+template class pathfinders::ASPF<pathfinders::Heuristic::kEuclidean, pathfinders::MovementType::k4Directional>;
+template class pathfinders::ASPF<pathfinders::Heuristic::kConstantZero, pathfinders::MovementType::k4Directional>;
+template class pathfinders::ASPF<pathfinders::Heuristic::kContantInf, pathfinders::MovementType::k4Directional>;

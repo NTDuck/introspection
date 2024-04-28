@@ -140,7 +140,7 @@ template <typename T>
 void AbstractAnimatedDynamicEntity<T>::onMoveEnd(BehaviouralType flag) {
     // Terminate movement when reached new `Tile`
     if (mNextDestCoords != nullptr && mNextDestRect != nullptr) {
-        if (flag != BehaviouralType::kInvalidated) {
+        if (flag != BehaviouralType::kInvalidated && flag != BehaviouralType::kAutopilot) {
             mDestCoords = *mNextDestCoords;
             mDestRect = *mNextDestRect;
         }

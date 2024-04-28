@@ -101,12 +101,13 @@ void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, BehaviouralT
 
     mAnimationTimer.setMaxTicks(sTilesetData.animationTicks * mAnimationData.ticksMultiplier);
 
-    if (flag != BehaviouralType::kContinued) mAnimationGID = mAnimationData.startGID;
+    if (flag != BehaviouralType::kContinued && flag != BehaviouralType::kAutopilot) mAnimationGID = mAnimationData.startGID;
 }
 
 
 template class AbstractAnimatedEntity<Player>;
 
+template class AbstractAnimatedEntity<Umbra>;
 template class AbstractAnimatedEntity<OmoriLightBulb>;
 template class AbstractAnimatedEntity<OmoriKeysWASD>;
 
@@ -130,5 +131,6 @@ template class AbstractAnimatedEntity<Stalfos>;
 template class AbstractAnimatedEntity<Darkness>;
 
 
+DEF_ABSTRACT_ANIMATED_ENTITY(Umbra, config::entities::misc::umbra)
 DEF_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::interactables::omori_light_bulb)
 DEF_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD, config::entities::interactables::omori_keys_wasd)
