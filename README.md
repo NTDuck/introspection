@@ -211,8 +211,9 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 
 #### Tilesets
 - [1-bit Pulp-compliant Tileset](https://teaceratops.itch.io/1-bit-tileset)
+- [Minimalistic Tileset Assets](https://endoblance.itch.io/minimalistic-game-assets-rpg-maker-mv)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
-- [Zelda's Adventure](https://www.spriters-resource.com/cd_i/zeldasadventure/)
+- [Zelda's Adventure Game Assets](https://www.spriters-resource.com/cd_i/zeldasadventure/)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
 - [Hana Caraka Base Character](https://bagong-games.itch.io/hana-caraka-base-character)
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
@@ -227,7 +228,7 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 - [Inabakumori-styled な - instrumental](https://youtu.be/p0s0_4KO9t4) by [いめ44](https://www.youtube.com/@ime44)
 - [Modern Touhou-styled World's End Valentine - OMORI](https://youtu.be/eX2O32VkU5s) by [Angelina2 RedRevo-Scarlet](https://www.youtube.com/@angelinaflan58)
 - [Needy Streamer Overload OST - 16 No Salvation, No Angels](https://youtu.be/0Q_RiK3XPu8?list=PLXeqOX4jBooy_OV6DDXNgCC8bbcWV85Ls) by [Sesto](https://www.youtube.com/@Sesto-)
-- [Determination - UNDERTALE OST 011](https://youtu.be/W1i4mTyidOc), [Home - UNDERTALE OST 012](https://youtu.be/5_E_y1AWAfc), and [It's Raining Somewhere Else - UNDERTALE OST 063](https://youtu.be/zNd4apsr3WE) by [Misaki](https://www.youtube.com/@Misakiu)
+- [Determination - UNDERTALE OST 011](https://youtu.be/W1i4mTyidOc) by [Misaki](https://www.youtube.com/@Misakiu)
 - [Wilhelm Scream SFX](https://youtu.be/r6JK-gRELI0)
 - [Shoe on Wet Ground SFX](https://www.zapsplat.com/music/footstep-single-shoe-on-wet-ground-very-light-puddles-of-water-5/), [Heavy Clump on Gravel SFX](https://www.zapsplat.com/music/single-boot-footstep-heavy-clump-on-gravel-2/)
 - Numerous BGM & SFX from OMORI

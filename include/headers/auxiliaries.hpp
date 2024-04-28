@@ -84,6 +84,10 @@ struct strccat
 
 /* Enumerations & Structs */
 
+/**
+ * @note "No Interface" states are not governed by an `AbstractInterface<T>`-derived, therefore its implementation in `Game::handleDependencies()` should end with a follow-up to a non-`kNITF` state.
+ * @note "Prevent Warning" states only exist to prevent compiler warnings. Do not use those.
+*/
 enum class GameState : unsigned short int {
     kExit = 1,
     kMenu = 2,
@@ -92,11 +96,13 @@ enum class GameState : unsigned short int {
     kIngameDialogue = 16,
     kGameOver = 32,
 
-    kLoadFromSave = 64,
-    // kIngamePaused,
-    // kIngameCutscene,
-    __6__ = 6,
-    __12__ = 12,   // Prevent warnings
+    /* "No Interface" states */
+    kNITF_NewGame,
+    kNITF_Continue,
+
+    /* "Prevent Warning" states */
+    kPWRN_6 = 6,
+    kPWRN_12 = 12,
 };
 
 constexpr GameState operator|(GameState const& first, GameState const& second) {
@@ -1024,8 +1030,8 @@ namespace config {
             };
 
             const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*, std::function<void(void)>>, 4> initializer = {
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kLoading | GameState::kIngamePlaying), [](){}),
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kLoadFromSave), [](){}),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kNITF_NewGame), [](){}),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kNITF_Continue), [](){}),
                 std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr, aboutCallback),
                 std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "EXIT", new GameState(GameState::kExit), [](){}),
             };

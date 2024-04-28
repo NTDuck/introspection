@@ -218,7 +218,6 @@ void Game::handleDependencies() {
 
         case (GameState::kLoading | GameState::kIngamePlaying):
             LoadingInterface::invoke(&LoadingInterface::initiateTransition, GameState::kIngamePlaying);
-            IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
             onLevelChange();
             onWindowChange();
             break;
@@ -236,7 +235,12 @@ void Game::handleDependencies() {
             Mixer::invoke(&Mixer::handleGameStateChange);
             break;
 
-        case GameState::kLoadFromSave:
+        case GameState::kNITF_NewGame:
+            IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
+            globals::state = GameState::kLoading | GameState::kIngamePlaying;
+            break;
+
+        case GameState::kNITF_Continue:
             IngameInterface::invoke(&IngameInterface::loadProgressFromStorage);
             globals::state = GameState::kLoading | GameState::kIngamePlaying;
             break;

@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="18" height="10" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="3">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="6">
+ <editorsettings>
+  <export target="level-prelude.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
- <layer id="3" name="static-collision" width="18" height="10">
+ <layer id="5" name="static-collision" width="48" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFtAK2XNjFYJha5pCKKXXPYAYAoEgGYg==
+   eJxjYBgFo2AUDCdgy0UYD0ZAjLsHsz+Ggvvx2T3q/qHn/oHGQ90PhOJosKQbUsFQdvsooB8AAN2MMIo=
   </data>
  </layer>
- <layer id="1" name="terrains" width="18" height="10">
+ <layer id="1" name="terrains" width="48" height="16">
   <data encoding="base64" compression="zlib">
-   eJzLYmRgyBoGWJ2DgUEDiDU5KDPHGqjfBohtKTTHH6g/AIgD0cyJA+J4IE4g0pxkoP4UIE5FM6cIiIuBuASIC0jEyOa0AXE7EHcMgjikBgYAZkRKeg==
+   eJyT52JgkB/Fo3gUD3qswsHAoArE29ghtBoHbrUyePBAuV+OFT+fkLsH2h9GrPj5pLh9IPwwVN2/gIWBYSsL+e5fzziw7j8BdPtJIHZDcy86n9w4GCiMy78D7S5qpN2BTvPUwEPZ7aOYPhgAD2F9Pw==
   </data>
  </layer>
- <objectgroup id="2" name="entities">
-  <object id="1" name="origin" type="player" x="24" y="48" width="8" height="8"/>
-  <object id="2" type="teleporter" x="120" y="32" width="8" height="8">
+ <layer id="4" name="outliner" width="48" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUDCfAy8XAwIQH83ENtAuxA5i7iQGD0R+iJLpHfNT9VAVD3f2KZLgHXz6nNcaW/4j1gxbXwGMlHG4l5Adc+gYTUCTRz6NgZAIAhhwL/w==
+  </data>
+ </layer>
+ <objectgroup id="6" name="entities">
+  <object id="1" name="origin" type="player" x="72" y="72" width="8" height="8"/>
+  <object id="2" name="dest" type="autopilot-target" x="360" y="56" width="8" height="8"/>
+  <object id="3" name="to ep" type="teleporter" x="352" y="56" width="8" height="8">
    <properties>
+    <property name="target-dest-coords-x" type="int" value="7"/>
+    <property name="target-dest-coords-y" type="int" value="10"/>
+    <property name="target-level" value="level-woods-entry-point"/>
+   </properties>
+  </object>
+  <object id="4" name="to ep" type="teleporter" x="368" y="56" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="7"/>
+    <property name="target-dest-coords-y" type="int" value="10"/>
+    <property name="target-level" value="level-woods-entry-point"/>
+   </properties>
+  </object>
+  <object id="5" name="to ep" type="teleporter" x="360" y="56" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="7"/>
+    <property name="target-dest-coords-y" type="int" value="10"/>
     <property name="target-level" value="level-woods-entry-point"/>
    </properties>
   </object>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="4">
+ <editorsettings>
+  <export target="level-woods-entry-point.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <layer id="3" name="static-collision" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYIAAWy7SMDoY1T+qf1T/0NMPAO02NUE=
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJx7z8nA8AGI5blQcQAjA0MgEAcBcTAjpvx7qL7jQHwCi34QtmaEYGxyMH23gfgODv34MEzfexzuJ4SJcT8+POr+UfcPB/cDAPGXWP0=
+  </data>
+ </layer>
+ <layer id="2" name="outliner" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYKANsOJCsC25cKsbBaNgFAwcAADubwCI
+  </data>
+ </layer>
+ <objectgroup id="4" name="entities">
+  <object id="2" name="to ll" type="teleporter" x="56" y="0" width="8" height="8">
+   <properties>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

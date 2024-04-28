@@ -63,7 +63,7 @@ void IngameInterface::onLevelChange() const {
         default: break;
     }
     
-    if (mCachedTargetDestCoords != nullptr) {
+    if (mCachedTargetDestCoords != nullptr && levelName != config::interface::levelName) {
         auto data = new level::Data_Generic();
         data->destCoords = *mCachedTargetDestCoords;
         level::data.erase(config::entities::player::typeID);

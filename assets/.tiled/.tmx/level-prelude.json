@@ -1,38 +1,52 @@
 { "compressionlevel":-1,
- "height":10,
+ "height":16,
  "infinite":false,
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYBgFtAK2XNjFYJha5pCKKXXPYAYAoEgGYg==",
+         "data":"eJxjYBgFo2AUDCdgy0UYD0ZAjLsHsz+Ggvvx2T3q\/qHn\/oHGQ90PhOJosKQbUsFQdvsooB8AAN2MMIo=",
          "encoding":"base64",
-         "height":10,
-         "id":3,
+         "height":16,
+         "id":5,
          "name":"static-collision",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":18,
+         "width":48,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJzLYmRgyBoGWJ2DgUEDiDU5KDPHGqjfBohtKTTHH6g\/AIgD0cyJA+J4IE4g0pxkoP4UIE5FM6cIiIuBuASIC0jEyOa0AXE7EHcMgjikBgYAZkRKeg==",
+         "data":"eJyT52JgkB\/Fo3gUD3qswsHAoArE29ghtBoHbrUyePBAuV+OFT+fkLsH2h9GrPj5pLh9IPwwVN2\/gIWBYSsL+e5fzziw7j8BdPtJIHZDcy86n9w4GCiMy78D7S5qpN2BTvPUwEPZ7aOYPhgAD2F9Pw==",
          "encoding":"base64",
-         "height":10,
+         "height":16,
          "id":1,
          "name":"terrains",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":18,
+         "width":48,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJxjYBgFo2AUDCfAy8XAwIQH83ENtAuxA5i7iQGD0R+iJLpHfNT9VAVD3f2KZLgHXz6nNcaW\/4j1gxbXwGMlHG4l5Adc+gYTUCTRz6NgZAIAhhwL\/w==",
+         "encoding":"base64",
+         "height":16,
+         "id":4,
+         "name":"outliner",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":48,
          "x":0,
          "y":0
         }, 
         {
          "draworder":"topdown",
-         "id":2,
+         "id":6,
          "name":"entities",
          "objects":[
                 {
@@ -43,14 +57,35 @@
                  "type":"player",
                  "visible":true,
                  "width":8,
-                 "x":24,
-                 "y":48
+                 "x":72,
+                 "y":72
                 }, 
                 {
                  "height":8,
                  "id":2,
-                 "name":"",
+                 "name":"dest",
+                 "rotation":0,
+                 "type":"autopilot-target",
+                 "visible":true,
+                 "width":8,
+                 "x":360,
+                 "y":56
+                }, 
+                {
+                 "height":8,
+                 "id":3,
+                 "name":"to ep",
                  "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":7
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":10
+                        }, 
                         {
                          "name":"target-level",
                          "type":"string",
@@ -60,8 +95,62 @@
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":120,
-                 "y":32
+                 "x":352,
+                 "y":56
+                }, 
+                {
+                 "height":8,
+                 "id":4,
+                 "name":"to ep",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":7
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-entry-point"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":368,
+                 "y":56
+                }, 
+                {
+                 "height":8,
+                 "id":5,
+                 "name":"to ep",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":7
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-entry-point"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":360,
+                 "y":56
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -69,8 +158,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":3,
+ "nextlayerid":7,
+ "nextobjectid":6,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -87,5 +176,5 @@
  "tilewidth":8,
  "type":"map",
  "version":"1.10",
- "width":18
+ "width":48
 }
