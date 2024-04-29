@@ -39,6 +39,13 @@ void AbstractAnimatedDynamicEntity<T>::onWindowChange() {
 }
 
 template <typename T>
+void AbstractAnimatedDynamicEntity<T>::onLevelChange(level::Data_Generic const& levelData) {
+    onRunningToggled(false);
+    onMoveEnd(BehaviouralType::kPrioritized);
+    AbstractAnimatedEntity<T>::onLevelChange(levelData);
+}
+
+template <typename T>
 bool AbstractAnimatedDynamicEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const {
     return isTargetWithinRange(mNextDestCoords != nullptr ? *mNextDestCoords : mDestCoords, x_coords_lim, y_coords_lim);
 }

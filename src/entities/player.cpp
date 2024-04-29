@@ -36,10 +36,9 @@ void Player::reinitialize(bool increment) {
 
 void Player::onLevelChange(level::Data_Generic const& player) {
     auto data = *reinterpret_cast<const level::Data_Generic*>(&player);
-    AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
-    resetAnimation(Animation::kIdle, BehaviouralType::kPrioritized);
-    onRunningToggled(false);
     onAutopilotToggled(false);
+    resetAnimation(Animation::kIdle, BehaviouralType::kPrioritized);
+    AbstractAnimatedDynamicEntity<Player>::onLevelChange(data);
 }
 
 /**

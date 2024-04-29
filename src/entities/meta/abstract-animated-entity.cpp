@@ -28,6 +28,7 @@ void AbstractAnimatedEntity<T>::reinitialize(std::filesystem::path path) {
 template <typename T>
 void AbstractAnimatedEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
     mBaseAnimation = Animation::kIdle;
+    resetAnimation(mBaseAnimation, BehaviouralType::kPrioritized);
     AbstractEntity<T>::onLevelChange(entityLevelData);
 }
 
