@@ -44,6 +44,29 @@ pathfinders::Cell::getH(Cell const& cell, Cell const& dest) {
     return std::sqrt(std::pow(cell.x - dest.x, 2) + std::pow(cell.y - dest.y, 2));
 }
 
+template <typename T, typename Compare>
+void pathfinders::OpenList<T, Compare>::push(T const& element) {
+    mHeap.push(element);   // O(log(n))
+}
+
+template <typename T, typename Compare>
+T pathfinders::OpenList<T, Compare>::pop() {
+    auto root = getRoot();
+    eraseRoot();
+    return root;
+}
+
+template <typename T, typename Compare>
+T const& pathfinders::OpenList<T, Compare>::getRoot() const {
+    return mHeap.top();   // O(1)
+}
+
+template <typename T, typename Compare>
+void pathfinders::OpenList<T, Compare>::eraseRoot() {
+    if (mHeap.empty()) return;
+    mHeap.pop();   // O(log(n))
+}
+
 template <pathfinders::Heuristic H, pathfinders::MovementType M>
 pathfinders::ASPF<H, M>::ASPF(std::vector<std::vector<int>> const& grid) : mGrid(grid) {
     setBegin({ 0, 0 });
@@ -118,16 +141,15 @@ pathfinders::Result pathfinders::ASPF<H, M>::search(Cell const& src, Cell const&
     srcData.parent = src;
 
     // Initialize open list
-    std::stack<Cell> openList;   // For operations at O(1) time complexity
-    openList.push(src);   // Place the starting cell on the open list
+    OpenList<Cell::Pair> openList;
+    openList.push(Cell::Pair{ src });   // Place the starting cell on the open list
 
     double g, h, f;
 
     while (!openList.empty()) {
         g = h = f = 0;
 
-        auto parent = openList.top();
-        openList.pop();   // Remove cell from open list
+        auto parent = openList.pop().cell;   // Remove cell with the least `f` from open list
         closedList[parent.y - mBegin.y][parent.x - mBegin.x] = true;   // Add cell to closed list
 
         // Generate all successors
@@ -151,7 +173,7 @@ pathfinders::Result pathfinders::ASPF<H, M>::search(Cell const& src, Cell const&
 
                 // Add successor to the open list if successor is not on the open list or provides a better path
                 if (successorData.f == std::numeric_limits<double>::max() || successorData.f > f) {
-                    openList.push(successor);
+                    openList.push(Cell::Pair({ successor, f }));
 
                     // Update successor data
                     successorData.f = f;

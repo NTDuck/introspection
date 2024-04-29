@@ -12,6 +12,7 @@
 #include <optional>
 #include <list>
 #include <limits>
+#include <queue>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -645,7 +646,9 @@ namespace pathfinders {
         typename std::enable_if_t<H == Heuristic::kContantInf, double>
         static constexpr inline getH(Cell const& lhs, Cell const& rhs) { return std::pow(10, 307); }   // Might cause overflow
 
-        struct Data;   // Forward declaration to prevent "incomplete type" compilation error
+        // Forward declaration to prevent "incomplete type" compilation error
+        struct Data;
+        struct Pair;
 
         private:
             template <Heuristic H, unsigned short int Dsq, unsigned short int D2sq>   // Floating-point template parameter is nonstandardC/C++(605)
@@ -658,11 +661,42 @@ namespace pathfinders {
         double g, h, f = std::numeric_limits<double>::max();
     };
 
+    struct Cell::Pair {
+        Cell cell;
+        double f;
+
+        inline Pair(Cell const& cell, double f = 0) : cell(cell), f(f) {}
+        inline bool operator>(Pair const& other) const { return f > other.f; }
+        inline bool operator==(Pair const& other) const { return cell == other.cell && f == other.f; }
+    };
+
     struct Result {
         const Status status;
         std::stack<Cell> path;
 
         Result(Status status, std::stack<Cell> path = {}) : status(status), path(path) {}
+    };
+
+    /**
+     * @brief Used for the Open List in A* Search Algorithm implementation.
+     * @note Supports insertion and min element removal at O(log(n)) time complexity.
+    */
+    template <typename T, typename Compare = std::greater<T>>
+    class OpenList {
+        public:
+            inline OpenList() = default;
+            inline ~OpenList() = default;
+            
+            void push(T const&);
+            T pop();
+            
+            inline bool empty() const { return mHeap.empty(); }
+            
+        private:
+            T const& getRoot() const;
+            void eraseRoot();
+
+            std::priority_queue<T, typename std::vector<T>, Compare> mHeap;
     };
 
     /**
