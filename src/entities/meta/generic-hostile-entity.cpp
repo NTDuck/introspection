@@ -96,6 +96,7 @@ GenericHostileEntity<T, M>::handleCustomEventGET_impl(SDL_Event const& event) {
     if (!isDeadPrior && mSecondaryStats.HP <= 0) ++sDeathCount;
 
     resetAnimation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
+    Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
 }
 
 template <typename T, MovementSelectionType M>
@@ -167,7 +168,7 @@ template <typename T, MovementSelectionType M>
 unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 
-template class GenericHostileEntity<Stalfos>;
+template class GenericHostileEntity<Dummy>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(Stalfos, config::entities::hostile::stalfos)
+DEF_GENERIC_HOSTILE_ENTITY_(Dummy, config::entities::hostile::dog)

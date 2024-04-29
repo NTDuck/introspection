@@ -211,6 +211,7 @@ const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::
 
 template class AbstractAnimatedDynamicEntity<Player>;
 
-template class AbstractAnimatedDynamicEntity<Stalfos>;
+template class AbstractAnimatedDynamicEntity<Dummy>;
 
 template class AbstractAnimatedDynamicEntity<Darkness>;
+template class AbstractAnimatedDynamicEntity<Slash>;

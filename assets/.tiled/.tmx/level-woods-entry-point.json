@@ -65,6 +65,17 @@
                  "width":8,
                  "x":56,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":4,
+                 "name":"decoy ",
+                 "rotation":0,
+                 "type":"hostile-dog",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":48
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -73,7 +84,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":4,
+ "nextobjectid":5,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

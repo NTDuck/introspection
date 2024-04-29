@@ -74,7 +74,7 @@ template <typename T>
 void GenericSurgeProjectile<T>::handleInstantiation() {
     if (!isAnimationAtFinalSprite()) return;
 
-    initiateNextLinearAttack();
+    if (mDirection != SDL_Point({ 0, 0 })) initiateNextLinearAttack();
     globals::gc.insert(this);
 }
 
@@ -98,6 +98,8 @@ GenericSurgeProjectile<T>::handleCustomEventPOST_impl() const {
 
 
 template class GenericSurgeProjectile<Darkness>;
+template class GenericSurgeProjectile<Slash>;
 
 
 DEF_GENERIC_SURGE_PROJECTILE(Darkness, config::entities::projectile::darkness)
+DEF_GENERIC_SURGE_PROJECTILE(Slash, config::entities::projectile::slash)

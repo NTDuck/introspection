@@ -213,8 +213,9 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 - [1-bit Pulp-compliant Tileset](https://teaceratops.itch.io/1-bit-tileset)
 - [Minimalistic Tileset Assets](https://endoblance.itch.io/minimalistic-game-assets-rpg-maker-mv)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
-- [Zelda's Adventure Game Assets](https://www.spriters-resource.com/cd_i/zeldasadventure/)
 - [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
+- [Top-down Mobs - Dog](https://admurin.itch.io/top-down-mobs-dog)
+- [Enemy Galore I](https://admurin.itch.io/enemy-galore-1)
 - [Hana Caraka Base Character](https://bagong-games.itch.io/hana-caraka-base-character)
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
 

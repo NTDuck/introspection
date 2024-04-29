@@ -151,6 +151,7 @@ template class AbstractEntity<OmoriCat_7>;
 template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
-template class AbstractEntity<Stalfos>;
+template class AbstractEntity<Dummy>;
 
 template class AbstractEntity<Darkness>;
+template class AbstractEntity<Slash>;

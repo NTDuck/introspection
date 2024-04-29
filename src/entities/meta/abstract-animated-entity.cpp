@@ -127,9 +127,10 @@ template class AbstractAnimatedEntity<OmoriCat_7>;
 template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
-template class AbstractAnimatedEntity<Stalfos>;
+template class AbstractAnimatedEntity<Dummy>;
 
 template class AbstractAnimatedEntity<Darkness>;
+template class AbstractAnimatedEntity<Slash>;
 
 
 DEF_ABSTRACT_ANIMATED_ENTITY(Umbra, config::entities::misc::umbra)

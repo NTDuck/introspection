@@ -944,28 +944,38 @@ namespace config {
         }
 
         namespace hostile {
-            namespace stalfos {
-                constexpr const char* typeID = "slime";
-                const std::filesystem::path path = "assets/.tiled/.tsx/za-stalfos.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -1, 5, 5 };
+            namespace dog {
+                constexpr const char* typeID = "hostile-dog";
+                const std::filesystem::path path = "assets/.tiled/.tsx/tdm-dog.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 2, 2 };
                 constexpr SDL_FPoint velocity = { 128, 128 };
-                constexpr int moveDelayTicks = 1000;
-                constexpr SDL_Point moveInitiateRange = { 16, 16 };
-                constexpr SDL_Point attackInitiateRange = { 3, 3 };
+                constexpr int moveDelayTicks = 0;
+                constexpr SDL_Point moveInitiateRange = { 5, 5 };
+                constexpr SDL_Point attackInitiateRange = { 1, 1 };
                 constexpr SDL_Point attackRegisterRange = { 1, 1 };
-                constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };                
+                constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
             }
         }
 
         namespace projectile {
             namespace darkness {
-                constexpr const char* typeID = "pentacle-projectile";
+                constexpr const char* typeID = "projectile-darkness";
                 const std::filesystem::path path = "assets/.tiled/.tsx/mta-darkness.tsx";
                 constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
                 constexpr SDL_Point attackRegisterRange = { 1, 1 };
                 constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
+            }
+
+            namespace slash {
+                constexpr const char* typeID = "projectile-slash";
+                const std::filesystem::path path = "assets/.tiled/.tsx/mta-slash.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
+                constexpr int moveDelayTicks = 0;
+                constexpr SDL_Point attackRegisterRange = { 0, 0 };
+                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
             }
         }
 

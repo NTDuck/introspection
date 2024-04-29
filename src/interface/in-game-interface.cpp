@@ -10,7 +10,7 @@
 
 IngameInterface::IngameInterface() {
     static constexpr auto renderIngameDependencies = []() {
-        Invoker<IngameMapHandler, ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, Player>::invoke_render();
+        Invoker<IngameMapHandler, NON_INTERACTABLES, INTERACTABLES, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, Player>::invoke_render();
     };
 
     IngameDialogueBox::instantiate(config::components::dialogue_box::initializer);
@@ -28,11 +28,11 @@ IngameInterface::~IngameInterface() {
  * @note Intellisense's `more than one instance of overloaded function "[...]::deinitialize" matches the argument list:C/C++(308)` could be safely ignored as no relevant warnings are shown during compilation.
 */
 void IngameInterface::deinitialize() {
-    Invoker<IngameMapHandler, IngameViewHandler, Player, ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, IngameDialogueBox>::invoke_deinitialize();
+    Invoker<IngameMapHandler, IngameViewHandler, Player, NON_INTERACTABLES, PlaceholderInteractable, INTERACTABLES, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, IngameDialogueBox>::invoke_deinitialize();
 }
 
 void IngameInterface::initialize() {
-    Invoker<IngameMapHandler, Player, ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_initialize();
+    Invoker<IngameMapHandler, Player, NON_INTERACTABLES, PlaceholderInteractable, INTERACTABLES, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES>::invoke_initialize();
 }
 
 void IngameInterface::render() const {
@@ -74,12 +74,12 @@ void IngameInterface::onLevelChange() const {
     auto playerLevelData = level::data.get(config::entities::player::typeID);
     if (!playerLevelData.empty() && playerLevelData.front() != nullptr) Player::invoke(&Player::onLevelChange, *playerLevelData.front());
 
-    Invoker<ABSTRACT_ANIMATED_ENTITY, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_onLevelChangeAll();
+    Invoker<NON_INTERACTABLES, PlaceholderInteractable, INTERACTABLES, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES>::invoke_onLevelChangeAll();
     Mixer::invoke(&Mixer::onLevelChange, levelName);   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
 }
 
 void IngameInterface::onWindowChange() const {
-    Invoker<IngameMapHandler, IngameViewHandler, Player, ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, IngameDialogueBox>::invoke_onWindowChange();
+    Invoker<IngameMapHandler, IngameViewHandler, Player, NON_INTERACTABLES, INTERACTABLES, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, IngameDialogueBox>::invoke_onWindowChange();
 }
 
 void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
@@ -155,14 +155,14 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
         default: break;
     }
 
-    Invoker<Player, PlaceholderInteractable, GENERIC_INTERACTABLE, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_handleCustomEventGET(event);
+    Invoker<Player, PlaceholderInteractable, INTERACTABLES, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES>::invoke_handleCustomEventGET(event);
 }
 
 /**
  * @note `GameState::kIngamePlaying` only.
 */
 void IngameInterface::handleCustomEventPOST() const {
-    Invoker<Player, PlaceholderTeleporter, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE>::invoke_handleCustomEventPOST();
+    Invoker<Player, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES>::invoke_handleCustomEventPOST();
 }
 
 void IngameInterface::handleDependencies() const {
@@ -186,10 +186,10 @@ void IngameInterface::handleDependencies() const {
  * @brief Handle all entities movements & animation updates.
 */
 void IngameInterface::handleEntitiesInteraction() const {
-    Invoker<ABSTRACT_ANIMATED_ENTITY, GENERIC_INTERACTABLE, GENERIC_TELEPORTER_ENTITY, GENERIC_HOSTILE_ENTITY, GENERIC_SURGE_PROJECTILE, Player>::invoke_updateAnimation();
-    Invoker<GENERIC_SURGE_PROJECTILE>::invoke_handleInstantiation();
+    Invoker<NON_INTERACTABLES, INTERACTABLES, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, Player>::invoke_updateAnimation();
+    Invoker<SURGE_PROJECTILES>::invoke_handleInstantiation();
     Player::invoke(&Player::handleAutopilotMovement);   // Autopilot
-    Invoker<GENERIC_HOSTILE_ENTITY, Player>::invoke_move();
+    Invoker<HOSTILES, Player>::invoke_move();
 }
 
 void IngameInterface::handleLevelSpecifics() const {
@@ -206,7 +206,7 @@ void IngameInterface::handleLevelSpecifics() const {
 }
 
 void IngameInterface::handleEntitiesSFX() const {
-    Invoker<Player, GENERIC_HOSTILE_ENTITY>::invoke_handleSFX();
+    Invoker<Player, HOSTILES>::invoke_handleSFX();
 }
 
 template <event::Code C>
