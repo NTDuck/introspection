@@ -408,6 +408,8 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         static inline unsigned int getDeathCount() { return sDeathCount; }
         static inline bool isAllDead() { return sDeathCount == static_cast<unsigned int>(instances.size()); }
 
+        void instantiateMeteorProjectileOnSelf();   // Cannot be generalized for any `GenericSurgeProjectile<T>`-derived since explicit template instantiation would fail
+
     protected:
         GenericHostileEntity(SDL_Point const& destCoords);
 
@@ -461,7 +463,7 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         static unsigned int sDeathCount;
 };
 
-#define INCL_GENERIC_HOSTILE_ENTITY(T, M) using GenericHostileEntity<T, M>::handleCustomEventPOST, GenericHostileEntity<T, M>::handleCustomEventGET, GenericHostileEntity<T, M>::getDeathCount, GenericHostileEntity<T, M>::isAllDead, GenericHostileEntity<T, M>::mMoveInitiateRange, GenericHostileEntity<T, M>::mAttackInitiateRange;
+#define INCL_GENERIC_HOSTILE_ENTITY(T, M) using GenericHostileEntity<T, M>::handleCustomEventPOST, GenericHostileEntity<T, M>::handleCustomEventGET, GenericHostileEntity<T, M>::getDeathCount, GenericHostileEntity<T, M>::isAllDead, GenericHostileEntity<T, M>::instantiateMeteorProjectileOnSelf, GenericHostileEntity<T, M>::mMoveInitiateRange, GenericHostileEntity<T, M>::mAttackInitiateRange;
 
 #define DECL_GENERIC_HOSTILE_ENTITY(T, M) \
 class T final : public GenericHostileEntity<T, M> {\
@@ -624,7 +626,8 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
     private:
         void handleKeyboardEvent_Movement(SDL_Event const& event);
-        void handleKeyboardEvent_ProjectileAttack(SDL_Event const& event);
+        void handleKeyboardEvent_RangedAttack(SDL_Event const& event);
+        void handleKeyboardEvent_MeteorShowerAttack(SDL_Event const& event);
 
         void onAutopilotToggled(bool onAutopilotStart);
 
@@ -688,7 +691,8 @@ DECL_GENERIC_HOSTILE_ENTITY_(Dummy)
 DECL_GENERIC_SURGE_PROJECTILE(Darkness)
 DECL_GENERIC_SURGE_PROJECTILE(Slash)
 DECL_GENERIC_SURGE_PROJECTILE(Claw)
-#define SURGE_PROJECTILES Darkness, Slash, Claw
+DECL_GENERIC_SURGE_PROJECTILE(Meteor)
+#define SURGE_PROJECTILES Darkness, Slash, Claw, Meteor
 
 
 /* Utilities */
@@ -718,6 +722,7 @@ class Invoker {
         DECL(move)
         DECL(handleInstantiation)
         DECL(handleSFX)
+        DECL(instantiateMeteorProjectileOnSelf)
 };
 
 

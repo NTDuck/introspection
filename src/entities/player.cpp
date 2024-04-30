@@ -46,8 +46,11 @@ void Player::onLevelChange(level::Data_Generic const& player) {
  * @note Generates `nextDestCoords` and `nextDestRect`.
 */
 void Player::handleKeyboardEvent(SDL_Event const& event) {
-    static CountdownTimer timer(config::entities::player::projectileCooldownTicks);
-    if (!timer.isStarted()) timer.start();
+    static CountdownTimer rangedAttackTimer(config::entities::player::rangedAttackCooldownTicks);
+    static CountdownTimer meteorShowerAttackTimer(config::entities::player::meteorShowerAttackCooldownTicks);
+
+    if (!rangedAttackTimer.isStarted()) rangedAttackTimer.start();
+    if (!meteorShowerAttackTimer.isStarted()) meteorShowerAttackTimer.start();
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
 
@@ -83,11 +86,21 @@ void Player::handleKeyboardEvent(SDL_Event const& event) {
         case ~config::Key::kPlayerAttackSurgeProjectileDiagonalQuadruple:
             if (event.type != SDL_KEYDOWN) break;
             onAutopilotToggled(false);
-            if (tile::Data_EntityTileset::getPriority(mAnimation) == tile::Data_EntityTileset::getPriority(Animation::kAttackMeele) || !timer.isFinished()) break;
+            if (tile::Data_EntityTileset::getPriority(mAnimation) == tile::Data_EntityTileset::getPriority(Animation::kAttackMeele) || !rangedAttackTimer.isFinished()) break;
             resetAnimation(Animation::kAttackRanged);
 
-            handleKeyboardEvent_ProjectileAttack(event);
-            timer.stop();
+            handleKeyboardEvent_RangedAttack(event);
+            rangedAttackTimer.stop();
+            break;
+
+        case ~config::Key::kPlayerAttackMeteorShower:
+            if (event.type != SDL_KEYDOWN) break;
+            onAutopilotToggled(false);
+            if (tile::Data_EntityTileset::getPriority(mAnimation) == tile::Data_EntityTileset::getPriority(Animation::kAttackMeele) || !meteorShowerAttackTimer.isFinished()) break;
+            resetAnimation(Animation::kAttackRanged);
+
+            handleKeyboardEvent_MeteorShowerAttack(event);
+            meteorShowerAttackTimer.stop();
             break;
 
         case ~config::Key::kAffirmative:
@@ -230,7 +243,7 @@ void Player::handleKeyboardEvent_Movement(SDL_Event const& event) {
     }
 }
 
-void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
+void Player::handleKeyboardEvent_RangedAttack(SDL_Event const& event) {
     static const std::unordered_map<SDL_Keycode, ProjectileType> mapping = {
         { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalSingle, ProjectileType::kOrthogonalSingle },
         { ~config::Key::kPlayerAttackSurgeProjectileOrthogonalDouble, ProjectileType::kOrthogonalDouble },
@@ -242,9 +255,12 @@ void Player::handleKeyboardEvent_ProjectileAttack(SDL_Event const& event) {
     auto it = mapping.find(event.key.keysym.sym);
     if (it == mapping.end()) return;
 
-    if (event.type == SDL_KEYUP) return;
-
     Darkness::initiateAttack(it->second, mDestCoords, mDirection);
+}
+
+void Player::handleKeyboardEvent_MeteorShowerAttack(SDL_Event const& event) {
+    // Add SFX
+    Invoker<HOSTILES>::invoke_instantiateMeteorProjectileOnSelf();
 }
 
 template <event::Code C>

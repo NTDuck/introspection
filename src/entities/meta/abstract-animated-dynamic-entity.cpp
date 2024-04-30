@@ -216,3 +216,4 @@ template class AbstractAnimatedDynamicEntity<Dummy>;
 template class AbstractAnimatedDynamicEntity<Darkness>;
 template class AbstractAnimatedDynamicEntity<Slash>;
 template class AbstractAnimatedDynamicEntity<Claw>;
+template class AbstractAnimatedDynamicEntity<Meteor>;

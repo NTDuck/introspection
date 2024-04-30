@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="5">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="7">
  <editorsettings>
   <export target="level-woods-entry-point.json" format="json"/>
  </editorsettings>
@@ -21,11 +21,13 @@
   </data>
  </layer>
  <objectgroup id="4" name="entities">
-  <object id="2" name="to ll" type="teleporter" x="56" y="0" width="8" height="8">
+  <object id="2" name="to ll" type="teleporter" x="64" y="0" width="8" height="8">
    <properties>
     <property name="target-level" value="level-woods-long-lane"/>
    </properties>
   </object>
-  <object id="4" name="decoy " type="hostile-dog" x="56" y="48" width="8" height="8"/>
+  <object id="4" name="decoy " type="hostile-dummy" x="40" y="48" width="8" height="8"/>
+  <object id="5" name="decoy " type="hostile-dummy" x="80" y="48" width="8" height="8"/>
+  <object id="6" x="56" y="0" width="8" height="8"/>
  </objectgroup>
 </map>

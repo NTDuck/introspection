@@ -63,7 +63,7 @@
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":56,
+                 "x":64,
                  "y":0
                 }, 
                 {
@@ -71,11 +71,33 @@
                  "id":4,
                  "name":"decoy ",
                  "rotation":0,
-                 "type":"hostile-dog",
+                 "type":"hostile-dummy",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":48
+                }, 
+                {
+                 "height":8,
+                 "id":5,
+                 "name":"decoy ",
+                 "rotation":0,
+                 "type":"hostile-dummy",
+                 "visible":true,
+                 "width":8,
+                 "x":80,
+                 "y":48
+                }, 
+                {
+                 "height":8,
+                 "id":6,
+                 "name":"",
+                 "rotation":0,
+                 "type":"",
                  "visible":true,
                  "width":8,
                  "x":56,
-                 "y":48
+                 "y":0
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -84,7 +106,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":5,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

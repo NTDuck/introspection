@@ -824,6 +824,7 @@ namespace config {
         kPlayerAttackSurgeProjectileOrthogonalTriple = SDLK_3,
         kPlayerAttackSurgeProjectileOrthogonalQuadruple = SDLK_4,
         kPlayerAttackSurgeProjectileDiagonalQuadruple = SDLK_5,
+        kPlayerAttackMeteorShower = SDLK_j,
     };
 
     constexpr SDL_Keycode operator~(Key key) { return static_cast<SDL_Keycode>(key); }
@@ -935,14 +936,15 @@ namespace config {
                 "assets/.tiled/.tsx/hana-caraka.tsx",
             };
             const std::filesystem::path path = paths.front();
-            constexpr SDL_FRect destRectModifier = { 0, -0.5, 3, 3 };
+            constexpr SDL_FRect destRectModifier = { 0, -1, 4, 4 };
             constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr unsigned int moveDelayTicks = 0;
             constexpr SDL_Point attackRegisterRange = { 3, 3 };
             constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
 
             constexpr unsigned int deathTicks = 6666;
-            constexpr unsigned int projectileCooldownTicks = 1000;
+            constexpr unsigned int rangedAttackCooldownTicks = 1000;
+            constexpr unsigned int meteorShowerAttackCooldownTicks = 4444;
         }
 
         namespace placeholders {
@@ -1010,16 +1012,16 @@ namespace config {
         }
 
         namespace hostile {
-            namespace dog {
-                constexpr const char* typeID = "hostile-dog";
-                const std::filesystem::path path = "assets/.tiled/.tsx/tdm-dog.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, 0, 2, 2 };
-                constexpr SDL_FPoint velocity = { 128, 128 };
-                constexpr int moveDelayTicks = 0;
+            namespace dummy {
+                constexpr const char* typeID = "hostile-dummy";
+                const std::filesystem::path path = config::entities::player::path;
+                constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
+                constexpr SDL_FPoint velocity = config::entities::player::velocity;
+                constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
                 constexpr SDL_Point moveInitiateRange = { 5, 5 };
                 constexpr SDL_Point attackInitiateRange = { 1, 1 };
                 constexpr SDL_Point attackRegisterRange = { 1, 1 };
-                constexpr EntityPrimaryStats primaryStats = { 20, 10, 0, 10, 10, 0, 0, 0 };
+                constexpr EntityPrimaryStats primaryStats = config::entities::player::primaryStats;
             }
         }
 
@@ -1052,6 +1054,16 @@ namespace config {
                 constexpr int moveDelayTicks = 0;
                 constexpr SDL_Point attackRegisterRange = { 0, 0 };
                 constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
+            }
+
+            namespace meteor {
+                constexpr const char* typeID = "projectile-meteor";
+                const std::filesystem::path path = "assets/.tiled/.tsx/mta-meteor.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 4, 4 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
+                constexpr int moveDelayTicks = 0;
+                constexpr SDL_Point attackRegisterRange = { std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() };
+                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, std::numeric_limits<unsigned short int>::max(), 99 };
             }
         }
 

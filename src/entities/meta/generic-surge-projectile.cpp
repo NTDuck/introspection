@@ -100,8 +100,10 @@ GenericSurgeProjectile<T>::handleCustomEventPOST_impl() const {
 template class GenericSurgeProjectile<Darkness>;
 template class GenericSurgeProjectile<Slash>;
 template class GenericSurgeProjectile<Claw>;
+template class GenericSurgeProjectile<Meteor>;
 
 
 DEF_GENERIC_SURGE_PROJECTILE(Darkness, config::entities::projectile::darkness)
 DEF_GENERIC_SURGE_PROJECTILE(Slash, config::entities::projectile::slash)
 DEF_GENERIC_SURGE_PROJECTILE(Claw, config::entities::projectile::claw)
+DEF_GENERIC_SURGE_PROJECTILE(Meteor, config::entities::projectile::meteor)

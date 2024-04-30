@@ -45,6 +45,11 @@ void GenericHostileEntity<T, M>::handleCustomEventGET(SDL_Event const& event) {
 }
 
 template <typename T, MovementSelectionType M>
+void GenericHostileEntity<T, M>::instantiateMeteorProjectileOnSelf() {
+    Meteor::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+}
+
+template <typename T, MovementSelectionType M>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
 GenericHostileEntity<T, M>::handleCustomEventPOST_impl() const {
@@ -176,4 +181,4 @@ unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 template class GenericHostileEntity<Dummy>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(Dummy, config::entities::hostile::dog)
+DEF_GENERIC_HOSTILE_ENTITY_(Dummy, config::entities::hostile::dummy)
