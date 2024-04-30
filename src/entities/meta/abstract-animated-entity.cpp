@@ -131,6 +131,7 @@ template class AbstractAnimatedEntity<Dummy>;
 
 template class AbstractAnimatedEntity<Darkness>;
 template class AbstractAnimatedEntity<Slash>;
+template class AbstractAnimatedEntity<Claw>;
 
 
 DEF_ABSTRACT_ANIMATED_ENTITY(Umbra, config::entities::misc::umbra)

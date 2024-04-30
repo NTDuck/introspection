@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
 #include <cstdint>
@@ -43,8 +44,38 @@ using json = nlohmann::json;
  * @note Abbreviation for "hash(ed) string".
  * @see https://stackoverflow.com/questions/16388510/evaluate-a-string-with-a-switch-in-c
 */
-constexpr unsigned int hstr(const char* s, int hashval = 0) {
+constexpr inline unsigned int hstr(const char* s, int hashval = 0) {
     return !s[hashval] ? 5381 : (hstr(s, hashval + 1) * 33) ^ s[hashval];
+}
+
+/**
+ * @brief Blend 2 colors.
+ * @param bi The blend intensity of the first color.
+ * @see https://gist.github.com/quantum9Innovation/33f2f709b59c3fe71b976aa738fb1327
+ * @see https://commit-digest.kde.org/issues/2007-08-12/
+
+*/
+constexpr inline SDL_Color blend(SDL_Color const& lhs, SDL_Color const& rhs, double bi = 0.5) {
+    constexpr auto max = [](SDL_Color const& col) -> Uint8 {
+        return std::max(col.r, std::max(col.g, col.b));
+    };
+
+    std::clamp(bi, (double)(0), (double)(1));   // Yes this is constexpr
+
+    SDL_Color ret({
+        static_cast<Uint8>(bi * lhs.r + (1 - bi) * rhs.r),
+        static_cast<Uint8>(bi * lhs.g + (1 - bi) * rhs.g),
+        static_cast<Uint8>(bi * lhs.b + (1 - bi) * rhs.b),
+        static_cast<Uint8>(bi * lhs.a + (1 - bi) * rhs.a),
+    });
+
+    double scale = max(ret) / ((2 * bi * max(lhs) + (2 - 2 * bi) * max(rhs)) / 2);
+
+    ret.r /= scale;
+    ret.g /= scale;
+    ret.b /= scale;
+
+    return ret;
 }
 
 /**
@@ -811,35 +842,36 @@ namespace config {
     }
 
     namespace color {
-        constexpr SDL_Color mnml_dark = SDL_Color{ 0x32, 0x2f, 0x27 };
-        constexpr SDL_Color mnml_light = SDL_Color{ 0xb1, 0xae, 0xa8 };
-
+        constexpr SDL_Color dark = SDL_Color{ 0x32, 0x2f, 0x27, SDL_ALPHA_OPAQUE };
+        constexpr SDL_Color light = SDL_Color{ 0xb1, 0xae, 0xa8, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offwhite = SDL_Color{ 0xf2, 0xf3, 0xf4, SDL_ALPHA_OPAQUE };
         constexpr SDL_Color offblack = { 0x14, 0x14, 0x12, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color black = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color smoky_black = SDL_Color{ 0x10, 0x0c, 0x08, SDL_ALPHA_OPAQUE };
-        constexpr SDL_Color gold = SDL_Color{ 0xff, 0xd7, 0x00, SDL_ALPHA_OPAQUE };
+
+        constexpr SDL_Color lighter = blend(light, offwhite, 0.66);
+        constexpr SDL_Color halftone = blend(light, dark);
+        constexpr SDL_Color darker = blend(dark, offblack, 0.66);
+
         constexpr SDL_Color transparent = SDL_Color{ 0x00, 0x00, 0x00, SDL_ALPHA_TRANSPARENT };
     }
 
     namespace preset {
-        constexpr ComponentPreset lightButton = {
-            config::color::offwhite, config::color::black, config::color::black, 1.0f / 32.0f, 4.0f / 32.0f,
+        constexpr ComponentPreset light = {
+            config::color::lighter, config::color::darker, config::color::darker, 1.0f / 32.0f, 4.0f / 32.0f,
         };
-        constexpr ComponentPreset darkButton = {
-            config::color::black, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
+        constexpr ComponentPreset dark = {
+            config::color::darker, config::color::lighter, config::color::lighter, 1.0f / 32.0f, 4.0f / 32.0f,
         };
-        constexpr ComponentPreset yellowButton = {
-            config::color::black, config::color::gold, config::color::gold, 1.0f / 32.0f, 4.0f / 32.0f,
+        constexpr ComponentPreset offwhite = {
+            config::color::darker, config::color::offwhite, config::color::offwhite, 1.0f / 32.0f, 4.0f / 32.0f,
         };
-        constexpr ComponentPreset frameRateOverlay = {
-            config::color::smoky_black, config::color::offwhite, config::color::offwhite, 0.125f / 32.0f, 1.0f / 32.0f,
+        constexpr ComponentPreset FPSOverlay = {
+            config::color::darker, config::color::offwhite, config::color::offwhite, 0.125f / 32.0f, 1.0f / 32.0f,
         };
         constexpr ComponentPreset dialogue = {
-            config::color::black, config::color::offwhite, config::color::offwhite, 0.375f / 32.0f, 1.25f / 32.0f,
+            config::color::darker, config::color::lighter, config::color::lighter, 0.375f / 32.0f, 1.25f / 32.0f,
         };
         constexpr ComponentPreset title = {
-            config::color::transparent, config::color::transparent, config::color::offwhite, 0, 0,
+            config::color::transparent, config::color::transparent, config::color::lighter, 0, 0,
         };
     }
 
@@ -1011,6 +1043,16 @@ namespace config {
                 constexpr SDL_Point attackRegisterRange = { 0, 0 };
                 constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
             }
+
+            namespace claw {
+                constexpr const char* typeID = "projectile-claw";
+                const std::filesystem::path path = "assets/.tiled/.tsx/mta-claw.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
+                constexpr int moveDelayTicks = 0;
+                constexpr SDL_Point attackRegisterRange = { 0, 0 };
+                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
+            }
         }
 
         namespace misc {
@@ -1026,7 +1068,7 @@ namespace config {
         constexpr SDL_Point destRectRatio = { 10, 2 };
 
         namespace fps_overlay {
-            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::frameRateOverlay, "");
+            const std::tuple<SDL_FPoint, ComponentPreset, std::string> initializer = std::make_tuple(SDL_FPoint{ 0.1f, 0.1f }, config::preset::FPSOverlay, "");
             constexpr double destSizeModifier = 0.25;
             constexpr SDL_Point destRectRatio = { 5, 2 };
             const std::filesystem::path fontPath = config::path::font::OmoriHarmonic;
@@ -1086,10 +1128,10 @@ namespace config {
             };
 
             const std::array<std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*, std::function<void(void)>>, 4> initializer = {
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "NEW GAME", new GameState(GameState::kNITF_NewGame), [](){}),
-                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "CONTINUE", new GameState(GameState::kNITF_Continue), [](){}),
-                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "ABOUT", nullptr, aboutCallback),
-                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::lightButton, config::preset::darkButton, "EXIT", new GameState(GameState::kExit), [](){}),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 7.0f / 9.0f }, config::preset::light, config::preset::dark, "NEW GAME", new GameState(GameState::kNITF_NewGame), [](){}),
+                std::make_tuple(SDL_FPoint{ 1.0f / 3.0f, 8.0f / 9.0f }, config::preset::light, config::preset::dark, "CONTINUE", new GameState(GameState::kNITF_Continue), [](){}),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 7.0f / 9.0f }, config::preset::light, config::preset::dark, "ABOUT", nullptr, aboutCallback),
+                std::make_tuple(SDL_FPoint{ 2.0f / 3.0f, 8.0f / 9.0f }, config::preset::light, config::preset::dark, "EXIT", new GameState(GameState::kExit), [](){}),
             };
             constexpr double destSizeModifier = 1;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
@@ -1111,7 +1153,7 @@ namespace config {
         }
 
         namespace loading_progress_bar {
-            const std::tuple<SDL_FPoint, ComponentPreset> intializer = std::make_tuple(SDL_FPoint{ 0.5f, 5.0f / 9.0f }, config::preset::lightButton);
+            const std::tuple<SDL_FPoint, ComponentPreset> intializer = std::make_tuple(SDL_FPoint{ 0.5f, 5.0f / 9.0f }, config::preset::light);
             constexpr double destSizeModifier = 1;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;
             constexpr double progressUpdateRateLimit = 1;
@@ -1127,7 +1169,7 @@ namespace config {
 
         namespace game_over_button {
             const std::tuple<SDL_FPoint, ComponentPreset, ComponentPreset, std::string, GameState*, std::function<void(void)>> initializer = {
-                std::make_tuple(SDL_FPoint{ 0.5f, 0.6f }, config::preset::lightButton, config::preset::yellowButton, "amend", new GameState(GameState::kLoading | GameState::kMenu), [](){}),
+                std::make_tuple(SDL_FPoint{ 0.5f, 0.6f }, config::preset::light, config::preset::offwhite, "amend", new GameState(GameState::kLoading | GameState::kMenu), [](){}),
             };
             constexpr double destSizeModifier = 1;
             constexpr SDL_Point destRectRatio = config::components::destRectRatio;

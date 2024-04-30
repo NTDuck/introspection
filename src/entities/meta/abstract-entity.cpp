@@ -155,3 +155,4 @@ template class AbstractEntity<Dummy>;
 
 template class AbstractEntity<Darkness>;
 template class AbstractEntity<Slash>;
+template class AbstractEntity<Claw>;

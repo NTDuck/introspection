@@ -300,8 +300,13 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
 
     EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
 
-    resetAnimation(mSecondaryStats.HP > 0 ? Animation::kDamaged : Animation::kDeath);
-    Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+    if (mSecondaryStats.HP > 0) {
+        resetAnimation(Animation::kDamaged);
+        Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+    } else {
+        resetAnimation(Animation::kDeath);
+        Claw::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+    }
 }
 
 template <event::Code C>

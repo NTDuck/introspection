@@ -44,7 +44,7 @@ void MenuInterface::render() const {
  * @note In future commits, this method will take advantage of `texture`.
 */
 void MenuInterface::renderBackground() const {
-    utils::setRendererDrawColor(globals::renderer, config::color::offblack);
+    utils::setRendererDrawColor(globals::renderer, config::color::darker);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 

@@ -6,7 +6,7 @@
     <property name="stopGID" type="int" value="4"/>
    </properties>
   </property>
-  <property name="animation-ticks" type="int" value="44"/>
+  <property name="animation-ticks" type="int" value="100"/>
  </properties>
  <image source="../../graphics/sprites/entities/projectiles/mta-slash.png" width="960" height="192"/>
 </tileset>

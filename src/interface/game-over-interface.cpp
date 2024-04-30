@@ -25,7 +25,7 @@ void GameOverInterface::render() const {
 }
 
 void GameOverInterface::renderBackground() const {
-    utils::setRendererDrawColor(globals::renderer, config::color::offblack);
+    utils::setRendererDrawColor(globals::renderer, config::color::darker);
     SDL_RenderFillRect(globals::renderer, nullptr);
 }
 
