@@ -16,8 +16,7 @@
 */
 Player::Player(SDL_Point const& destCoords) : AbstractAnimatedDynamicEntity<Player>(destCoords) {
     mDestRectModifier = config::entities::player::destRectModifier;
-    mAttackRegisterRange = config::entities::player::attackRegisterRange;   // `kAttackInitiateRange` is unnecessary
-    mPrimaryStats = config::entities::player::primaryStats;
+    mAttributes = config::entities::player::attributes;
 }
 
 void Player::deinitialize() {
@@ -271,7 +270,7 @@ Player::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, &mAttributes }));
     event::enqueue(event);
 }
 
@@ -311,17 +310,12 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
 
-    auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
-    if (distance > data.range.x || distance > data.range.y) return;
-
-    EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
-
-    if (mSecondaryStats.HP > 0) {
-        resetAnimation(Animation::kDamaged);
-        Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
-    } else {
+    if (data.attributes->attack(mAttributes, data.destCoords, mDestCoords)) {
         resetAnimation(Animation::kDeath);
         Claw::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+    } else {
+        resetAnimation(Animation::kDamaged);
+        Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
     }
 }
 
@@ -330,10 +324,7 @@ typename std::enable_if_t<C == event::Code::kResp_AttackInitiate_GHE_Player>
 Player::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
-
-    auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
-    if (distance > data.range.x || distance > data.range.y) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath || !data.attributes->within<EntityAttributes::ID::AIR>(mDestCoords, data.destCoords)) return;
 
     auto followupEvent = event::instantiate();
     event::setID(followupEvent, event::getID(event));
@@ -349,11 +340,9 @@ Player::handleCustomEventGET_impl(SDL_Event const& event) {
 
     if (mAnimation == Animation::kDeath) return;
 
-    auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
-
     auto followupEvent = event::instantiate();
     event::setID(followupEvent, event::getID(event));
-    event::setCode(followupEvent, distance > data.range.x || distance > data.range.y ? event::Code::kResp_MoveTerminate_GHE_Player : event::Code::kResp_MoveInitiate_GHE_Player);
+    event::setCode(followupEvent, data.attributes->within<EntityAttributes::ID::MIR>(mDestCoords, data.destCoords) ? event::Code::kResp_MoveInitiate_GHE_Player : event::Code::kResp_MoveTerminate_GHE_Player);
     data.destCoords = mDestCoords;
     event::setData(followupEvent, data);
     event::enqueue(followupEvent);

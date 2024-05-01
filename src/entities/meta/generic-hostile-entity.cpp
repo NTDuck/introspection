@@ -58,7 +58,7 @@ GenericHostileEntity<T, M>::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, C);
-    event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, &mAttributes }));
     event::enqueue(event);
 }
 
@@ -71,7 +71,7 @@ GenericHostileEntity<T, M>::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, C);
-    event::setData(event, event::Data_Generic({ mDestCoords, mAttackInitiateRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, &mAttributes }));
     event::enqueue(event);
 }
 
@@ -82,7 +82,7 @@ GenericHostileEntity<T, M>::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, C);
-    event::setData(event, event::Data_Generic({ mDestCoords, mMoveInitiateRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, &mAttributes }));
     event::enqueue(event);
 }
 
@@ -93,19 +93,14 @@ GenericHostileEntity<T, M>::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
     if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
-    auto distance = utils::calculateDistance(mDestCoords, data.destCoords);
-    if (distance > data.range.x || distance > data.range.y) return;
 
-    bool isDeadPrior = mSecondaryStats.HP <= 0;
-    EntitySecondaryStats::resolve(data.stats, mSecondaryStats);
-    if (!isDeadPrior && mSecondaryStats.HP <= 0) ++sDeathCount;
-
-    if (mSecondaryStats.HP > 0) {
-        resetAnimation(Animation::kDamaged);
-        Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
-    } else {
+    if (data.attributes->attack(mAttributes, data.destCoords, mDestCoords)) {
+        ++sDeathCount;
         resetAnimation(Animation::kDeath);
         Claw::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
+    } else {
+        resetAnimation(Animation::kDamaged);
+        Slash::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });
     }
 }
 
@@ -137,9 +132,16 @@ template <typename T, MovementSelectionType M>
 template <MovementSelectionType M_>
 typename std::enable_if_t<M_ == MovementSelectionType::kGreedyTrigonometric>
 GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoords) {
-    mNextVelocity = new SDL_Point(
-        utils::calculateDirection(targetDestCoords, mDestCoords)
-    );
+    static auto dir = [](SDL_Point const& endpoint, SDL_Point const& origin) -> SDL_Point {
+        auto endpoint_shifted = (endpoint - origin) >> (M_PI / 4);   // 45 degrees counterclockwise rotation
+        if (endpoint_shifted.x >= 0 && endpoint_shifted.y >= 0) return { 0, 1 };
+        if (endpoint_shifted.x >= 0 && endpoint_shifted.y <= 0) return { 1, 0 };
+        if (endpoint_shifted.x <= 0 && endpoint_shifted.y <= 0) return { 0, -1 };
+        if (endpoint_shifted.x <= 0 && endpoint_shifted.y >= 0) return { -1, 0 };
+        return tile::Data_EntityTileset::kDefaultDirection;
+    };
+
+    mNextVelocity = new SDL_Point(dir(targetDestCoords, mDestCoords));
 }
 
 template <typename T, MovementSelectionType M>
@@ -149,6 +151,9 @@ GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoo
     mNextVelocity = utils::generateRandomBinary() ? new SDL_Point({ (targetDestCoords.x > mDestCoords.x) * 2 - 1, 0 }) : new SDL_Point({ 0, (targetDestCoords.y > mDestCoords.y) * 2 - 1 });
 }
 
+/**
+ * @warning Bugged, do not use this.
+*/
 template <typename T, MovementSelectionType M>
 template <MovementSelectionType M_>
 typename std::enable_if_t<M_ == MovementSelectionType::kPathfindingAStar>
@@ -159,8 +164,8 @@ GenericHostileEntity<T, M>::calculateNextMovement(SDL_Point const& targetDestCoo
     if (!timer.isStarted()) timer.start();
     if (!timer.isFinished()) return;
 
-    pathfinder.setBegin(pathfinders::Cell::pttocl(mDestCoords - mMoveInitiateRange));
-    pathfinder.setEnd(pathfinders::Cell::pttocl(mDestCoords + mMoveInitiateRange));
+    pathfinder.setBegin(pathfinders::Cell::pttocl(mDestCoords - mAttributes.template get<EntityAttributes::ID::MIR>()));
+    pathfinder.setEnd(pathfinders::Cell::pttocl(mDestCoords + mAttributes.template get<EntityAttributes::ID::MIR>()));
 
     auto result = pathfinder.search(pathfinders::Cell::pttocl(mDestCoords), pathfinders::Cell::pttocl(targetDestCoords));
     if (result.status != pathfinders::Status::kSuccess || result.path.empty()) return;

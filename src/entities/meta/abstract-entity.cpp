@@ -73,8 +73,8 @@ void AbstractEntity<T>::onWindowChange() {
 */
 template <typename T>
 void AbstractEntity<T>::onLevelChange(level::Data_Generic const& entityLevelData) {
-    mSecondaryStats.initialize(mPrimaryStats);   // Prevent resetting secondary stats on player entity
     mDestCoords = entityLevelData.destCoords;
+    mAttributes.heal();
 }
 
 template <typename T>

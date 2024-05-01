@@ -106,8 +106,7 @@ class AbstractEntity : public Multiton<T> {
         SDL_Point* mCenter = nullptr;
         SDL_RendererFlip mFlip = SDL_FLIP_NONE;
 
-        EntityPrimaryStats mPrimaryStats;
-        EntitySecondaryStats mSecondaryStats;
+        mutable EntityAttributes mAttributes;
 
     private:
         static int sID_Counter;
@@ -125,7 +124,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEX, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mPrimaryStats, AbstractEntity<T>::mSecondaryStats;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEX, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mAttributes;
 
 
 /**
@@ -158,7 +157,6 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         Animation mAnimation = Animation::kIdle;
 
         SDL_Point mDirection = tile::Data_EntityTileset::kDefaultDirection;
-        SDL_Point mAttackRegisterRange;
 
     private:
         tile::Data_EntityTileset::Data_Animation mAnimationData;
@@ -166,7 +164,7 @@ class AbstractAnimatedEntity : public AbstractEntity<T> {
         int mAnimationGID;
 };
 
-#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::reinitialize, AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mDirection, AbstractAnimatedEntity<T>::mAttackRegisterRange;
+#define INCL_ABSTRACT_ANIMATED_ENTITY(T) using AbstractAnimatedEntity<T>::reinitialize, AbstractAnimatedEntity<T>::onLevelChange, AbstractAnimatedEntity<T>::handleSFX, AbstractAnimatedEntity<T>::updateAnimation, AbstractAnimatedEntity<T>::resetAnimation, AbstractAnimatedEntity<T>::isAnimationAtSprite, AbstractAnimatedEntity<T>::isAnimationAtFirstSprite, AbstractAnimatedEntity<T>::isAnimationAtFinalSprite, AbstractAnimatedEntity<T>::mBaseAnimation, AbstractAnimatedEntity<T>::mAnimation, AbstractAnimatedEntity<T>::mDirection;
 
 /**
  * @brief A shorthand to declare a AAE-derived. Used in header files only.
@@ -413,12 +411,6 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
     protected:
         GenericHostileEntity(SDL_Point const& destCoords);
 
-        /**
-         * If the player entity is "within" the specified range, the slime entity would move towards the player. The slime would remain IDLE otherwise.
-        */
-        SDL_Point mMoveInitiateRange;
-        SDL_Point mAttackInitiateRange;
-
     private:
         template <event::Code C>
         typename std::enable_if_t<C == event::Code::kReq_AttackRegister_GHE_Player>
@@ -463,7 +455,7 @@ class GenericHostileEntity : public AbstractAnimatedDynamicEntity<T> {
         static unsigned int sDeathCount;
 };
 
-#define INCL_GENERIC_HOSTILE_ENTITY(T, M) using GenericHostileEntity<T, M>::handleCustomEventPOST, GenericHostileEntity<T, M>::handleCustomEventGET, GenericHostileEntity<T, M>::getDeathCount, GenericHostileEntity<T, M>::isAllDead, GenericHostileEntity<T, M>::instantiateMeteorProjectileOnSelf, GenericHostileEntity<T, M>::mMoveInitiateRange, GenericHostileEntity<T, M>::mAttackInitiateRange;
+#define INCL_GENERIC_HOSTILE_ENTITY(T, M) using GenericHostileEntity<T, M>::handleCustomEventPOST, GenericHostileEntity<T, M>::handleCustomEventGET, GenericHostileEntity<T, M>::getDeathCount, GenericHostileEntity<T, M>::isAllDead, GenericHostileEntity<T, M>::instantiateMeteorProjectileOnSelf;
 
 #define DECL_GENERIC_HOSTILE_ENTITY(T, M) \
 class T final : public GenericHostileEntity<T, M> {\
@@ -480,10 +472,7 @@ class T final : public GenericHostileEntity<T, M> {\
 #define DEF_GENERIC_HOSTILE_ENTITY(T, M, ns) \
 T::T(SDL_Point const& destCoords) : GenericHostileEntity<T, M>(destCoords) {\
     mDestRectModifier = ns::destRectModifier;\
-    mMoveInitiateRange = ns::moveInitiateRange;\
-    mAttackInitiateRange = ns::attackInitiateRange;\
-    mAttackRegisterRange = ns::attackRegisterRange;\
-    mPrimaryStats = ns::primaryStats;\
+    mAttributes = ns::attributes;\
 }\
 \
 template <>\
@@ -547,8 +536,7 @@ class T final : public GenericSurgeProjectile<T> {\
 #define DEF_GENERIC_SURGE_PROJECTILE(T, ns) \
 T::T(SDL_Point const& destCoords, SDL_Point const& direction) : GenericSurgeProjectile<T>(destCoords, direction) {\
     mDestRectModifier = ns::destRectModifier;\
-    mAttackRegisterRange = ns::attackRegisterRange;\
-    mPrimaryStats = ns::primaryStats;\
+    mAttributes = ns::attributes;\
     onWindowChange();\
 }\
 \

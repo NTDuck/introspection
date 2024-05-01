@@ -189,57 +189,115 @@ struct GameInitFlag {
 };
 
 /**
- * @brief Contain data associated with an entity's main stats i.e. attributes. Govern `EntitySecondaryStats`.
- * @param Vigor attribute governing `HP`.
- * @param Mind attribute governing `FP`.
- * @param Endurance attribute governing `PhysicalDefense`.
- * @param Strength attribute governing `PhysicalAttackDamage`.
- * @param Dexterity attribute governing `Stamina` and `Poise`.
- * @param Intelligence attribute governing `MagicDefense`.
- * @param Faith attribute governing `MagicDamage`.
- * @param Arcane attribute governing `CriticalChance`.
- * @todo Implement proper attribute scaling.
+ * @see https://learn.microsoft.com/en-us/cpp/error-messages/compiler-errors-2/compiler-error-c7510?view=msvc-170
 */
-struct EntityPrimaryStats {
-    int Vigor;
-    int Mind;
-    int Endurance;
-    int Strength;
-    int Dexterity;
-    int Intelligence;
-    int Faith;
-    int Arcane;
-};
+class EntityAttributes {
+public:
+    enum class ID {
+        HP, MP, ATK, DEF,
+        MHP, MMP, MAT, MDF,
+        MIR, AIR, ARR,
+    };
 
-/**
- * @brief Contain data associated with an entity's secondary stats. Governed by `EntityPrimaryStats`.
- * @param HP Hit Points. Serves as a measure of an entity's health and how much damage it could take before falling in combat. Governed by `Vigor`.
- * @param FP Focus Points. Serves as an energy source consumed when casting Spells or using Skills. Works identically to "MP"/"Mana" in other titles. Governed by `Mind`.
- * @param Stamina a resource consumed when sprinting, attacking, or casting spells. Governed by `Dexterity`.
- * @param Poise the degree to which an entity could resist collapsing under incoming attacks. Governed by `Dexterity`.
- * @param PhysicalDefense representative of an entity's defense power and damage negation against physical attacks. Governed by `Endurance`. In percent.
- * @param MagicDefense representative of an entity's defense power and damage negation against magical attacks. Governed by `Intelligence`. In percent.
- * @param PhysicalDamage representative of the amount of damage dealt in by physical attacks. Governed by `Strength`.
- * @param MagicDamage representative of the amount of damage dealt by magical attacks. Governed by `Faith`.
- * @param CriticalChance representative of the entity's chance of landing a critical attack. Governed by `Arcane`. In percent.
- * @param CriticalDamage a multiplier; representative of the amount of damage increased by critical attack compared to the "normal" counterparts. In percent.
-*/
-struct EntitySecondaryStats {
-    int HP;
-    int FP;
-    int Stamina;
-    int Poise;
+private:
+    friend constexpr inline ID operator+(ID lhs, ID rhs) { return static_cast<ID>(static_cast<int>(lhs) + static_cast<int>(rhs)); }
+    friend constexpr inline ID operator-(ID lhs, ID rhs) { return static_cast<ID>(static_cast<int>(lhs) - static_cast<int>(rhs)); }
+    friend constexpr inline ID& operator++(ID& id) { id = static_cast<ID>(static_cast<int>(id) + 1); return id; }   // Prefix increment
 
-    double PhysicalDefense;
-    double MagicDefense;
-    int PhysicalDamage;
-    int MagicDamage;
+    template <ID idl, ID idr, typename T = int, std::size_t N = static_cast<std::size_t>(idr) - static_cast<std::size_t>(idl) + 1>   // Template parameter `N` helps prevent compilation errors and should be automatically deduced, not provided
+    struct Base {
+        template <ID id, typename U = void>
+        using pred = typename std::enable_if<idl <= id && id <= idr, U>::type;
 
-    double CriticalChance;
-    double CriticalDamage;
+        constexpr inline Base() = default;
+        constexpr inline Base(std::array<T, N> const& attrs) : mAttrs(attrs) {}
 
-    void initialize(EntityPrimaryStats const& entityPrimaryStats);
-    static void resolve(EntitySecondaryStats const& active, EntitySecondaryStats& passive);
+        template <ID id> pred<id, T const&>
+        inline get() const { return mAttrs[static_cast<int>(id - idl)]; }
+
+        constexpr inline std::array<T, N> const& get() const { return mAttrs; }
+
+    protected:
+        template <ID id> pred<id, T&>
+        inline at() { return mAttrs[static_cast<int>(id - idl)]; }
+
+        std::array<T, N> mAttrs;
+    };
+
+    struct Static final : public Base<ID::MHP, ID::MDF> {
+        constexpr inline Static(std::array<int, 4> const& attrs = {{ 0, 0, 0, 0 }}) : Base<ID::MHP, ID::MDF>(attrs) {}
+
+        inline void levelup() { for (auto& attr : mAttrs) attr *= mScale; }
+        inline void leveldown() { for (auto& attr : mAttrs) attr /= mScale; }
+
+        private:
+            static constexpr double mScale = 1.5;
+    };
+
+    struct Dynamic final : public Base<ID::HP, ID::DEF> {
+        static constexpr inline auto sttody(ID id) { return id - ID::MHP; }
+        static constexpr inline auto dytost(ID id) { return id + ID::MHP; }
+
+        constexpr inline Dynamic(Static const& st = {{ 0, 0, 0, 0 }}) : Base<ID::HP, ID::DEF>(st.get()) {}
+
+        template <ID id> pred<id>
+        inline heal(Static const& st, int val) { at<id>() = std::min(st.get<dytost(id)>(), at<id>() + val); }
+
+        template <ID id> pred<id>
+        inline heal(Static const& st) { return heal<id>(st.get<dytost(id)>() - at<id>()); }
+
+        inline void heal(Static const& st) { mAttrs = st.get(); }
+
+        // Returns `true` if the attack brings `HP` of `other` to `0` or below
+        inline bool attack(Dynamic& other, int MP) {
+            bool flag = other.get<ID::HP>() > 0;
+
+            if (get<ID::MP>() < MP) return false;
+            at<ID::MP>() -= MP;   // Attack consumes `MP`
+            other.at<ID::HP>() -= std::min( std::max(get<ID::ATK>() - other.get<ID::DEF>(), 0), other.get<ID::HP>() );   // Classic formula
+
+            return flag && other.at<ID::HP>() <= 0;
+        }
+    };
+
+    struct Range final : public Base<ID::MIR, ID::ARR, SDL_Point> {
+        constexpr inline Range(std::array<SDL_Point, 3> const& attrs = {{ { 0, 0 }, { 0, 0 }, { 0, 0 } }}) : Base<ID::MIR, ID::ARR, SDL_Point>(attrs) {}
+
+        template <ID id> pred<id, bool>
+        inline within(SDL_Point const& lpos, SDL_Point const& rpos) const {
+            auto dist = std::sqrt(std::pow(lpos.x - rpos.x, 2) + std::pow(lpos.y - rpos.y, 2));
+            return dist <= get<id>().x && dist <= get<id>().y;
+        }
+    };
+
+    Static mStatic;
+    Dynamic mDynamic;
+    Range mRange;
+
+public:
+    constexpr inline EntityAttributes() : mStatic(), mDynamic(), mRange() {}
+    constexpr inline EntityAttributes(Static const& st) : mStatic(st), mDynamic(st) {}
+    constexpr inline EntityAttributes(Static const& st, Range const& rg) : mStatic(st), mDynamic(st), mRange(rg) {}
+
+    inline ~EntityAttributes() = default;
+    
+    template <ID id> Range::pred<id, bool>
+    inline within(SDL_Point const& pos, SDL_Point const& opos) const { return mRange.within<id>(pos, opos); }
+
+    template <ID id> Dynamic::pred<id, void>
+    inline heal(int val) { return mDynamic.heal<id>(mStatic, val); }
+
+    template <ID id> Dynamic::pred<id, void>
+    inline heal() { return mDynamic.heal<id>(mStatic); }
+
+    inline void heal() { return mDynamic.heal(mStatic); }
+
+    inline bool attack(EntityAttributes& other, int MP = 0) { return mDynamic.attack(other.mDynamic, MP); }
+    inline bool attack(EntityAttributes& other, SDL_Point const& pos, SDL_Point const& opos, int MP = 0) { return within<ID::ARR>(pos, opos) ? attack(other, MP) : false; }
+
+    template <ID id> Static::pred<id, int> inline get() const { return mStatic.get<id>(); }
+    template <ID id> Dynamic::pred<id, int> inline get() const { return mDynamic.get<id>(); }
+    template <ID id> Range::pred<id, SDL_Point> inline get() const { return mRange.get<id>(); }
 };
 
 struct ComponentPreset {
@@ -558,8 +616,9 @@ namespace event {
 
     struct Data_Generic {
         SDL_Point destCoords;
-        SDL_Point range;
-        EntitySecondaryStats stats;
+        EntityAttributes* attributes = nullptr;
+
+        inline ~Data_Generic() = default;
     };
 
     struct Data_Interactable {
@@ -939,8 +998,7 @@ namespace config {
             constexpr SDL_FRect destRectModifier = { 0, -1, 4, 4 };
             constexpr SDL_FPoint velocity = { 16, 16 };
             constexpr unsigned int moveDelayTicks = 0;
-            constexpr SDL_Point attackRegisterRange = { 3, 3 };
-            constexpr EntityPrimaryStats primaryStats = { 10, 10, 10, 10, 10, 10, 10, 10 };
+            constexpr EntityAttributes attributes({{ 10, 4, 2, 1 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 4, 4 } }});
 
             constexpr unsigned int deathTicks = 6666;
             constexpr unsigned int rangedAttackCooldownTicks = 1000;
@@ -1018,10 +1076,7 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
                 constexpr SDL_FPoint velocity = config::entities::player::velocity;
                 constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
-                constexpr SDL_Point moveInitiateRange = { 5, 5 };
-                constexpr SDL_Point attackInitiateRange = { 1, 1 };
-                constexpr SDL_Point attackRegisterRange = { 1, 1 };
-                constexpr EntityPrimaryStats primaryStats = config::entities::player::primaryStats;
+                constexpr EntityAttributes attributes({{ 10, 0, 0, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
         }
 
@@ -1032,8 +1087,7 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
-                constexpr SDL_Point attackRegisterRange = { 1, 1 };
-                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 4, 0 };
+                constexpr EntityAttributes attributes({{ 0, 0, 2, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 1, 1 } }});
             }
 
             namespace slash {
@@ -1042,8 +1096,7 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
-                constexpr SDL_Point attackRegisterRange = { 0, 0 };
-                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
+                constexpr EntityAttributes attributes({{ 0, 0, 0, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
             }
 
             namespace claw {
@@ -1052,18 +1105,16 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = { 0, 0, 1, 1 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
-                constexpr SDL_Point attackRegisterRange = { 0, 0 };
-                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, 0, 0 };
+                constexpr EntityAttributes attributes({{ 0, 0, 0, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
             }
 
             namespace meteor {
                 constexpr const char* typeID = "projectile-meteor";
                 const std::filesystem::path path = "assets/.tiled/.tsx/mta-meteor.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, 0, 4, 4 };
+                constexpr SDL_FRect destRectModifier = { 0, -2, 3, 3 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
-                constexpr SDL_Point attackRegisterRange = { std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() };
-                constexpr EntityPrimaryStats primaryStats = { 0, 0, 0, 0, 0, 0, std::numeric_limits<unsigned short int>::max(), 99 };
+                constexpr EntityAttributes attributes({{ 0, 0, std::numeric_limits<unsigned short int>::max(), 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
             }
         }
 
@@ -1314,8 +1365,6 @@ namespace utils {
     SDL_Color hextocol(std::string const& hexString);
     
     int generateRandomBinary(const double probability = 0.5);
-    double calculateDistance(SDL_Point const& first, SDL_Point const& second);
-    SDL_Point calculateDirection(SDL_Point const& endpoint, SDL_Point const& origin = { 0, 0 });
     void setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color);
 
     SDL_Texture* duplicateTexture(SDL_Renderer* renderer, SDL_Texture* texture);

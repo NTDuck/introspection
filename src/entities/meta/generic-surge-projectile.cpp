@@ -92,7 +92,7 @@ GenericSurgeProjectile<T>::handleCustomEventPOST_impl() const {
     auto event = event::instantiate();
     event::setID(event, mID);
     event::setCode(event, event::Code::kReq_AttackRegister_Player_GHE);
-    event::setData(event, event::Data_Generic({ mDestCoords, mAttackRegisterRange, mSecondaryStats }));
+    event::setData(event, event::Data_Generic({ mDestCoords, &mAttributes }));
     event::enqueue(event);
 }
 

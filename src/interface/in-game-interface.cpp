@@ -149,7 +149,7 @@ void IngameInterface::handleCustomEventGET(SDL_Event const& event) const {
 
         case event::Code::kReq_DeathFinalized_Player:
             handleCustomEventGET_impl<event::Code::kReq_DeathFinalized_Player>();
-            Player::instance->mSecondaryStats.initialize(Player::instance->mPrimaryStats);   // Prevent stuck at death screen
+            Player::instance->mAttributes.heal();
             break;
 
         default: break;

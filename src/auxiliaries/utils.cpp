@@ -188,26 +188,6 @@ int utils::generateRandomBinary(const double probability) {
 }
 
 /**
- * @brief Calculate the distance between two `SDL_Point`.
-*/
-double utils::calculateDistance(SDL_Point const& first, SDL_Point const& second) {
-    auto sub = first - second;
-    return std::sqrt(std::pow(sub.x, 2) + std::pow(sub.y, 2));
-}
-
-/**
- * @brief Reduce `endpoint` to a 4-directional representation.
-*/
-SDL_Point utils::calculateDirection(SDL_Point const& endpoint, SDL_Point const& origin) {
-    auto endpoint_shifted = (endpoint - origin) >> (M_PI / 4);   // 45 degrees counterclockwise rotation
-    if (endpoint_shifted.x >= 0 && endpoint_shifted.y >= 0) return { 0, 1 };
-    if (endpoint_shifted.x >= 0 && endpoint_shifted.y <= 0) return { 1, 0 };
-    if (endpoint_shifted.x <= 0 && endpoint_shifted.y <= 0) return { 0, -1 };
-    if (endpoint_shifted.x <= 0 && endpoint_shifted.y >= 0) return { -1, 0 };
-    return tile::Data_EntityTileset::kDefaultDirection;
-}
-
-/**
  * @brief Allow `SDL_Color` to be passed into `SDL_SetRendererDrawColor()` instead of `uint8_t`.
 */
 void utils::setRendererDrawColor(SDL_Renderer* renderer, SDL_Color const& color) {
