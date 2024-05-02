@@ -92,9 +92,9 @@ typename std::enable_if_t<C == event::Code::kReq_AttackRegister_Player_GHE>
 GenericHostileEntity<T, M>::handleCustomEventGET_impl(SDL_Event const& event) {
     auto data = event::getData<event::Data_Generic>(event);
 
-    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath) return;
+    if (mAnimation == Animation::kDamaged || mAnimation == Animation::kDeath || !data.attributes->within<EntityAttributes::ID::ARR>(mDestCoords, data.destCoords)) return;
 
-    if (data.attributes->attack(mAttributes, data.destCoords, mDestCoords)) {
+    if (data.attributes->attack(mAttributes)) {
         ++sDeathCount;
         resetAnimation(Animation::kDeath);
         Claw::initiateAttack(ProjectileType::kOrthogonalSingle, mDestCoords, { 0, 0 });

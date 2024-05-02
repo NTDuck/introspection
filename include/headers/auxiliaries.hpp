@@ -198,7 +198,7 @@ public:
         MHP, MMP, MAT, MDF,
         MIR, AIR, ARR,
     };
-
+    
 private:
     friend constexpr inline ID operator+(ID lhs, ID rhs) { return static_cast<ID>(static_cast<int>(lhs) + static_cast<int>(rhs)); }
     friend constexpr inline ID operator-(ID lhs, ID rhs) { return static_cast<ID>(static_cast<int>(lhs) - static_cast<int>(rhs)); }
@@ -254,7 +254,8 @@ private:
 
             if (get<ID::MP>() < MP) return false;
             at<ID::MP>() -= MP;   // Attack consumes `MP`
-            other.at<ID::HP>() -= std::min( std::max(get<ID::ATK>() - other.get<ID::DEF>(), 0), other.get<ID::HP>() );   // Classic formula
+            other.at<ID::HP>() -= std::max(get<ID::ATK>() - other.get<ID::DEF>(), 0);   // Classic formula
+            if (other.get<ID::HP>() < 0) other.at<ID::HP>() = -1;
 
             return flag && other.at<ID::HP>() <= 0;
         }
@@ -1114,7 +1115,7 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = { 0, -2, 3, 3 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
-                constexpr EntityAttributes attributes({{ 0, 0, std::numeric_limits<unsigned short int>::max(), 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
+                constexpr EntityAttributes attributes({{ 0, 0, std::numeric_limits<unsigned short int>::max(), 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 4, 4 } }});
             }
         }
 
