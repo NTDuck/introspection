@@ -8,7 +8,40 @@
 #include <auxiliaries.hpp>
 
 
-IngameInterface::IngameInterface() {
+void IngameInterface::Save::loadfromfile() const {
+    if (!std::filesystem::exists(config::interface::savePath)) return;
+
+    json data;
+    utils::fetch(mPath, data);
+    if (data.empty()) return;
+
+    auto ln = level::hstoln(data["level"]);
+    if (ln.has_value()) IngameMapHandler::invoke(&IngameMapHandler::changeLevel, ln.value());
+
+    mPL = std::make_optional<SDL_Point>({ data["player"]["x"], data["player"]["y"] });
+}
+
+json IngameInterface::Save::savetojson() const {
+    json data;
+
+    data["level"] = IngameMapHandler::instance->getLevel();
+    data["player"]["x"] = Player::instance->mDestCoords.x;
+    data["player"]["y"] = Player::instance->mDestCoords.y;
+
+    return data;
+}
+
+void IngameInterface::Save::savetofile(json const& data) const {
+    std::ofstream file;
+
+    file.open(mPath, std::ofstream::out);
+    if (!file.is_open()) return;
+
+    file << data.dump(2, ' ', true, json::error_handler_t::strict);   // Should move into `config::interface` ?
+    file.close();
+}
+
+IngameInterface::IngameInterface() : save(config::interface::savePath) {
     static constexpr auto renderIngameDependencies = []() {
         Invoker<IngameMapHandler, NON_INTERACTABLES, INTERACTABLES, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, Player>::invoke_render();
     };
@@ -18,10 +51,6 @@ IngameInterface::IngameInterface() {
     Player::instantiate(SDL_Point{});   // This is required for below instantiations
     IngameMapHandler::instantiate(config::interface::levelName);
     IngameViewHandler::instantiate(renderIngameDependencies, Player::instance->mDestRect);
-}
-
-IngameInterface::~IngameInterface() {
-    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
 }
 
 /**
@@ -63,16 +92,15 @@ void IngameInterface::onLevelChange() const {
         default: break;
     }
     
-    if (mCachedTargetDestCoords != nullptr && levelName != config::interface::levelName) {
-        auto data = new level::Data_Generic();
-        data->destCoords = *mCachedTargetDestCoords;
+    if (save.mPL.has_value()) {
+        auto dataPL = new level::Data_Generic(save.mPL.value());
         level::data.erase(config::entities::player::typeID);
-        level::data.insert(config::entities::player::typeID, data);
+        level::data.insert(config::entities::player::typeID, dataPL);
     }
 
     // Make changes to dependencies based on populated `globals::currentLevelData` members
-    auto playerLevelData = level::data.get(config::entities::player::typeID);
-    if (!playerLevelData.empty() && playerLevelData.front() != nullptr) Player::invoke(&Player::onLevelChange, *playerLevelData.front());
+    auto dataPL = level::data.get(config::entities::player::typeID);
+    if (!dataPL.empty() && dataPL.front() != nullptr) Player::invoke(&Player::onLevelChange, *dataPL.front());
 
     Invoker<NON_INTERACTABLES, PlaceholderInteractable, INTERACTABLES, PlaceholderTeleporter, TELEPORTERS, HOSTILES, SURGE_PROJECTILES>::invoke_onLevelChangeAll();
     Mixer::invoke(&Mixer::onLevelChange, levelName);   // `IngameMapHandler::invoke(&IngameMapHandler::getLevel))` is not usable since the compiler cannot deduce "incomplete" type
@@ -86,13 +114,7 @@ void IngameInterface::handleKeyBoardEvent(SDL_Event const& event) const {
     switch (event.key.keysym.sym) {
         case ~config::Key::kIngameReturnMenu:
             if (event.type != SDL_KEYDOWN) break;
-
-            // Save progress
-            if (Player::instance->mAnimation != Animation::kDeath) {
-                auto data = saveProgressToJSON();
-                saveJSONToStorage(data);
-            }
-
+            if (Player::instance->mAnimation != Animation::kDeath) save.savetofile();   // Save progress
             globals::state = GameState::kLoading | GameState::kMenu;
             break;
 
@@ -215,9 +237,8 @@ IngameInterface::handleCustomEventGET_impl(SDL_Event const& event) const {
     auto data = event::getData<event::Data_Teleporter>(event);
     
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, data.targetLevel);
-    // globals::currentLevelData.playerLevelData.destCoords = data.targetDestCoords;   // This has no effect if placed here
-    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
-    mCachedTargetDestCoords = new SDL_Point(data.targetDestCoords);   // Cache
+    // globals::currentLevelData.dataPL.destCoords = data.targetDestCoords;   // This has no effect if placed here
+    save.mPL = std::make_optional<SDL_Point>(data.targetDestCoords);   // Cache
 
     // globals::state = GameState::kLoading | GameState::kIngamePlaying;
     onLevelChange();
@@ -279,43 +300,4 @@ IngameInterface::handleLevelSpecifics_impl() const {
     if (isBorderTraversed && RedHandThrone::instances.empty()) RedHandThrone::instantiateEX({
         new level::Data_Teleporter{ { 52, 43 }, { 20, 11 }, level::Name::kLevelInterlude },
     });
-}
-
-/**
- * @brief Save current in-game progress to external storage.
-*/
-json IngameInterface::saveProgressToJSON() const {
-    // Populate JSON object
-    json data;
-
-    data["level"] = IngameMapHandler::instance->getLevel();
-    data["player"]["x"] = Player::instance->mDestCoords.x;
-    data["player"]["y"] = Player::instance->mDestCoords.y;
-
-    return data;
-}
-
-void IngameInterface::saveJSONToStorage(json const& data) const {
-    std::ofstream file;
-
-    file.open(config::interface::savePath, std::ofstream::out);
-    if (!file.is_open()) return;
-
-    file << data.dump(2, ' ', true, json::error_handler_t::strict);   // Should move into `config::interface` ?
-    file.close();
-}
-
-void IngameInterface::loadProgressFromStorage() const {
-    if (!std::filesystem::exists(config::interface::savePath)) return;
-
-    json data;
-    utils::fetch(config::interface::savePath, data);
-    if (data.empty()) return;
-
-    IngameMapHandler::invoke(&IngameMapHandler::loadProgressFromStorage, data);
-
-    // level::data.erase(config::entities::player::typeID);
-    // level::data.insert(config::entities::player::typeID, new level::Data_Generic({ data["player"]["x"], data["player"]["y"] }));
-    if (mCachedTargetDestCoords != nullptr) delete mCachedTargetDestCoords;
-    mCachedTargetDestCoords = new SDL_Point({ data["player"]["x"], data["player"]["y"] });
 }

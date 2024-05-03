@@ -84,32 +84,6 @@ void IngameMapHandler::loadLevel() const {
     level::data.load(JSONLevelData);
 }
 
-void IngameMapHandler::loadProgressFromStorage(json const& saveData) {
-    #define IMPL(ln) \
-    case static_cast<unsigned int>(ln):\
-        changeLevel(ln);\
-        break;
-
-    switch (static_cast<unsigned int>(saveData["level"])) {
-        IMPL(level::Name::kLevelPrelude)
-        IMPL(level::Name::kLevelWoodsEntryPoint)
-        IMPL(level::Name::kLevelWoodsLongLane)
-        IMPL(level::Name::kLevelWoodsMysteryShack)
-        IMPL(level::Name::kLevelWoodsCrossroadsFirst)
-        IMPL(level::Name::kLevelWoodsDeadEnd)
-        IMPL(level::Name::kLevelWoodsEnemyApproachingFirst)
-        IMPL(level::Name::kLevelWoodsEnemyApproachingFinal)
-        IMPL(level::Name::kLevelWoodsCrossroadsFinal)
-        IMPL(level::Name::kLevelWoodsDestinedDeath)
-
-        IMPL(level::Name::kLevelInterlude)
-
-        IMPL(level::Name::kLevelWhiteSpace)
-
-        default: break;
-    }
-}
-
 void IngameMapHandler::renderToTexture() {
     auto cachedRenderTarget = SDL_GetRenderTarget(globals::renderer);
     SDL_SetRenderTarget(globals::renderer, mTexture);

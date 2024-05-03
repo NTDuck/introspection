@@ -493,7 +493,8 @@ namespace level {
         kLevelWhiteSpace = hstr("level-white-space"),
     };
 
-    std::optional<Name> stoln(std::string const& s);
+    std::optional<Name> hstoln(unsigned int hs);
+    inline std::optional<Name> stoln(std::string const& s) { return hstoln(hstr(s.c_str())); }
 
     struct Map {
         void load(json const& JSONLevelMapData);
@@ -1075,7 +1076,7 @@ namespace config {
                 constexpr const char* typeID = "hostile-dummy";
                 const std::filesystem::path path = config::entities::player::path;
                 constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
-                constexpr SDL_FPoint velocity = config::entities::player::velocity;
+                constexpr SDL_FPoint velocity = { 48, 48 };
                 constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
                 constexpr EntityAttributes attributes({{ 10, 0, 0, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
@@ -1112,7 +1113,7 @@ namespace config {
             namespace meteor {
                 constexpr const char* typeID = "projectile-meteor";
                 const std::filesystem::path path = "assets/.tiled/.tsx/mta-meteor.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -2, 3, 3 };
+                constexpr SDL_FRect destRectModifier = { 0, -1.5, 3, 3 };
                 constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = 0;
                 constexpr EntityAttributes attributes({{ 0, 0, std::numeric_limits<unsigned short int>::max(), 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 4, 4 } }});

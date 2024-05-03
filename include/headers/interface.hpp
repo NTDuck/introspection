@@ -57,7 +57,6 @@ class IngameMapHandler final : public AbstractInterface<IngameMapHandler> {
 
         inline level::Name getLevel() { return mLevelName; }
         void changeLevel(const level::Name levelName);
-        void loadProgressFromStorage(json const& saveData);
 
         bool isOnGrayscale = false;
 
@@ -131,10 +130,25 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 class IngameInterface final : public Singleton<IngameInterface> {
     friend Mixer;
     public:
+        struct Save final {
+            friend IngameInterface;
+            void loadfromfile() const;
+
+            private:
+                inline Save(std::filesystem::path const& path) : mPath(path) {}
+
+                json savetojson() const;
+                void savetofile(json const& data) const;
+                inline void savetofile() const { return savetofile(savetojson()); }
+
+                mutable std::optional<SDL_Point> mPL;
+                std::filesystem::path const& mPath;
+        };
+        
         INCL_SINGLETON(IngameInterface);
 
         IngameInterface();
-        ~IngameInterface();
+        ~IngameInterface() = default;
 
         static void initialize();
         static void deinitialize();
@@ -150,7 +164,8 @@ class IngameInterface final : public Singleton<IngameInterface> {
         void handleCustomEventGET(SDL_Event const& event) const;
 
         void handleDependencies() const;
-        void loadProgressFromStorage() const;
+
+        Save save;
 
     private:
         void handleEntitiesInteraction() const;
@@ -174,11 +189,6 @@ class IngameInterface final : public Singleton<IngameInterface> {
         template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
         handleLevelSpecifics_impl() const;
-
-        json saveProgressToJSON() const;
-        void saveJSONToStorage(json const& data) const;
-
-        mutable SDL_Point* mCachedTargetDestCoords = nullptr;
 };
 
 

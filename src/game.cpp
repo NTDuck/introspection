@@ -241,7 +241,7 @@ void Game::handleDependencies() {
             break;
 
         case GameState::kNITF_Continue:
-            IngameInterface::invoke(&IngameInterface::loadProgressFromStorage);
+            IngameInterface::instance->save.loadfromfile();
             globals::state = GameState::kLoading | GameState::kIngamePlaying;
             break;
 

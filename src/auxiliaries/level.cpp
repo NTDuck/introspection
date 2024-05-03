@@ -7,12 +7,12 @@
 /**
  * @see https://gcc.gnu.org/onlinedocs/cpp/Variadic-Macros.html
 */
-std::optional<level::Name> level::stoln(std::string const& s) {
+std::optional<level::Name> level::hstoln(unsigned int hs) {
     #define IMPL(ln) \
     case static_cast<unsigned int>(ln):\
         return std::make_optional<Name>(ln);
 
-    switch (hstr(s.c_str())) {
+    switch (hs) {
         IMPL(Name::kLevelPrelude)
         IMPL(Name::kLevelWoodsEntryPoint)
         IMPL(Name::kLevelWoodsLongLane)
