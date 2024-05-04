@@ -157,6 +157,10 @@ void level::Data_Teleporter::load(json const& JSONObjectData) {
             default: break;
         }
     }
+
+    // For faster level generation
+    if (targetDestCoords.x < 0) targetDestCoords.x = destCoords.x;
+    if (targetDestCoords.y < 0) targetDestCoords.y = destCoords.y;
 }
 
 std::vector<level::Data_Generic*> level::Data::get(std::string const& key) {

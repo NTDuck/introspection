@@ -1,13 +1,13 @@
 { "compressionlevel":-1,
- "height":16,
+ "height":63,
  "infinite":false,
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYGBgsOUiD8PAqP5R\/aP6B04\/JQAAO0w6Pw==",
+         "data":"eJzty7EJAAAIBLGv3cn917JyAcEuB1cmSbpubzzP8zzP8zzP8zzP\/\/oBo8D0nw==",
          "encoding":"base64",
-         "height":16,
-         "id":3,
+         "height":63,
+         "id":2,
          "name":"static-collision",
          "opacity":1,
          "type":"tilelayer",
@@ -18,9 +18,9 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJw7wcnAIM+FiQMYGRgCgTgIiIMZsas5DtR7B4d+ELZmhGBc8reBej\/g0U8IvwfqPUGBfkLuJ4RH3T\/q\/sHg\/uMU0ABBh0o+",
+         "data":"eJztzjsRACEAA9G0YAL\/SsADSOAn4dJDR3lbpMvOvBKkFM91ScOb3tL9k922h7663Q\/9clvw48ePHz9+\/Pjx48ePHz\/+H\/g\/8Qe\/Nw==",
          "encoding":"base64",
-         "height":16,
+         "height":63,
          "id":1,
          "name":"terrains",
          "opacity":1,
@@ -31,50 +31,14 @@
          "y":0
         }, 
         {
-         "compression":"zlib",
-         "data":"eJxjYKANsOJCsC25cKsbBaNgFAwcAADubwCI",
-         "encoding":"base64",
-         "height":16,
-         "id":2,
-         "name":"outliner",
-         "opacity":1,
-         "type":"tilelayer",
-         "visible":true,
-         "width":16,
-         "x":0,
-         "y":0
-        }, 
-        {
          "draworder":"topdown",
-         "id":4,
+         "id":3,
          "name":"entities",
          "objects":[
                 {
                  "height":8,
-                 "id":4,
-                 "name":"decoy ",
-                 "rotation":0,
-                 "type":"hostile-dummy",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":48
-                }, 
-                {
-                 "height":8,
-                 "id":5,
-                 "name":"decoy ",
-                 "rotation":0,
-                 "type":"hostile-dummy",
-                 "visible":true,
-                 "width":8,
-                 "x":80,
-                 "y":48
-                }, 
-                {
-                 "height":8,
-                 "id":6,
-                 "name":"",
+                 "id":1,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -84,23 +48,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":8,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":21,
+                 "id":15,
                  "name":"dest",
                  "rotation":0,
                  "type":"autopilot-target",
@@ -111,8 +75,8 @@
                 }, 
                 {
                  "height":8,
-                 "id":23,
-                 "name":"",
+                 "id":18,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -122,24 +86,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":16,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":24,
-                 "name":"",
+                 "id":19,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -149,24 +113,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":24,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":25,
-                 "name":"",
+                 "id":20,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -176,24 +140,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":32,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":26,
-                 "name":"",
+                 "id":21,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -203,51 +167,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":48,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":27,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":61
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":40,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":28,
-                 "name":"",
+                 "id":22,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -257,24 +194,51 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":496
+                }, 
+                {
+                 "height":8,
+                 "id":23,
+                 "name":"to ep",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":56,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":29,
-                 "name":"",
+                 "id":24,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -284,51 +248,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":72,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":30,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":61
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":64,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":31,
-                 "name":"",
+                 "id":25,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -338,24 +275,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":88,
-                 "y":0
+                 "x":72,
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":32,
-                 "name":"",
+                 "id":26,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -365,24 +302,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":80,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":33,
-                 "name":"",
+                 "id":27,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -392,24 +329,51 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":496
+                }, 
+                {
+                 "height":8,
+                 "id":28,
+                 "name":"to ep",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":-1
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":96,
-                 "y":0
+                 "y":496
                 }, 
                 {
                  "height":8,
-                 "id":34,
-                 "name":"",
+                 "id":29,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -419,25 +383,24 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":104,
-                 "y":0
-                },
-            
+                 "y":496
+                }, 
                 {
                  "height":8,
-                 "id":35,
-                 "name":"",
+                 "id":30,
+                 "name":"to ep",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
@@ -447,19 +410,19 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":61
+                         "value":1
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-long-lane"
+                         "value":"level-woods-entry-point"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
                  "x":112,
-                 "y":0
+                 "y":496
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -467,8 +430,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":36,
+ "nextlayerid":4,
+ "nextobjectid":31,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
