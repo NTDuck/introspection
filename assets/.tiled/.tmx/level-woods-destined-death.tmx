@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="48" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="1">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <layer id="2" name="static-collision" width="48" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztwzEJAAAMA7De81T/tqpjkEB6SVVVVVVVVVVV1ZcHalt/Hw==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="48" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztwzEJAAAMA7DeM1H/LqtjkEB6SVVVVVVVVVVV1ZcHMWpxEA==
+  </data>
+ </layer>
+</map>

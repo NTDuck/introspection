@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="28">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <layer id="2" name="static-collision" width="32" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBjZwJZrFI/iUTyKR/Eopj8eaAAAn99zYQ==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="32" height="16">
+  <data encoding="base64" compression="zlib">
+   eJy7w8nAcBuI7wwQ/QGI3w8gLc81ikfxKB7Fo3gU0x+fANZBxzkHjgYAOqCYUQ==
+  </data>
+ </layer>
+ <objectgroup id="3" name="entities">
+  <object id="1" name="dest" type="autopilot-target" x="248" y="64" width="8" height="8"/>
+  <object id="2" name="to ep1" type="teleporter" x="0" y="16" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="3" name="to ep1" type="teleporter" x="0" y="24" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="4" name="to ep1" type="teleporter" x="0" y="32" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="5" name="to ep1" type="teleporter" x="0" y="40" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="6" name="to ep1" type="teleporter" x="0" y="48" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="7" name="to ep1" type="teleporter" x="0" y="56" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="8" name="to ep1" type="teleporter" x="0" y="64" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="9" name="to ep1" type="teleporter" x="0" y="72" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="10" name="to ep1" type="teleporter" x="0" y="80" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="11" name="to ep1" type="teleporter" x="0" y="88" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="12" name="to ep1" type="teleporter" x="0" y="96" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="13" name="to ep1" type="teleporter" x="0" y="104" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="14" name="to ep1" type="teleporter" x="0" y="112" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-enemy-approaching-first"/>
+   </properties>
+  </object>
+  <object id="15" name="to cr2" type="teleporter" x="248" y="16" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="16" name="to cr2" type="teleporter" x="248" y="24" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="17" name="to cr2" type="teleporter" x="248" y="32" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="18" name="to cr2" type="teleporter" x="248" y="40" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="19" name="to cr2" type="teleporter" x="248" y="48" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="20" name="to cr2" type="teleporter" x="248" y="56" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="21" name="to cr2" type="teleporter" x="248" y="64" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="22" name="to cr2" type="teleporter" x="248" y="72" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="23" name="to cr2" type="teleporter" x="248" y="80" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="24" name="to cr2" type="teleporter" x="248" y="88" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="25" name="to cr2" type="teleporter" x="248" y="96" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="26" name="to cr2" type="teleporter" x="248" y="104" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+  <object id="27" name="to cr2" type="teleporter" x="248" y="112" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-woods-crossroads-final"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

@@ -1,32 +1,32 @@
 { "compressionlevel":-1,
- "height":63,
+ "height":48,
  "infinite":false,
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJzty7EJAAAIBLGv3cn917JyAcEuB1cmSbpubzzP8zzP8zzP8zzP\/\/oBo8D0nw==",
+         "data":"eJzt18ERgDAMA0He9ET\/bVFDrDjygTTj\/94rcF36nnv9Jq3in9BQdU\/poPp3uV0dVH+X+1QH1X\/K3dVB9bvcuzrc7qrf7VU73M6q3+1TO9yuqt\/tUTvcDsXvNuRyuVwu98ejv8FkP\/07lOqn\/4dR\/atze7\/iVxe\/x+3uoPq7Rvd3d5wa3b+7wzW6X+2YsvjrewGC3r6W",
          "encoding":"base64",
-         "height":63,
-         "id":2,
+         "height":48,
+         "id":4,
          "name":"static-collision",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":16,
+         "width":48,
          "x":0,
          "y":0
         }, 
         {
          "compression":"zlib",
-         "data":"eJztzjsRACEAA9G0YAL\/SsADSOAn4dJDR3lbpMvOvBKkFM91ScOb3tL9k922h7663Q\/9clvw48ePHz9+\/Pjx48ePHz\/+H\/g\/8Qe\/Nw==",
+         "data":"eJztmklOw0AQRSvABraMO5aMN2C8AdOh4zuEGzCYG8DPwpJlWp2a7UiR8jatxP1UVU7SVW52iVrwAxbgHcxBI1g\/3fvPJxF9gW\/QUvk93ee763XXl6xrfIfrWn+Ld7fuHfclH8Tz98iDd9w1\/tn1U3PR+Fvy4Bl3q390\/XAcLP6aPHjG3cvfu34ke3v4S\/LgGXdvf2v9aPb09OfkwTPuUf7S+rHsFeFfy4Nn3KP9V9WPxx6R\/qU8eMY9y39YP57XzvDv58Ez7n0y\/Nsg9yz\/SDb+PH4pBprhBbbANtgJYj+IA3AIjsAxOAniLIhzcAEuwRW4DuImiFtwB+7BA3gMIuq+esa1X8AreAvcZ+M\/rn8T9Buc5R\/x\/+1pluM\/H5wH1s1\/MThProt\/\/7xYOtdP3b\/fbyid66fqX+rz1PpzU\/Mv9Xlq\/bmp+Nf6s5w+6dj+tf4sp88+lj+nLy6Zd2T7c+YqknlHlr9kniWZl2X5S+ZZkvrh1pHWXzOHltQPt460\/po5tKR+uPez1N8y\/9fUz6o8SP21839t\/XDywPG3PndhrZ9aHjj+lrh71E\/te5Xjb31uZ7n+B6Ul2aQ=",
          "encoding":"base64",
-         "height":63,
+         "height":48,
          "id":1,
          "name":"terrains",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
-         "width":16,
+         "width":48,
          "x":0,
          "y":0
         }, 
@@ -38,12 +38,12 @@
                 {
                  "height":8,
                  "id":1,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":1
                         }, 
                         {
                          "name":"target-dest-coords-y",
@@ -53,380 +53,585 @@
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-long-lane"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":8,
-                 "y":496
+                 "x":136,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":3,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":2
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":144,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":4,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":3
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":152,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":5,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":4
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":160,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":6,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":5
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":7,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":6
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":176,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":8,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":7
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":184,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":9,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":8
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":192,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":10,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":9
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":200,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":11,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":10
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":208,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":12,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":11
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":216,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":13,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":12
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":224,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":14,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":13
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":232,
+                 "y":376
                 }, 
                 {
                  "height":8,
                  "id":15,
-                 "name":"dest",
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":14
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":1
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-long-lane"
+                        }],
                  "rotation":0,
-                 "type":"autopilot-target",
+                 "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":56,
+                 "x":240,
+                 "y":376
+                }, 
+                {
+                 "height":8,
+                 "id":17,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"target-dest-coords-x",
+                         "type":"int",
+                         "value":9
+                        }, 
+                        {
+                         "name":"target-dest-coords-y",
+                         "type":"int",
+                         "value":14
+                        }, 
+                        {
+                         "name":"target-level",
+                         "type":"string",
+                         "value":"level-woods-crossroads-first"
+                        }],
+                 "rotation":0,
+                 "type":"teleporter",
+                 "visible":true,
+                 "width":8,
+                 "x":136,
                  "y":0
                 }, 
                 {
                  "height":8,
                  "id":18,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":10
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":16,
-                 "y":496
+                 "x":144,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":19,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":11
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":24,
-                 "y":496
+                 "x":152,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":20,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":12
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":32,
-                 "y":496
+                 "x":160,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":21,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":13
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":40,
-                 "y":496
+                 "x":168,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":22,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":14
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":48,
-                 "y":496
+                 "x":176,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":23,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":15
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":56,
-                 "y":496
+                 "x":184,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":24,
-                 "name":"to ep",
+                 "name":"",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":-1
+                         "value":16
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":1
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":64,
-                 "y":496
+                 "x":192,
+                 "y":0
                 }, 
                 {
                  "height":8,
                  "id":25,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":72,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":26,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":80,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":27,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":88,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":28,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":96,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":29,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":104,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":30,
-                 "name":"to ep",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":-1
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":1
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-entry-point"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":112,
-                 "y":496
-                }, 
-                {
-                 "height":8,
-                 "id":31,
                  "name":"",
                  "properties":[
                         {
@@ -437,24 +642,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":8,
+                 "x":200,
                  "y":0
-                },
-            
+                }, 
                 {
                  "height":8,
-                 "id":34,
+                 "id":26,
                  "name":"",
                  "properties":[
                         {
@@ -465,23 +669,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":16,
+                 "x":208,
                  "y":0
                 }, 
                 {
                  "height":8,
-                 "id":35,
+                 "id":27,
                  "name":"",
                  "properties":[
                         {
@@ -492,23 +696,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":24,
+                 "x":216,
                  "y":0
                 }, 
                 {
                  "height":8,
-                 "id":36,
+                 "id":28,
                  "name":"",
                  "properties":[
                         {
@@ -519,23 +723,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":32,
+                 "x":224,
                  "y":0
                 }, 
                 {
                  "height":8,
-                 "id":37,
+                 "id":29,
                  "name":"",
                  "properties":[
                         {
@@ -546,23 +750,23 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":40,
+                 "x":232,
                  "y":0
                 }, 
                 {
                  "height":8,
-                 "id":38,
+                 "id":30,
                  "name":"",
                  "properties":[
                         {
@@ -573,234 +777,29 @@
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":46
+                         "value":14
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-mystery-shack"
+                         "value":"level-woods-crossroads-first"
                         }],
                  "rotation":0,
                  "type":"teleporter",
                  "visible":true,
                  "width":8,
-                 "x":48,
+                 "x":240,
                  "y":0
                 }, 
                 {
                  "height":8,
-                 "id":39,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":23
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
+                 "id":31,
+                 "name":"dest",
                  "rotation":0,
-                 "type":"teleporter",
+                 "type":"autopilot-target",
                  "visible":true,
                  "width":8,
-                 "x":56,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":40,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":24
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":64,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":41,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":25
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":72,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":42,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":26
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":80,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":43,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":27
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":88,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":44,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":28
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":96,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":45,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":29
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":104,
-                 "y":0
-                }, 
-                {
-                 "height":8,
-                 "id":46,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"target-dest-coords-x",
-                         "type":"int",
-                         "value":30
-                        }, 
-                        {
-                         "name":"target-dest-coords-y",
-                         "type":"int",
-                         "value":46
-                        }, 
-                        {
-                         "name":"target-level",
-                         "type":"string",
-                         "value":"level-woods-mystery-shack"
-                        }],
-                 "rotation":0,
-                 "type":"teleporter",
-                 "visible":true,
-                 "width":8,
-                 "x":112,
+                 "x":184,
                  "y":0
                 }],
          "opacity":1,
@@ -809,8 +808,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":47,
+ "nextlayerid":5,
+ "nextobjectid":32,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -827,5 +826,5 @@
  "tilewidth":8,
  "type":"map",
  "version":"1.10",
- "width":16
+ "width":48
 }

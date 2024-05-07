@@ -297,7 +297,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
         kInternalTeleportHandler(Player::instance->mNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
     }
 
-    if (isBorderTraversed && RedHandThrone::instances.empty()) RedHandThrone::instantiateEX({
-        new level::Data_Teleporter{ { 52, 43 }, { 20, 11 }, level::Name::kLevelInterlude },
-    });
+    // if (isBorderTraversed && RedHandThrone::instances.empty()) RedHandThrone::instantiateEX({
+    //     new level::Data_Teleporter{ { 52, 43 }, { 20, 11 }, level::Name::kLevelInterlude },
+    // });
 }

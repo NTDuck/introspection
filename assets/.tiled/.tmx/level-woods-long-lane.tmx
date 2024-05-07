@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="63" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="31">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="63" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="47">
  <editorsettings>
   <export target="level-woods-long-lane.json" format="json"/>
  </editorsettings>
@@ -113,6 +113,104 @@
     <property name="target-dest-coords-x" type="int" value="-1"/>
     <property name="target-dest-coords-y" type="int" value="1"/>
     <property name="target-level" value="level-woods-entry-point"/>
+   </properties>
+  </object>
+  <object id="31" type="teleporter" x="8" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="17"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="34" type="teleporter" x="16" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="18"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="35" type="teleporter" x="24" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="19"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="36" type="teleporter" x="32" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="20"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="37" type="teleporter" x="40" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="21"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="38" type="teleporter" x="48" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="39" type="teleporter" x="56" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="23"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="40" type="teleporter" x="64" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="24"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="41" type="teleporter" x="72" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="25"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="42" type="teleporter" x="80" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="26"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="43" type="teleporter" x="88" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="27"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="44" type="teleporter" x="96" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="28"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="45" type="teleporter" x="104" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="29"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="46" type="teleporter" x="112" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="30"/>
+    <property name="target-dest-coords-y" type="int" value="46"/>
+    <property name="target-level" value="level-woods-mystery-shack"/>
    </properties>
   </object>
  </objectgroup>

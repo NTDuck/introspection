@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="48" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="32">
+ <editorsettings>
+  <export target="level-woods-mystery-shack.json" format="json"/>
+ </editorsettings>
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <layer id="4" name="static-collision" width="48" height="48">
+  <data encoding="base64" compression="zlib">
+   eJzt18ERgDAMA0He9ET/bVFDrDjygTTj/94rcF36nnv9Jq3in9BQdU/poPp3uV0dVH+X+1QH1X/K3dVB9bvcuzrc7qrf7VU73M6q3+1TO9yuqt/tUTvcDsXvNuRyuVwu98ejv8FkP/07lOqn/4dR/atze7/iVxe/x+3uoPq7Rvd3d5wa3b+7wzW6X+2YsvjrewGC3r6W
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="48" height="48">
+  <data encoding="base64" compression="zlib">
+   eJztmklOw0AQRSvABraMO5aMN2C8AdOh4zuEGzCYG8DPwpJlWp2a7UiR8jatxP1UVU7SVW52iVrwAxbgHcxBI1g/3fvPJxF9gW/QUvk93ee763XXl6xrfIfrWn+Ld7fuHfclH8Tz98iDd9w1/tn1U3PR+Fvy4Bl3q390/XAcLP6aPHjG3cvfu34ke3v4S/LgGXdvf2v9aPb09OfkwTPuUf7S+rHsFeFfy4Nn3KP9V9WPxx6R/qU8eMY9y39YP57XzvDv58Ez7n0y/Nsg9yz/SDb+PH4pBprhBbbANtgJYj+IA3AIjsAxOAniLIhzcAEuwRW4DuImiFtwB+7BA3gMIuq+esa1X8AreAvcZ+M/rn8T9Buc5R/x/+1pluM/H5wH1s1/MThProt//7xYOtdP3b/fbyid66fqX+rz1PpzU/Mv9Xlq/bmp+Nf6s5w+6dj+tf4sp88+lj+nLy6Zd2T7c+YqknlHlr9kniWZl2X5S+ZZkvrh1pHWXzOHltQPt460/po5tKR+uPez1N8y/9fUz6o8SP21839t/XDywPG3PndhrZ9aHjj+lrh71E/te5Xjb31uZ7n+B6Ul2aQ=
+  </data>
+ </layer>
+ <objectgroup id="3" name="entities">
+  <object id="1" type="teleporter" x="136" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="3" type="teleporter" x="144" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="2"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="4" type="teleporter" x="152" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="3"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="5" type="teleporter" x="160" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="4"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="6" type="teleporter" x="168" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="5"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="7" type="teleporter" x="176" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="6"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="8" type="teleporter" x="184" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="7"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="9" type="teleporter" x="192" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="8"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="10" type="teleporter" x="200" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="9"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="11" type="teleporter" x="208" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="10"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="12" type="teleporter" x="216" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="11"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="13" type="teleporter" x="224" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="12"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="14" type="teleporter" x="232" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="13"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="15" type="teleporter" x="240" y="376" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="14"/>
+    <property name="target-dest-coords-y" type="int" value="1"/>
+    <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="17" type="teleporter" x="136" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="9"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="18" type="teleporter" x="144" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="10"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="19" type="teleporter" x="152" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="11"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="20" type="teleporter" x="160" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="12"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="21" type="teleporter" x="168" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="13"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="22" type="teleporter" x="176" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="14"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="23" type="teleporter" x="184" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="15"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="24" type="teleporter" x="192" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="16"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="25" type="teleporter" x="200" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="17"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="26" type="teleporter" x="208" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="18"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="27" type="teleporter" x="216" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="19"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="28" type="teleporter" x="224" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="20"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="29" type="teleporter" x="232" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="21"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="30" type="teleporter" x="240" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="22"/>
+    <property name="target-dest-coords-y" type="int" value="14"/>
+    <property name="target-level" value="level-woods-crossroads-first"/>
+   </properties>
+  </object>
+  <object id="31" name="dest" type="autopilot-target" x="184" y="0" width="8" height="8"/>
+ </objectgroup>
+</map>
