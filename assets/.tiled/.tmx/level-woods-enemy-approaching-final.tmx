@@ -9,7 +9,7 @@
  </layer>
  <layer id="1" name="terrains" width="32" height="16">
   <data encoding="base64" compression="zlib">
-   eJy7w8nAcBuI7wwQ/QGI3w8gLc81ikfxKB7Fo3gU0x+fANZBxzkHjgYAOqCYUQ==
+   eJy7w8nAcBuI7wwQ/QGI3w8gLc81ikcy/s8wsFiYcWCx+gBj6wHGA53+RvHIxieAddBxzoGjAaM1srE=
   </data>
  </layer>
  <objectgroup id="3" name="entities">

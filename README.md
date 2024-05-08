@@ -139,12 +139,20 @@ Encompass common graphical elements such as **Buttons**, **Progress bars**, and 
 Encapsulate all operations within a game state, therefore facilitating modular design and fostering adherence to [SoC](https://en.wikipedia.org/wiki/Separation_of_concerns).
 
 #### Levels
-- **`level-begin`**
-- **`level-forest-0`**
-- **`level-forest-1`**
-- **`level-forest-2`**
-- **`level-forest-3`**
-- **`level-forest-4`**
+- **`level-prelude`**
+
+- **`level-woods-entry-point`**
+- **`level-woods-long-lane`**
+- **`level-woods-mystery-shack`**
+- **`level-woods-crossroads-first`**
+- **`level-woods-dead-end`**
+- **`level-woods-enemy-approaching-first`**
+- **`level-woods-enemy-approaching-final`**
+- **`level-woods-crossroads-final`**
+- **`level-woods-destined-death`**
+
+- **`level-interlude`**
+
 - **`level-white-space`**
 
 

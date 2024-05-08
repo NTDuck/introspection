@@ -18,7 +18,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJy7w8nAcBuI79CI\/gDE72lIy3ON4lE8ikfx8MQngGXccU7a0QBX\/HI9",
+         "data":"eJy7w8nAcBuI79CI\/gDE72lIy3ON4oHE\/xloi4UZaYvVaYytaYwHOv5HMW3xCWAZd5yTdjQAzY+GBQ==",
          "encoding":"base64",
          "height":16,
          "id":1,
@@ -748,6 +748,50 @@
                  "width":8,
                  "x":184,
                  "y":112
+                }, 
+                {
+                 "height":8,
+                 "id":30,
+                 "name":"crab",
+                 "rotation":0,
+                 "type":"hostile-crab",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":32
+                }, 
+                {
+                 "height":8,
+                 "id":31,
+                 "name":"crab",
+                 "rotation":0,
+                 "type":"hostile-crab",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":32,
+                 "name":"crab",
+                 "rotation":0,
+                 "type":"hostile-crab",
+                 "visible":true,
+                 "width":8,
+                 "x":120,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":35,
+                 "name":"crab",
+                 "rotation":0,
+                 "type":"hostile-crab",
+                 "visible":true,
+                 "width":8,
+                 "x":144,
+                 "y":72
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -756,7 +800,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":30,
+ "nextobjectid":36,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

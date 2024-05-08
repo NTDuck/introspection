@@ -1076,9 +1076,18 @@ namespace config {
                 constexpr const char* typeID = "hostile-dummy";
                 const std::filesystem::path path = config::entities::player::path;
                 constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
-                constexpr SDL_FPoint velocity = { 48, 48 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
                 constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
-                constexpr EntityAttributes attributes({{ 10, 0, 0, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
+                constexpr EntityAttributes attributes({{ 10, 0, 0, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
+            }
+
+            namespace crab {
+                constexpr const char* typeID = "hostile-crab";
+                const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, 0, 6, 6 };
+                constexpr SDL_FPoint velocity = { 64, 64 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 4, 0, 2, 3 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
         }
 

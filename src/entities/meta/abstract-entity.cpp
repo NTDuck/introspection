@@ -152,6 +152,7 @@ template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
 template class AbstractEntity<Dummy>;
+template class AbstractEntity<Crab>;
 
 template class AbstractEntity<Darkness>;
 template class AbstractEntity<Slash>;
