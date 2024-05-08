@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" nextlayerid="5" nextobjectid="9">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="110" height="90" tilewidth="32" tileheight="32" infinite="0" backgroundcolor="#ffffff" nextlayerid="5" nextobjectid="9">
  <editorsettings>
   <export target="level-white-space.json" format="json"/>
  </editorsettings>
@@ -21,7 +21,7 @@
  </layer>
  <layer id="1" name="floors" width="110" height="90">
   <data encoding="base64" compression="zlib">
-   eJzt0asOg0AQQNHdUlShihbF4/+/kqnbIKgdkiOOv8mtpZQKAAAAAAAAAAAAAAAAAAAAAAAAQBqPRheeoU/QxbVXGBpjeCfo4v+3T+Pr2y1Mp28/c4Iuri1hbWxhT9AFAAAAAAAAAAAAAAAAAAAAAJDFAVohKI4=
+   eJzt0TkOwlAQRMERS2RMxBIZ+/6nZJwN2c/GSFXSy1vqCAAAAAAAAAAAAAAAAAAAAAAAAACO5FQ6Z5fs2rqIEVN2K83ZvXURI/bfnqVX+O0fPOL3t7136yJGLNmntGZb5yAAAAAAAAAAAAAAAAAAAAAAgIP5AuZ1AgA=
   </data>
  </layer>
  <layer id="2" name="props" width="110" height="90">

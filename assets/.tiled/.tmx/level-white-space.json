@@ -1,4 +1,5 @@
-{ "compressionlevel":-1,
+{ "backgroundcolor":"#ffffff",
+ "compressionlevel":-1,
  "height":90,
  "infinite":false,
  "layers":[
@@ -18,7 +19,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJzt0asOg0AQQNHdUlShihbF4\/+\/kqnbIKgdkiOOv8mtpZQKAAAAAAAAAAAAAAAAAAAAAAAAQBqPRheeoU\/QxbVXGBpjeCfo4v+3T+Pr2y1Mp28\/c4Iuri1hbWxhT9AFAAAAAAAAAAAAAAAAAAAAAJDFAVohKI4=",
+         "data":"eJzt0TkOwlAQRMERS2RMxBIZ+\/6nZJwN2c\/GSFXSy1vqCAAAAAAAAAAAAAAAAAAAAAAAAACO5FQ6Z5fs2rqIEVN2K83ZvXURI\/bfnqVX+O0fPOL3t7136yJGLNmntGZb5yAAAAAAAAAAAAAAAAAAAAAAgIP5AuZ1AgA=",
          "encoding":"base64",
          "height":90,
          "id":1,
