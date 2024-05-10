@@ -129,20 +129,37 @@ class IngameViewHandler final : public AbstractInterface<IngameViewHandler> {
 */
 class IngameInterface final : public Singleton<IngameInterface> {
     friend Mixer;
+
+    struct ProgressHandler final {
+        inline bool empty() const { return mProgress.empty(); }
+        inline void clear() const { return mProgress.clear(); }
+
+        std::size_t get() const;
+        void set(std::size_t value) const;
+        inline void increment() const { return set(get() + 1); }
+
+        void loadfromjson(json const& data) const;
+        json& savetojson(json& data) const;
+
+        private:
+            mutable std::unordered_map<level::Name, std::size_t> mProgress;
+    };
+
     public:
-        struct Save final {
+        struct SaveHandler final {
             friend IngameInterface;
             void loadfromfile() const;
             void clear() const;
 
             private:
-                inline Save(std::filesystem::path const& path) : mPath(path) {}
+                inline SaveHandler(ProgressHandler const& progress, std::filesystem::path const& path) : mProgress(progress), mPath(path) {}
 
                 json savetojson() const;
                 void savetofile(json const& data) const;
                 inline void savetofile() const { return savetofile(savetojson()); }
 
                 mutable std::optional<SDL_Point> mPL;
+                ProgressHandler const& mProgress;
                 std::filesystem::path const& mPath;
         };
         
@@ -166,7 +183,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
 
         void handleDependencies() const;
 
-        Save save;
+        SaveHandler save;
 
     private:
         void handleEntitiesInteraction() const;
@@ -190,6 +207,8 @@ class IngameInterface final : public Singleton<IngameInterface> {
         template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
         handleLevelSpecifics_impl() const;
+
+        ProgressHandler mProgress;
 };
 
 

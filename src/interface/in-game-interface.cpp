@@ -8,7 +8,50 @@
 #include <auxiliaries.hpp>
 
 
-void IngameInterface::Save::loadfromfile() const {
+std::size_t IngameInterface::ProgressHandler::get() const {
+    auto ln = IngameMapHandler::instance->getLevel();
+    auto it = mProgress.find(ln);
+    return it != mProgress.end() ? it->second : 0;
+}
+
+void IngameInterface::ProgressHandler::set(std::size_t value) const {
+    auto ln = IngameMapHandler::instance->getLevel();
+    auto it = mProgress.find(ln);
+    if (it == mProgress.end()) mProgress.insert(std::make_pair(ln, 0));
+    else it->second = value;
+}
+
+void IngameInterface::ProgressHandler::loadfromjson(json const& data) const {
+    auto progress_j = data.find("progress"); if (progress_j == data.end()) return;
+    auto progress_v = progress_j.value(); if (!progress_v.is_object()) return;
+
+    auto impl = [&](level::Name ln) -> void {
+        auto ln_j = progress_v.find(std::to_string(static_cast<unsigned int>(ln))); if (ln_j == progress_v.end()) return;
+        mProgress.insert(std::make_pair(ln, ln_j.value()));
+    };
+
+    impl(level::Name::kLevelPrelude);
+    impl(level::Name::kLevelWoodsEntryPoint);
+    impl(level::Name::kLevelWoodsLongLane);
+    impl(level::Name::kLevelWoodsMysteryShack);
+    impl(level::Name::kLevelWoodsCrossroadsFirst);
+    impl(level::Name::kLevelWoodsDeadEnd);
+    impl(level::Name::kLevelWoodsEnemyApproachingFirst);
+    impl(level::Name::kLevelWoodsEnemyApproachingFinal);
+    impl(level::Name::kLevelWoodsCrossroadsFinal);
+    impl(level::Name::kLevelWoodsDestinedDeath);
+
+    impl(level::Name::kLevelInterlude);
+
+    impl(level::Name::kLevelWhiteSpace);
+}
+
+json& IngameInterface::ProgressHandler::savetojson(json& data) const {
+    for (const auto& pair : mProgress) data["progress"][std::to_string(static_cast<unsigned int>(pair.first))] = pair.second;
+    return data;
+}
+
+void IngameInterface::SaveHandler::loadfromfile() const {
     if (!std::filesystem::exists(config::interface::savePath)) return;
 
     json data;
@@ -19,24 +62,29 @@ void IngameInterface::Save::loadfromfile() const {
     if (ln.has_value()) IngameMapHandler::invoke(&IngameMapHandler::changeLevel, ln.value());
 
     mPL = std::make_optional<SDL_Point>({ data["player"]["x"], data["player"]["y"] });
+
+    mProgress.clear();
+    mProgress.loadfromjson(data);
 }
 
-void IngameInterface::Save::clear() const {
+void IngameInterface::SaveHandler::clear() const {
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
     mPL.reset();
 }
 
-json IngameInterface::Save::savetojson() const {
+json IngameInterface::SaveHandler::savetojson() const {
     json data;
 
     data["level"] = IngameMapHandler::instance->getLevel();
     data["player"]["x"] = Player::instance->mDestCoords.x;
     data["player"]["y"] = Player::instance->mDestCoords.y;
 
+    mProgress.savetojson(data);
+
     return data;
 }
 
-void IngameInterface::Save::savetofile(json const& data) const {
+void IngameInterface::SaveHandler::savetofile(json const& data) const {
     std::ofstream file;
 
     file.open(mPath, std::ofstream::out);
@@ -46,7 +94,7 @@ void IngameInterface::Save::savetofile(json const& data) const {
     file.close();
 }
 
-IngameInterface::IngameInterface() : save(config::interface::savePath) {
+IngameInterface::IngameInterface() : save(mProgress,  config::interface::savePath) {
     static constexpr auto renderIngameDependencies = []() {
         Invoker<IngameMapHandler, NON_INTERACTABLES, INTERACTABLES, TELEPORTERS, HOSTILES, SURGE_PROJECTILES, Player>::invoke_render();
     };
@@ -89,13 +137,13 @@ void IngameInterface::onLevelChange() const {
     IngameViewHandler::invoke(&IngameViewHandler::onLevelChange);
 
     // Populate `level::data.properties` members
-    switch (levelName) {
-        case level::Name::kLevelWhiteSpace:
-            level::data.setProperty<bool>("is-border-traversed", false);
-            break;
+    // switch (levelName) {
+    //     case level::Name::kLevelWhiteSpace:
+    //         level::data.setProperty<bool>("is-border-traversed", false);
+    //         break;
 
-        default: break;
-    }
+    //     default: break;
+    // }
     
     if (save.mPL.has_value()) {
         auto dataPL = new level::Data_Generic(save.mPL.value());
@@ -277,20 +325,32 @@ bool IngameInterface::isPlayerInRange(std::pair<int, int> const& x_lim, std::pai
 template <level::Name L>
 typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
 IngameInterface::handleLevelSpecifics_impl() const {
-    auto isBorderTraversed = level::data.getProperty<bool>("is-border-traversed");
+    switch (mProgress.get()) {
+        case 0:   // Border is not traversed
+            break;
 
-    auto kInternalTeleportHandler = [&](int& i, const double lower, const double upper) {
-        auto kInternalTeleportInitiate = [&]() {
-            if (!isBorderTraversed) level::data.setProperty<bool>("is-border-traversed", true);
+        case 1:   // Border is traversed at least once
+            if (!RedHandThrone::instances.empty()) break;
+            RedHandThrone::instantiateEX({
+                new level::Data_Teleporter{ { 52, 43 }, { 9, 9 }, level::Name::kLevelPrelude },
+            });
+            break;
+
+        default: break;
+    }
+
+    static auto infiniteLoopEffectHandler = [&](int& i, const double lower, const double upper) {
+        auto callback = [&]() {
+            if (mProgress.get() == 0) mProgress.increment();
             RedHandThrone::invoke(&RedHandThrone::onWindowChange);
         };
 
         if (i <= lower) {
             i = upper;
-            kInternalTeleportInitiate();
+            callback();
         } else if (i >= upper) {
             i = lower;
-            kInternalTeleportInitiate();
+            callback();
         }
 
         // return (i <= lower) ? upper : (i >= upper) ? lower : i;
@@ -298,11 +358,7 @@ IngameInterface::handleLevelSpecifics_impl() const {
 
     // "Infinite loop" effect
     if (Player::instance->mNextDestCoords != nullptr) {
-        kInternalTeleportHandler(Player::instance->mNextDestCoords->x, IngameViewHandler::instance->mTileCountWidth / 2 + 1, level::data.tileDestCount.x - IngameViewHandler::instance->mTileCountWidth / 2 - 1);
-        kInternalTeleportHandler(Player::instance->mNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
+        infiniteLoopEffectHandler(Player::instance->mNextDestCoords->x, IngameViewHandler::instance->mTileCountWidth / 2 + 1, level::data.tileDestCount.x - IngameViewHandler::instance->mTileCountWidth / 2 - 1);
+        infiniteLoopEffectHandler(Player::instance->mNextDestCoords->y, IngameViewHandler::instance->mTileCountHeight / 2 + 2, level::data.tileDestCount.y - IngameViewHandler::instance->mTileCountHeight / 2 - 1);   // Slight deviation to prevent "staggering"
     }
-
-    // if (isBorderTraversed && RedHandThrone::instances.empty()) RedHandThrone::instantiateEX({
-    //     new level::Data_Teleporter{ { 52, 43 }, { 20, 11 }, level::Name::kLevelInterlude },
-    // });
 }

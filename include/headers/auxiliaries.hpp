@@ -556,8 +556,6 @@ namespace level {
         void load(json const& JSONLevelData);
         void clear();
 
-        std::unordered_map<Name, std::size_t> progress;
-
         tile::Tensor tiles;
         tile::Data_TilelayerTilesets tilesets;
         std::vector<std::vector<tile::GID>> collisionTilelayer;
