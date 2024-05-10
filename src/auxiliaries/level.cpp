@@ -352,6 +352,7 @@ void level::Data::loadObjectLayer(json const& JSONLayerData) {
 
         switch (hstr(static_cast<std::string>(type_v).c_str())) {
             case hstr(config::entities::placeholders::interactable::typeID):
+            case hstr(config::entities::interactables::shadow::typeID):
             case hstr(config::entities::interactables::omori_laptop::typeID):
             case hstr(config::entities::interactables::omori_mewo::typeID):
             case hstr(config::entities::interactables::omori_cat_0::typeID):

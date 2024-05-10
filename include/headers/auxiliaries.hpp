@@ -556,6 +556,8 @@ namespace level {
         void load(json const& JSONLevelData);
         void clear();
 
+        std::unordered_map<Name, std::size_t> progress;
+
         tile::Tensor tiles;
         tile::Data_TilelayerTilesets tilesets;
         std::vector<std::vector<tile::GID>> collisionTilelayer;
@@ -995,6 +997,7 @@ namespace config {
             constexpr const char* typeID = "player";
             const std::vector<std::filesystem::path> paths = {
                 "assets/.tiled/.tsx/hana-caraka.tsx",
+                "assets/.tiled/.tsx/hana-caraka-reverse.tsx",
             };
             const std::filesystem::path path = paths.front();
             constexpr SDL_FRect destRectModifier = { 0, -1, 4, 4 };
@@ -1022,6 +1025,15 @@ namespace config {
         }
 
         namespace interactables {
+            namespace shadow {
+                constexpr const char* typeID = "interactable-shadow";
+                const std::filesystem::path path = "assets/.tiled/.tsx/hana-caraka-reverse.tsx";
+                constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
+                constexpr SDL_FPoint velocity = config::entities::player::velocity;
+                constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
+                constexpr EntityAttributes attributes = config::entities::player::attributes;
+            }
+
             namespace omori_laptop {
                 constexpr const char* typeID = "interactable-omori-laptop";
                 const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";
@@ -1072,15 +1084,6 @@ namespace config {
         }
 
         namespace hostile {
-            namespace dummy {
-                constexpr const char* typeID = "hostile-dummy";
-                const std::filesystem::path path = config::entities::player::path;
-                constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
-                constexpr SDL_FPoint velocity = { 0, 0 };
-                constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
-                constexpr EntityAttributes attributes({{ 10, 0, 0, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
-            }
-
             namespace crab {
                 constexpr const char* typeID = "hostile-crab";
                 const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";

@@ -183,9 +183,7 @@ template <typename T, MovementSelectionType M>
 unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 
-template class GenericHostileEntity<Dummy>;
 template class GenericHostileEntity<Crab>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(Dummy, config::entities::hostile::dummy)
 DEF_GENERIC_HOSTILE_ENTITY_(Crab, config::entities::hostile::crab)

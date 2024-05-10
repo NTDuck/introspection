@@ -133,6 +133,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
         struct Save final {
             friend IngameInterface;
             void loadfromfile() const;
+            void clear() const;
 
             private:
                 inline Save(std::filesystem::path const& path) : mPath(path) {}

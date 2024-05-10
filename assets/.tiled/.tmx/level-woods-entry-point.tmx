@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="36">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="42">
  <editorsettings>
   <export target="level-woods-entry-point.json" format="json"/>
  </editorsettings>
@@ -21,8 +21,6 @@
   </data>
  </layer>
  <objectgroup id="4" name="entities">
-  <object id="4" name="decoy " type="hostile-dummy" x="40" y="48" width="8" height="8"/>
-  <object id="5" name="decoy " type="hostile-dummy" x="80" y="48" width="8" height="8"/>
   <object id="6" type="teleporter" x="8" y="0" width="8" height="8">
    <properties>
     <property name="target-dest-coords-x" type="int" value="-1"/>
@@ -120,6 +118,38 @@
     <property name="target-dest-coords-x" type="int" value="-1"/>
     <property name="target-dest-coords-y" type="int" value="61"/>
     <property name="target-level" value="level-woods-long-lane"/>
+   </properties>
+  </object>
+  <object id="41" name="shadow" type="interactable-shadow" x="16" y="104" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="no need to worry."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="just keep walking forward."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="everything will be okay."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="i promise..."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
    </properties>
   </object>
  </objectgroup>

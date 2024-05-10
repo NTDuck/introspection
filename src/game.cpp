@@ -236,7 +236,7 @@ void Game::handleDependencies() {
             break;
 
         case GameState::kNITF_NewGame:
-            IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
+            IngameInterface::instance->save.clear();
             globals::state = GameState::kLoading | GameState::kIngamePlaying;
             break;
 

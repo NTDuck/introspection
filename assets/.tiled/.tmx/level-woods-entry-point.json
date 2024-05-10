@@ -51,28 +51,6 @@
          "objects":[
                 {
                  "height":8,
-                 "id":4,
-                 "name":"decoy ",
-                 "rotation":0,
-                 "type":"hostile-dummy",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":48
-                }, 
-                {
-                 "height":8,
-                 "id":5,
-                 "name":"decoy ",
-                 "rotation":0,
-                 "type":"hostile-dummy",
-                 "visible":true,
-                 "width":8,
-                 "x":80,
-                 "y":48
-                }, 
-                {
-                 "height":8,
                  "id":6,
                  "name":"",
                  "properties":[
@@ -432,8 +410,7 @@
                  "width":8,
                  "x":104,
                  "y":0
-                },
-            
+                }, 
                 {
                  "height":8,
                  "id":35,
@@ -460,6 +437,62 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":41,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"no need to worry.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"just keep walking forward.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"everything will be okay.",
+                             "group-index":0,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"i promise...",
+                             "group-index":0,
+                             "index":3
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-shadow",
+                 "visible":true,
+                 "width":8,
+                 "x":16,
+                 "y":104
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -468,7 +501,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":36,
+ "nextobjectid":42,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

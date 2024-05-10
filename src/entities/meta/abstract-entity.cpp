@@ -137,6 +137,7 @@ template class AbstractEntity<OmoriLightBulb>;
 template class AbstractEntity<OmoriKeysWASD>;
 
 template class AbstractEntity<PlaceholderInteractable>;
+template class AbstractEntity<PlayerShadow>;
 template class AbstractEntity<OmoriLaptop>;
 template class AbstractEntity<OmoriMewO>;
 template class AbstractEntity<OmoriCat_0>;
@@ -151,7 +152,6 @@ template class AbstractEntity<OmoriCat_7>;
 template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
-template class AbstractEntity<Dummy>;
 template class AbstractEntity<Crab>;
 
 template class AbstractEntity<Darkness>;

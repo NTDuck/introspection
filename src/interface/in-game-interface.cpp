@@ -21,6 +21,11 @@ void IngameInterface::Save::loadfromfile() const {
     mPL = std::make_optional<SDL_Point>({ data["player"]["x"], data["player"]["y"] });
 }
 
+void IngameInterface::Save::clear() const {
+    IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
+    mPL.reset();
+}
+
 json IngameInterface::Save::savetojson() const {
     json data;
 

@@ -54,6 +54,7 @@ GenericInteractable<T>::handleCustomEventGET_impl(SDL_Event const& event) {
 
 
 template class GenericInteractable<PlaceholderInteractable>;
+template class GenericInteractable<PlayerShadow>;
 template class GenericInteractable<OmoriLaptop>;
 template class GenericInteractable<OmoriMewO>;
 template class GenericInteractable<OmoriCat_0>;
@@ -67,6 +68,7 @@ template class GenericInteractable<OmoriCat_7>;
 
 
 DEF_GENERIC_INTERACTABLE(PlaceholderInteractable, config::entities::placeholders::interactable)
+DEF_GENERIC_INTERACTABLE(PlayerShadow, config::entities::interactables::shadow)
 DEF_GENERIC_INTERACTABLE(OmoriLaptop, config::entities::interactables::omori_laptop)
 DEF_GENERIC_INTERACTABLE_SFX(OmoriMewO, config::entities::interactables::omori_mewo, new Mixer::SFXName(Mixer::SFXName::kMewo))
 DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_0, config::entities::interactables::omori_cat_0, new Mixer::SFXName(Mixer::SFXName::kMewo))
