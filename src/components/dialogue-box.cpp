@@ -294,14 +294,16 @@ void IngameDialogueBox::enqueueContents(std::vector<std::string> const& contents
 }
 
 int IngameDialogueBox::getFontSize(const double destSize) {
-    int size = static_cast<int>(destSize * 0.2);   // Accommodate as needed
+    // int size = static_cast<int>(destSize * 0.33);   // Accommodate as needed
 
-    // The "recommended" sizes are: 12, 18, 24, 36, 48, 60, 72
-    // So we're just gonna make it divisible to 6
-    int lower_limit = static_cast<int>(size / 6) * 6;
-    int upper_limit = lower_limit + 6;
+    // // The "recommended" sizes are: 12, 18, 24, 36, 48, 60, 72
+    // // So we're just gonna make it divisible to 6
+    // int lower_limit = static_cast<int>(size / 6) * 6;
+    // int upper_limit = lower_limit + 6;
     
-    return abs(size - lower_limit) > abs(size - upper_limit) ? lower_limit : upper_limit;   // Return whichever is closer
+    // return abs(size - lower_limit) > abs(size - upper_limit) ? lower_limit : upper_limit;   // Return whichever is closer
+
+    return static_cast<int>(destSize * 0.22);
 }
 
 void IngameDialogueBox::close() {

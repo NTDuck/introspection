@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYGBgsOUiD8PAqP5R\/aP6B04\/JQAAO0w6Pw==",
+         "data":"eJxjYGBgsOUiD8PAqP5R\/ZTqJ8es4aSfkvCjBAAA0p84Bw==",
          "encoding":"base64",
          "height":16,
          "id":3,
@@ -32,7 +32,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYKANsOJCsC25cKsbBaNgFAwcAADubwCI",
+         "data":"eJxjYKANsOJCsC25cKsbBcMDbOCFYHLBBV4IJhd84IVgcoEAHwSTCwz4IHioAQDxZQZu",
          "encoding":"base64",
          "height":16,
          "id":2,
@@ -449,7 +449,7 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"no need to worry.",
+                             "content":"You are brave to speak to me, young ones.",
                              "group-index":0,
                              "index":0
                             }
@@ -488,10 +488,10 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"interactable-shadow",
+                 "type":"interactable-omori-keeper",
                  "visible":true,
                  "width":8,
-                 "x":16,
+                 "x":24,
                  "y":104
                 }],
          "opacity":1,
@@ -514,6 +514,10 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
         }],
  "tilewidth":8,
  "type":"map",

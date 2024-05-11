@@ -75,6 +75,10 @@ class AbstractEntity : public Multiton<T> {
 
         virtual bool isWithinRange(std::pair<int, int> const& x_coords_lim, std::pair<int, int> const& y_coords_lim) const;
 
+        template <bool X = true, bool Y = true>
+        typename std::enable_if_t<X || Y>
+        syncPlayerMovement();
+
     protected:
         AbstractEntity(SDL_Point const& destCoords);
 
@@ -124,7 +128,7 @@ namespace std {
     };
 };
 
-#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEX, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mAttributes;
+#define INCL_ABSTRACT_ENTITY(T) using AbstractEntity<T>::initialize, AbstractEntity<T>::deinitialize, AbstractEntity<T>::reinitialize, AbstractEntity<T>::onLevelChangeAll, AbstractEntity<T>::instantiateEX, AbstractEntity<T>::render, AbstractEntity<T>::onWindowChange, AbstractEntity<T>::onLevelChange, AbstractEntity<T>::handleCustomEventPOST, AbstractEntity<T>::handleCustomEventGET, AbstractEntity<T>::isWithinRange, AbstractEntity<T>::syncPlayerMovement, AbstractEntity<T>::getDestRectFromCoords, AbstractEntity<T>::isTargetWithinRange, AbstractEntity<T>::mID, AbstractEntity<T>::sTilesetPath, AbstractEntity<T>::sTilesetData, AbstractEntity<T>::mDestCoords, AbstractEntity<T>::mSrcRect, AbstractEntity<T>::mDestRect, AbstractEntity<T>::mDestRectModifier, AbstractEntity<T>::mAngle, AbstractEntity<T>::mCenter, AbstractEntity<T>::mFlip, AbstractEntity<T>::mAttributes;
 
 
 /**
@@ -604,6 +608,7 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         void onLevelChange(level::Data_Generic const& player) override;
         void handleKeyboardEvent(SDL_Event const& event);
         void handleMouseEvent(SDL_Event const& event);
+        void move() override;
 
         void handleCustomEventPOST() const override;
         void handleCustomEventGET(SDL_Event const& event) override;
@@ -611,6 +616,9 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
         inline bool isOnAutopilot() const { return !mAutopilotPath.empty(); }
         void handleAutopilotMovement();
+
+        inline auto getDestCoordsDifference() const { return mDifferenceDestCoords; }
+        inline auto getDestRectDifference() const { return mDifferenceDestRect; }
 
     private:
         void handleKeyboardEvent_Movement(SDL_Event const& event);
@@ -650,6 +658,11 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
         static const std::vector<std::filesystem::path> sTilesetPaths;
 
         std::stack<pathfinders::Cell> mAutopilotPath;
+
+        SDL_Point mCachedDestCoords;
+        SDL_Point mCachedDestRect;
+        SDL_Point mDifferenceDestCoords;
+        SDL_Point mDifferenceDestRect;
 };
 
 
@@ -658,7 +671,7 @@ DECL_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD)
 #define NON_INTERACTABLES Umbra, OmoriLightBulb, OmoriKeysWASD
 
-DECL_GENERIC_INTERACTABLE(PlayerShadow)
+DECL_GENERIC_INTERACTABLE(OmoriKeeper)
 DECL_GENERIC_INTERACTABLE(OmoriLaptop)
 DECL_GENERIC_INTERACTABLE(OmoriMewO)
 DECL_GENERIC_INTERACTABLE(OmoriCat_0)
@@ -669,7 +682,7 @@ DECL_GENERIC_INTERACTABLE(OmoriCat_4)
 DECL_GENERIC_INTERACTABLE(OmoriCat_5)
 DECL_GENERIC_INTERACTABLE(OmoriCat_6)
 DECL_GENERIC_INTERACTABLE(OmoriCat_7)
-#define INTERACTABLES PlayerShadow, OmoriLaptop, OmoriMewO, OmoriCat_0, OmoriCat_1, OmoriCat_2, OmoriCat_3, OmoriCat_4, OmoriCat_5, OmoriCat_6, OmoriCat_7
+#define INTERACTABLES OmoriKeeper, OmoriLaptop, OmoriMewO, OmoriCat_0, OmoriCat_1, OmoriCat_2, OmoriCat_3, OmoriCat_4, OmoriCat_5, OmoriCat_6, OmoriCat_7
 
 DECL_GENERIC_TELEPORTER_ENTITY(RedHandThrone)
 #define TELEPORTERS RedHandThrone

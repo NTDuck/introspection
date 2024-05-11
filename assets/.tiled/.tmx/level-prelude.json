@@ -32,7 +32,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFo2AUDCfAy8XAwIQH83ENtAuxA5i7iQGD0R+iJLpHfNT9VAVD3f2KZLgHXz6nNcaW\/4j1gxbXwGMlHG4l5Adc+gYTUCTRz6NgZAIAhhwL\/w==",
+         "data":"eJxjYBgF9AQHBRkYDgHxYSA+IjjQriEdPAS6+REQPwbiJ0PQ\/YxCDAxMQMwMxCxCA+0a2gBeLqAf8WA+roF2IXYAczcxYDD6Q5RE94iPup+qYKi7X5EM9+DL57TG2PIfsX7Q4hp4rITDrYT8gEvfYAKKJPp5FIxMAACBQRNt",
          "encoding":"base64",
          "height":16,
          "id":4,
@@ -172,6 +172,10 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
         }],
  "tilewidth":8,
  "type":"map",

@@ -4,7 +4,7 @@
   <property name="animation-height" type="int" value="3"/>
   <property name="animation-idle" type="class" propertytype="animation">
    <properties>
-    <property name="stopGID" type="int" value="3"/>
+    <property name="stopGID" type="int" value="0"/>
    </properties>
   </property>
   <property name="animation-update-rate" type="int" value="666"/>

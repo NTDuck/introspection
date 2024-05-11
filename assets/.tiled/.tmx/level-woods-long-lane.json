@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJzty7EJAAAIBLGv3cn917JyAcEuB1cmSbpubzzP8zzP8zzP8zzP\/\/oBo8D0nw==",
+         "data":"eJzt0MEJACAMQ9Gc3cn91\/IkiIjYFqToF7xIXghKUi2+2483\/5uP\/h8ej8e\/7i1vGfdH\/K5vlc22P+JPuuZ8pv0Rb+kZTZb9eDwej7\/rG4kS8C8=",
          "encoding":"base64",
          "height":63,
          "id":2,
@@ -23,6 +23,20 @@
          "height":63,
          "id":1,
          "name":"terrains",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJztw0ENACAQA8Ez0AtSkI4UpCCBRw2QPnjtJFP1bslTW5468tRoT812AAAAAAB+u9cdBec=",
+         "encoding":"base64",
+         "height":63,
+         "id":5,
+         "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -802,6 +816,214 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":49,
+                 "name":"cat0",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-0",
+                 "visible":true,
+                 "width":8,
+                 "x":16,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":50,
+                 "name":"cat1",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-1",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":51,
+                 "name":"cat2",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-2",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":336
+                },
+            
+                {
+                 "height":8,
+                 "id":52,
+                 "name":"cat3",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-3",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":53,
+                 "name":"cat4",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-4",
+                 "visible":true,
+                 "width":8,
+                 "x":80,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":54,
+                 "name":"cat5",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-5",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":55,
+                 "name":"cat6",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-6",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":56,
+                 "name":"cat7",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-7",
+                 "visible":true,
+                 "width":8,
+                 "x":104,
+                 "y":336
+                }, 
+                {
+                 "height":8,
+                 "id":57,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Dissociation.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -809,8 +1031,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":47,
+ "nextlayerid":6,
+ "nextobjectid":58,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -823,6 +1045,10 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
         }],
  "tilewidth":8,
  "type":"map",

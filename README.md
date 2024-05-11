@@ -6,6 +6,7 @@
 
 
 ## Table of content
+0. [**About**](#about)
 1. [**Demo**](#demo)
 2. [**Installation**](#installation)
     1. [**Windows**](#installation-windows)
@@ -18,6 +19,12 @@
 7. [**Acknowledgements**](#acknowledgements)
 8. [**License**](#license)
 9. [**Support**](#support)
+
+
+<a id="about"></a>
+## About
+
+This repository contains the source code for a university project from the [University of Engineering and Technology (VNU-UET)](https://uet.vnu.edu.vn/). The project was completed as part of the **Advanced Programming (*2324II_INT2215_25*)** course, instructed by **Nguyễn Việt Anh** and **Hoàng Thị Ngọc Trang**. The project was taken independently by student **Nguyễn Tư Đức** (ID: *23021534*).
 
 
 <a id="demo"></a>
@@ -200,6 +207,7 @@ Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [
 
 #### Misc
 - Uses [SFINAE](https://en.cppreference.com/w/cpp/language/sfinae) and [Parameter pack](https://en.cppreference.com/w/cpp/language/parameter_pack)
+- Uses [preprocessor directives](https://en.cppreference.com/w/cpp/preprocessor), [macros](https://en.cppreference.com/w/cpp/preprocessor/replace), and [templates](https://en.cppreference.com/w/cpp/language/templates) extensively
 - Uses a manual garbage collection system
 - Supports distribution & retrieval of [custom events](https://wiki.libsdl.org/SDL2/SDL_UserEvent)
 - Supports frame-independent animation

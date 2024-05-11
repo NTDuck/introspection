@@ -122,6 +122,15 @@ void Player::handleMouseEvent(SDL_Event const& event) {
     }
 }
 
+void Player::move() {
+    AbstractAnimatedDynamicEntity<Player>::move();
+
+    mDifferenceDestCoords = mDestCoords - mCachedDestCoords;
+    mDifferenceDestRect = { mDestRect.x - mCachedDestRect.x, mDestRect.y - mCachedDestRect.y };
+    mCachedDestCoords = mDestCoords;
+    mCachedDestRect = { mDestRect.x, mDestRect.y };
+}
+
 void Player::handleCustomEventPOST() const {
     handleCustomEventPOST_impl<event::Code::kReq_AttackRegister_Player_GHE>();
     handleCustomEventPOST_impl<event::Code::kReq_DeathFinalized_Player>();

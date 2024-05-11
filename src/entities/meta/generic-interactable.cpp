@@ -42,6 +42,8 @@ template <typename T>
 template <event::Code C>
 typename std::enable_if_t<C == event::Code::kReq_Interact_Player_GIE>
 GenericInteractable<T>::handleCustomEventGET_impl(SDL_Event const& event) {
+    if (mDialogues.empty() || mDialogues.front().empty()) return;
+    
     auto data = event::getData<event::Data_Interactable>(event);
     if (data.targetDestCoords != mDestCoords) return;
 
@@ -54,7 +56,7 @@ GenericInteractable<T>::handleCustomEventGET_impl(SDL_Event const& event) {
 
 
 template class GenericInteractable<PlaceholderInteractable>;
-template class GenericInteractable<PlayerShadow>;
+template class GenericInteractable<OmoriKeeper>;
 template class GenericInteractable<OmoriLaptop>;
 template class GenericInteractable<OmoriMewO>;
 template class GenericInteractable<OmoriCat_0>;
@@ -68,7 +70,7 @@ template class GenericInteractable<OmoriCat_7>;
 
 
 DEF_GENERIC_INTERACTABLE(PlaceholderInteractable, config::entities::placeholders::interactable)
-DEF_GENERIC_INTERACTABLE(PlayerShadow, config::entities::interactables::shadow)
+DEF_GENERIC_INTERACTABLE(OmoriKeeper, config::entities::interactables::omori_keeper)
 DEF_GENERIC_INTERACTABLE(OmoriLaptop, config::entities::interactables::omori_laptop)
 DEF_GENERIC_INTERACTABLE_SFX(OmoriMewO, config::entities::interactables::omori_mewo, new Mixer::SFXName(Mixer::SFXName::kMewo))
 DEF_GENERIC_INTERACTABLE_SFX(OmoriCat_0, config::entities::interactables::omori_cat_0, new Mixer::SFXName(Mixer::SFXName::kMewo))

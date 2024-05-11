@@ -137,6 +137,7 @@ class IngameInterface final : public Singleton<IngameInterface> {
         std::size_t get() const;
         void set(std::size_t value) const;
         inline void increment() const { return set(get() + 1); }
+        inline void decrement() const { if (get() > 0) set(get() - 1); }
 
         void loadfromjson(json const& data) const;
         json& savetojson(json& data) const;
@@ -202,7 +203,12 @@ class IngameInterface final : public Singleton<IngameInterface> {
         typename std::enable_if_t<C == event::Code::kReq_DeathFinalized_Player>
         handleCustomEventGET_impl() const;
 
-        bool isPlayerInRange(std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) const;
+        template <bool BLOCKING = false>
+        bool isPlayerWithinRange(std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) const;
+
+        template <level::Name L>
+        typename std::enable_if_t<L == level::Name::kLevelWoodsLongLane>
+        handleLevelSpecifics_impl() const;
 
         template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="42">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="43">
  <editorsettings>
   <export target="level-woods-entry-point.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
  <layer id="3" name="static-collision" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYGBgsOUiD8PAqP5R/aP6B04/JQAAO0w6Pw==
+   eJxjYGBgsOUiD8PAqP5R/ZTqJ8es4aSfkvCjBAAA0p84Bw==
   </data>
  </layer>
  <layer id="1" name="terrains" width="16" height="16">
@@ -17,7 +18,7 @@
  </layer>
  <layer id="2" name="outliner" width="16" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYKANsOJCsC25cKsbBaNgFAwcAADubwCI
+   eJxjYKANsOJCsC25cKsbBcMDbOCFYHLBBV4IJhd84IVgcoEAHwSTCwz4IHioAQDxZQZu
   </data>
  </layer>
  <objectgroup id="4" name="entities">
@@ -120,34 +121,13 @@
     <property name="target-level" value="level-woods-long-lane"/>
    </properties>
   </object>
-  <object id="41" name="shadow" type="interactable-shadow" x="16" y="104" width="8" height="8">
+  <object id="41" name="shadow" type="interactable-omori-keeper" x="24" y="104" width="8" height="8">
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
-      <property name="content" value="no need to worry."/>
+      <property name="content" value="Disorientation."/>
       <property name="group-index" type="int" value="0"/>
       <property name="index" type="int" value="0"/>
-     </properties>
-    </property>
-    <property name="dialogue-B" type="class" propertytype="dialogue">
-     <properties>
-      <property name="content" value="just keep walking forward."/>
-      <property name="group-index" type="int" value="0"/>
-      <property name="index" type="int" value="1"/>
-     </properties>
-    </property>
-    <property name="dialogue-C" type="class" propertytype="dialogue">
-     <properties>
-      <property name="content" value="everything will be okay."/>
-      <property name="group-index" type="int" value="0"/>
-      <property name="index" type="int" value="2"/>
-     </properties>
-    </property>
-    <property name="dialogue-D" type="class" propertytype="dialogue">
-     <properties>
-      <property name="content" value="i promise..."/>
-      <property name="group-index" type="int" value="0"/>
-      <property name="index" type="int" value="3"/>
      </properties>
     </property>
    </properties>

@@ -82,6 +82,27 @@ bool AbstractEntity<T>::isWithinRange(std::pair<int, int> const& x_coords_lim, s
     return isTargetWithinRange(mDestCoords, x_coords_lim, y_coords_lim);
 }
 
+template <typename T>
+template <bool X, bool Y>
+typename std::enable_if_t<X || Y>
+AbstractEntity<T>::syncPlayerMovement() {
+    if constexpr(std::is_same_v<T, Player>) return;
+
+    if (Player::instance == nullptr) return;
+    auto dDestCoords = Player::instance->getDestCoordsDifference();
+    auto dDestRect = Player::instance->getDestRectDifference();
+
+    if constexpr(X) {
+        mDestCoords.x += dDestCoords.x;
+        mDestRect.x += dDestRect.x;
+    }
+
+    if constexpr(Y) {
+        mDestCoords.y += dDestCoords.y;
+        mDestRect.y += dDestRect.y;
+    }
+}
+
 /**
  * Adjust `destRect` based on `tilesetData->animationSize` and `destRectModifier`.
  * @return A `SDL_Rect` representing the position of the instance of derived class `T`, relative to the window.
@@ -118,6 +139,15 @@ bool std::equal_to<AbstractEntity<T>>::operator()(AbstractEntity<T> const*& firs
 }
 
 
+template void AbstractEntity<OmoriCat_0>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_1>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_2>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_3>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_4>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_5>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_6>::syncPlayerMovement<false, true>();
+template void AbstractEntity<OmoriCat_7>::syncPlayerMovement<false, true>();
+
 template <typename T>
 tile::Data_EntityTileset AbstractEntity<T>::sTilesetData;
 
@@ -137,7 +167,7 @@ template class AbstractEntity<OmoriLightBulb>;
 template class AbstractEntity<OmoriKeysWASD>;
 
 template class AbstractEntity<PlaceholderInteractable>;
-template class AbstractEntity<PlayerShadow>;
+template class AbstractEntity<OmoriKeeper>;
 template class AbstractEntity<OmoriLaptop>;
 template class AbstractEntity<OmoriMewO>;
 template class AbstractEntity<OmoriCat_0>;

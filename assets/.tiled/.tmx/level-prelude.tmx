@@ -5,6 +5,7 @@
  </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
  <layer id="5" name="static-collision" width="48" height="16">
   <data encoding="base64" compression="zlib">
    eJxjYBgFo2AUDCdgy0UYD0ZAjLsHsz+Ggvvx2T3q/qHn/oHGQ90PhOJosKQbUsFQdvsooB8AAN2MMIo=
@@ -17,7 +18,7 @@
  </layer>
  <layer id="4" name="outliner" width="48" height="16">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUDCfAy8XAwIQH83ENtAuxA5i7iQGD0R+iJLpHfNT9VAVD3f2KZLgHXz6nNcaW/4j1gxbXwGMlHG4l5Adc+gYTUCTRz6NgZAIAhhwL/w==
+   eJxjYBgF9AQHBRkYDgHxYSA+IjjQriEdPAS6+REQPwbiJ0PQ/YxCDAxMQMwMxCxCA+0a2gBeLqAf8WA+roF2IXYAczcxYDD6Q5RE94iPup+qYKi7X5EM9+DL57TG2PIfsX7Q4hp4rITDrYT8gEvfYAKKJPp5FIxMAACBQRNt
   </data>
  </layer>
  <objectgroup id="6" name="entities">

@@ -1023,13 +1023,10 @@ namespace config {
         }
 
         namespace interactables {
-            namespace shadow {
-                constexpr const char* typeID = "interactable-shadow";
-                const std::filesystem::path path = "assets/.tiled/.tsx/hana-caraka-reverse.tsx";
-                constexpr SDL_FRect destRectModifier = config::entities::player::destRectModifier;
-                constexpr SDL_FPoint velocity = config::entities::player::velocity;
-                constexpr int moveDelayTicks = config::entities::player::moveDelayTicks;
-                constexpr EntityAttributes attributes = config::entities::player::attributes;
+            namespace omori_keeper {
+                constexpr const char* typeID = "interactable-omori-keeper";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-keeper.tsx";
+                constexpr SDL_FRect destRectModifier = { -1, -1.5, 4, 4 };
             }
 
             namespace omori_laptop {
@@ -1054,7 +1051,7 @@ namespace config {
             namespace omori_cat_##index {\
                 constexpr const char* typeID = "interactable-omori-cat-" #index;\
                 const std::filesystem::path path = "assets/.tiled/.tsx/omori-cat-" #index ".tsx";\
-                constexpr SDL_FRect destRectModifier = { 0, -0.0125, 1, 1 };\
+                constexpr SDL_FRect destRectModifier = { 0.22, -0.5, 1.44, 1.44 };\
             }
 
             DEF_OMORI_CAT_NS(0)

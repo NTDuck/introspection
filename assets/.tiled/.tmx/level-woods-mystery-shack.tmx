@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="48" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="32">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="48" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="35">
  <editorsettings>
   <export target="level-woods-mystery-shack.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
  <layer id="4" name="static-collision" width="48" height="48">
   <data encoding="base64" compression="zlib">
-   eJzt18ERgDAMA0He9ET/bVFDrDjygTTj/94rcF36nnv9Jq3in9BQdU/poPp3uV0dVH+X+1QH1X/K3dVB9bvcuzrc7qrf7VU73M6q3+1TO9yuqt/tUTvcDsXvNuRyuVwu98ejv8FkP/07lOqn/4dR/atze7/iVxe/x+3uoPq7Rvd3d5wa3b+7wzW6X+2YsvjrewGC3r6W
+   eJztlksOwyAMRLPunXr/a3UVKYoCno8NrtqRsgFs5lFjehy+3i/t66Jv9a/67sSBeuvo/RTqraP3U6i3rv4ZdWVgPHVjUGp7B8Nor6sPxtdKBuRuKr5WMCD18TSHeqtkUPq74q2CYfaWsh5Wvw/qee5mYGp917zj/b5WzZXNwL5BbC1U1RuzTomrZsi6L+g65e66vdn1xaxlvGb1siqGKBatK2dPhQGdizhnLJUM0R7ouojBvU+zmmbPFWEYcUQxCAMSH53pLIbhYO9yNIaMZ/QENBfrnzljtcew/tH6c/MxDMj8bJ1Ti6N4xyO7j+P9njfr95rFzsbV/CsYmF6gKKOPILndfdF9MhlWeFdzOne/wr+SF30jmDlXKkPUH1fKZag8X1SKh6q6VuUy7JZ6nh28n+pWE4p+ieE614316T8X8nXR37+uD7cDp4U=
   </data>
  </layer>
  <layer id="1" name="terrains" width="48" height="48">
   <data encoding="base64" compression="zlib">
-   eJztmklOw0AQRSvABraMO5aMN2C8AdOh4zuEGzCYG8DPwpJlWp2a7UiR8jatxP1UVU7SVW52iVrwAxbgHcxBI1g/3fvPJxF9gW/QUvk93ee763XXl6xrfIfrWn+Ld7fuHfclH8Tz98iDd9w1/tn1U3PR+Fvy4Bl3q390/XAcLP6aPHjG3cvfu34ke3v4S/LgGXdvf2v9aPb09OfkwTPuUf7S+rHsFeFfy4Nn3KP9V9WPxx6R/qU8eMY9y39YP57XzvDv58Ez7n0y/Nsg9yz/SDb+PH4pBprhBbbANtgJYj+IA3AIjsAxOAniLIhzcAEuwRW4DuImiFtwB+7BA3gMIuq+esa1X8AreAvcZ+M/rn8T9Buc5R/x/+1pluM/H5wH1s1/MThProt//7xYOtdP3b/fbyid66fqX+rz1PpzU/Mv9Xlq/bmp+Nf6s5w+6dj+tf4sp88+lj+nLy6Zd2T7c+YqknlHlr9kniWZl2X5S+ZZkvrh1pHWXzOHltQPt460/po5tKR+uPez1N8y/9fUz6o8SP21839t/XDywPG3PndhrZ9aHjj+lrh71E/te5Xjb31uZ7n+B6Ul2aQ=
+   eJztmkmuwkAMRJ0lXIIjfYZDkzvwb8AQjoBZRIpCq/FQNkH0ojYt6H5yFUPb6VdEA+vOOrH+WUdWr1jfrF91IaIr68YaqPya8f3jfuP+mnUL73zdyu/hHtfRdX/qTDJ+hA/oulv4s/NTY7Hwe3xA1t3LH50fCYOH3+IDsu4ofnR+NGcj+DU+IOuO5vfmx3Imkl/iA7LuUfza/HjOiuCv+YCsezT/u/wgzojkL/mArHsW/zw/yL0z+Kc+IOs+VQb/EMSexR+pxt/4G3/jb/y/yb/tiHasPevQxZ3TB/0GZ/FH/H/763L4j7P7wLfxn2b3yW/hn94XS/f6pfNP+w2le/1S+Ut9nlp/bmn8pT5PrT+3FP5af1bSJ/00f60/K+mzf4pf0hfXzDuy+SVzFc28I4tfM8/SzMuy+DXzLE1+pDmy8lvm0Jr8SHNk5bfMoTX5kX6etfye+b8lP+980PJb5//W/Eh8kPB7n7vw5qfmg4TfU3dEfmrfqxJ+73M7z/UHx3fbOg==
+  </data>
+ </layer>
+ <layer id="5" name="outliner" width="48" height="48">
+  <data encoding="base64" compression="zlib">
+   eJzt2VENgDAQBcEauAYpSEcKUiqBj2eBpFyYSVbFjvGeq1JXd6WuVqWujpm6OmcCAAAAAACAP/CH9/KH9/KH+ZoHHJULzQ==
   </data>
  </layer>
  <objectgroup id="3" name="entities">
@@ -213,5 +219,27 @@
    </properties>
   </object>
   <object id="31" name="dest" type="autopilot-target" x="184" y="0" width="8" height="8"/>
+  <object id="33" name="shadow" type="interactable-omori-keeper" x="224" y="352" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Press [TAB]."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="34" name="shadow" type="interactable-omori-keeper" x="160" y="32" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Wander in the void."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
  </objectgroup>
 </map>

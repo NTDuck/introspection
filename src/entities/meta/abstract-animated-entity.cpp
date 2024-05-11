@@ -113,7 +113,7 @@ template class AbstractAnimatedEntity<OmoriLightBulb>;
 template class AbstractAnimatedEntity<OmoriKeysWASD>;
 
 template class AbstractAnimatedEntity<PlaceholderInteractable>;
-template class AbstractAnimatedEntity<PlayerShadow>;
+template class AbstractAnimatedEntity<OmoriKeeper>;
 template class AbstractAnimatedEntity<OmoriLaptop>;
 template class AbstractAnimatedEntity<OmoriMewO>;
 template class AbstractAnimatedEntity<OmoriCat_0>;

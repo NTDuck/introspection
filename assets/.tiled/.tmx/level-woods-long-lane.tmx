@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="63" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="47">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="63" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="58">
  <editorsettings>
   <export target="level-woods-long-lane.json" format="json"/>
  </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
  <layer id="2" name="static-collision" width="16" height="63">
   <data encoding="base64" compression="zlib">
-   eJzty7EJAAAIBLGv3cn917JyAcEuB1cmSbpubzzP8zzP8zzP8zzP//oBo8D0nw==
+   eJzt0MEJACAMQ9Gc3cn91/IkiIjYFqToF7xIXghKUi2+2483/5uP/h8ej8e/7i1vGfdH/K5vlc22P+JPuuZ8pv0Rb+kZTZb9eDwej7/rG4kS8C8=
   </data>
  </layer>
  <layer id="1" name="terrains" width="16" height="63">
   <data encoding="base64" compression="zlib">
    eJztzjsRACEAA9G0YAL/SsADSOAn4dJDR3lbpMvOvBKkFM91ScOb3tL9k922h7663Q/9clvw48ePHz9+/Pjx48ePHz/+H/g/8Qe/Nw==
+  </data>
+ </layer>
+ <layer id="5" name="outliner" width="16" height="63">
+  <data encoding="base64" compression="zlib">
+   eJztw0ENACAQA8Ez0AtSkI4UpCCBRw2QPnjtJFP1bslTW5468tRoT812AAAAAAB+u9cdBec=
   </data>
  </layer>
  <objectgroup id="3" name="entities">
@@ -211,6 +217,105 @@
     <property name="target-dest-coords-x" type="int" value="30"/>
     <property name="target-dest-coords-y" type="int" value="46"/>
     <property name="target-level" value="level-woods-mystery-shack"/>
+   </properties>
+  </object>
+  <object id="49" name="cat0" type="interactable-omori-cat-0" x="16" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="50" name="cat1" type="interactable-omori-cat-1" x="24" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="51" name="cat2" type="interactable-omori-cat-2" x="32" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="52" name="cat3" type="interactable-omori-cat-3" x="40" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="53" name="cat4" type="interactable-omori-cat-4" x="80" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="54" name="cat5" type="interactable-omori-cat-5" x="88" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="55" name="cat6" type="interactable-omori-cat-6" x="96" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="56" name="cat7" type="interactable-omori-cat-7" x="104" y="336" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="57" name="shadow" type="interactable-omori-keeper" x="96" y="32" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Dissociation."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
    </properties>
   </object>
  </objectgroup>
