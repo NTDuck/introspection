@@ -449,42 +449,9 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"You are brave to speak to me, young ones.",
+                             "content":"Disorientation.",
                              "group-index":0,
                              "index":0
-                            }
-                        }, 
-                        {
-                         "name":"dialogue-B",
-                         "propertytype":"dialogue",
-                         "type":"class",
-                         "value":
-                            {
-                             "content":"just keep walking forward.",
-                             "group-index":0,
-                             "index":1
-                            }
-                        }, 
-                        {
-                         "name":"dialogue-C",
-                         "propertytype":"dialogue",
-                         "type":"class",
-                         "value":
-                            {
-                             "content":"everything will be okay.",
-                             "group-index":0,
-                             "index":2
-                            }
-                        }, 
-                        {
-                         "name":"dialogue-D",
-                         "propertytype":"dialogue",
-                         "type":"class",
-                         "value":
-                            {
-                             "content":"i promise...",
-                             "group-index":0,
-                             "index":3
                             }
                         }],
                  "rotation":0,
@@ -501,7 +468,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":42,
+ "nextobjectid":43,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

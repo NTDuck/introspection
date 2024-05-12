@@ -1094,7 +1094,7 @@ namespace config {
             namespace crab {
                 constexpr const char* typeID = "hostile-crab";
                 const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, 0, 6, 6 };
+                constexpr SDL_FRect destRectModifier = { 0, -1, 6, 6 };
                 constexpr SDL_FPoint velocity = { 64, 64 };
                 constexpr int moveDelayTicks = 0;
                 constexpr EntityAttributes attributes({{ 4, 0, 2, 3 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
@@ -1103,7 +1103,7 @@ namespace config {
             namespace crab_big {
                 constexpr const char* typeID = "hostile-crab-big";
                 const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, 0, 12, 12 };
+                constexpr SDL_FRect destRectModifier = { 0, -4, 18, 18 };
                 constexpr SDL_FPoint velocity = { 128, 128 };
                 constexpr int moveDelayTicks = 0;
                 constexpr EntityAttributes attributes({{ std::numeric_limits<unsigned short int>::max(), 0, std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 4, 4 }, { 4, 4 } }});
