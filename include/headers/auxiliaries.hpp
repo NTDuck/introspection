@@ -1029,6 +1029,18 @@ namespace config {
                 constexpr SDL_FRect destRectModifier = { -1, -1.5, 4, 4 };
             }
 
+            namespace omori_pinwheel {
+                constexpr const char* typeID = "omori-pinwheel";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-pinwheel.tsx";
+                constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            }
+
+            namespace omori_pinwheel_mono {
+                constexpr const char* typeID = "omori-pinwheel-mono";
+                const std::filesystem::path path = "assets/.tiled/.tsx/omori-pinwheel-mono.tsx";
+                constexpr SDL_FRect destRectModifier = config::entities::destRectModifier;
+            }
+
             namespace omori_laptop {
                 constexpr const char* typeID = "interactable-omori-laptop";
                 const std::filesystem::path path = "assets/.tiled/.tsx/omori-laptop.tsx";

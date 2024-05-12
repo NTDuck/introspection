@@ -667,9 +667,11 @@ class Player final : public Singleton<Player>, public AbstractAnimatedDynamicEnt
 
 
 DECL_ABSTRACT_ANIMATED_ENTITY(Umbra)
+DECL_ABSTRACT_ANIMATED_ENTITY(OmoriPinwheel)
+DECL_ABSTRACT_ANIMATED_ENTITY(OmoriPinwheelMono)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb)
 DECL_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD)
-#define NON_INTERACTABLES Umbra, OmoriLightBulb, OmoriKeysWASD
+#define NON_INTERACTABLES Umbra, OmoriPinwheel, OmoriPinwheelMono, OmoriLightBulb, OmoriKeysWASD
 
 DECL_GENERIC_INTERACTABLE(OmoriKeeper)
 DECL_GENERIC_INTERACTABLE(OmoriLaptop)

@@ -70,6 +70,7 @@ void IngameInterface::SaveHandler::loadfromfile() const {
 void IngameInterface::SaveHandler::clear() const {
     IngameMapHandler::invoke(&IngameMapHandler::changeLevel, config::interface::levelName);
     mPL.reset();
+    mProgress.clear();
 }
 
 json IngameInterface::SaveHandler::savetojson() const {
@@ -266,6 +267,7 @@ void IngameInterface::handleLevelSpecifics() const {
 
     switch (IngameMapHandler::instance->getLevel()) {     
         IMPL(level::Name::kLevelWoodsLongLane)
+        IMPL(level::Name::kLevelWoodsCrossroadsFirst)
         IMPL(level::Name::kLevelWhiteSpace)
 
         default: break;
@@ -369,6 +371,14 @@ IngameInterface::handleLevelSpecifics_impl() const {
         default:
             for (const auto& instance : OmoriCat_4::instances) if (instance->mDestCoords.y != verticalCheckpoints[4]) mProgress.set(1);
     }
+}
+
+template <level::Name L>
+typename std::enable_if_t<L == level::Name::kLevelWoodsCrossroadsFirst>
+IngameInterface::handleLevelSpecifics_impl() const {
+    if (isPlayerWithinRange<true>({ -1, 2 }, { -1, -1 })) IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>({
+        ".You had failed them, remember? You were unworthy.",
+    }));
 }
 
 template <level::Name L>

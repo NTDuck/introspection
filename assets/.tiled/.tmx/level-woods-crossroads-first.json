@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYBjZwJZrFI\/iUTyKR\/Eopj+mZR1FDAAAn6Z3Qw==",
+         "data":"eJzNk8EKACAIQzv3T\/3\/b0WHwMty5oyEIKF809XorQ3B2mH3VeFpQOdRfsv36qH5MJoz\/FP9rMdMT4wXFXybK7mZP8DOS82vegM3Gn7hq+ozfM+LiHaWb+8jHdFZRM+q+UrvWbZKH+rd0\/GKv2IChAtf9w==",
          "encoding":"base64",
          "height":16,
          "id":3,
@@ -18,11 +18,39 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJy7w8nAcBuI7wwQ\/QGI3w8gLc81ikcy\/s9AGWZhpAwLk4lFgFgUiMWAWByIJcjE6mRiDSDWBGItINYGYh0ysTWZ2AaIbYHYDojtgdiBTExuugkA6g0E4iAgDqbAnFH7R7b9J4B10HFO\/DS59hMyF0QDACXInrw=",
+         "data":"eJy1lUkOwjAMRW2JTdhC2XbJcAWGMzAckOPAHeAO5QbwJVThBjsRwVk8tWmlPiffTdoxUetAF4ge4X1\/wfUKbuAePu+0sYe7x\/JqNfZjT7\/llbV5+lIZWGtS0\/9LFjWduSwkT\/qPEROdeejMZSGfTbiMKWjADHRkO3M9MOcyFmAJVsJvzTGVxZrL2IAt2EV+bY41em8P7wEcwYm\/Xdb\/7rUPaH6t\/2Of1z6g+bX+j31eWWh+7dvauVQz\/1TWVia1\/NbayzpePHC2FQ==",
          "encoding":"base64",
          "height":16,
          "id":1,
          "name":"terrains",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":32,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJx7J8nA8A6I3wPxQIB1kqTj9VR06zlJ0vH5YWT\/O0nSMTXTCi3ilBRAizAl1f68Acx\/IPv7Rnj4w8KAUFpcS6fyBxYW6PadpWH5k4clf6Pb95YG+R9f\/NPCPmz2I+c\/WsQxPoDuP1rEMT4AAG30blU=",
+         "encoding":"base64",
+         "height":16,
+         "id":9,
+         "name":"terrains-post",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":32,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJzt0skJAjEYBeDfAmbwNMm4W4BiCTagNdiElmIdImIdHsR97UAv7tsbIowOQqKJzsUH32FCkkcmIQo3Y0bUgz4MYAgjJsYnMIUZzGEBS+avbViCTo7YbwNb2MEeDkyMn+AMF7h6vZwowv21HUvQSRz7OcCAgwsxLsYTkIQUpCED2Yf+lSXoxMK5bCaf56XIn7+jtqCTHLrziv2VQH\/BFnRSQndZsf+f8FPj8jmfpuXK++qG+9cOUfP+\/rov+oN9bcP9VcnbN92nkm\/esUpM3\/G7+eU\/vwGwei1l",
+         "encoding":"base64",
+         "height":16,
+         "id":4,
+         "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -774,6 +802,337 @@
                  "width":8,
                  "x":248,
                  "y":112
+                }, 
+                {
+                 "height":8,
+                 "id":34,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Too fixated on one path, you bet everything on it. Even prevented yourself from considering others.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":84,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"No hope left for your lost soul.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-4",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":149,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":150,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A colorful pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":88
+                },
+            
+                {
+                 "height":8,
+                 "id":151,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":152,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A colorful pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":153,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":154,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A colorful pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":120
+                }, 
+                {
+                 "height":8,
+                 "id":155,
+                 "name":"cat",
+                 "rotation":0,
+                 "type":"interactable-omori-cat-0",
+                 "visible":true,
+                 "width":8,
+                 "x":8,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":156,
+                 "name":"cat",
+                 "rotation":0,
+                 "type":"interactable-omori-cat-7",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":112
+                }, 
+                {
+                 "height":8,
+                 "id":157,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"No hope left for your lost soul.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-5",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":158,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"No hope left for your lost soul.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-0",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":159,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"No hope left for your lost soul.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-3",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":160,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A ticket out of this place...",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"This isn't for you.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":161,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A ticket out of this place...",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"This isn't for you.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":32
+                }, 
+                {
+                 "height":8,
+                 "id":162,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"No hope left for your lost soul.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-cat-2",
+                 "visible":true,
+                 "width":8,
+                 "x":0,
+                 "y":56
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -781,8 +1140,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":34,
+ "nextlayerid":10,
+ "nextobjectid":163,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -795,6 +1154,14 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
+        }, 
+        {
+         "firstgid":5709,
+         "source":"..\/.tsx\/omori-vast-forest.tsx"
         }],
  "tilewidth":8,
  "type":"map",

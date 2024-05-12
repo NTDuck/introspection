@@ -8,7 +8,7 @@
  <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
  <layer id="4" name="static-collision" width="48" height="48">
   <data encoding="base64" compression="zlib">
-   eJztlksOwyAMRLPunXr/a3UVKYoCno8NrtqRsgFs5lFjehy+3i/t66Jv9a/67sSBeuvo/RTqraP3U6i3rv4ZdWVgPHVjUGp7B8Nor6sPxtdKBuRuKr5WMCD18TSHeqtkUPq74q2CYfaWsh5Wvw/qee5mYGp917zj/b5WzZXNwL5BbC1U1RuzTomrZsi6L+g65e66vdn1xaxlvGb1siqGKBatK2dPhQGdizhnLJUM0R7ouojBvU+zmmbPFWEYcUQxCAMSH53pLIbhYO9yNIaMZ/QENBfrnzljtcew/tH6c/MxDMj8bJ1Ti6N4xyO7j+P9njfr95rFzsbV/CsYmF6gKKOPILndfdF9MhlWeFdzOne/wr+SF30jmDlXKkPUH1fKZag8X1SKh6q6VuUy7JZ6nh28n+pWE4p+ieE614316T8X8nXR37+uD7cDp4U=
+   eJztlksOwyAMRLvunXr/a3UVKYoCno8NjtqRsgFs5lFj+nr5+ry1r4uufp7if+TnSb9D5P9urIv3QyOvo3WdvB9CvXX1z6grA+OpG4NS2zsYRnudfTC+VjIgd1PxtYIBqY+7OdRbJQP69ozmdjLM3lLWw+r3QT3P3QxMre+ad7xf16q5shnYN4ithap6Y9YpcdUMWfcFXafcXbc3u76YtYzXrF5WxRDFonXl7KkwoHMR54ylkiHaA10XMbj3aVbT7LkiDCOOKAZhQOKjM53FMBzsXY7GkPGMnoDmYv0zZ6z2GNY/Wn9uPoYBmZ+tc2pxFO94ZPdxvF/zZv1es9jZuJp/BQPTCxRl9BEkt7svuk8mwwrvak7n7lf4V/KibwQz50pliPrjSrkMleeLSvFQVdeqXIbdUs+zg/dD3WpC0S8xnOe6sd7950K+Lvr71/UFqP6lTQ==
   </data>
  </layer>
  <layer id="1" name="terrains" width="48" height="48">

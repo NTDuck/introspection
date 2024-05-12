@@ -109,6 +109,8 @@ void AbstractAnimatedEntity<T>::resetAnimation(Animation animation, BehaviouralT
 template class AbstractAnimatedEntity<Player>;
 
 template class AbstractAnimatedEntity<Umbra>;
+template class AbstractAnimatedEntity<OmoriPinwheel>;
+template class AbstractAnimatedEntity<OmoriPinwheelMono>;
 template class AbstractAnimatedEntity<OmoriLightBulb>;
 template class AbstractAnimatedEntity<OmoriKeysWASD>;
 
@@ -137,5 +139,7 @@ template class AbstractAnimatedEntity<Meteor>;
 
 
 DEF_ABSTRACT_ANIMATED_ENTITY(Umbra, config::entities::misc::umbra)
+DEF_ABSTRACT_ANIMATED_ENTITY(OmoriPinwheel, config::entities::interactables::omori_pinwheel)
+DEF_ABSTRACT_ANIMATED_ENTITY(OmoriPinwheelMono, config::entities::interactables::omori_pinwheel_mono)
 DEF_ABSTRACT_ANIMATED_ENTITY(OmoriLightBulb, config::entities::interactables::omori_light_bulb)
 DEF_ABSTRACT_ANIMATED_ENTITY(OmoriKeysWASD, config::entities::interactables::omori_keys_wasd)

@@ -163,6 +163,8 @@ int AbstractEntity<T>::sID_Counter = 0;
 template class AbstractEntity<Player>;
 
 template class AbstractEntity<Umbra>;
+template class AbstractEntity<OmoriPinwheel>;
+template class AbstractEntity<OmoriPinwheelMono>;
 template class AbstractEntity<OmoriLightBulb>;
 template class AbstractEntity<OmoriKeysWASD>;
 

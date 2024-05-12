@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYBjawJZrFI\/iUTyKhyemNQAAE6xWiQ==",
+         "data":"eJxjYBjawJYLgtH51MaUmk9IL63Np4b\/aWn+YMVDPVwHMt6Gut8GQ5qnNQAAYplSYA==",
          "encoding":"base64",
          "height":16,
          "id":3,
@@ -23,6 +23,20 @@
          "height":16,
          "id":1,
          "name":"terrains",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":24,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJxjYICADbwQTCtwgReCaQU+8EIwueAPD355AT4IJhfIEHCbAR8EkwtsaBi2IBBDY\/PJBYTijVJAKN7QAan5iNR4IzUf4Ys3bGFHaT5CBtjCjtJ8hAywhR2l+QgZDNY0T00AANw6EXY=",
+         "encoding":"base64",
+         "height":16,
+         "id":4,
+         "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -757,8 +771,8 @@
                  "type":"hostile-crab",
                  "visible":true,
                  "width":8,
-                 "x":64,
-                 "y":32
+                 "x":88,
+                 "y":24
                 }, 
                 {
                  "height":8,
@@ -768,8 +782,8 @@
                  "type":"hostile-crab",
                  "visible":true,
                  "width":8,
-                 "x":88,
-                 "y":88
+                 "x":104,
+                 "y":104
                 }, 
                 {
                  "height":8,
@@ -779,7 +793,7 @@
                  "type":"hostile-crab",
                  "visible":true,
                  "width":8,
-                 "x":120,
+                 "x":112,
                  "y":40
                 }, 
                 {
@@ -790,8 +804,156 @@
                  "type":"hostile-crab",
                  "visible":true,
                  "width":8,
+                 "x":136,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":36,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":56
+                }, 
+                {
+                 "height":8,
+                 "id":37,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":38,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
                  "x":144,
-                 "y":72
+                 "y":16
+                }, 
+                {
+                 "height":8,
+                 "id":39,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":144,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":40,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":120,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":41,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":120,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":42,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Small challenges.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":32
+                }, 
+                {
+                 "height":8,
+                 "id":43,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"It's harder done alone.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -799,8 +961,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":36,
+ "nextlayerid":5,
+ "nextobjectid":44,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -813,6 +975,10 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
         }],
  "tilewidth":8,
  "type":"map",

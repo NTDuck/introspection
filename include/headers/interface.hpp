@@ -211,6 +211,10 @@ class IngameInterface final : public Singleton<IngameInterface> {
         handleLevelSpecifics_impl() const;
 
         template <level::Name L>
+        typename std::enable_if_t<L == level::Name::kLevelWoodsCrossroadsFirst>
+        handleLevelSpecifics_impl() const;
+
+        template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
         handleLevelSpecifics_impl() const;
 
