@@ -30,7 +30,8 @@ This repository contains the source code for a university project from the [Univ
 <a id="demo"></a>
 ## Demo
 
-https://github.com/NTDuck/8964/assets/105532764/d3aede64-7881-4e20-8720-b111422541fb
+
+https://github.com/NTDuck/8964/assets/105532764/31f41574-89da-47d6-801f-066d044ec5c6
 
 
 <a id="installation"></a>
@@ -216,6 +217,7 @@ Uses [**OOP**](https://en.wikipedia.org/wiki/Object-oriented_programming) with [
 
 <a id="hierarchy"></a>
 ## Class Hierarchy
+<span style="color:red">warning: outdated</span>
 
 ![Class hierarchy, for code comprehension](/assets/graphics/misc/hierarchy.png)
 
