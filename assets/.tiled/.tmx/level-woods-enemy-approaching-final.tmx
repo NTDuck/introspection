@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="42">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="32" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="43">
+ <editorsettings>
+  <export target="level-woods-enemy-approaching-final.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
  <tileset firstgid="2637" source="../.tsx/omori-black-space.tsx"/>
@@ -296,5 +299,6 @@
     </property>
    </properties>
   </object>
+  <object id="42" name="crabby crab crab" type="hostile-crab-big" x="128" y="56" width="8" height="8"/>
  </objectgroup>
 </map>

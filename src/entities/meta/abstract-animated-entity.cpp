@@ -131,6 +131,7 @@ template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
 template class AbstractAnimatedEntity<Crab>;
+template class AbstractAnimatedEntity<BigCrab>;
 
 template class AbstractAnimatedEntity<Darkness>;
 template class AbstractAnimatedEntity<Slash>;

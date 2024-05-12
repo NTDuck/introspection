@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYBjZwJZrFI\/iUTyKR\/Eopj8eaAAAn99zYQ==",
+         "data":"eJxjYBjZwJaLMkwNMyixi1gxWtlPzzAZaPtH8cjGA53+BqP99Cx\/6OlXetk\/0AAAqjtuqg==",
          "encoding":"base64",
          "height":16,
          "id":2,
@@ -18,11 +18,25 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJy7w8nAcBuI7wwQ\/QGI3w8gLc81ikfxKB7Fo3gU0x+fANZBxzkHjgYAOqCYUQ==",
+         "data":"eJy7w8nAcBuI7wwQ\/QGI3w8gLc81ikcy\/s8wsFiYcWCx+gBj6wHGA53+RvHIxieAddBxzoGjAaM1srE=",
          "encoding":"base64",
          "height":16,
          "id":1,
          "name":"terrains",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":32,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJxjYICADbwQTCr4w0O6HmzgAi8EkwpkyNCDDXzghWB8AJtfbbDoISdMBPggGB\/A5tcYLGLkhIkBHwTjA9j8Sok6UgE2v1KibhTQH5BbzoAAsfkKnzpyyxkQIDZf4VNHTDmDCxBb1uDLf8SUM7gAsWUNvvxHTDlDCqBVWUMsGOplDQBezBcf",
+         "encoding":"base64",
+         "height":16,
+         "id":4,
+         "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
          "visible":true,
@@ -747,6 +761,268 @@
                  "width":8,
                  "x":248,
                  "y":112
+                }, 
+                {
+                 "height":8,
+                 "id":28,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Real suffering.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":32
+                }, 
+                {
+                 "height":8,
+                 "id":29,
+                 "name":"shadow",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"It's better to run.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable-omori-keeper",
+                 "visible":true,
+                 "width":8,
+                 "x":232,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":30,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":16
+                }, 
+                {
+                 "height":8,
+                 "id":31,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":32,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":0
+                },
+            
+                {
+                 "height":8,
+                 "id":33,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":24
+                }, 
+                {
+                 "height":8,
+                 "id":34,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":16
+                }, 
+                {
+                 "height":8,
+                 "id":35,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":36,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":37,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":38,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":39,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":112
+                }, 
+                {
+                 "height":8,
+                 "id":40,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":41,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":42,
+                 "name":"crabby crab crab",
+                 "rotation":0,
+                 "type":"hostile-crab-big",
+                 "visible":true,
+                 "width":8,
+                 "x":128,
+                 "y":56
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -754,8 +1030,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":28,
+ "nextlayerid":5,
+ "nextobjectid":43,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
@@ -768,6 +1044,10 @@
         {
          "firstgid":2621,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":2637,
+         "source":"..\/.tsx\/omori-black-space.tsx"
         }],
  "tilewidth":8,
  "type":"map",
