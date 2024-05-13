@@ -132,6 +132,7 @@ template class AbstractAnimatedEntity<RedHandThrone>;
 
 template class AbstractAnimatedEntity<Crab>;
 template class AbstractAnimatedEntity<BigCrab>;
+template class AbstractAnimatedEntity<Zombie>;
 
 template class AbstractAnimatedEntity<Darkness>;
 template class AbstractAnimatedEntity<Slash>;

@@ -185,7 +185,9 @@ unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 template class GenericHostileEntity<Crab>;
 template class GenericHostileEntity<BigCrab>;
+template class GenericHostileEntity<Zombie>;
 
 
 DEF_GENERIC_HOSTILE_ENTITY_(Crab, config::entities::hostile::crab)
 DEF_GENERIC_HOSTILE_ENTITY_(BigCrab, config::entities::hostile::crab_big)
+DEF_GENERIC_HOSTILE_ENTITY_(Zombie, config::entities::hostile::zombie)

@@ -1100,6 +1100,15 @@ namespace config {
                 constexpr EntityAttributes attributes({{ 4, 0, 2, 3 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
 
+            namespace zombie {
+                constexpr const char* typeID = "hostile-zombie";
+                const std::filesystem::path path = "assets/.tiled/.tsx/dazw-zombie.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -1, 4, 4 };
+                constexpr SDL_FPoint velocity = { 96, 96 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 10, 0, 2, -1 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
+            }
+
             namespace crab_big {
                 constexpr const char* typeID = "hostile-crab-big";
                 const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";

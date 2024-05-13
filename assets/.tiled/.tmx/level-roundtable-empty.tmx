@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="32">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/omori-black-space.tsx"/>
+ <tileset firstgid="5693" source="../.tsx/collision.tsx"/>
+ <layer id="2" name="static-collision" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYKA+sBWDYFx8QvoIYWrrJ1YfLnMGSh6mZrDqJzYMh6p+WqcfeugHAEarPZs=
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJw7wcnA8B6IPwDxbSC+QwL/OJQPok8gictzQTAuPkz9bTRzYeoIYWR3YLOXEEZ3P7H6sLmDFHuxueMEBfpBmBL3gzAl7gfhkez+oZ5+QO4HAF7vVG8=
+  </data>
+ </layer>
+ <layer id="4" name="outliner" width="16" height="16">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFuMACXggmFxzghWBywQNeCCYb8EExmUCBD4JHwfAFAHOJBUc=
+  </data>
+ </layer>
+ <objectgroup id="3" name="entities">
+  <object id="1" name="shadow" type="interactable-omori-keeper" x="64" y="64" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Something must be done."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="2" name="tp" type="teleporter" x="8" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="3" name="tp" type="teleporter" x="16" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="4" name="tp" type="teleporter" x="24" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="5" name="tp" type="teleporter" x="32" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="6" name="tp" type="teleporter" x="40" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="7" name="tp" type="teleporter" x="48" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="8" name="tp" type="teleporter" x="56" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="9" name="tp" type="teleporter" x="64" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="10" name="tp" type="teleporter" x="72" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="11" name="tp" type="teleporter" x="80" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="12" name="tp" type="teleporter" x="88" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="13" name="tp" type="teleporter" x="96" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="14" name="tp" type="teleporter" x="104" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="15" name="tp" type="teleporter" x="112" y="120" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-3"/>
+   </properties>
+  </object>
+  <object id="16" name="tp" type="teleporter" x="120" y="48" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+  <object id="27" name="tp" type="teleporter" x="120" y="56" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+  <object id="28" name="tp" type="teleporter" x="120" y="64" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+  <object id="29" name="tp" type="teleporter" x="120" y="72" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+  <object id="30" name="tp" type="teleporter" x="120" y="80" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+  <object id="31" name="tp" type="teleporter" x="120" y="88" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="-1"/>
+    <property name="target-level" value="level-suffering-empty-0"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

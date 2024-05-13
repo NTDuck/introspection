@@ -213,6 +213,7 @@ template class AbstractAnimatedDynamicEntity<Player>;
 
 template class AbstractAnimatedDynamicEntity<Crab>;
 template class AbstractAnimatedDynamicEntity<BigCrab>;
+template class AbstractAnimatedDynamicEntity<Zombie>;
 
 template class AbstractAnimatedDynamicEntity<Darkness>;
 template class AbstractAnimatedDynamicEntity<Slash>;
