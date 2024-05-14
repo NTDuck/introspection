@@ -245,11 +245,14 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 - [1-bit Pulp-compliant Tileset](https://teaceratops.itch.io/1-bit-tileset)
 - [Minimalistic Tileset Assets](https://endoblance.itch.io/minimalistic-game-assets-rpg-maker-mv)
 - [OMORI Game Assets](https://www.spriters-resource.com/pc_computer/omori/)
-- [Cat 50+ animations](https://bowpixel.itch.io/cat-50-animations)
-- [Top-down Mobs - Dog](https://admurin.itch.io/top-down-mobs-dog)
-- [Enemy Galore I](https://admurin.itch.io/enemy-galore-1)
 - [Hana Caraka Base Character](https://bagong-games.itch.io/hana-caraka-base-character)
 - [Hooded Protagonist](https://penzilla.itch.io/hooded-protagonist)
+- [Satyr](https://lucky-loops.itch.io/character-satyr)
+- [Chick-Boy Animation Pack](https://9e0.itch.io/chick-boy)
+- [Plague Crow](https://gabry-corti.itch.io/plague-crow)
+- [Dark Samurai](https://aimmaga.itch.io/darksamurai) (Prestige Inkshadow Yasuo)
+- [Red Hood](https://legnops.itch.io/red-hood-character)
+- [Nightborne Warrior](https://creativekind.itch.io/nightborne-warrior) (Kassadin)
 
 #### Fonts
 - [Omori](https://dafontonline.com/omori-font/)
