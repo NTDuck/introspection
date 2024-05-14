@@ -3,6 +3,7 @@
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/omori-black-space.tsx"/>
  <tileset firstgid="5693" source="../.tsx/collision.tsx"/>
+ <tileset firstgid="5709" source="../.tsx/omori-vast-forest.tsx"/>
  <layer id="4" name="static-collision" width="16" height="24">
   <data encoding="base64" compression="zlib">
    eJxjYGBgsBUjD8PAqP5R/aP6h75+Us0bbvoHOvwHQj8Ak+1qWQ==
@@ -15,7 +16,7 @@
  </layer>
  <layer id="3" name="outliner" width="16" height="24">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFo2AUDAewgBeCyQUHeCGYXPCAF4LJBnxQTCZQ4IPgUUA8AADVLQVH
+   eJxjYBgFwwWslWRgWEcAr5fErf8sUO4cAXx+VD9O8BYo944Afo9HP6VgAS8EkwsO8EIwueABLwSTDfigmEygwAfBo4B4AACl20Rx
   </data>
  </layer>
  <objectgroup id="2" name="entities">

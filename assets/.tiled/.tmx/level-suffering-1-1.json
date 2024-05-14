@@ -102,105 +102,6 @@
                 }, 
                 {
                  "height":8,
-                 "id":30,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":48,
-                 "y":32
-                }, 
-                {
-                 "height":8,
-                 "id":31,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":72,
-                 "y":56
-                }, 
-                {
-                 "height":8,
-                 "id":32,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":56,
-                 "y":88
-                }, 
-                {
-                 "height":8,
-                 "id":33,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":96,
-                 "y":104
-                }, 
-                {
-                 "height":8,
-                 "id":34,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":88,
-                 "y":24
-                }, 
-                {
-                 "height":8,
-                 "id":35,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":128,
-                 "y":40
-                }, 
-                {
-                 "height":8,
-                 "id":36,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":144,
-                 "y":104
-                }, 
-                {
-                 "height":8,
-                 "id":37,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":112,
-                 "y":72
-                }, 
-                {
-                 "height":8,
-                 "id":38,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":152,
-                 "y":72
-                }, 
-                {
-                 "height":8,
                  "id":45,
                  "name":"tp",
                  "properties":[
@@ -414,6 +315,39 @@
                  "width":8,
                  "x":0,
                  "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":53,
+                 "name":"microwave",
+                 "rotation":0,
+                 "type":"hostile-microwave",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":54,
+                 "name":"bulldozer",
+                 "rotation":0,
+                 "type":"hostile-bulldozer",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":55,
+                 "name":"crow",
+                 "rotation":0,
+                 "type":"hostile-plague-crow",
+                 "visible":true,
+                 "width":8,
+                 "x":112,
+                 "y":64
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -422,7 +356,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":53,
+ "nextobjectid":56,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

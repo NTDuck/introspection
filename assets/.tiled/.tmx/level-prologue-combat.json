@@ -112,23 +112,6 @@
                 }, 
                 {
                  "height":8,
-                 "id":18,
-                 "name":"crab",
-                 "properties":[
-                        {
-                         "name":"dialogue-A",
-                         "type":"string",
-                         "value":""
-                        }],
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":56,
-                 "y":72
-                }, 
-                {
-                 "height":8,
                  "id":20,
                  "name":"tp",
                  "properties":[
@@ -450,8 +433,7 @@
                  "width":8,
                  "x":96,
                  "y":184
-                },
-            
+                }, 
                 {
                  "height":8,
                  "id":45,
@@ -478,7 +460,8 @@
                  "width":8,
                  "x":104,
                  "y":184
-                }, 
+                },
+            
                 {
                  "height":8,
                  "id":46,
@@ -856,6 +839,17 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":73,
+                 "name":"microwave",
+                 "rotation":0,
+                 "type":"hostile-microwave",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":72
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -864,7 +858,7 @@
          "y":0
         }],
  "nextlayerid":5,
- "nextobjectid":73,
+ "nextobjectid":74,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

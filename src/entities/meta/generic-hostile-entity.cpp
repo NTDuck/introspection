@@ -183,11 +183,11 @@ template <typename T, MovementSelectionType M>
 unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 
-template class GenericHostileEntity<Crab>;
-template class GenericHostileEntity<BigCrab>;
-template class GenericHostileEntity<Zombie>;
+template class GenericHostileEntity<PlagueCrow>;
+template class GenericHostileEntity<Microwave>;
+template class GenericHostileEntity<Bulldozer>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(Crab, config::entities::hostile::crab)
-DEF_GENERIC_HOSTILE_ENTITY_(BigCrab, config::entities::hostile::crab_big)
-DEF_GENERIC_HOSTILE_ENTITY_(Zombie, config::entities::hostile::zombie)
+DEF_GENERIC_HOSTILE_ENTITY_(PlagueCrow, config::entities::hostile::plague_crow)
+DEF_GENERIC_HOSTILE_ENTITY_(Microwave, config::entities::hostile::microwave)
+DEF_GENERIC_HOSTILE_ENTITY_(Bulldozer, config::entities::hostile::bulldozer)

@@ -14,15 +14,6 @@ std::optional<level::Name> level::hstoln(unsigned int hs) {
 
     switch (hs) {
         IMPL(Name::kLevelPrelude)
-        // IMPL(Name::kLevelWoodsEntryPoint)
-        // IMPL(Name::kLevelWoodsLongLane)
-        // IMPL(Name::kLevelWoodsMysteryShack)
-        // IMPL(Name::kLevelWoodsCrossroadsFirst)
-        // IMPL(Name::kLevelWoodsDeadEnd)
-        // IMPL(Name::kLevelWoodsEnemyApproachingFirst)
-        // IMPL(Name::kLevelWoodsEnemyApproachingFinal)
-        // IMPL(Name::kLevelWoodsCrossroadsFinal)
-        // IMPL(Name::kLevelWoodsDestinedDeath)
 
         IMPL(Name::kLevelPrologueMovement)
         IMPL(Name::kLevelPrologueCombat)

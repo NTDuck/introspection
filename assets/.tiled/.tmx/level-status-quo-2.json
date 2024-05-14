@@ -32,7 +32,7 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFo2AUDAewgBeCyQUHeCGYXPCAF4LJBnxQTCZQ4IPgUUA8AADVLQVH",
+         "data":"eJxjYBgFwwWslWRgWEcAr5fErf8sUO4cAXx+VD9O8BYo944Afo9HP6VgAS8EkwsO8EIwueABLwSTDfigmEygwAfBo4B4AACl20Rx",
          "encoding":"base64",
          "height":24,
          "id":3,
@@ -594,6 +594,10 @@
         {
          "firstgid":5693,
          "source":"..\/.tsx\/collision.tsx"
+        }, 
+        {
+         "firstgid":5709,
+         "source":"..\/.tsx\/omori-vast-forest.tsx"
         }],
  "tilewidth":8,
  "type":"map",

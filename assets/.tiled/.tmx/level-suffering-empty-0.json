@@ -426,40 +426,6 @@
                 }, 
                 {
                  "height":8,
-                 "id":18,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":24,
-                 "y":40
-                },
-            
-                {
-                 "height":8,
-                 "id":19,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":96,
-                 "y":64
-                }, 
-                {
-                 "height":8,
-                 "id":20,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":120
-                }, 
-                {
-                 "height":8,
                  "id":22,
                  "name":"tp",
                  "properties":[
@@ -484,7 +450,8 @@
                  "width":8,
                  "x":8,
                  "y":184
-                }, 
+                },
+            
                 {
                  "height":8,
                  "id":23,
@@ -835,6 +802,39 @@
                  "width":8,
                  "x":112,
                  "y":184
+                }, 
+                {
+                 "height":8,
+                 "id":36,
+                 "name":"microwave",
+                 "rotation":0,
+                 "type":"hostile-microwave",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":37,
+                 "name":"microwave",
+                 "rotation":0,
+                 "type":"hostile-microwave",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":120
+                }, 
+                {
+                 "height":8,
+                 "id":38,
+                 "name":"bulldozer",
+                 "rotation":0,
+                 "type":"hostile-bulldozer",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":72
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -843,7 +843,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":36,
+ "nextobjectid":39,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

@@ -130,9 +130,9 @@ template class AbstractAnimatedEntity<OmoriCat_7>;
 template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
-template class AbstractAnimatedEntity<Crab>;
-template class AbstractAnimatedEntity<BigCrab>;
-template class AbstractAnimatedEntity<Zombie>;
+template class AbstractAnimatedEntity<PlagueCrow>;
+template class AbstractAnimatedEntity<Microwave>;
+template class AbstractAnimatedEntity<Bulldozer>;
 
 template class AbstractAnimatedEntity<Darkness>;
 template class AbstractAnimatedEntity<Slash>;

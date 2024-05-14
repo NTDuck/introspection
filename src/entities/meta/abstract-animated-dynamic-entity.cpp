@@ -96,7 +96,10 @@ void AbstractAnimatedDynamicEntity<T>::initiateMove(BehaviouralType flag) {
 
     if (sTilesetData.isMultiDirectional) mPrevDirection = mDirection;
     mDirection = *mNextVelocity;
-    if (!sTilesetData.isMultiDirectional && mDirection.x) mFlip = (mDirection.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
+    if (!sTilesetData.isMultiDirectional && mDirection.x) {
+        mFlip = (mDirection.x + 1) >> 1 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;   // The default direction of a sprite in a tileset is right
+        if (sTilesetData.isInverted) mFlip = mFlip == SDL_FLIP_NONE ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+    }
 
     mNextDestCoords = new SDL_Point(mDestCoords + mDirection);
     mNextDestRect = new SDL_Rect(AbstractEntity<T>::getDestRectFromCoords(*mNextDestCoords));
@@ -211,9 +214,9 @@ const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::
 
 template class AbstractAnimatedDynamicEntity<Player>;
 
-template class AbstractAnimatedDynamicEntity<Crab>;
-template class AbstractAnimatedDynamicEntity<BigCrab>;
-template class AbstractAnimatedDynamicEntity<Zombie>;
+template class AbstractAnimatedDynamicEntity<PlagueCrow>;
+template class AbstractAnimatedDynamicEntity<Microwave>;
+template class AbstractAnimatedDynamicEntity<Bulldozer>;
 
 template class AbstractAnimatedDynamicEntity<Darkness>;
 template class AbstractAnimatedDynamicEntity<Slash>;

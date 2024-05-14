@@ -184,9 +184,9 @@ template class AbstractEntity<OmoriCat_7>;
 template class AbstractEntity<PlaceholderTeleporter>;
 template class AbstractEntity<RedHandThrone>;
 
-template class AbstractEntity<Crab>;
-template class AbstractEntity<BigCrab>;
-template class AbstractEntity<Zombie>;
+template class AbstractEntity<PlagueCrow>;
+template class AbstractEntity<Microwave>;
+template class AbstractEntity<Bulldozer>;
 
 template class AbstractEntity<Darkness>;
 template class AbstractEntity<Slash>;

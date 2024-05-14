@@ -454,6 +454,7 @@ namespace tile {
         unsigned int animationTicks = 1000;
         SDL_Point animationSize = { 1, 1 };
         bool isMultiDirectional = false;
+        bool isInverted = false;
 
         private:
             struct hash {
@@ -1105,31 +1106,31 @@ namespace config {
         }
 
         namespace hostile {
-            namespace crab {
-                constexpr const char* typeID = "hostile-crab";
-                const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -1, 6, 6 };
-                constexpr SDL_FPoint velocity = { 64, 64 };
-                constexpr int moveDelayTicks = 0;
-                constexpr EntityAttributes attributes({{ 4, 0, 2, 3 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
-            }
-
-            namespace zombie {
-                constexpr const char* typeID = "hostile-zombie";
-                const std::filesystem::path path = "assets/.tiled/.tsx/dazw-zombie.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -1, 4, 4 };
+            namespace plague_crow {
+                constexpr const char* typeID = "hostile-plague-crow";
+                const std::filesystem::path path = "assets/.tiled/.tsx/gaco-plague-crow.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 6, 6 };
                 constexpr SDL_FPoint velocity = { 96, 96 };
                 constexpr int moveDelayTicks = 0;
-                constexpr EntityAttributes attributes({{ 10, 0, 2, -1 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
+                constexpr EntityAttributes attributes({{ 44, 4, 44, 4 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 4, 4 }, { 4, 4 } }});
             }
 
-            namespace crab_big {
-                constexpr const char* typeID = "hostile-crab-big";
-                const std::filesystem::path path = "assets/.tiled/.tsx/egi-crab.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -4, 18, 18 };
-                constexpr SDL_FPoint velocity = { 128, 128 };
+            namespace microwave {
+                constexpr const char* typeID = "hostile-microwave";
+                const std::filesystem::path path = "assets/.tiled/.tsx/gaco-microwave.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 4, 4 };
+                constexpr SDL_FPoint velocity = { 72, 72 };
                 constexpr int moveDelayTicks = 0;
-                constexpr EntityAttributes attributes({{ std::numeric_limits<unsigned short int>::max(), 0, std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 4, 4 }, { 4, 4 } }});
+                constexpr EntityAttributes attributes({{ 4, 0, 1, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
+            }
+
+            namespace bulldozer {
+                constexpr const char* typeID = "hostile-bulldozer";
+                const std::filesystem::path path = "assets/.tiled/.tsx/gaco-bulldozer.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.5, 4, 4 };
+                constexpr SDL_FPoint velocity = { 64, 64 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 6, 0, 2, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
         }
 

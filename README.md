@@ -191,6 +191,7 @@ Encapsulate all operations within a game state, therefore facilitating modular d
 #### Third-party tools:
 - [Tiled](https://www.mapeditor.org/) 1.10.2 for level generation
 - [KRMisha's Makefile](https://github.com/KRMisha/Makefile) for cross-platform compilation
+- [Sprite Sheet Packer](https://www.codeandweb.com/free-sprite-sheet-packer) for spritesheet concatenation
 
 #### Compiler: [MinGW GCC](https://github.com/niXman/mingw-builds-binaries/releases/tag/13.2.0-rt_v11-rev0) 13.2.0 (64-bit)
 

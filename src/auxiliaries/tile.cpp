@@ -239,6 +239,9 @@ void tile::Data_EntityTileset::load(pugi::xml_document const& XMLTilesetData, SD
                 case hstr("multidirectional"):
                     isMultiDirectional = value_a.as_bool();
                     break;
+                case hstr("inverted"):
+                    isInverted = value_a.as_bool();
+                    break;
                 default:
                     setProperty(name_v, value_a.as_string());
             }
