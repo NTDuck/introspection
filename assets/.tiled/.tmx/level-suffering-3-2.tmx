@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="54">
+ <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
+ <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
+ <layer id="2" name="static-collision" width="24" height="24">
+  <data encoding="base64" compression="zlib">
+   eJxjYMAEtlzkYWIBrcwn11xC9lDLXFz2jJo/av6o+aPmj5o/Ms2nhR24AK3MpdQecgGl5gIATtCEBQ==
+  </data>
+ </layer>
+ <layer id="1" name="terrains" width="24" height="24">
+  <data encoding="base64" compression="zlib">
+   eJy7w8nAcByITwDxbSC+A8TyXORhmH5k8z4gmfseyifX/PdYzDtBBXNx2XOcwvAgJryo6W5s/jhBQ/NHw2c0fEbDZzR8RsOH/PA5TqMwQq/TqWUPurnodTK59uAyFyZOrj2EzAUAxzOlBw==
+  </data>
+ </layer>
+ <objectgroup id="3" name="entities">
+  <object id="18" name="tp" type="teleporter" x="64" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="19" name="tp" type="teleporter" x="72" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="20" name="tp" type="teleporter" x="80" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="21" name="tp" type="teleporter" x="88" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="22" name="tp" type="teleporter" x="96" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="23" name="tp" type="teleporter" x="104" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="24" name="tp" type="teleporter" x="112" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="25" name="tp" type="teleporter" x="120" y="184" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="-1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-suffering-3-1"/>
+   </properties>
+  </object>
+  <object id="26" name="tp" type="teleporter" x="40" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="1"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="40" name="dest" type="autopilot-target" x="88" y="0" width="8" height="8"/>
+  <object id="41" name="tp" type="teleporter" x="48" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="2"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="42" name="tp" type="teleporter" x="56" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="3"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="43" name="tp" type="teleporter" x="64" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="4"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="44" name="tp" type="teleporter" x="72" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="5"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="45" name="tp" type="teleporter" x="80" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="6"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="46" name="tp" type="teleporter" x="88" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="7"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="47" name="tp" type="teleporter" x="96" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="8"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="48" name="tp" type="teleporter" x="104" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="9"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="49" name="tp" type="teleporter" x="112" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="10"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="50" name="tp" type="teleporter" x="120" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="11"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="51" name="tp" type="teleporter" x="128" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="12"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="52" name="tp" type="teleporter" x="136" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="13"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+  <object id="53" name="tp" type="teleporter" x="144" y="0" width="8" height="8">
+   <properties>
+    <property name="target-dest-coords-x" type="int" value="14"/>
+    <property name="target-dest-coords-y" type="int" value="22"/>
+    <property name="target-level" value="level-status-quo-4"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
