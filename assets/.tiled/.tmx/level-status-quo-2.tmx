@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="133">
+ <editorsettings>
+  <export target="level-status-quo-2.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/omori-black-space.tsx"/>
  <tileset firstgid="5693" source="../.tsx/collision.tsx"/>
@@ -21,7 +24,13 @@
  <objectgroup id="2" name="entities">
   <object id="33" name="shadow" type="interactable-omori-keeper" x="32" y="152" width="8" height="8">
    <properties>
-    <property name="dialogue-A" value=""/>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Some has left."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
    </properties>
   </object>
   <object id="34" name="dest" type="autopilot-target" x="56" y="0" width="8" height="8"/>

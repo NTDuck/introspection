@@ -14,16 +14,39 @@ std::optional<level::Name> level::hstoln(unsigned int hs) {
 
     switch (hs) {
         IMPL(Name::kLevelPrelude)
-        IMPL(Name::kLevelWoodsEntryPoint)
-        IMPL(Name::kLevelWoodsLongLane)
-        IMPL(Name::kLevelWoodsMysteryShack)
-        IMPL(Name::kLevelWoodsCrossroadsFirst)
-        IMPL(Name::kLevelWoodsDeadEnd)
-        IMPL(Name::kLevelWoodsEnemyApproachingFirst)
-        IMPL(Name::kLevelWoodsEnemyApproachingFinal)
-        IMPL(Name::kLevelWoodsCrossroadsFinal)
-        IMPL(Name::kLevelWoodsDestinedDeath)
+        // IMPL(Name::kLevelWoodsEntryPoint)
+        // IMPL(Name::kLevelWoodsLongLane)
+        // IMPL(Name::kLevelWoodsMysteryShack)
+        // IMPL(Name::kLevelWoodsCrossroadsFirst)
+        // IMPL(Name::kLevelWoodsDeadEnd)
+        // IMPL(Name::kLevelWoodsEnemyApproachingFirst)
+        // IMPL(Name::kLevelWoodsEnemyApproachingFinal)
+        // IMPL(Name::kLevelWoodsCrossroadsFinal)
+        // IMPL(Name::kLevelWoodsDestinedDeath)
 
+        IMPL(Name::kLevelPrologueMovement)
+        IMPL(Name::kLevelPrologueCombat)
+
+        IMPL(Name::kLevelSuffering_empty)
+        IMPL(Name::kLevelSuffering_1_0)
+        IMPL(Name::kLevelSuffering_1_1)
+        IMPL(Name::kLevelSuffering_2_0)
+        IMPL(Name::kLevelSuffering_2_1)
+        IMPL(Name::kLevelSuffering_3_0)
+        IMPL(Name::kLevelSuffering_3_1)
+        IMPL(Name::kLevelSuffering_3_2)
+
+        IMPL(Name::kLevelStatusQuo_0)
+        IMPL(Name::kLevelStatusQuo_1)
+        IMPL(Name::kLevelStatusQuo_2)
+        IMPL(Name::kLevelStatusQuo_3)
+        IMPL(Name::kLevelStatusQuo_4)
+
+        IMPL(Name::kLevelRoundtable_empty)
+        IMPL(Name::kLevelRoundtable_first)
+        IMPL(Name::kLevelRoundtable_second)
+        IMPL(Name::kLevelRoundtable_final)
+        
         IMPL(Name::kLevelInterlude)
 
         IMPL(Name::kLevelWhiteSpace)

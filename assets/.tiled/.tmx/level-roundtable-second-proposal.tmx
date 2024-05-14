@@ -21,7 +21,13 @@
  <objectgroup id="3" name="entities">
   <object id="14" name="shadow" type="interactable-omori-keeper" x="256" y="72" width="8" height="8">
    <properties>
-    <property name="dialogue-A" value=""/>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Neglect what can't be done."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
    </properties>
   </object>
   <object id="27" name="tp" type="teleporter" x="8" y="376" width="8" height="8">

@@ -478,15 +478,29 @@ namespace level {
     */
     enum class Name : unsigned int {
         kLevelPrelude = hstr("level-prelude"),
-        kLevelWoodsEntryPoint = hstr("level-woods-entry-point"),
-        kLevelWoodsLongLane = hstr("level-woods-long-lane"),
-        kLevelWoodsMysteryShack = hstr("level-woods-mystery-shack"),
-        kLevelWoodsCrossroadsFirst = hstr("level-woods-crossroads-first"),
-        kLevelWoodsDeadEnd = hstr("level-woods-dead-end"),
-        kLevelWoodsEnemyApproachingFirst = hstr("level-woods-enemy-approaching-first"),
-        kLevelWoodsEnemyApproachingFinal = hstr("level-woods-enemy-approaching-final"),
-        kLevelWoodsCrossroadsFinal = hstr("level-woods-crossroads-final"),
-        kLevelWoodsDestinedDeath = hstr("level-woods-destined-death"),
+
+        kLevelPrologueMovement = hstr("level-prologue-movement"),
+        kLevelPrologueCombat = hstr("level-prologue-combat"),
+
+        kLevelSuffering_empty = hstr("level-suffering-empty-0"),
+        kLevelSuffering_1_0 = hstr("level-suffering-1-0"),
+        kLevelSuffering_1_1 = hstr("level-suffering-1-1"),
+        kLevelSuffering_2_0 = hstr("level-suffering-2-0"),
+        kLevelSuffering_2_1 = hstr("level-suffering-2-1"),
+        kLevelSuffering_3_0 = hstr("level-suffering-3-0"),
+        kLevelSuffering_3_1 = hstr("level-suffering-3-1"),
+        kLevelSuffering_3_2 = hstr("level-suffering-3-2"),
+
+        kLevelStatusQuo_0 = hstr("level-status-quo-0"),
+        kLevelStatusQuo_1 = hstr("level-status-quo-1"),
+        kLevelStatusQuo_2 = hstr("level-status-quo-2"),
+        kLevelStatusQuo_3 = hstr("level-status-quo-3"),
+        kLevelStatusQuo_4 = hstr("level-status-quo-4"),
+
+        kLevelRoundtable_empty = hstr("level-roundtable-empty"),
+        kLevelRoundtable_first = hstr("level-roundtable-first-proposal"),
+        kLevelRoundtable_second = hstr("level-roundtable-second-proposal"),
+        kLevelRoundtable_final = hstr("level-roundtable-final-proposal"),
 
         kLevelInterlude = hstr("level-interlude"),
         

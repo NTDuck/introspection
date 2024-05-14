@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="6">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="48" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="7" nextobjectid="10">
  <editorsettings>
   <export target="level-prelude.json" format="json"/>
  </editorsettings>
@@ -24,25 +24,25 @@
  <objectgroup id="6" name="entities">
   <object id="1" name="origin" type="player" x="72" y="72" width="8" height="8"/>
   <object id="2" name="dest" type="autopilot-target" x="360" y="56" width="8" height="8"/>
-  <object id="3" name="to ep" type="teleporter" x="352" y="56" width="8" height="8">
+  <object id="3" name="tp" type="teleporter" x="352" y="56" width="8" height="8">
    <properties>
-    <property name="target-dest-coords-x" type="int" value="7"/>
-    <property name="target-dest-coords-y" type="int" value="10"/>
-    <property name="target-level" value="level-woods-entry-point"/>
+    <property name="target-dest-coords-x" type="int" value="6"/>
+    <property name="target-dest-coords-y" type="int" value="122"/>
+    <property name="target-level" value="level-prologue-movement"/>
    </properties>
   </object>
-  <object id="4" name="to ep" type="teleporter" x="368" y="56" width="8" height="8">
+  <object id="8" name="tp" type="teleporter" x="368" y="56" width="8" height="8">
    <properties>
-    <property name="target-dest-coords-x" type="int" value="7"/>
-    <property name="target-dest-coords-y" type="int" value="10"/>
-    <property name="target-level" value="level-woods-entry-point"/>
+    <property name="target-dest-coords-x" type="int" value="6"/>
+    <property name="target-dest-coords-y" type="int" value="122"/>
+    <property name="target-level" value="level-prologue-movement"/>
    </properties>
   </object>
-  <object id="5" name="to ep" type="teleporter" x="360" y="56" width="8" height="8">
+  <object id="9" name="tp" type="teleporter" x="360" y="56" width="8" height="8">
    <properties>
-    <property name="target-dest-coords-x" type="int" value="7"/>
-    <property name="target-dest-coords-y" type="int" value="10"/>
-    <property name="target-level" value="level-woods-entry-point"/>
+    <property name="target-dest-coords-x" type="int" value="6"/>
+    <property name="target-dest-coords-y" type="int" value="122"/>
+    <property name="target-level" value="level-prologue-movement"/>
    </properties>
   </object>
  </objectgroup>

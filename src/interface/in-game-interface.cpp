@@ -31,15 +31,28 @@ void IngameInterface::ProgressHandler::loadfromjson(json const& data) const {
     };
 
     impl(level::Name::kLevelPrelude);
-    impl(level::Name::kLevelWoodsEntryPoint);
-    impl(level::Name::kLevelWoodsLongLane);
-    impl(level::Name::kLevelWoodsMysteryShack);
-    impl(level::Name::kLevelWoodsCrossroadsFirst);
-    impl(level::Name::kLevelWoodsDeadEnd);
-    impl(level::Name::kLevelWoodsEnemyApproachingFirst);
-    impl(level::Name::kLevelWoodsEnemyApproachingFinal);
-    impl(level::Name::kLevelWoodsCrossroadsFinal);
-    impl(level::Name::kLevelWoodsDestinedDeath);
+    impl(level::Name::kLevelPrologueMovement);
+    impl(level::Name::kLevelPrologueCombat);
+
+    impl(level::Name::kLevelSuffering_empty);
+    impl(level::Name::kLevelSuffering_1_0);
+    impl(level::Name::kLevelSuffering_1_1);
+    impl(level::Name::kLevelSuffering_2_0);
+    impl(level::Name::kLevelSuffering_2_1);
+    impl(level::Name::kLevelSuffering_3_0);
+    impl(level::Name::kLevelSuffering_3_1);
+    impl(level::Name::kLevelSuffering_3_2);
+
+    impl(level::Name::kLevelStatusQuo_0);
+    impl(level::Name::kLevelStatusQuo_1);
+    impl(level::Name::kLevelStatusQuo_2);
+    impl(level::Name::kLevelStatusQuo_3);
+    impl(level::Name::kLevelStatusQuo_4);
+
+    impl(level::Name::kLevelRoundtable_empty);
+    impl(level::Name::kLevelRoundtable_first);
+    impl(level::Name::kLevelRoundtable_second);
+    impl(level::Name::kLevelRoundtable_final);
 
     impl(level::Name::kLevelInterlude);
 
@@ -266,8 +279,8 @@ void IngameInterface::handleLevelSpecifics() const {
         break;
 
     switch (IngameMapHandler::instance->getLevel()) {     
-        IMPL(level::Name::kLevelWoodsLongLane)
-        IMPL(level::Name::kLevelWoodsCrossroadsFirst)
+        // IMPL(level::Name::kLevelWoodsLongLane)
+        // IMPL(level::Name::kLevelWoodsCrossroadsFirst)
         IMPL(level::Name::kLevelWhiteSpace)
 
         default: break;
@@ -315,70 +328,6 @@ bool IngameInterface::isPlayerWithinRange(std::pair<int, int> const& x_lim, std:
     }
 
     return result;
-}
-
-template <level::Name L>
-typename std::enable_if_t<L == level::Name::kLevelWoodsLongLane>
-IngameInterface::handleLevelSpecifics_impl() const {
-    static constexpr std::array<int, 5> verticalCheckpoints = { 42, 38, 34, 30, 26, };
-    static constexpr int verticalCheckpointFinal = 20;
-
-    switch (mProgress.get()) {
-        case 0:
-            if (isPlayerWithinRange({ -1, -1 }, { verticalCheckpoints[1] + 1, verticalCheckpoints[0] })) {
-                OmoriCat_0::invoke(&OmoriCat_0::syncPlayerMovement<false, true>);
-                OmoriCat_1::invoke(&OmoriCat_1::syncPlayerMovement<false, true>);
-                OmoriCat_2::invoke(&OmoriCat_2::syncPlayerMovement<false, true>);
-                OmoriCat_3::invoke(&OmoriCat_3::syncPlayerMovement<false, true>);
-                OmoriCat_4::invoke(&OmoriCat_4::syncPlayerMovement<false, true>);
-                OmoriCat_5::invoke(&OmoriCat_5::syncPlayerMovement<false, true>);
-                OmoriCat_6::invoke(&OmoriCat_6::syncPlayerMovement<false, true>);
-                OmoriCat_7::invoke(&OmoriCat_7::syncPlayerMovement<false, true>);
-            } else if (isPlayerWithinRange({ -1, -1 }, { verticalCheckpoints[2] + 1, verticalCheckpoints[1] })) {
-                OmoriCat_1::invoke(&OmoriCat_1::syncPlayerMovement<false, true>);
-                OmoriCat_2::invoke(&OmoriCat_2::syncPlayerMovement<false, true>);
-                OmoriCat_3::invoke(&OmoriCat_3::syncPlayerMovement<false, true>);
-                OmoriCat_4::invoke(&OmoriCat_4::syncPlayerMovement<false, true>);
-                OmoriCat_5::invoke(&OmoriCat_5::syncPlayerMovement<false, true>);
-                OmoriCat_6::invoke(&OmoriCat_6::syncPlayerMovement<false, true>);        
-            } else if (isPlayerWithinRange({ -1, -1 }, { verticalCheckpoints[3] + 1, verticalCheckpoints[2] })) {
-                OmoriCat_2::invoke(&OmoriCat_2::syncPlayerMovement<false, true>);
-                OmoriCat_3::invoke(&OmoriCat_3::syncPlayerMovement<false, true>);
-                OmoriCat_4::invoke(&OmoriCat_4::syncPlayerMovement<false, true>);
-                OmoriCat_5::invoke(&OmoriCat_5::syncPlayerMovement<false, true>);
-            } else if (isPlayerWithinRange({ -1, -1 }, { verticalCheckpoints[4] + 1, verticalCheckpoints[3] })) {
-                OmoriCat_3::invoke(&OmoriCat_3::syncPlayerMovement<false, true>);
-                OmoriCat_4::invoke(&OmoriCat_4::syncPlayerMovement<false, true>);
-            }
-
-            if (isPlayerWithinRange({ -1, -1 }, { -1, verticalCheckpointFinal })) mProgress.increment();
-            break;
-
-        case 1:
-            for (auto& instance : OmoriCat_0::instances) instance->mDestCoords.y = verticalCheckpoints[1];
-            for (auto& instance : OmoriCat_1::instances) instance->mDestCoords.y = verticalCheckpoints[2];
-            for (auto& instance : OmoriCat_2::instances) instance->mDestCoords.y = verticalCheckpoints[3];
-            for (auto& instance : OmoriCat_3::instances) instance->mDestCoords.y = verticalCheckpoints[4];
-            for (auto& instance : OmoriCat_4::instances) instance->mDestCoords.y = verticalCheckpoints[4];
-            for (auto& instance : OmoriCat_5::instances) instance->mDestCoords.y = verticalCheckpoints[3];
-            for (auto& instance : OmoriCat_6::instances) instance->mDestCoords.y = verticalCheckpoints[2];
-            for (auto& instance : OmoriCat_7::instances) instance->mDestCoords.y = verticalCheckpoints[1];
-            Invoker<INTERACTABLES>::invoke_onWindowChange();
-
-            mProgress.increment();
-            break;
-
-        default:
-            for (const auto& instance : OmoriCat_4::instances) if (instance->mDestCoords.y != verticalCheckpoints[4]) mProgress.set(1);
-    }
-}
-
-template <level::Name L>
-typename std::enable_if_t<L == level::Name::kLevelWoodsCrossroadsFirst>
-IngameInterface::handleLevelSpecifics_impl() const {
-    if (isPlayerWithinRange<true>({ -1, 2 }, { -1, -1 })) IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, std::vector<std::string>({
-        ".You had failed them, remember? You were unworthy.",
-    }));
 }
 
 template <level::Name L>

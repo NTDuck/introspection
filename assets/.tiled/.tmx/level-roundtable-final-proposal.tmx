@@ -124,7 +124,13 @@
   </object>
   <object id="15" name="shadow" type="interactable-omori-keeper" x="64" y="32" width="8" height="8">
    <properties>
-    <property name="dialogue-A" value=""/>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="This is the end."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
    </properties>
   </object>
   <object id="16" name="tp" type="teleporter" x="16" y="32" width="8" height="8">

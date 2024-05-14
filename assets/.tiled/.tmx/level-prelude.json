@@ -74,22 +74,22 @@
                 {
                  "height":8,
                  "id":3,
-                 "name":"to ep",
+                 "name":"tp",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":7
+                         "value":6
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":10
+                         "value":122
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-prologue-movement"
                         }],
                  "rotation":0,
                  "type":"teleporter",
@@ -100,23 +100,23 @@
                 }, 
                 {
                  "height":8,
-                 "id":4,
-                 "name":"to ep",
+                 "id":8,
+                 "name":"tp",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":7
+                         "value":6
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":10
+                         "value":122
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-prologue-movement"
                         }],
                  "rotation":0,
                  "type":"teleporter",
@@ -127,23 +127,23 @@
                 }, 
                 {
                  "height":8,
-                 "id":5,
-                 "name":"to ep",
+                 "id":9,
+                 "name":"tp",
                  "properties":[
                         {
                          "name":"target-dest-coords-x",
                          "type":"int",
-                         "value":7
+                         "value":6
                         }, 
                         {
                          "name":"target-dest-coords-y",
                          "type":"int",
-                         "value":10
+                         "value":122
                         }, 
                         {
                          "name":"target-level",
                          "type":"string",
-                         "value":"level-woods-entry-point"
+                         "value":"level-prologue-movement"
                         }],
                  "rotation":0,
                  "type":"teleporter",
@@ -159,7 +159,7 @@
          "y":0
         }],
  "nextlayerid":7,
- "nextobjectid":6,
+ "nextobjectid":10,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

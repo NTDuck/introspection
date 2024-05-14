@@ -149,15 +149,28 @@ Encapsulate all operations within a game state, therefore facilitating modular d
 #### Levels
 - **`level-prelude`**
 
-- **`level-woods-entry-point`**
-- **`level-woods-long-lane`**
-- **`level-woods-mystery-shack`**
-- **`level-woods-crossroads-first`**
-- **`level-woods-dead-end`**
-- **`level-woods-enemy-approaching-first`**
-- **`level-woods-enemy-approaching-final`**
-- **`level-woods-crossroads-final`**
-- **`level-woods-destined-death`**
+- **`level-prologue-movement`**
+- **`level-prologue-combat`**
+
+- **`level-suffering-empty-0`**
+- **`level-suffering-1-0`**
+- **`level-suffering-1-1`**
+- **`level-suffering-2-0`**
+- **`level-suffering-2-1`**
+- **`level-suffering-3-0`**
+- **`level-suffering-3-1`**
+- **`level-suffering-3-2`**
+
+- **`level-status-quo-0`**
+- **`level-status-quo-1`**
+- **`level-status-quo-2`**
+- **`level-status-quo-3`**
+- **`level-status-quo-4`**
+
+- **`level-roundtable-empty`**
+- **`level-roundtable-first-proposal`**
+- **`level-roundtable-second-proposal`**
+- **`level-roundtable-final-proposal`**
 
 - **`level-interlude`**
 

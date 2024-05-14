@@ -207,14 +207,6 @@ class IngameInterface final : public Singleton<IngameInterface> {
         bool isPlayerWithinRange(std::pair<int, int> const& x_lim, std::pair<int, int> const& y_lim) const;
 
         template <level::Name L>
-        typename std::enable_if_t<L == level::Name::kLevelWoodsLongLane>
-        handleLevelSpecifics_impl() const;
-
-        template <level::Name L>
-        typename std::enable_if_t<L == level::Name::kLevelWoodsCrossroadsFirst>
-        handleLevelSpecifics_impl() const;
-
-        template <level::Name L>
         typename std::enable_if_t<L == level::Name::kLevelWhiteSpace>
         handleLevelSpecifics_impl() const;
 

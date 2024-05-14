@@ -5,40 +5,80 @@
       "source": ".tmx/level-prelude.json"
     },
     {
-      "name": "level-woods-entry-point",
-      "source": ".tmx/level-woods-entry-point.json"
+      "name": "level-prologue-movement",
+      "source": ".tmx/level-prologue-movement.json"
     },
     {
-      "name": "level-woods-long-lane",
-      "source": ".tmx/level-woods-long-lane.json"
+      "name": "level-prologue-combat",
+      "source": ".tmx/level-prologue-combat.json"
     },
     {
-      "name": "level-woods-mystery-shack",
-      "source": ".tmx/level-woods-mystery-shack.json"
+      "name": "level-suffering-empty-0",
+      "source": ".tmx/level-suffering-empty-0.json"
     },
     {
-      "name": "level-woods-crossroads-first",
-      "source": ".tmx/level-woods-crossroads-first.json"
+      "name": "level-suffering-1-0",
+      "source": ".tmx/level-suffering-1-0.json"
     },
     {
-      "name": "level-woods-dead-end",
-      "source": ".tmx/level-woods-dead-end.json"
+      "name": "level-suffering-1-1",
+      "source": ".tmx/level-suffering-1-1.json"
     },
     {
-      "name": "level-woods-enemy-approaching-first",
-      "source": ".tmx/level-woods-enemy-approaching-first.json"
+      "name": "level-suffering-2-0",
+      "source": ".tmx/level-suffering-2-0.json"
     },
     {
-      "name": "level-woods-enemy-approaching-final",
-      "source": ".tmx/level-woods-enemy-approaching-final.json"
+      "name": "level-suffering-2-1",
+      "source": ".tmx/level-suffering-2-1.json"
     },
     {
-      "name": "level-woods-crossroads-final",
-      "source": ".tmx/level-woods-crossroads-final.json"
+      "name": "level-suffering-3-0",
+      "source": ".tmx/level-suffering-3-0.json"
     },
     {
-      "name": "level-woods-destined-death",
-      "source": ".tmx/level-woods-destined-death.json"
+      "name": "level-suffering-3-1",
+      "source": ".tmx/level-suffering-3-1.json"
+    },
+    {
+      "name": "level-suffering-3-2",
+      "source": ".tmx/level-suffering-3-2.json"
+    },
+    {
+      "name": "level-status-quo-0",
+      "source": ".tmx/level-status-quo-0.json"
+    },
+    {
+      "name": "level-status-quo-1",
+      "source": ".tmx/level-status-quo-1.json"
+    },
+    {
+      "name": "level-status-quo-2",
+      "source": ".tmx/level-status-quo-2.json"
+    },
+    {
+      "name": "level-status-quo-3",
+      "source": ".tmx/level-status-quo-3.json"
+    },
+    {
+      "name": "level-status-quo-4",
+      "source": ".tmx/level-status-quo-4.json"
+    },
+    {
+      "name": "level-roundtable-empty",
+      "source": ".tmx/level-roundtable-empty.json"
+    },
+    {
+      "name": "level-roundtable-first-proposal",
+      "source": ".tmx/level-roundtable-first-proposal.json"
+    },
+    {
+      "name": "level-roundtable-second-proposal",
+      "source": ".tmx/level-roundtable-second-proposal.json"
+    },
+    {
+      "name": "level-roundtable-final-proposal",
+      "source": ".tmx/level-roundtable-final-proposal.json"
     },
     {
       "name": "level-interlude",

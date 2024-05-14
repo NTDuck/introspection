@@ -65,13 +65,14 @@ class Mixer final : Singleton<Mixer> {
         };
 
         std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
-            { level::Name::kLevelWoodsEntryPoint, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-lacunar-amnesia.mp3") },
-            { level::Name::kLevelWoodsLongLane, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-persistent-repetition-of-phrases.mp3") },
-            { level::Name::kLevelWoodsMysteryShack, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-rosy-retrospection.mp3") },
-            { level::Name::kLevelWoodsCrossroadsFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-past-life-regression.mp3") },
-            { level::Name::kLevelWoodsEnemyApproachingFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-unmasking-alzheimers.mp3") },
-            { level::Name::kLevelWoodsEnemyApproachingFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-von-restorff-effect.mp3") },
-            { level::Name::kLevelWoodsCrossroadsFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-false-memory-syndrome.mp3") },
+            // { level::Name::kLevelWoodsEntryPoint, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-lacunar-amnesia.mp3") },
+            // { level::Name::kLevelWoodsLongLane, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-persistent-repetition-of-phrases.mp3") },
+            // { level::Name::kLevelWoodsMysteryShack, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-rosy-retrospection.mp3") },
+            // { level::Name::kLevelWoodsCrossroadsFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-past-life-regression.mp3") },
+            // { level::Name::kLevelWoodsEnemyApproachingFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-unmasking-alzheimers.mp3") },
+            // { level::Name::kLevelWoodsEnemyApproachingFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-von-restorff-effect.mp3") },
+            // { level::Name::kLevelWoodsCrossroadsFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-false-memory-syndrome.mp3") },
+            
             { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
         };
 

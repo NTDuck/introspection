@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="128" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="29">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="128" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="30">
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
  <layer id="2" name="static-collision" width="16" height="128">
@@ -112,5 +112,6 @@
     <property name="target-level" value="level-status-quo-0"/>
    </properties>
   </object>
+  <object id="29" x="48" y="976" width="8" height="8"/>
  </objectgroup>
 </map>
