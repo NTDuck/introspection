@@ -477,6 +477,17 @@
                  "width":8,
                  "x":120,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":18,
+                 "name":"boss fast",
+                 "rotation":0,
+                 "type":"hostile-nightborne",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":80
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -485,7 +496,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":18,
+ "nextobjectid":19,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

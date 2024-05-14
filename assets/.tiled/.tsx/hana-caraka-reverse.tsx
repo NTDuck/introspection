@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.10.2" name="hana-caraka-reverse" tilewidth="40" tileheight="40" tilecount="144" columns="12">
-<properties>
+ <properties>
   <property name="animation-attack-meele=e" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="96"/>
@@ -154,7 +154,7 @@
     <property name="stopGID" type="int" value="67"/>
    </properties>
   </property>
-  <property name="animation-ticks" type="int" value="200"/>
+  <property name="animation-ticks" type="int" value="144"/>
   <property name="animation-walk=e" type="class" propertytype="animation">
    <properties>
     <property name="stopGID" type="int" value="7"/>

@@ -805,48 +805,14 @@
                 }, 
                 {
                  "height":8,
-                 "id":30,
-                 "name":"zombie",
+                 "id":34,
+                 "name":"boss first",
                  "rotation":0,
-                 "type":"hostile-zombie",
-                 "visible":true,
-                 "width":8,
-                 "x":64,
-                 "y":88
-                }, 
-                {
-                 "height":8,
-                 "id":31,
-                 "name":"zombie",
-                 "rotation":0,
-                 "type":"hostile-zombie",
-                 "visible":true,
-                 "width":8,
-                 "x":32,
-                 "y":104
-                }, 
-                {
-                 "height":8,
-                 "id":32,
-                 "name":"zombie",
-                 "rotation":0,
-                 "type":"hostile-zombie",
-                 "visible":true,
-                 "width":8,
-                 "x":88,
-                 "y":104
-                },
-            
-                {
-                 "height":8,
-                 "id":33,
-                 "name":"zombie",
-                 "rotation":0,
-                 "type":"hostile-zombie",
+                 "type":"hostile-red-hood",
                  "visible":true,
                  "width":8,
                  "x":56,
-                 "y":120
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -855,7 +821,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":34,
+ "nextobjectid":35,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

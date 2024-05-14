@@ -318,28 +318,6 @@
                 }, 
                 {
                  "height":8,
-                 "id":53,
-                 "name":"microwave",
-                 "rotation":0,
-                 "type":"hostile-microwave",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":40
-                }, 
-                {
-                 "height":8,
-                 "id":54,
-                 "name":"bulldozer",
-                 "rotation":0,
-                 "type":"hostile-bulldozer",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":80
-                }, 
-                {
-                 "height":8,
                  "id":55,
                  "name":"crow",
                  "rotation":0,
@@ -348,6 +326,28 @@
                  "width":8,
                  "x":112,
                  "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":56,
+                 "name":"commoner",
+                 "rotation":0,
+                 "type":"hostile-satyr",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":48
+                }, 
+                {
+                 "height":8,
+                 "id":57,
+                 "name":"commoner old",
+                 "rotation":0,
+                 "type":"hostile-hooded",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":88
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -356,7 +356,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":56,
+ "nextobjectid":58,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

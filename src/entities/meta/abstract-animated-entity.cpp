@@ -130,9 +130,15 @@ template class AbstractAnimatedEntity<OmoriCat_7>;
 template class AbstractAnimatedEntity<PlaceholderTeleporter>;
 template class AbstractAnimatedEntity<RedHandThrone>;
 
-template class AbstractAnimatedEntity<PlagueCrow>;
-template class AbstractAnimatedEntity<Microwave>;
-template class AbstractAnimatedEntity<Bulldozer>;
+template class AbstractAnimatedEntity<CommonHooded>;
+template class AbstractAnimatedEntity<CommonSatyr>;
+template class AbstractAnimatedEntity<CommonChickenBoy>;
+template class AbstractAnimatedEntity<ElitePlagueCrow>;
+template class AbstractAnimatedEntity<EliteDarkSamurai>;
+template class AbstractAnimatedEntity<BossRedHood>;
+template class AbstractAnimatedEntity<BossNightBorne>;
+template class AbstractAnimatedEntity<Egg>;
+template class AbstractAnimatedEntity<EnergySphere>;
 
 template class AbstractAnimatedEntity<Darkness>;
 template class AbstractAnimatedEntity<Slash>;

@@ -531,6 +531,73 @@
                  "width":8,
                  "x":176,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":20,
+                 "name":"crow",
+                 "rotation":0,
+                 "type":"hostile-plague-crow",
+                 "visible":true,
+                 "width":8,
+                 "x":152,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":21,
+                 "name":"crow",
+                 "rotation":0,
+                 "type":"hostile-plague-crow",
+                 "visible":true,
+                 "width":8,
+                 "x":168,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":22,
+                 "name":"crow",
+                 "rotation":0,
+                 "type":"hostile-plague-crow",
+                 "visible":true,
+                 "width":8,
+                 "x":144,
+                 "y":24
+                }, 
+                {
+                 "height":8,
+                 "id":23,
+                 "name":"fast one",
+                 "rotation":0,
+                 "type":"hostile-dark-samurai",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":48
+                }, 
+                {
+                 "height":8,
+                 "id":24,
+                 "name":"fast one",
+                 "rotation":0,
+                 "type":"hostile-dark-samurai",
+                 "visible":true,
+                 "width":8,
+                 "x":80,
+                 "y":40
+                },
+            
+                {
+                 "height":8,
+                 "id":25,
+                 "name":"fast one",
+                 "rotation":0,
+                 "type":"hostile-dark-samurai",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":24
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -539,7 +606,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":20,
+ "nextobjectid":26,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

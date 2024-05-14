@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="54">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="426">
+ <editorsettings>
+  <export target="level-suffering-3-2.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
  <layer id="2" name="static-collision" width="24" height="24">
@@ -168,5 +171,361 @@
     <property name="target-level" value="level-status-quo-4"/>
    </properties>
   </object>
+  <object id="54" name="commoner" type="hostile-satyr" x="24" y="160" width="8" height="8"/>
+  <object id="55" name="commoner old" type="hostile-hooded" x="16" y="160" width="8" height="8"/>
+  <object id="58" name="commoner" type="hostile-satyr" x="168" y="160" width="8" height="8"/>
+  <object id="59" name="commoner old" type="hostile-hooded" x="160" y="160" width="8" height="8"/>
+  <object id="60" name="commoner" type="hostile-satyr" x="16" y="152" width="8" height="8"/>
+  <object id="61" name="commoner old" type="hostile-hooded" x="8" y="152" width="8" height="8"/>
+  <object id="62" name="commoner" type="hostile-satyr" x="32" y="152" width="8" height="8"/>
+  <object id="63" name="commoner old" type="hostile-hooded" x="24" y="152" width="8" height="8"/>
+  <object id="64" name="commoner" type="hostile-satyr" x="48" y="152" width="8" height="8"/>
+  <object id="65" name="commoner old" type="hostile-hooded" x="40" y="152" width="8" height="8"/>
+  <object id="66" name="commoner" type="hostile-satyr" x="64" y="152" width="8" height="8"/>
+  <object id="67" name="commoner old" type="hostile-hooded" x="56" y="152" width="8" height="8"/>
+  <object id="80" name="commoner" type="hostile-satyr" x="80" y="152" width="8" height="8"/>
+  <object id="81" name="commoner old" type="hostile-hooded" x="72" y="152" width="8" height="8"/>
+  <object id="82" name="commoner" type="hostile-satyr" x="96" y="152" width="8" height="8"/>
+  <object id="83" name="commoner old" type="hostile-hooded" x="88" y="152" width="8" height="8"/>
+  <object id="84" name="commoner" type="hostile-satyr" x="112" y="152" width="8" height="8"/>
+  <object id="85" name="commoner old" type="hostile-hooded" x="104" y="152" width="8" height="8"/>
+  <object id="86" name="commoner" type="hostile-satyr" x="128" y="152" width="8" height="8"/>
+  <object id="87" name="commoner old" type="hostile-hooded" x="120" y="152" width="8" height="8"/>
+  <object id="88" name="commoner" type="hostile-satyr" x="144" y="152" width="8" height="8"/>
+  <object id="89" name="commoner old" type="hostile-hooded" x="136" y="152" width="8" height="8"/>
+  <object id="90" name="commoner" type="hostile-satyr" x="160" y="152" width="8" height="8"/>
+  <object id="91" name="commoner old" type="hostile-hooded" x="152" y="152" width="8" height="8"/>
+  <object id="92" name="commoner" type="hostile-satyr" x="176" y="152" width="8" height="8"/>
+  <object id="93" name="commoner old" type="hostile-hooded" x="168" y="152" width="8" height="8"/>
+  <object id="96" name="commoner" type="hostile-satyr" x="24" y="144" width="8" height="8"/>
+  <object id="97" name="commoner old" type="hostile-hooded" x="16" y="144" width="8" height="8"/>
+  <object id="98" name="commoner" type="hostile-satyr" x="40" y="144" width="8" height="8"/>
+  <object id="99" name="commoner old" type="hostile-hooded" x="32" y="144" width="8" height="8"/>
+  <object id="100" name="commoner" type="hostile-satyr" x="56" y="144" width="8" height="8"/>
+  <object id="101" name="commoner old" type="hostile-hooded" x="48" y="144" width="8" height="8"/>
+  <object id="102" name="commoner" type="hostile-satyr" x="72" y="144" width="8" height="8"/>
+  <object id="103" name="commoner old" type="hostile-hooded" x="64" y="144" width="8" height="8"/>
+  <object id="104" name="commoner" type="hostile-satyr" x="88" y="144" width="8" height="8"/>
+  <object id="105" name="commoner old" type="hostile-hooded" x="80" y="144" width="8" height="8"/>
+  <object id="106" name="commoner" type="hostile-satyr" x="104" y="144" width="8" height="8"/>
+  <object id="107" name="commoner old" type="hostile-hooded" x="96" y="144" width="8" height="8"/>
+  <object id="108" name="commoner" type="hostile-satyr" x="120" y="144" width="8" height="8"/>
+  <object id="109" name="commoner old" type="hostile-hooded" x="112" y="144" width="8" height="8"/>
+  <object id="110" name="commoner" type="hostile-satyr" x="136" y="144" width="8" height="8"/>
+  <object id="111" name="commoner old" type="hostile-hooded" x="128" y="144" width="8" height="8"/>
+  <object id="112" name="commoner" type="hostile-satyr" x="152" y="144" width="8" height="8"/>
+  <object id="113" name="commoner old" type="hostile-hooded" x="144" y="144" width="8" height="8"/>
+  <object id="114" name="commoner" type="hostile-satyr" x="168" y="144" width="8" height="8"/>
+  <object id="115" name="commoner old" type="hostile-hooded" x="160" y="144" width="8" height="8"/>
+  <object id="116" name="commoner old" type="hostile-hooded" x="176" y="144" width="8" height="8"/>
+  <object id="117" name="commoner" type="hostile-satyr" x="8" y="144" width="8" height="8"/>
+  <object id="118" name="commoner" type="hostile-satyr" x="16" y="136" width="8" height="8"/>
+  <object id="119" name="commoner old" type="hostile-hooded" x="8" y="136" width="8" height="8"/>
+  <object id="120" name="commoner" type="hostile-satyr" x="32" y="136" width="8" height="8"/>
+  <object id="121" name="commoner old" type="hostile-hooded" x="24" y="136" width="8" height="8"/>
+  <object id="122" name="commoner" type="hostile-satyr" x="48" y="136" width="8" height="8"/>
+  <object id="123" name="commoner old" type="hostile-hooded" x="40" y="136" width="8" height="8"/>
+  <object id="124" name="commoner" type="hostile-satyr" x="64" y="136" width="8" height="8"/>
+  <object id="125" name="commoner old" type="hostile-hooded" x="56" y="136" width="8" height="8"/>
+  <object id="126" name="commoner" type="hostile-satyr" x="80" y="136" width="8" height="8"/>
+  <object id="127" name="commoner old" type="hostile-hooded" x="72" y="136" width="8" height="8"/>
+  <object id="128" name="commoner" type="hostile-satyr" x="96" y="136" width="8" height="8"/>
+  <object id="129" name="commoner old" type="hostile-hooded" x="88" y="136" width="8" height="8"/>
+  <object id="130" name="commoner" type="hostile-satyr" x="112" y="136" width="8" height="8"/>
+  <object id="131" name="commoner old" type="hostile-hooded" x="104" y="136" width="8" height="8"/>
+  <object id="132" name="commoner" type="hostile-satyr" x="128" y="136" width="8" height="8"/>
+  <object id="133" name="commoner old" type="hostile-hooded" x="120" y="136" width="8" height="8"/>
+  <object id="134" name="commoner" type="hostile-satyr" x="144" y="136" width="8" height="8"/>
+  <object id="135" name="commoner old" type="hostile-hooded" x="136" y="136" width="8" height="8"/>
+  <object id="136" name="commoner" type="hostile-satyr" x="160" y="136" width="8" height="8"/>
+  <object id="137" name="commoner old" type="hostile-hooded" x="152" y="136" width="8" height="8"/>
+  <object id="138" name="commoner" type="hostile-satyr" x="176" y="136" width="8" height="8"/>
+  <object id="139" name="commoner old" type="hostile-hooded" x="168" y="136" width="8" height="8"/>
+  <object id="140" name="commoner" type="hostile-satyr" x="24" y="128" width="8" height="8"/>
+  <object id="141" name="commoner old" type="hostile-hooded" x="16" y="128" width="8" height="8"/>
+  <object id="142" name="commoner" type="hostile-satyr" x="40" y="128" width="8" height="8"/>
+  <object id="143" name="commoner old" type="hostile-hooded" x="32" y="128" width="8" height="8"/>
+  <object id="144" name="commoner" type="hostile-satyr" x="56" y="128" width="8" height="8"/>
+  <object id="145" name="commoner old" type="hostile-hooded" x="48" y="128" width="8" height="8"/>
+  <object id="146" name="commoner" type="hostile-satyr" x="72" y="128" width="8" height="8"/>
+  <object id="147" name="commoner old" type="hostile-hooded" x="64" y="128" width="8" height="8"/>
+  <object id="148" name="commoner" type="hostile-satyr" x="88" y="128" width="8" height="8"/>
+  <object id="149" name="commoner old" type="hostile-hooded" x="80" y="128" width="8" height="8"/>
+  <object id="150" name="commoner" type="hostile-satyr" x="104" y="128" width="8" height="8"/>
+  <object id="151" name="commoner old" type="hostile-hooded" x="96" y="128" width="8" height="8"/>
+  <object id="152" name="commoner" type="hostile-satyr" x="120" y="128" width="8" height="8"/>
+  <object id="153" name="commoner old" type="hostile-hooded" x="112" y="128" width="8" height="8"/>
+  <object id="154" name="commoner" type="hostile-satyr" x="136" y="128" width="8" height="8"/>
+  <object id="155" name="commoner old" type="hostile-hooded" x="128" y="128" width="8" height="8"/>
+  <object id="156" name="commoner" type="hostile-satyr" x="152" y="128" width="8" height="8"/>
+  <object id="157" name="commoner old" type="hostile-hooded" x="144" y="128" width="8" height="8"/>
+  <object id="158" name="commoner" type="hostile-satyr" x="168" y="128" width="8" height="8"/>
+  <object id="159" name="commoner old" type="hostile-hooded" x="160" y="128" width="8" height="8"/>
+  <object id="160" name="commoner old" type="hostile-hooded" x="176" y="128" width="8" height="8"/>
+  <object id="161" name="commoner" type="hostile-satyr" x="8" y="128" width="8" height="8"/>
+  <object id="162" name="commoner" type="hostile-satyr" x="16" y="120" width="8" height="8"/>
+  <object id="163" name="commoner old" type="hostile-hooded" x="8" y="120" width="8" height="8"/>
+  <object id="164" name="commoner" type="hostile-satyr" x="32" y="120" width="8" height="8"/>
+  <object id="165" name="commoner old" type="hostile-hooded" x="24" y="120" width="8" height="8"/>
+  <object id="166" name="commoner" type="hostile-satyr" x="48" y="120" width="8" height="8"/>
+  <object id="167" name="commoner old" type="hostile-hooded" x="40" y="120" width="8" height="8"/>
+  <object id="168" name="commoner" type="hostile-satyr" x="64" y="120" width="8" height="8"/>
+  <object id="169" name="commoner old" type="hostile-hooded" x="56" y="120" width="8" height="8"/>
+  <object id="170" name="commoner" type="hostile-satyr" x="80" y="120" width="8" height="8"/>
+  <object id="171" name="commoner old" type="hostile-hooded" x="72" y="120" width="8" height="8"/>
+  <object id="172" name="commoner" type="hostile-satyr" x="96" y="120" width="8" height="8"/>
+  <object id="173" name="commoner old" type="hostile-hooded" x="88" y="120" width="8" height="8"/>
+  <object id="174" name="commoner" type="hostile-satyr" x="112" y="120" width="8" height="8"/>
+  <object id="175" name="commoner old" type="hostile-hooded" x="104" y="120" width="8" height="8"/>
+  <object id="176" name="commoner" type="hostile-satyr" x="128" y="120" width="8" height="8"/>
+  <object id="177" name="commoner old" type="hostile-hooded" x="120" y="120" width="8" height="8"/>
+  <object id="178" name="commoner" type="hostile-satyr" x="144" y="120" width="8" height="8"/>
+  <object id="179" name="commoner old" type="hostile-hooded" x="136" y="120" width="8" height="8"/>
+  <object id="180" name="commoner" type="hostile-satyr" x="160" y="120" width="8" height="8"/>
+  <object id="181" name="commoner old" type="hostile-hooded" x="152" y="120" width="8" height="8"/>
+  <object id="182" name="commoner" type="hostile-satyr" x="176" y="120" width="8" height="8"/>
+  <object id="183" name="commoner old" type="hostile-hooded" x="168" y="120" width="8" height="8"/>
+  <object id="184" name="commoner" type="hostile-satyr" x="24" y="112" width="8" height="8"/>
+  <object id="185" name="commoner old" type="hostile-hooded" x="16" y="112" width="8" height="8"/>
+  <object id="186" name="commoner" type="hostile-satyr" x="40" y="112" width="8" height="8"/>
+  <object id="187" name="commoner old" type="hostile-hooded" x="32" y="112" width="8" height="8"/>
+  <object id="188" name="commoner" type="hostile-satyr" x="56" y="112" width="8" height="8"/>
+  <object id="189" name="commoner old" type="hostile-hooded" x="48" y="112" width="8" height="8"/>
+  <object id="190" name="commoner" type="hostile-satyr" x="72" y="112" width="8" height="8"/>
+  <object id="191" name="commoner old" type="hostile-hooded" x="64" y="112" width="8" height="8"/>
+  <object id="192" name="commoner" type="hostile-satyr" x="88" y="112" width="8" height="8"/>
+  <object id="193" name="commoner old" type="hostile-hooded" x="80" y="112" width="8" height="8"/>
+  <object id="194" name="commoner" type="hostile-satyr" x="104" y="112" width="8" height="8"/>
+  <object id="195" name="commoner old" type="hostile-hooded" x="96" y="112" width="8" height="8"/>
+  <object id="196" name="commoner" type="hostile-satyr" x="120" y="112" width="8" height="8"/>
+  <object id="197" name="commoner old" type="hostile-hooded" x="112" y="112" width="8" height="8"/>
+  <object id="198" name="commoner" type="hostile-satyr" x="136" y="112" width="8" height="8"/>
+  <object id="199" name="commoner old" type="hostile-hooded" x="128" y="112" width="8" height="8"/>
+  <object id="200" name="commoner" type="hostile-satyr" x="152" y="112" width="8" height="8"/>
+  <object id="201" name="commoner old" type="hostile-hooded" x="144" y="112" width="8" height="8"/>
+  <object id="202" name="commoner" type="hostile-satyr" x="168" y="112" width="8" height="8"/>
+  <object id="203" name="commoner old" type="hostile-hooded" x="160" y="112" width="8" height="8"/>
+  <object id="204" name="commoner old" type="hostile-hooded" x="176" y="112" width="8" height="8"/>
+  <object id="205" name="commoner" type="hostile-satyr" x="8" y="112" width="8" height="8"/>
+  <object id="206" name="commoner" type="hostile-satyr" x="16" y="104" width="8" height="8"/>
+  <object id="207" name="commoner old" type="hostile-hooded" x="8" y="104" width="8" height="8"/>
+  <object id="208" name="commoner" type="hostile-satyr" x="32" y="104" width="8" height="8"/>
+  <object id="209" name="commoner old" type="hostile-hooded" x="24" y="104" width="8" height="8"/>
+  <object id="210" name="commoner" type="hostile-satyr" x="48" y="104" width="8" height="8"/>
+  <object id="211" name="commoner old" type="hostile-hooded" x="40" y="104" width="8" height="8"/>
+  <object id="212" name="commoner" type="hostile-satyr" x="64" y="104" width="8" height="8"/>
+  <object id="213" name="commoner old" type="hostile-hooded" x="56" y="104" width="8" height="8"/>
+  <object id="214" name="commoner" type="hostile-satyr" x="80" y="104" width="8" height="8"/>
+  <object id="215" name="commoner old" type="hostile-hooded" x="72" y="104" width="8" height="8"/>
+  <object id="216" name="commoner" type="hostile-satyr" x="96" y="104" width="8" height="8"/>
+  <object id="217" name="commoner old" type="hostile-hooded" x="88" y="104" width="8" height="8"/>
+  <object id="218" name="commoner" type="hostile-satyr" x="112" y="104" width="8" height="8"/>
+  <object id="219" name="commoner old" type="hostile-hooded" x="104" y="104" width="8" height="8"/>
+  <object id="220" name="commoner" type="hostile-satyr" x="128" y="104" width="8" height="8"/>
+  <object id="221" name="commoner old" type="hostile-hooded" x="120" y="104" width="8" height="8"/>
+  <object id="222" name="commoner" type="hostile-satyr" x="144" y="104" width="8" height="8"/>
+  <object id="223" name="commoner old" type="hostile-hooded" x="136" y="104" width="8" height="8"/>
+  <object id="224" name="commoner" type="hostile-satyr" x="160" y="104" width="8" height="8"/>
+  <object id="225" name="commoner old" type="hostile-hooded" x="152" y="104" width="8" height="8"/>
+  <object id="226" name="commoner" type="hostile-satyr" x="176" y="104" width="8" height="8"/>
+  <object id="227" name="commoner old" type="hostile-hooded" x="168" y="104" width="8" height="8"/>
+  <object id="228" name="commoner" type="hostile-satyr" x="24" y="96" width="8" height="8"/>
+  <object id="229" name="commoner old" type="hostile-hooded" x="16" y="96" width="8" height="8"/>
+  <object id="230" name="commoner" type="hostile-satyr" x="40" y="96" width="8" height="8"/>
+  <object id="231" name="commoner old" type="hostile-hooded" x="32" y="96" width="8" height="8"/>
+  <object id="232" name="commoner" type="hostile-satyr" x="56" y="96" width="8" height="8"/>
+  <object id="233" name="commoner old" type="hostile-hooded" x="48" y="96" width="8" height="8"/>
+  <object id="234" name="commoner" type="hostile-satyr" x="72" y="96" width="8" height="8"/>
+  <object id="235" name="commoner old" type="hostile-hooded" x="64" y="96" width="8" height="8"/>
+  <object id="236" name="commoner" type="hostile-satyr" x="88" y="96" width="8" height="8"/>
+  <object id="237" name="commoner old" type="hostile-hooded" x="80" y="96" width="8" height="8"/>
+  <object id="238" name="commoner" type="hostile-satyr" x="104" y="96" width="8" height="8"/>
+  <object id="239" name="commoner old" type="hostile-hooded" x="96" y="96" width="8" height="8"/>
+  <object id="240" name="commoner" type="hostile-satyr" x="120" y="96" width="8" height="8"/>
+  <object id="241" name="commoner old" type="hostile-hooded" x="112" y="96" width="8" height="8"/>
+  <object id="242" name="commoner" type="hostile-satyr" x="136" y="96" width="8" height="8"/>
+  <object id="243" name="commoner old" type="hostile-hooded" x="128" y="96" width="8" height="8"/>
+  <object id="244" name="commoner" type="hostile-satyr" x="152" y="96" width="8" height="8"/>
+  <object id="245" name="commoner old" type="hostile-hooded" x="144" y="96" width="8" height="8"/>
+  <object id="246" name="commoner" type="hostile-satyr" x="168" y="96" width="8" height="8"/>
+  <object id="247" name="commoner old" type="hostile-hooded" x="160" y="96" width="8" height="8"/>
+  <object id="248" name="commoner old" type="hostile-hooded" x="176" y="96" width="8" height="8"/>
+  <object id="249" name="commoner" type="hostile-satyr" x="8" y="96" width="8" height="8"/>
+  <object id="250" name="commoner" type="hostile-satyr" x="16" y="88" width="8" height="8"/>
+  <object id="251" name="commoner old" type="hostile-hooded" x="8" y="88" width="8" height="8"/>
+  <object id="252" name="commoner" type="hostile-satyr" x="32" y="88" width="8" height="8"/>
+  <object id="253" name="commoner old" type="hostile-hooded" x="24" y="88" width="8" height="8"/>
+  <object id="254" name="commoner" type="hostile-satyr" x="48" y="88" width="8" height="8"/>
+  <object id="255" name="commoner old" type="hostile-hooded" x="40" y="88" width="8" height="8"/>
+  <object id="256" name="commoner" type="hostile-satyr" x="64" y="88" width="8" height="8"/>
+  <object id="257" name="commoner old" type="hostile-hooded" x="56" y="88" width="8" height="8"/>
+  <object id="258" name="commoner" type="hostile-satyr" x="80" y="88" width="8" height="8"/>
+  <object id="259" name="commoner old" type="hostile-hooded" x="72" y="88" width="8" height="8"/>
+  <object id="260" name="commoner" type="hostile-satyr" x="96" y="88" width="8" height="8"/>
+  <object id="261" name="commoner old" type="hostile-hooded" x="88" y="88" width="8" height="8"/>
+  <object id="262" name="commoner" type="hostile-satyr" x="112" y="88" width="8" height="8"/>
+  <object id="263" name="commoner old" type="hostile-hooded" x="104" y="88" width="8" height="8"/>
+  <object id="264" name="commoner" type="hostile-satyr" x="128" y="88" width="8" height="8"/>
+  <object id="265" name="commoner old" type="hostile-hooded" x="120" y="88" width="8" height="8"/>
+  <object id="266" name="commoner" type="hostile-satyr" x="144" y="88" width="8" height="8"/>
+  <object id="267" name="commoner old" type="hostile-hooded" x="136" y="88" width="8" height="8"/>
+  <object id="268" name="commoner" type="hostile-satyr" x="160" y="88" width="8" height="8"/>
+  <object id="269" name="commoner old" type="hostile-hooded" x="152" y="88" width="8" height="8"/>
+  <object id="270" name="commoner" type="hostile-satyr" x="176" y="88" width="8" height="8"/>
+  <object id="271" name="commoner old" type="hostile-hooded" x="168" y="88" width="8" height="8"/>
+  <object id="272" name="commoner" type="hostile-satyr" x="24" y="80" width="8" height="8"/>
+  <object id="273" name="commoner old" type="hostile-hooded" x="16" y="80" width="8" height="8"/>
+  <object id="274" name="commoner" type="hostile-satyr" x="40" y="80" width="8" height="8"/>
+  <object id="275" name="commoner old" type="hostile-hooded" x="32" y="80" width="8" height="8"/>
+  <object id="276" name="commoner" type="hostile-satyr" x="56" y="80" width="8" height="8"/>
+  <object id="277" name="commoner old" type="hostile-hooded" x="48" y="80" width="8" height="8"/>
+  <object id="278" name="commoner" type="hostile-satyr" x="72" y="80" width="8" height="8"/>
+  <object id="279" name="commoner old" type="hostile-hooded" x="64" y="80" width="8" height="8"/>
+  <object id="280" name="commoner" type="hostile-satyr" x="88" y="80" width="8" height="8"/>
+  <object id="281" name="commoner old" type="hostile-hooded" x="80" y="80" width="8" height="8"/>
+  <object id="282" name="commoner" type="hostile-satyr" x="104" y="80" width="8" height="8"/>
+  <object id="283" name="commoner old" type="hostile-hooded" x="96" y="80" width="8" height="8"/>
+  <object id="284" name="commoner" type="hostile-satyr" x="120" y="80" width="8" height="8"/>
+  <object id="285" name="commoner old" type="hostile-hooded" x="112" y="80" width="8" height="8"/>
+  <object id="286" name="commoner" type="hostile-satyr" x="136" y="80" width="8" height="8"/>
+  <object id="287" name="commoner old" type="hostile-hooded" x="128" y="80" width="8" height="8"/>
+  <object id="288" name="commoner" type="hostile-satyr" x="152" y="80" width="8" height="8"/>
+  <object id="289" name="commoner old" type="hostile-hooded" x="144" y="80" width="8" height="8"/>
+  <object id="290" name="commoner" type="hostile-satyr" x="168" y="80" width="8" height="8"/>
+  <object id="291" name="commoner old" type="hostile-hooded" x="160" y="80" width="8" height="8"/>
+  <object id="292" name="commoner old" type="hostile-hooded" x="176" y="80" width="8" height="8"/>
+  <object id="293" name="commoner" type="hostile-satyr" x="8" y="80" width="8" height="8"/>
+  <object id="294" name="commoner" type="hostile-satyr" x="16" y="72" width="8" height="8"/>
+  <object id="295" name="commoner old" type="hostile-hooded" x="8" y="72" width="8" height="8"/>
+  <object id="296" name="commoner" type="hostile-satyr" x="32" y="72" width="8" height="8"/>
+  <object id="297" name="commoner old" type="hostile-hooded" x="24" y="72" width="8" height="8"/>
+  <object id="298" name="commoner" type="hostile-satyr" x="48" y="72" width="8" height="8"/>
+  <object id="299" name="commoner old" type="hostile-hooded" x="40" y="72" width="8" height="8"/>
+  <object id="300" name="commoner" type="hostile-satyr" x="64" y="72" width="8" height="8"/>
+  <object id="301" name="commoner old" type="hostile-hooded" x="56" y="72" width="8" height="8"/>
+  <object id="302" name="commoner" type="hostile-satyr" x="80" y="72" width="8" height="8"/>
+  <object id="303" name="commoner old" type="hostile-hooded" x="72" y="72" width="8" height="8"/>
+  <object id="304" name="commoner" type="hostile-satyr" x="96" y="72" width="8" height="8"/>
+  <object id="305" name="commoner old" type="hostile-hooded" x="88" y="72" width="8" height="8"/>
+  <object id="306" name="commoner" type="hostile-satyr" x="112" y="72" width="8" height="8"/>
+  <object id="307" name="commoner old" type="hostile-hooded" x="104" y="72" width="8" height="8"/>
+  <object id="308" name="commoner" type="hostile-satyr" x="128" y="72" width="8" height="8"/>
+  <object id="309" name="commoner old" type="hostile-hooded" x="120" y="72" width="8" height="8"/>
+  <object id="310" name="commoner" type="hostile-satyr" x="144" y="72" width="8" height="8"/>
+  <object id="311" name="commoner old" type="hostile-hooded" x="136" y="72" width="8" height="8"/>
+  <object id="312" name="commoner" type="hostile-satyr" x="160" y="72" width="8" height="8"/>
+  <object id="313" name="commoner old" type="hostile-hooded" x="152" y="72" width="8" height="8"/>
+  <object id="314" name="commoner" type="hostile-satyr" x="176" y="72" width="8" height="8"/>
+  <object id="315" name="commoner old" type="hostile-hooded" x="168" y="72" width="8" height="8"/>
+  <object id="316" name="commoner" type="hostile-satyr" x="24" y="64" width="8" height="8"/>
+  <object id="317" name="commoner old" type="hostile-hooded" x="16" y="64" width="8" height="8"/>
+  <object id="318" name="commoner" type="hostile-satyr" x="40" y="64" width="8" height="8"/>
+  <object id="319" name="commoner old" type="hostile-hooded" x="32" y="64" width="8" height="8"/>
+  <object id="320" name="commoner" type="hostile-satyr" x="56" y="64" width="8" height="8"/>
+  <object id="321" name="commoner old" type="hostile-hooded" x="48" y="64" width="8" height="8"/>
+  <object id="322" name="commoner" type="hostile-satyr" x="72" y="64" width="8" height="8"/>
+  <object id="323" name="commoner old" type="hostile-hooded" x="64" y="64" width="8" height="8"/>
+  <object id="324" name="commoner" type="hostile-satyr" x="88" y="64" width="8" height="8"/>
+  <object id="325" name="commoner old" type="hostile-hooded" x="80" y="64" width="8" height="8"/>
+  <object id="326" name="commoner" type="hostile-satyr" x="104" y="64" width="8" height="8"/>
+  <object id="327" name="commoner old" type="hostile-hooded" x="96" y="64" width="8" height="8"/>
+  <object id="328" name="commoner" type="hostile-satyr" x="120" y="64" width="8" height="8"/>
+  <object id="329" name="commoner old" type="hostile-hooded" x="112" y="64" width="8" height="8"/>
+  <object id="330" name="commoner" type="hostile-satyr" x="136" y="64" width="8" height="8"/>
+  <object id="331" name="commoner old" type="hostile-hooded" x="128" y="64" width="8" height="8"/>
+  <object id="332" name="commoner" type="hostile-satyr" x="152" y="64" width="8" height="8"/>
+  <object id="333" name="commoner old" type="hostile-hooded" x="144" y="64" width="8" height="8"/>
+  <object id="334" name="commoner" type="hostile-satyr" x="168" y="64" width="8" height="8"/>
+  <object id="335" name="commoner old" type="hostile-hooded" x="160" y="64" width="8" height="8"/>
+  <object id="336" name="commoner old" type="hostile-hooded" x="176" y="64" width="8" height="8"/>
+  <object id="337" name="commoner" type="hostile-satyr" x="8" y="64" width="8" height="8"/>
+  <object id="338" name="commoner" type="hostile-satyr" x="16" y="56" width="8" height="8"/>
+  <object id="339" name="commoner old" type="hostile-hooded" x="8" y="56" width="8" height="8"/>
+  <object id="340" name="commoner" type="hostile-satyr" x="32" y="56" width="8" height="8"/>
+  <object id="341" name="commoner old" type="hostile-hooded" x="24" y="56" width="8" height="8"/>
+  <object id="342" name="commoner" type="hostile-satyr" x="48" y="56" width="8" height="8"/>
+  <object id="343" name="commoner old" type="hostile-hooded" x="40" y="56" width="8" height="8"/>
+  <object id="344" name="commoner" type="hostile-satyr" x="64" y="56" width="8" height="8"/>
+  <object id="345" name="commoner old" type="hostile-hooded" x="56" y="56" width="8" height="8"/>
+  <object id="346" name="commoner" type="hostile-satyr" x="80" y="56" width="8" height="8"/>
+  <object id="347" name="commoner old" type="hostile-hooded" x="72" y="56" width="8" height="8"/>
+  <object id="348" name="commoner" type="hostile-satyr" x="96" y="56" width="8" height="8"/>
+  <object id="349" name="commoner old" type="hostile-hooded" x="88" y="56" width="8" height="8"/>
+  <object id="350" name="commoner" type="hostile-satyr" x="112" y="56" width="8" height="8"/>
+  <object id="351" name="commoner old" type="hostile-hooded" x="104" y="56" width="8" height="8"/>
+  <object id="352" name="commoner" type="hostile-satyr" x="128" y="56" width="8" height="8"/>
+  <object id="353" name="commoner old" type="hostile-hooded" x="120" y="56" width="8" height="8"/>
+  <object id="354" name="commoner" type="hostile-satyr" x="144" y="56" width="8" height="8"/>
+  <object id="355" name="commoner old" type="hostile-hooded" x="136" y="56" width="8" height="8"/>
+  <object id="356" name="commoner" type="hostile-satyr" x="160" y="56" width="8" height="8"/>
+  <object id="357" name="commoner old" type="hostile-hooded" x="152" y="56" width="8" height="8"/>
+  <object id="358" name="commoner" type="hostile-satyr" x="176" y="56" width="8" height="8"/>
+  <object id="359" name="commoner old" type="hostile-hooded" x="168" y="56" width="8" height="8"/>
+  <object id="360" name="commoner" type="hostile-satyr" x="24" y="48" width="8" height="8"/>
+  <object id="361" name="commoner old" type="hostile-hooded" x="16" y="48" width="8" height="8"/>
+  <object id="362" name="commoner" type="hostile-satyr" x="40" y="48" width="8" height="8"/>
+  <object id="363" name="commoner old" type="hostile-hooded" x="32" y="48" width="8" height="8"/>
+  <object id="364" name="commoner" type="hostile-satyr" x="56" y="48" width="8" height="8"/>
+  <object id="365" name="commoner old" type="hostile-hooded" x="48" y="48" width="8" height="8"/>
+  <object id="366" name="commoner" type="hostile-satyr" x="72" y="48" width="8" height="8"/>
+  <object id="367" name="commoner old" type="hostile-hooded" x="64" y="48" width="8" height="8"/>
+  <object id="368" name="commoner" type="hostile-satyr" x="88" y="48" width="8" height="8"/>
+  <object id="369" name="commoner old" type="hostile-hooded" x="80" y="48" width="8" height="8"/>
+  <object id="370" name="commoner" type="hostile-satyr" x="104" y="48" width="8" height="8"/>
+  <object id="371" name="commoner old" type="hostile-hooded" x="96" y="48" width="8" height="8"/>
+  <object id="372" name="commoner" type="hostile-satyr" x="120" y="48" width="8" height="8"/>
+  <object id="373" name="commoner old" type="hostile-hooded" x="112" y="48" width="8" height="8"/>
+  <object id="374" name="commoner" type="hostile-satyr" x="136" y="48" width="8" height="8"/>
+  <object id="375" name="commoner old" type="hostile-hooded" x="128" y="48" width="8" height="8"/>
+  <object id="376" name="commoner" type="hostile-satyr" x="152" y="48" width="8" height="8"/>
+  <object id="377" name="commoner old" type="hostile-hooded" x="144" y="48" width="8" height="8"/>
+  <object id="378" name="commoner" type="hostile-satyr" x="168" y="48" width="8" height="8"/>
+  <object id="379" name="commoner old" type="hostile-hooded" x="160" y="48" width="8" height="8"/>
+  <object id="380" name="commoner old" type="hostile-hooded" x="176" y="48" width="8" height="8"/>
+  <object id="381" name="commoner" type="hostile-satyr" x="8" y="48" width="8" height="8"/>
+  <object id="382" name="commoner" type="hostile-satyr" x="16" y="40" width="8" height="8"/>
+  <object id="383" name="commoner old" type="hostile-hooded" x="8" y="40" width="8" height="8"/>
+  <object id="384" name="commoner" type="hostile-satyr" x="32" y="40" width="8" height="8"/>
+  <object id="385" name="commoner old" type="hostile-hooded" x="24" y="40" width="8" height="8"/>
+  <object id="386" name="commoner" type="hostile-satyr" x="48" y="40" width="8" height="8"/>
+  <object id="387" name="commoner old" type="hostile-hooded" x="40" y="40" width="8" height="8"/>
+  <object id="388" name="commoner" type="hostile-satyr" x="64" y="40" width="8" height="8"/>
+  <object id="389" name="commoner old" type="hostile-hooded" x="56" y="40" width="8" height="8"/>
+  <object id="390" name="commoner" type="hostile-satyr" x="80" y="40" width="8" height="8"/>
+  <object id="391" name="commoner old" type="hostile-hooded" x="72" y="40" width="8" height="8"/>
+  <object id="392" name="commoner" type="hostile-satyr" x="96" y="40" width="8" height="8"/>
+  <object id="393" name="commoner old" type="hostile-hooded" x="88" y="40" width="8" height="8"/>
+  <object id="394" name="commoner" type="hostile-satyr" x="112" y="40" width="8" height="8"/>
+  <object id="395" name="commoner old" type="hostile-hooded" x="104" y="40" width="8" height="8"/>
+  <object id="396" name="commoner" type="hostile-satyr" x="128" y="40" width="8" height="8"/>
+  <object id="397" name="commoner old" type="hostile-hooded" x="120" y="40" width="8" height="8"/>
+  <object id="398" name="commoner" type="hostile-satyr" x="144" y="40" width="8" height="8"/>
+  <object id="399" name="commoner old" type="hostile-hooded" x="136" y="40" width="8" height="8"/>
+  <object id="400" name="commoner" type="hostile-satyr" x="160" y="40" width="8" height="8"/>
+  <object id="401" name="commoner old" type="hostile-hooded" x="152" y="40" width="8" height="8"/>
+  <object id="402" name="commoner" type="hostile-satyr" x="176" y="40" width="8" height="8"/>
+  <object id="403" name="commoner old" type="hostile-hooded" x="168" y="40" width="8" height="8"/>
+  <object id="404" name="commoner" type="hostile-satyr" x="24" y="32" width="8" height="8"/>
+  <object id="405" name="commoner old" type="hostile-hooded" x="16" y="32" width="8" height="8"/>
+  <object id="406" name="commoner" type="hostile-satyr" x="40" y="32" width="8" height="8"/>
+  <object id="407" name="commoner old" type="hostile-hooded" x="32" y="32" width="8" height="8"/>
+  <object id="408" name="commoner" type="hostile-satyr" x="56" y="32" width="8" height="8"/>
+  <object id="409" name="commoner old" type="hostile-hooded" x="48" y="32" width="8" height="8"/>
+  <object id="410" name="commoner" type="hostile-satyr" x="72" y="32" width="8" height="8"/>
+  <object id="411" name="commoner old" type="hostile-hooded" x="64" y="32" width="8" height="8"/>
+  <object id="412" name="commoner" type="hostile-satyr" x="88" y="32" width="8" height="8"/>
+  <object id="413" name="commoner old" type="hostile-hooded" x="80" y="32" width="8" height="8"/>
+  <object id="414" name="commoner" type="hostile-satyr" x="104" y="32" width="8" height="8"/>
+  <object id="415" name="commoner old" type="hostile-hooded" x="96" y="32" width="8" height="8"/>
+  <object id="416" name="commoner" type="hostile-satyr" x="120" y="32" width="8" height="8"/>
+  <object id="417" name="commoner old" type="hostile-hooded" x="112" y="32" width="8" height="8"/>
+  <object id="418" name="commoner" type="hostile-satyr" x="136" y="32" width="8" height="8"/>
+  <object id="419" name="commoner old" type="hostile-hooded" x="128" y="32" width="8" height="8"/>
+  <object id="420" name="commoner" type="hostile-satyr" x="152" y="32" width="8" height="8"/>
+  <object id="421" name="commoner old" type="hostile-hooded" x="144" y="32" width="8" height="8"/>
+  <object id="422" name="commoner" type="hostile-satyr" x="168" y="32" width="8" height="8"/>
+  <object id="423" name="commoner old" type="hostile-hooded" x="160" y="32" width="8" height="8"/>
+  <object id="424" name="commoner old" type="hostile-hooded" x="176" y="32" width="8" height="8"/>
+  <object id="425" name="commoner" type="hostile-satyr" x="8" y="32" width="8" height="8"/>
  </objectgroup>
 </map>

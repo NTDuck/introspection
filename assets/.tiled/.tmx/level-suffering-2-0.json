@@ -37,17 +37,6 @@
          "objects":[
                 {
                  "height":8,
-                 "id":1,
-                 "name":"zombie",
-                 "rotation":0,
-                 "type":"hostile-zombie",
-                 "visible":true,
-                 "width":8,
-                 "x":56,
-                 "y":48
-                }, 
-                {
-                 "height":8,
                  "id":2,
                  "name":"dest",
                  "rotation":0,
@@ -434,51 +423,6 @@
                  "width":8,
                  "x":112,
                  "y":184
-                },
-            
-                {
-                 "height":8,
-                 "id":17,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":16,
-                 "y":72
-                }, 
-                {
-                 "height":8,
-                 "id":18,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":40,
-                 "y":96
-                }, 
-                {
-                 "height":8,
-                 "id":19,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":72,
-                 "y":88
-                }, 
-                {
-                 "height":8,
-                 "id":20,
-                 "name":"crab",
-                 "rotation":0,
-                 "type":"hostile-crab",
-                 "visible":true,
-                 "width":8,
-                 "x":96,
-                 "y":56
                 }, 
                 {
                  "height":8,
@@ -506,7 +450,8 @@
                  "width":8,
                  "x":8,
                  "y":0
-                }, 
+                },
+            
                 {
                  "height":8,
                  "id":22,
@@ -803,8 +748,7 @@
                  "width":8,
                  "x":96,
                  "y":0
-                },
-            
+                }, 
                 {
                  "height":8,
                  "id":33,
@@ -858,6 +802,84 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":35,
+                 "name":"commoner",
+                 "rotation":0,
+                 "type":"hostile-satyr",
+                 "visible":true,
+                 "width":8,
+                 "x":24,
+                 "y":120
+                }, 
+                {
+                 "height":8,
+                 "id":36,
+                 "name":"commoner old",
+                 "rotation":0,
+                 "type":"hostile-hooded",
+                 "visible":true,
+                 "width":8,
+                 "x":96,
+                 "y":128
+                }, 
+                {
+                 "height":8,
+                 "id":37,
+                 "name":"commoner",
+                 "rotation":0,
+                 "type":"hostile-satyr",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":88
+                },
+            
+                {
+                 "height":8,
+                 "id":38,
+                 "name":"commoner old",
+                 "rotation":0,
+                 "type":"hostile-hooded",
+                 "visible":true,
+                 "width":8,
+                 "x":72,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":39,
+                 "name":"commoner old",
+                 "rotation":0,
+                 "type":"hostile-hooded",
+                 "visible":true,
+                 "width":8,
+                 "x":104,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":40,
+                 "name":"commoner",
+                 "rotation":0,
+                 "type":"hostile-satyr",
+                 "visible":true,
+                 "width":8,
+                 "x":16,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":41,
+                 "name":"fast one",
+                 "rotation":0,
+                 "type":"hostile-dark-samurai",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":40
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -866,7 +888,7 @@
          "y":0
         }],
  "nextlayerid":4,
- "nextobjectid":35,
+ "nextobjectid":42,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

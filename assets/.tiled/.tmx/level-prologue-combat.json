@@ -843,9 +843,9 @@
                 {
                  "height":8,
                  "id":73,
-                 "name":"microwave",
+                 "name":"harmless",
                  "rotation":0,
-                 "type":"hostile-microwave",
+                 "type":"hostile-chick-boy",
                  "visible":true,
                  "width":8,
                  "x":56,

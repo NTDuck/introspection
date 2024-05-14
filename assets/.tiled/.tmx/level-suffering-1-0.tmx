@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="38">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="24" height="16" tilewidth="8" tileheight="8" infinite="0" nextlayerid="4" nextobjectid="43">
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/collision.tsx"/>
  <layer id="3" name="static-collision" width="24" height="16">
@@ -98,9 +98,9 @@
     <property name="target-level" value="level-suffering-1-1"/>
    </properties>
   </object>
-  <object id="33" name="bulldozer" type="hostile-bulldozer" x="104" y="24" width="8" height="8"/>
-  <object id="35" name="microwave" type="hostile-microwave" x="56" y="56" width="8" height="8"/>
-  <object id="36" name="microwave" type="hostile-microwave" x="96" y="96" width="8" height="8"/>
-  <object id="37" name="bulldozer" type="hostile-bulldozer" x="144" y="64" width="8" height="8"/>
+  <object id="38" name="commoner" type="hostile-satyr" x="64" y="24" width="8" height="8"/>
+  <object id="39" name="commoner old" type="hostile-hooded" x="88" y="104" width="8" height="8"/>
+  <object id="40" name="commoner" type="hostile-satyr" x="112" y="40" width="8" height="8"/>
+  <object id="42" name="commoner old" type="hostile-hooded" x="144" y="80" width="8" height="8"/>
  </objectgroup>
 </map>

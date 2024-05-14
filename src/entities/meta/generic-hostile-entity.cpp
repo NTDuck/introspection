@@ -183,11 +183,23 @@ template <typename T, MovementSelectionType M>
 unsigned int GenericHostileEntity<T, M>::sDeathCount = 0;
 
 
-template class GenericHostileEntity<PlagueCrow>;
-template class GenericHostileEntity<Microwave>;
-template class GenericHostileEntity<Bulldozer>;
+template class GenericHostileEntity<CommonHooded>;
+template class GenericHostileEntity<CommonSatyr>;
+template class GenericHostileEntity<CommonChickenBoy>;
+template class GenericHostileEntity<ElitePlagueCrow>;
+template class GenericHostileEntity<EliteDarkSamurai>;
+template class GenericHostileEntity<BossRedHood>;
+template class GenericHostileEntity<BossNightBorne>;
+template class GenericHostileEntity<Egg>;
+template class GenericHostileEntity<EnergySphere>;
 
 
-DEF_GENERIC_HOSTILE_ENTITY_(PlagueCrow, config::entities::hostile::plague_crow)
-DEF_GENERIC_HOSTILE_ENTITY_(Microwave, config::entities::hostile::microwave)
-DEF_GENERIC_HOSTILE_ENTITY_(Bulldozer, config::entities::hostile::bulldozer)
+DEF_GENERIC_HOSTILE_ENTITY_(ElitePlagueCrow, config::entities::hostile::elite_plague_crow)
+DEF_GENERIC_HOSTILE_ENTITY_(EliteDarkSamurai, config::entities::hostile::elite_dark_samurai)
+DEF_GENERIC_HOSTILE_ENTITY_(CommonHooded, config::entities::hostile::common_hooded)
+DEF_GENERIC_HOSTILE_ENTITY_(CommonSatyr, config::entities::hostile::common_satyr)
+DEF_GENERIC_HOSTILE_ENTITY_(CommonChickenBoy, config::entities::hostile::common_chicken_boy)
+DEF_GENERIC_HOSTILE_ENTITY_(BossRedHood, config::entities::hostile::boss_red_hood)
+DEF_GENERIC_HOSTILE_ENTITY_(BossNightBorne, config::entities::hostile::boos_night_borne)
+DEF_GENERIC_HOSTILE_ENTITY_(Egg, config::entities::hostile::egg)
+DEF_GENERIC_HOSTILE_ENTITY_(EnergySphere, config::entities::hostile::energy_sphere)

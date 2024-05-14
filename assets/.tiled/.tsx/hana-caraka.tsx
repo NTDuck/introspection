@@ -134,48 +134,56 @@
    <properties>
     <property name="startGID" type="int" value="48"/>
     <property name="stopGID" type="int" value="55"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-run=n" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="84"/>
     <property name="stopGID" type="int" value="91"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-run=s" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="72"/>
     <property name="stopGID" type="int" value="79"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-run=w" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="60"/>
     <property name="stopGID" type="int" value="67"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
-  <property name="animation-ticks" type="int" value="200"/>
+  <property name="animation-ticks" type="int" value="144"/>
   <property name="animation-walk=e" type="class" propertytype="animation">
    <properties>
     <property name="stopGID" type="int" value="7"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-walk=n" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="36"/>
     <property name="stopGID" type="int" value="43"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-walk=s" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="24"/>
     <property name="stopGID" type="int" value="31"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-walk=w" type="class" propertytype="animation">
    <properties>
     <property name="startGID" type="int" value="12"/>
     <property name="stopGID" type="int" value="19"/>
+    <property name="ticks-multiplier" type="float" value="0.44"/>
    </properties>
   </property>
   <property name="animation-width" type="int" value="1"/>

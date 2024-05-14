@@ -214,9 +214,15 @@ const double AbstractAnimatedDynamicEntity<T>::sRunModifier = config::entities::
 
 template class AbstractAnimatedDynamicEntity<Player>;
 
-template class AbstractAnimatedDynamicEntity<PlagueCrow>;
-template class AbstractAnimatedDynamicEntity<Microwave>;
-template class AbstractAnimatedDynamicEntity<Bulldozer>;
+template class AbstractAnimatedDynamicEntity<CommonHooded>;
+template class AbstractAnimatedDynamicEntity<CommonSatyr>;
+template class AbstractAnimatedDynamicEntity<CommonChickenBoy>;
+template class AbstractAnimatedDynamicEntity<ElitePlagueCrow>;
+template class AbstractAnimatedDynamicEntity<EliteDarkSamurai>;
+template class AbstractAnimatedDynamicEntity<BossRedHood>;
+template class AbstractAnimatedDynamicEntity<BossNightBorne>;
+template class AbstractAnimatedDynamicEntity<Egg>;
+template class AbstractAnimatedDynamicEntity<EnergySphere>;
 
 template class AbstractAnimatedDynamicEntity<Darkness>;
 template class AbstractAnimatedDynamicEntity<Slash>;

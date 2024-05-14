@@ -1106,31 +1106,85 @@ namespace config {
         }
 
         namespace hostile {
-            namespace plague_crow {
+            namespace elite_plague_crow {
                 constexpr const char* typeID = "hostile-plague-crow";
                 const std::filesystem::path path = "assets/.tiled/.tsx/gaco-plague-crow.tsx";
                 constexpr SDL_FRect destRectModifier = { 0, -0.75, 6, 6 };
                 constexpr SDL_FPoint velocity = { 96, 96 };
                 constexpr int moveDelayTicks = 0;
-                constexpr EntityAttributes attributes({{ 44, 4, 44, 4 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 4, 4 }, { 4, 4 } }});
+                constexpr EntityAttributes attributes({{ 44, 4, 44, 4 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 2, 2 }, { 2, 2 } }});
             }
 
-            namespace microwave {
-                constexpr const char* typeID = "hostile-microwave";
-                const std::filesystem::path path = "assets/.tiled/.tsx/gaco-microwave.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -0.75, 4, 4 };
+            namespace elite_dark_samurai {
+                constexpr const char* typeID = "hostile-dark-samurai";
+                const std::filesystem::path path = "assets/.tiled/.tsx/aimm-dark-samurai.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 6, 6 };
+                constexpr SDL_FPoint velocity = { 16, 16 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 22, 4, 44, 0 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 1, 1 }, { 1, 1 } }});
+            }
+
+            namespace common_hooded {
+                constexpr const char* typeID = "hostile-hooded";
+                const std::filesystem::path path = "assets/.tiled/.tsx/misc-hooded.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.25, 1, 1 };
                 constexpr SDL_FPoint velocity = { 72, 72 };
                 constexpr int moveDelayTicks = 0;
                 constexpr EntityAttributes attributes({{ 4, 0, 1, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
             }
 
-            namespace bulldozer {
-                constexpr const char* typeID = "hostile-bulldozer";
-                const std::filesystem::path path = "assets/.tiled/.tsx/gaco-bulldozer.tsx";
-                constexpr SDL_FRect destRectModifier = { 0, -0.5, 4, 4 };
-                constexpr SDL_FPoint velocity = { 64, 64 };
+            namespace common_satyr {
+                constexpr const char* typeID = "hostile-satyr";
+                const std::filesystem::path path = "assets/.tiled/.tsx/misc-satyr.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.5, 2, 2 };
+                constexpr SDL_FPoint velocity = { 81, 81 };
                 constexpr int moveDelayTicks = 0;
                 constexpr EntityAttributes attributes({{ 6, 0, 2, 0 }}, {{ SDL_Point{ 6, 6 }, { 2, 2 }, { 2, 2 } }});
+            }
+
+            namespace common_chicken_boy {
+                constexpr const char* typeID = "hostile-chick-boy";
+                const std::filesystem::path path = "assets/.tiled/.tsx/misc-chick-boy.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 2, 2 };
+                constexpr SDL_FPoint velocity = { 48, 48 };
+                constexpr int moveDelayTicks = 444;
+                constexpr EntityAttributes attributes({{ 8, 0, 0, 0 }}, {{ SDL_Point{ 6, 6 }, { 0, 0 }, { 0, 0 } }});
+            }
+
+            namespace boss_red_hood {
+                constexpr const char* typeID = "hostile-red-hood";
+                const std::filesystem::path path = "assets/.tiled/.tsx/misc-red-hood.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -1, 6, 6 };
+                constexpr SDL_FPoint velocity = { 81, 81 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 66, 0, 6, 0 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 2, 2 }, { 2, 2 } }});
+            }
+
+            namespace boos_night_borne {
+                constexpr const char* typeID = "hostile-nightborne";
+                const std::filesystem::path path = "assets/.tiled/.tsx/misc-nightborne.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -1, 6, 6 };
+                constexpr SDL_FPoint velocity = { 16, 16 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 44, 0, 14, 0 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 2, 2 }, { 2, 2 } }});
+            }
+
+            namespace egg {
+                constexpr const char* typeID = "hostile-egg";
+                const std::filesystem::path path = "assets/.tiled/.tsx/dazw-egg.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 4, 4 };
+                constexpr SDL_FPoint velocity = { 0, 0 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 14, 4, 0, 0 }}, {{ SDL_Point{ 0, 0 }, { 0, 0 }, { 0, 0 } }});
+            }
+
+            namespace energy_sphere {
+                constexpr const char* typeID = "hostile-energy-sphere";
+                const std::filesystem::path path = "assets/.tiled/.tsx/dazw-energy-sphere.tsx";
+                constexpr SDL_FRect destRectModifier = { 0, -0.75, 4, 4 };
+                constexpr SDL_FPoint velocity = { 32, 32 };
+                constexpr int moveDelayTicks = 0;
+                constexpr EntityAttributes attributes({{ 1, 0, std::numeric_limits<unsigned short int>::max(), 0 }}, {{ SDL_Point{ std::numeric_limits<unsigned short int>::max(), std::numeric_limits<unsigned short int>::max() }, { 1, 1 }, { 1, 1 } }});
             }
         }
 
