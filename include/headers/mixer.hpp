@@ -65,13 +65,28 @@ class Mixer final : Singleton<Mixer> {
         };
 
         std::unordered_map<level::Name, std::pair<Mix_Music*, std::filesystem::path>> kLevelBGMMapping = {
-            // { level::Name::kLevelWoodsEntryPoint, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-lacunar-amnesia.mp3") },
-            // { level::Name::kLevelWoodsLongLane, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-persistent-repetition-of-phrases.mp3") },
-            // { level::Name::kLevelWoodsMysteryShack, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-rosy-retrospection.mp3") },
-            // { level::Name::kLevelWoodsCrossroadsFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-past-life-regression.mp3") },
-            // { level::Name::kLevelWoodsEnemyApproachingFirst, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-unmasking-alzheimers.mp3") },
-            // { level::Name::kLevelWoodsEnemyApproachingFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-von-restorff-effect.mp3") },
-            // { level::Name::kLevelWoodsCrossroadsFinal, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-false-memory-syndrome.mp3") },
+            { level::Name::kLevelPrologueMovement, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-late-afternoon-drifting.mp3") },
+            { level::Name::kLevelPrologueCombat, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-late-afternoon-drifting.mp3") },
+
+            { level::Name::kLevelSuffering_empty, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-lacunar-amnesia.mp3") },
+            { level::Name::kLevelSuffering_1_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-persistent-repetition-of-phrases.mp3") },
+            { level::Name::kLevelSuffering_1_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-von-restorff-effect.mp3") },
+            { level::Name::kLevelSuffering_2_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-false-memory-syndrome.mp3") },
+            { level::Name::kLevelSuffering_2_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-unmasking-alzheimers.mp3") },
+            { level::Name::kLevelSuffering_3_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-past-life-regression.mp3") },
+            { level::Name::kLevelSuffering_3_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-rosy-retrospection.mp3") },
+            { level::Name::kLevelSuffering_3_2, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-persistent-repetition-of-phrases.mp3") },
+
+            { level::Name::kLevelStatusQuo_0, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-all-you-are-going-to-want-to-do-is-get-back-there.mp3") },
+            { level::Name::kLevelStatusQuo_1, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-all-you-are-going-to-want-to-do-is-get-back-there.mp3") },
+            { level::Name::kLevelStatusQuo_2, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-all-you-are-going-to-want-to-do-is-get-back-there.mp3") },
+            { level::Name::kLevelStatusQuo_3, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-its-just-a-burning-memory.mp3") },
+            { level::Name::kLevelStatusQuo_4, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-everything-is-on-the-point-of-decline.mp3") },
+
+            { level::Name::kLevelRoundtable_empty, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-everything-is-on-the-point-of-decline.mp3") },
+            { level::Name::kLevelRoundtable_first, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-everything-is-on-the-point-of-decline.mp3") },
+            { level::Name::kLevelRoundtable_second, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-everything-is-on-the-point-of-decline.mp3") },
+            { level::Name::kLevelRoundtable_final, std::make_pair(nullptr, config::path::asset_audio / "bgm/caretaker-everything-is-on-the-point-of-decline.mp3") },
             
             { level::Name::kLevelWhiteSpace, std::make_pair(nullptr, config::path::asset_audio / "bgm/omori-002-white-space.mp3") },
         };
