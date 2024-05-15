@@ -949,7 +949,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-1",
+                 "type":"interactable-omori-cat-1",
                  "visible":true,
                  "width":8,
                  "x":48,

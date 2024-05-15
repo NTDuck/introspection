@@ -996,7 +996,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-0",
+                 "type":"interactable-omori-cat-0",
                  "visible":true,
                  "width":8,
                  "x":72,
@@ -1019,7 +1019,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-7",
+                 "type":"interactable-omori-cat-7",
                  "visible":true,
                  "width":8,
                  "x":80,
@@ -1042,7 +1042,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-2",
+                 "type":"interactable-omori-cat-2",
                  "visible":true,
                  "width":8,
                  "x":40,
@@ -1065,7 +1065,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-4",
+                 "type":"interactable-omori-cat-4",
                  "visible":true,
                  "width":8,
                  "x":56,
@@ -1088,7 +1088,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-5",
+                 "type":"interactable-omori-cat-5",
                  "visible":true,
                  "width":8,
                  "x":56,
@@ -1111,7 +1111,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-1",
+                 "type":"interactable-omori-cat-1",
                  "visible":true,
                  "width":8,
                  "x":48,
@@ -1134,7 +1134,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-6",
+                 "type":"interactable-omori-cat-6",
                  "visible":true,
                  "width":8,
                  "x":64,
@@ -1157,7 +1157,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-3",
+                 "type":"interactable-omori-cat-3",
                  "visible":true,
                  "width":8,
                  "x":40,

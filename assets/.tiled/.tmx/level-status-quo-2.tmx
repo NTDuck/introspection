@@ -203,7 +203,7 @@
     </property>
    </properties>
   </object>
-  <object id="138" name="cat" type="omori-cat-0" x="72" y="64" width="8" height="8">
+  <object id="138" name="cat" type="interactable-omori-cat-0" x="72" y="64" width="8" height="8">
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
@@ -214,7 +214,7 @@
     </property>
    </properties>
   </object>
-  <object id="140" name="cat" type="omori-cat-4" x="56" y="80" width="8" height="8">
+  <object id="140" name="cat" type="interactable-omori-cat-4" x="56" y="80" width="8" height="8">
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
@@ -225,7 +225,7 @@
     </property>
    </properties>
   </object>
-  <object id="142" name="cat" type="omori-cat-1" x="48" y="64" width="8" height="8">
+  <object id="142" name="cat" type="interactable-omori-cat-1" x="48" y="64" width="8" height="8">
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>

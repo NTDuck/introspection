@@ -680,7 +680,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-0",
+                 "type":"interactable-omori-cat-0",
                  "visible":true,
                  "width":8,
                  "x":72,
@@ -703,7 +703,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-4",
+                 "type":"interactable-omori-cat-4",
                  "visible":true,
                  "width":8,
                  "x":56,
@@ -726,7 +726,7 @@
                             }
                         }],
                  "rotation":0,
-                 "type":"omori-cat-1",
+                 "type":"interactable-omori-cat-1",
                  "visible":true,
                  "width":8,
                  "x":48,
