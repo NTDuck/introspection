@@ -17,8 +17,9 @@
 5. [**Programming techniques**](#programming-techniques)
 6. [**Class hierarchy**](#hierarchy)
 7. [**Acknowledgements**](#acknowledgements)
-8. [**License**](#license)
-9. [**Support**](#support)
+8. [**References**](#references)
+9. [**License**](#license)
+10. [**Support**](#support)
 
 
 <a id="about"></a>
@@ -268,6 +269,15 @@ We would like to credit certain assets used in this project. Licenses, if any, s
 - [Lucky Star PS2 Bonus Disc](https://archive.org/details/lucky-star-ps-2-bonus-disc)
 
 We would also like to recognize reknowned games from which certain concepts and mechanics in this project drew inspiration, which include but are not limited to [Elden Ring](https://store.steampowered.com/app/1245620/ELDEN_RING/), [Omori](https://www.omori-game.com/), [Undertale](https://store.steampowered.com/app/391540/Undertale/), and [The Coffin of Andy and Leyley](https://store.steampowered.com/app/2378900/The_Coffin_of_Andy_and_Leyley/).
+
+<a id="references"></a>
+## References
+
+- [Cross-platform SDL2 installation & configuration](https://stackoverflow.com/questions/64396979/how-do-i-use-sdl2-in-my-programs-correctly)
+- [C++ documentation](https://en.cppreference.com/)
+- [SDL2 tutorial](https://lazyfoo.net/tutorials/SDL/)
+- [SDL2 documentation](https://wiki.libsdl.org/SDL2/FrontPage)
+- [Stackoverflow](https://stackoverflow.com/)
 
 
 <a id="license"></a>
