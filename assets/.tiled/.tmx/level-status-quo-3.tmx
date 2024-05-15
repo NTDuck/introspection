@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="136">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="156">
+ <editorsettings>
+  <export target="level-status-quo-3.json" format="json"/>
+ </editorsettings>
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/omori-black-space.tsx"/>
  <tileset firstgid="5693" source="../.tsx/collision.tsx"/>
  <tileset firstgid="5709" source="../.tsx/omori-vast-forest.tsx"/>
  <layer id="4" name="static-collision" width="16" height="24">
   <data encoding="base64" compression="zlib">
-   eJxjYGBgsBUjD8PAqP5R/aP6h75+Us0bbvoHOvwHQj8Ak+1qWQ==
+   eJxjYGBgsBUjD8PAqP7Bqx+fPC31w8QJqUGXIyU8cOlHtpua4YfPLlx+J9atgyH9kGrecNM/0OE/EPoBAwplfA==
   </data>
  </layer>
  <layer id="1" name="terrains" width="16" height="24">
@@ -14,9 +17,14 @@
    eJy7w8nAIM9FHr4N1PuBAv3vgXpPUKD/OFDvnVH3j7p/1P2j7h91P1nuBwAUXWCp
   </data>
  </layer>
- <layer id="3" name="outliner" width="16" height="24">
+ <layer id="3" name="outliner-pre" width="16" height="24">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFowAC1koyMKwjgNdL4tZ/Fih3jgA+P6ofJ3gLlHtHAL/Ho38BLwSTCw7wQjC54AEvBJMN+KCYTKDAB8GjgHgAANprRHE=
+   eJxjYBgFowAVrJVkYFiHhtdLEq//LFDtOTR8ngj9MHv7kfTlAfE7IH5PhH5s9vaR4Pa3QHX5OMwgNhywuYGUcHgL9S8uTEw4kAsO8EIwueABLwSTDfigmEygwAfBo4B4AACdPTQQ
+  </data>
+ </layer>
+ <layer id="5" name="outliner" width="16" height="24">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFgxm84aFMPw8vZfp1SNSP7l4foP5DXMTrp9S9yPah20tOWCKbQazbsNkPYvtQ6LdRMAqoDQB10woM
   </data>
  </layer>
  <objectgroup id="2" name="entities">
@@ -31,9 +39,30 @@
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
-      <property name="content" value="Very few is left."/>
+      <property name="content" value="Everything has been lost."/>
       <property name="group-index" type="int" value="0"/>
       <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="All but one."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Yet, in eventuality, they will leave."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Just like how everyone has left you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="3"/>
      </properties>
     </property>
    </properties>
@@ -226,6 +255,186 @@
     <property name="target-dest-coords-x" type="int" value="-1"/>
     <property name="target-dest-coords-y" type="int" value="46"/>
     <property name="target-level" value="level-roundtable-second-proposal"/>
+   </properties>
+  </object>
+  <object id="138" name="despair" type="interactable" x="40" y="88" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="141" name="cat" type="omori-cat-1" x="48" y="72" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="I hope you can find some peace... or you know... some happiness."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Maybe one day... things can go back to the way they were before."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="144" name="pinwheel" type="omori-pinwheel-mono" x="32" y="72" width="8" height="8"/>
+  <object id="145" name="despair" type="interactable" x="40" y="104" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="146" name="root" type="interactable" x="32" y="88" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="147" name="pinwheel" type="omori-pinwheel-mono" x="88" y="88" width="8" height="8"/>
+  <object id="148" name="root" type="interactable" x="88" y="104" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="149" name="despair" type="interactable" x="64" y="96" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="150" name="despair" type="interactable" x="56" y="104" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="151" name="despair" type="interactable" x="80" y="104" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="152" name="pinwheel" type="omori-pinwheel-mono" x="64" y="48" width="8" height="8"/>
+  <object id="153" name="root" type="interactable" x="64" y="72" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="154" name="despair" type="interactable" x="56" y="88" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="155" name="despair" type="interactable" x="72" y="72" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
    </properties>
   </object>
  </objectgroup>

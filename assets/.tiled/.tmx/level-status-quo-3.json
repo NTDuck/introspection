@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYGBgsBUjD8PAqP5R\/aP6h75+Us0bbvoHOvwHQj8Ak+1qWQ==",
+         "data":"eJxjYGBgsBUjD8PAqP7Bqx+fPC31w8QJqUGXIyU8cOlHtpua4YfPLlx+J9atgyH9kGrecNM\/0OE\/EPoBAwplfA==",
          "encoding":"base64",
          "height":24,
          "id":4,
@@ -32,10 +32,24 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFowAC1koyMKwjgNdL4tZ\/Fih3jgA+P6ofJ3gLlHtHAL\/Ho38BLwSTCw7wQjC54AEvBJMN+KCYTKDAB8GjgHgAANprRHE=",
+         "data":"eJxjYBgFowAVrJVkYFiHhtdLEq\/\/LFDtOTR8ngj9MHv7kfTlAfE7IH5PhH5s9vaR4Pa3QHX5OMwgNhywuYGUcHgL9S8uTEw4kAsO8EIwueABLwSTDfigmEygwAfBo4B4AACdPTQQ",
          "encoding":"base64",
          "height":24,
          "id":3,
+         "name":"outliner-pre",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJxjYBgFgxm84aFMPw8vZfp1SNSP7l4foP5DXMTrp9S9yPah20tOWCKbQazbsNkPYvtQ6LdRMAqoDQB10woM",
+         "encoding":"base64",
+         "height":24,
+         "id":5,
          "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
@@ -87,9 +101,42 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Very few is left.",
+                             "content":"Everything has been lost.",
                              "group-index":0,
                              "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"All but one.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Yet, in eventuality, they will leave.",
+                             "group-index":0,
+                             "index":2
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-D",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Just like how everyone has left you.",
+                             "group-index":0,
+                             "index":3
                             }
                         }],
                  "rotation":0,
@@ -839,6 +886,381 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":138,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":141,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"I hope you can find some peace... or you know... some happiness.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Maybe one day... things can go back to the way they were before.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"omori-cat-1",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":72
+                },
+            
+                {
+                 "height":8,
+                 "id":144,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":145,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":146,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":147,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":148,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":149,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":150,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":151,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":80,
+                 "y":104
+                }, 
+                {
+                 "height":8,
+                 "id":152,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":48
+                }, 
+                {
+                 "height":8,
+                 "id":153,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":72
+                }, 
+                {
+                 "height":8,
+                 "id":154,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":155,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":72,
+                 "y":72
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -846,8 +1268,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":136,
+ "nextlayerid":6,
+ "nextobjectid":156,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="5" nextobjectid="172">
+<map version="1.10" tiledversion="1.10.2" orientation="orthogonal" renderorder="right-down" width="16" height="24" tilewidth="8" tileheight="8" infinite="0" nextlayerid="6" nextobjectid="188">
  <tileset firstgid="1" source="../.tsx/1-bit.tsx"/>
  <tileset firstgid="2621" source="../.tsx/omori-black-space.tsx"/>
  <tileset firstgid="5693" source="../.tsx/collision.tsx"/>
  <tileset firstgid="5709" source="../.tsx/omori-vast-forest.tsx"/>
  <layer id="4" name="static-collision" width="16" height="24">
   <data encoding="base64" compression="zlib">
-   eJxjYGBgsBUjD8PAqP5R/aP6h75+Us0bbvoHOvwHQj8Ak+1qWQ==
+   eJxjYGBgsBUjD8PAqH7a6ccnT0v9MHF0NehsdP2khAcu/ch2UzP88NmFy+/EunWwph9S9JNq3nDTP9DhPxD6AY9DZSk=
   </data>
  </layer>
  <layer id="1" name="terrains" width="16" height="24">
@@ -14,9 +14,14 @@
    eJy7w8nAIM9FHr4N1PuBAv3vgXpPUKD/OFDvnVH3j7p/1P2j7h91P1nuBwAUXWCp
   </data>
  </layer>
- <layer id="3" name="outliner" width="16" height="24">
+ <layer id="3" name="outliner-pre" width="16" height="24">
   <data encoding="base64" compression="zlib">
-   eJxjYBgFwwWslWRgWEcAr5fErf8sUO4cAXx+VD9O8BYo944Afo9HP6VgAS8EkwsO8EIwueABLwSTDfigmEygwAfBo4B4AACl20Rx
+   eJxjYBgFww2slWRgWIeG10sixEFsfOAsUP4cGj4viRA/j0M/zPx+JH15QPwOiN8D8VskNrH29hHhXhgAmZ+PwwzkcCDV7+jhQMgN7/BgXH6nBljAC8HkggO8EEwueMALwWQDPigmEyjwQfAoIB4AAGVgPYk=
+  </data>
+ </layer>
+ <layer id="5" name="outliner" width="16" height="24">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFtARveCjTz8NLmX4dEvXD3HuIC0L78CLYILBZEr9+St2LbB+yvchuIwUgm0Gs27DZD2L7UOi3UTAKBhsAAB+XC6Q=
   </data>
  </layer>
  <objectgroup id="2" name="entities">
@@ -226,6 +231,275 @@
     <property name="target-dest-coords-x" type="int" value="-1"/>
     <property name="target-dest-coords-y" type="int" value="46"/>
     <property name="target-level" value="level-roundtable-final-proposal"/>
+   </properties>
+  </object>
+  <object id="172" name="despair" type="interactable" x="40" y="80" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="174" name="pinwheel" type="omori-pinwheel-mono" x="32" y="64" width="8" height="8"/>
+  <object id="175" name="despair" type="interactable" x="40" y="96" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="176" name="root" type="interactable" x="32" y="80" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="177" name="pinwheel" type="omori-pinwheel-mono" x="88" y="80" width="8" height="8"/>
+  <object id="178" name="root" type="interactable" x="88" y="96" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="179" name="despair" type="interactable" x="64" y="88" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="180" name="despair" type="interactable" x="56" y="96" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="181" name="despair" type="interactable" x="80" y="96" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="182" name="pinwheel" type="omori-pinwheel-mono" x="64" y="40" width="8" height="8"/>
+  <object id="183" name="root" type="interactable" x="64" y="64" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="A pinwheel."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="184" name="despair" type="interactable" x="56" y="80" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="185" name="despair" type="interactable" x="72" y="64" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="186" name="despair" type="interactable" x="48" y="64" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is nothing like the sight of an amputated spirit."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="There is no prosthetic for that."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+   </properties>
+  </object>
+  <object id="187" name="wise rock" type="interactable" x="96" y="64" width="8" height="8">
+   <properties>
+    <property name="dialogue-A" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You're caused so much suffering... yet you do nothing. And so you've earned nothing in return."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You friends will never forgive you. They'll abandon you like you did to them... and that's what you deserve."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You tell yourself that you don't want to burden others... But the truth is that you're selfish. You just don't want people to depend on you."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-D" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content">When do you think about others?
+How long are you going to let people take care of you?</property>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-E" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You say you care but you're a liar. You've never done anthing for anyone else."/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-F" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You're useless... less than useless."/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-G" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You're sick."/>
+      <property name="group-index" type="int" value="1"/>
+      <property name="index" type="int" value="3"/>
+     </properties>
+    </property>
+    <property name="dialogue-H" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="People like you don't deserve to live."/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-I" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Your friends are wrong about you. The person they love isn't you at all. You let them believe in a lie to protect yourself."/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-J" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="You're nothing but a liar... and when they see the truth... They'll hate you as much as you hate yourself."/>
+      <property name="group-index" type="int" value="2"/>
+      <property name="index" type="int" value="2"/>
+     </properties>
+    </property>
+    <property name="dialogue-K" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="If they know the truth, you'll never be able to regain their trust. No matter what you do, it will be hopeless. All you'll do is make things worse."/>
+      <property name="group-index" type="int" value="3"/>
+      <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-L" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It would be better to just die."/>
+      <property name="group-index" type="int" value="3"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
    </properties>
   </object>
  </objectgroup>

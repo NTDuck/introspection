@@ -87,9 +87,31 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Learn how to fight.",
+                             "content":"Steady your heartbeat...",
                              "group-index":0,
                              "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Don't be afraid...",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-C",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"It's not as scary as you think.",
+                             "group-index":0,
+                             "index":2
                             }
                         }],
                  "rotation":0,

@@ -4,7 +4,7 @@
  "layers":[
         {
          "compression":"zlib",
-         "data":"eJxjYGBgsBUjD8PAqP5R\/aP6h75+Us0bbvoHOvwHQj8Ak+1qWQ==",
+         "data":"eJxjYGBgsBUjD8PAqH7a6ccnT0v9MHFCatDlSAkPXPqR7aZm+OGzC5\/fkcFQSz+k6CfVvOGmf6DDfyD0AwDvxmTW",
          "encoding":"base64",
          "height":24,
          "id":4,
@@ -32,10 +32,24 @@
         }, 
         {
          "compression":"zlib",
-         "data":"eJxjYBgFwwWslWRgWEcAr5fErf8sUO4cAXx+VD9O8BYo944Afo9HP6VgAS8EkwsO8EIwueABLwSTDfigmEygwAfBo4B4AACl20Rx",
+         "data":"eJxjYBgFww2slWRgWIeG10sSr\/8sUO05NHyeCP0we\/uR9OUB8Tsgfk+Efmz29pHg9rdAdfk4zCA2HLC5gZRweAv1Ly5MTDiQCxbwQjC54AAvBJMLHvBCMNmAD4rJBAp8EDwKiAcAnlg1ag==",
          "encoding":"base64",
          "height":24,
          "id":3,
+         "name":"outliner-pre",
+         "opacity":1,
+         "type":"tilelayer",
+         "visible":true,
+         "width":16,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "compression":"zlib",
+         "data":"eJxjYBgFtATlEpTpn06h\/u0k6n\/Dg8q\/TqJ+Hl7S1KMDH6D+Q1zY5dDdRgxANotYt8H0gOgN4gwMG8UhbB8K\/TYKRsFgAwAEVQtc",
+         "encoding":"base64",
+         "height":24,
+         "id":5,
          "name":"outliner",
          "opacity":1,
          "type":"tilelayer",
@@ -60,9 +74,20 @@
                          "type":"class",
                          "value":
                             {
-                             "content":"Some has left.",
+                             "content":"Everything is on the point of decline.",
                              "group-index":0,
                              "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Go see for yourself.",
+                             "group-index":0,
+                             "index":1
                             }
                         }],
                  "rotation":0,
@@ -569,6 +594,394 @@
                  "width":8,
                  "x":112,
                  "y":0
+                }, 
+                {
+                 "height":8,
+                 "id":133,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":40
+                }, 
+                {
+                 "height":8,
+                 "id":134,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A colorful pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":135,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":138,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"omori-cat-0",
+                 "visible":true,
+                 "width":8,
+                 "x":72,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":140,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"omori-cat-4",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":142,
+                 "name":"cat",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"Meow.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"omori-cat-1",
+                 "visible":true,
+                 "width":8,
+                 "x":48,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":145,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A jump rope.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":146,
+                 "name":"",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A jump rope.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":72,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":147,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":64
+                }, 
+                {
+                 "height":8,
+                 "id":148,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":40,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":149,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":32,
+                 "y":80
+                }, 
+                {
+                 "height":8,
+                 "id":150,
+                 "name":"pinwheel",
+                 "rotation":0,
+                 "type":"omori-pinwheel-mono",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":80
+                },
+            
+                {
+                 "height":8,
+                 "id":151,
+                 "name":"root",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"A pinwheel.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":88,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":152,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":64,
+                 "y":88
+                }, 
+                {
+                 "height":8,
+                 "id":153,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":56,
+                 "y":96
+                }, 
+                {
+                 "height":8,
+                 "id":154,
+                 "name":"despair",
+                 "properties":[
+                        {
+                         "name":"dialogue-A",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is nothing like the sight of an amputated spirit.",
+                             "group-index":0,
+                             "index":0
+                            }
+                        }, 
+                        {
+                         "name":"dialogue-B",
+                         "propertytype":"dialogue",
+                         "type":"class",
+                         "value":
+                            {
+                             "content":"There is no prosthetic for that.",
+                             "group-index":0,
+                             "index":1
+                            }
+                        }],
+                 "rotation":0,
+                 "type":"interactable",
+                 "visible":true,
+                 "width":8,
+                 "x":80,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -576,8 +989,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":133,
+ "nextlayerid":6,
+ "nextobjectid":155,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",

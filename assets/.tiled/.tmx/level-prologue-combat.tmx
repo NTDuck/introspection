@@ -33,9 +33,23 @@
    <properties>
     <property name="dialogue-A" type="class" propertytype="dialogue">
      <properties>
-      <property name="content" value="Learn how to fight."/>
+      <property name="content" value="Steady your heartbeat..."/>
       <property name="group-index" type="int" value="0"/>
       <property name="index" type="int" value="0"/>
+     </properties>
+    </property>
+    <property name="dialogue-B" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="Don't be afraid..."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="1"/>
+     </properties>
+    </property>
+    <property name="dialogue-C" type="class" propertytype="dialogue">
+     <properties>
+      <property name="content" value="It's not as scary as you think."/>
+      <property name="group-index" type="int" value="0"/>
+      <property name="index" type="int" value="2"/>
      </properties>
     </property>
    </properties>
