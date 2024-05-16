@@ -48,8 +48,8 @@ GenericInteractable<T>::handleCustomEventGET_impl(SDL_Event const& event) {
     if (data.targetDestCoords != mDestCoords) return;
 
     // Halving `mProgress` as a temporary patch for redundant calls (which leads to dialogues being unwantedly skipped)
-    IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, mDialogues[mProgress >> 1]);
-    if (mProgress >> 1 < static_cast<unsigned short int>(mDialogues.size()) - 1) ++mProgress;   // Move towards final state
+    IngameDialogueBox::invoke(&IngameDialogueBox::enqueueContents, mDialogues[mProgress]);
+    if (mProgress < static_cast<unsigned short int>(mDialogues.size()) - 1) ++mProgress;   // Move towards final state
 
     if (sSFXName != nullptr && (mProgress & 1)) Mixer::invoke(&Mixer::playSFX, *sSFXName);     
 }
